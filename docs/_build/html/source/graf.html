@@ -118,17 +118,12 @@ This data consists of arrays and dictionaries that together hold the information
 of time that has elapsed since this object has been created.
 #. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
 the LAF resource has to be (re)compiled.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bin_dir</strong> (<em>str</em>) &#8211;
-location of the compiled data on disk (one directory contains all those files)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object with data structures initialized, ready to load the compiled data from disk.</td>
-</tr>
-</tbody>
-</table>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>bin_dir (str): location of the compiled data on disk (one directory contains all those files)</dd>
+<dt>Returns:</dt>
+<dd>object with data structures initialized, ready to load the compiled data from disk.</dd>
+</dl>
 <dl class="attribute">
 <dt id="graf.graf.Graf.BIN_EXT">
 <tt class="descname">BIN_EXT</tt><em class="property"> = 'bin'</em><a class="headerlink" href="#graf.graf.Graf.BIN_EXT" title="Permalink to this definition">¶</a></dt>
@@ -160,32 +155,16 @@ location of the compiled data on disk (one directory contains all those files)</
 </dd></dl>
 
 <dl class="method">
-<dt id="graf.graf.Graf.__del__">
-<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.__del__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clean up</p>
-<p>Close all file handles that are still open.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="graf.graf.Graf.add_logfile">
 <tt class="descname">add_logfile</tt><big>(</big><em>log_dir</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.add_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.add_logfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and open a log file for a given task.</p>
 <p>When tasks run, they generate progress messages with timing information in them.
 They may issue errors and warnings. All this information also goes into a log file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>log_dir</strong> (<em>str</em>) &#8211;
-the name of the directory in which the log file must be placed</li>
-<li><strong>task</strong> (<em>str</em>) &#8211;
-the name of the task the log file is for</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>log_dir (str): the name of the directory in which the log file must be placed
+task (str): the name of the task the log file is for</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
@@ -604,17 +583,12 @@ This data consists of arrays and dictionaries that together hold the information
 of time that has elapsed since this object has been created.
 #. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
 the LAF resource has to be (re)compiled.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bin_dir</strong> (<em>str</em>) &#8211;
-location of the compiled data on disk (one directory contains all those files)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object with data structures initialized, ready to load the compiled data from disk.</td>
-</tr>
-</tbody>
-</table>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>bin_dir (str): location of the compiled data on disk (one directory contains all those files)</dd>
+<dt>Returns:</dt>
+<dd>object with data structures initialized, ready to load the compiled data from disk.</dd>
+</dl>
 <dl class="attribute">
 <dt id="graf.Graf.BIN_EXT">
 <tt class="descname">BIN_EXT</tt><em class="property"> = 'bin'</em><a class="headerlink" href="#graf.Graf.BIN_EXT" title="Permalink to this definition">¶</a></dt>
@@ -641,32 +615,16 @@ location of the compiled data on disk (one directory contains all those files)</
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="graf.Graf.__del__">
-<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.__del__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clean up</p>
-<p>Close all file handles that are still open.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="graf.Graf.add_logfile">
 <tt class="descname">add_logfile</tt><big>(</big><em>log_dir</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.add_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.add_logfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and open a log file for a given task.</p>
 <p>When tasks run, they generate progress messages with timing information in them.
 They may issue errors and warnings. All this information also goes into a log file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>log_dir</strong> (<em>str</em>) &#8211;
-the name of the directory in which the log file must be placed</li>
-<li><strong>task</strong> (<em>str</em>) &#8211;
-the name of the task the log file is for</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>log_dir (str): the name of the directory in which the log file must be placed
+task (str): the name of the task the log file is for</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">

@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>LAF/GrAF and data analysis &mdash; Graf 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Graf 0.1 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to Graf’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Graf’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Graf 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="laf-graf-and-data-analysis">
+<h1>LAF/GrAF and data analysis<a class="headerlink" href="#laf-graf-and-data-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-laf-graf">
+<h2>What is LAF/GrAF<a class="headerlink" href="#what-is-laf-graf" title="Permalink to this headline">¶</a></h2>
+<p>LAF/GrAF is a framework for representing linguistic source material plus associated annotations.
+LAF, Linguistic Annotation Framework is an ISO standard (<a class="reference external" href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=37326">24612:2012</a>) that describes the organization of the data.
+GrAF, Graph Annotation Framework is a set of <a class="reference external" href="http://www.xces.org/ns/GrAF/1.0/">schemas</a> for the XML-annotations in a LAF resource.</p>
+<p>Despite the L of linguistics, there is nothing particularly linguistic to LAF.
+LAF describes data that comes as a linearly ordered <em>primary data</em> stream (audio, video, text, or anything that has a one dimensional order), in which <em>regions</em> can be defined.
+<em>Annotations</em> are key=value pairs or <em>feature structures</em> in general, which conform to the joint definition with the Text Encoding Initiative (<a class="reference external" href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/FS.html">TEI Feature Structures</a> and <a class="reference external" href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=37324">ISO version</a>).
+Between the primary data and the annotations is a <em>graph</em> of <em>nodes</em> and <em>edges</em>. Some nodes are linked to regions of primary data. Some nodes are linked to other nodes by means of edges. An annotation may refer to a node or to an edge, but not both.</p>
+<p>So, features target the primary data through annotations. Annotations can be labeled and they can be organized in <em>annotation spaces</em>.</p>
+</div>
+<div class="section" id="existing-tools-for-laf-graf-resources">
+<h2>Existing tools for LAF/GrAF resources<a class="headerlink" href="#existing-tools-for-laf-graf-resources" title="Permalink to this headline">¶</a></h2>
+<p>There is an interesting Python module (<a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a>)
+that can read generic GrAF resources.
+It exposes an API to work with the graph and annotations of such resources.
+However, when feeding it a resource with 430 k words and 2 GB of annotation material, the performance is such that the graph does not fit into memory of a laptop. Clearly, the tool has been defined for bunches of smaller GrAF documents, and not for a single documents of 500 k words and GBs of annotation material.</p>
+</div>
+<div class="section" id="this-tool">
+<h2>This tool<a class="headerlink" href="#this-tool" title="Permalink to this headline">¶</a></h2>
+<p>This tool seeks to remedy that situation. Its aim is to provide a framework on top of which users can write small Python scripts that perform analytic tasks on big GrAF resources. It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.</p>
+<div class="section" id="limitations">
+<h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
+<p>While the POIO-Graf-python module mentioned above is capable to read generic resources, the present Graf tool is less generic.
+It does not support the full complexity of the Graf model.
+In particular, it does not support annotation spaces, it does not read dependencies, and it cannot handle feature structures in full generality, it only handles key-value pairs.</p>
+</div>
+<div class="section" id="future-work">
+<h3>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h3>
+<p>My plans for further development are:</p>
+<ol class="arabic simple">
+<li>gain experience with the tool by adding several example tasks</li>
+<li>improve the API, add extra primitives, make it more user friendly</li>
+<li>look out for even better performance for various tasks</li>
+<li>increase the support for more GrAF features, and to make it fully compatible</li>
+<li>merge the tool with the existing POIO-Graf-python tool, preferably as a user selectable implementation choice</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">LAF/GrAF and data analysis</a><ul>
+<li><a class="reference internal" href="#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li><a class="reference internal" href="#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li><a class="reference internal" href="#this-tool">This tool</a><ul>
+<li><a class="reference internal" href="#limitations">Limitations</a></li>
+<li><a class="reference internal" href="#future-work">Future work</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Graf&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/overview.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Graf’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Graf 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

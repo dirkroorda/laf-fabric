@@ -31,7 +31,6 @@ sys.path.insert(0, os.path.abspath('../tasks'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinxcontrib.napoleon',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',

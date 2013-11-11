@@ -1,0 +1,1069 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>graf package &mdash; Graf 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Graf 0.1 documentation" href="../index.html" />
+    <link rel="next" title="tasks" href="modules.html" />
+    <link rel="prev" title="LAF/GrAF and data analysis" href="../overview.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="tasks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../overview.html" title="LAF/GrAF and data analysis"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Graf 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="graf-package">
+<h1>graf package<a class="headerlink" href="#graf-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-graf.compiler">
+<span id="graf-compiler-module"></span><h2>graf.compiler module<a class="headerlink" href="#module-graf.compiler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.compiler.GrafCompiler">
+<em class="property">class </em><tt class="descclassname">graf.compiler.</tt><tt class="descname">GrafCompiler</tt><big>(</big><em>graf_dir</em>, <em>graf_header_file</em>, <em>bin_dir</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<dl class="method">
+<dt id="graf.compiler.GrafCompiler.compiler">
+<tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.compiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.compiler.GrafCompiler.header_file">
+<tt class="descname">header_file</tt><em class="property"> = None</em><a class="headerlink" href="#graf.compiler.GrafCompiler.header_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.compiler.GrafCompiler.model">
+<tt class="descname">model</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.compiler.GrafCompiler.needs_compiling">
+<tt class="descname">needs_compiling</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.needs_compiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.needs_compiling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.compiler.GrafCompiler.parse">
+<tt class="descname">parse</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.compiler.GrafCompiler.temp_data_items">
+<tt class="descname">temp_data_items</tt><em class="property"> = {}</em><a class="headerlink" href="#graf.compiler.GrafCompiler.temp_data_items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.compiler.GrafCompiler.write_data">
+<tt class="descname">write_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.write_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.graf">
+<span id="graf-graf-module"></span><h2>graf.graf module<a class="headerlink" href="#module-graf.graf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.graf.Graf">
+<em class="property">class </em><tt class="descclassname">graf.graf.</tt><tt class="descname">Graf</tt><big>(</big><em>bin_dir</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for compiling LAF resources and running analytic tasks on them.</p>
+<p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
+and running analytic tasks is done by the GrafTask class.</p>
+<p>Create empty datastructures to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
+<p>The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
+This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.</p>
+<p>Other things that happen:</p>
+<p>#. a fresh Timestamp object is created, which records the current time and can issue progress messages containing the amount
+of time that has elapsed since this object has been created.
+#. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
+the LAF resource has to be (re)compiled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bin_dir</strong> (<em>str</em>) &#8211;
+location of the compiled data on disk (one directory contains all those files)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object with data structures initialized, ready to load the compiled data from disk.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="graf.graf.Graf.BIN_EXT">
+<tt class="descname">BIN_EXT</tt><em class="property"> = 'bin'</em><a class="headerlink" href="#graf.graf.Graf.BIN_EXT" title="Permalink to this definition">¶</a></dt>
+<dd><p>extension for binary files</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.COMPILE_TASK">
+<tt class="descname">COMPILE_TASK</tt><em class="property"> = 'compile'</em><a class="headerlink" href="#graf.graf.Graf.COMPILE_TASK" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the compile task</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.LOG_NAME">
+<tt class="descname">LOG_NAME</tt><em class="property"> = '__log__'</em><a class="headerlink" href="#graf.graf.Graf.LOG_NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>log file base name for a task</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.STAT_NAME">
+<tt class="descname">STAT_NAME</tt><em class="property"> = '__stat__'</em><a class="headerlink" href="#graf.graf.Graf.STAT_NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>statistics file base name for a task</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.TEXT_EXT">
+<tt class="descname">TEXT_EXT</tt><em class="property"> = 'txt'</em><a class="headerlink" href="#graf.graf.Graf.TEXT_EXT" title="Permalink to this definition">¶</a></dt>
+<dd><p>extension for text files</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up</p>
+<p>Close all file handles that are still open.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.add_logfile">
+<tt class="descname">add_logfile</tt><big>(</big><em>log_dir</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.add_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.add_logfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and open a log file for a given task.</p>
+<p>When tasks run, they generate progress messages with timing information in them.
+They may issue errors and warnings. All this information also goes into a log file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_dir</strong> (<em>str</em>) &#8211;
+the name of the directory in which the log file must be placed</li>
+<li><strong>task</strong> (<em>str</em>) &#8211;
+the name of the task the log file is for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.bin_dir">
+<tt class="descname">bin_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.bin_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>location of the compiled data files corresponding to a LAF resource</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.log">
+<tt class="descname">log</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>handle of a log file, open for writing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.progress">
+<tt class="descname">progress</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to call the progress of the associated stamp directly from the Graf object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.read_stats">
+<tt class="descname">read_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.read_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.read_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read compilation statistics from file</p>
+<p>The compile process generates some statistics that must be read by the task that loads the compiled data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.stamp">
+<tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.stamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>object that contains a timestamp and can deliver progress messages</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.stat_file">
+<tt class="descname">stat_file</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.stat_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>handle of a statistics file, open for writing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.write_stats">
+<tt class="descname">write_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.write_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.write_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write compilation statistics to file</p>
+<p>The compile process generates some statistics that must be read by the task that loads the compiled data.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="graf.graf.GrafException">
+<em class="property">exception </em><tt class="descclassname">graf.graf.</tt><tt class="descname">GrafException</tt><big>(</big><em>message</em>, <em>stamp</em>, <em>Errors</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#GrafException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.GrafException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.model">
+<span id="graf-model-module"></span><h2>graf.model module<a class="headerlink" href="#module-graf.model" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="graf.model.arrayify">
+<tt class="descclassname">graf.model.</tt><tt class="descname">arrayify</tt><big>(</big><em>source_list</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#arrayify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.arrayify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="graf.model.model">
+<tt class="descclassname">graf.model.</tt><tt class="descname">model</tt><big>(</big><em>data_items</em>, <em>temp_data_items</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-graf.parse">
+<span id="graf-parse-module"></span><h2>graf.parse module<a class="headerlink" href="#module-graf.parse" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.parse.AnnotationHandler">
+<em class="property">class </em><tt class="descclassname">graf.parse.</tt><tt class="descname">AnnotationHandler</tt><big>(</big><em>annotation_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<dl class="attribute">
+<dt id="graf.parse.AnnotationHandler.aid">
+<tt class="descname">aid</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.aid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.parse.AnnotationHandler.characters">
+<tt class="descname">characters</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.characters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.parse.AnnotationHandler.endElement">
+<tt class="descname">endElement</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.endElement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.parse.AnnotationHandler.file_name">
+<tt class="descname">file_name</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.file_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.parse.AnnotationHandler.nid">
+<tt class="descname">nid</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.nid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.parse.AnnotationHandler.node_link">
+<tt class="descname">node_link</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.node_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.parse.AnnotationHandler.stamp">
+<tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.stamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.parse.AnnotationHandler.startElement">
+<tt class="descname">startElement</tt><big>(</big><em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.startElement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.parse.HeaderHandler">
+<em class="property">class </em><tt class="descclassname">graf.parse.</tt><tt class="descname">HeaderHandler</tt><big>(</big><em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<dl class="method">
+<dt id="graf.parse.HeaderHandler.characters">
+<tt class="descname">characters</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.characters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.parse.HeaderHandler.endElement">
+<tt class="descname">endElement</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.endElement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.parse.HeaderHandler.stamp">
+<tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.HeaderHandler.stamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.parse.HeaderHandler.startElement">
+<tt class="descname">startElement</tt><big>(</big><em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.startElement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="graf.parse.parse">
+<tt class="descclassname">graf.parse.</tt><tt class="descname">parse</tt><big>(</big><em>graf_header_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-graf.task">
+<span id="graf-task-module"></span><h2>graf.task module<a class="headerlink" href="#module-graf.task" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.task.GrafTask">
+<em class="property">class </em><tt class="descclassname">graf.task.</tt><tt class="descname">GrafTask</tt><big>(</big><em>task=None</em>, <em>source=None</em>, <em>compile=False</em>, <em>data_dir=None</em>, <em>data_file=None</em>, <em>bin_dir=None</em>, <em>result_dir=None</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="graf.task.GrafTask.processor_factory">
+<tt class="descname">processor_factory</tt><big>(</big><em>flavour='plain'</em>, <em>flavour_detail='plain'</em>, <em>index=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.processor_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.processor_factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.task_ass">
+<span id="graf-task-ass-module"></span><h2>graf.task_ass module<a class="headerlink" href="#module-graf.task_ass" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.task_ass.GrafTaskAssembler">
+<em class="property">class </em><tt class="descclassname">graf.task_ass.</tt><tt class="descname">GrafTaskAssembler</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em>, <em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<dl class="method">
+<dt id="graf.task_ass.GrafTaskAssembler.Fi">
+<tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.Fi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_ass.GrafTaskAssembler.Fr">
+<tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.Fr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_ass.GrafTaskAssembler.assemble">
+<tt class="descname">assemble</tt><big>(</big><em>kind</em>, <em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em>, <em>only</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.assemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.assemble" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_ass.GrafTaskAssembler.assemble_all">
+<tt class="descname">assemble_all</tt><big>(</big><em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.assemble_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.assemble_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_ass.GrafTaskAssembler.assemble_only">
+<tt class="descname">assemble_only</tt><big>(</big><em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em>, <em>onlystring</em>, <em>kind</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.assemble_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.assemble_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_ass.GrafTaskAssembler.loader">
+<tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_ass.GrafTaskAssembler.result_dir">
+<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.result_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_ass.GrafTaskAssembler.result_files">
+<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.result_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_ass.GrafTaskAssembler.task">
+<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.task_base">
+<span id="graf-task-base-module"></span><h2>graf.task_base module<a class="headerlink" href="#module-graf.task_base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.task_base.GrafTaskBase">
+<em class="property">class </em><tt class="descclassname">graf.task_base.</tt><tt class="descname">GrafTaskBase</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.add_result">
+<tt class="descname">add_result</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.add_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.add_result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.finish_task">
+<tt class="descname">finish_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.finish_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.finish_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.get_mappings">
+<tt class="descname">get_mappings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.get_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.get_mappings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.getitems">
+<tt class="descname">getitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.getitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.getitems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.hasitem">
+<tt class="descname">hasitem</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.hasitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.hasitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.hasitems">
+<tt class="descname">hasitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.hasitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.hasitems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.init_task">
+<tt class="descname">init_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.init_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.init_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.int_fname">
+<tt class="descname">int_fname</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.int_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.int_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.int_fval">
+<tt class="descname">int_fval</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.int_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.int_fval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.int_label">
+<tt class="descname">int_label</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.int_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.int_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.loader">
+<tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.next_node">
+<tt class="descname">next_node</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.next_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.next_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.next_node_with_fval">
+<tt class="descname">next_node_with_fval</tt><big>(</big><em>label</em>, <em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.next_node_with_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.next_node_with_fval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.rep_fname">
+<tt class="descname">rep_fname</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.rep_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.rep_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.rep_fval">
+<tt class="descname">rep_fval</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.rep_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.rep_fval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.rep_label">
+<tt class="descname">rep_label</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.rep_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.rep_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_base.GrafTaskBase.result_dir">
+<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.result_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_base.GrafTaskBase.result_files">
+<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.result_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.setup">
+<tt class="descname">setup</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_base.GrafTaskBase.source">
+<tt class="descname">source</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_base.GrafTaskBase.task">
+<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.task_mem">
+<span id="graf-task-mem-module"></span><h2>graf.task_mem module<a class="headerlink" href="#module-graf.task_mem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.task_mem.GrafTaskMemo">
+<em class="property">class </em><tt class="descclassname">graf.task_mem.</tt><tt class="descname">GrafTaskMemo</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<dl class="method">
+<dt id="graf.task_mem.GrafTaskMemo.Fi">
+<tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.Fi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_mem.GrafTaskMemo.Fr">
+<tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.Fr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.task_plain">
+<span id="graf-task-plain-module"></span><h2>graf.task_plain module<a class="headerlink" href="#module-graf.task_plain" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.task_plain.GrafTaskPlain">
+<em class="property">class </em><tt class="descclassname">graf.task_plain.</tt><tt class="descname">GrafTaskPlain</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<dl class="method">
+<dt id="graf.task_plain.GrafTaskPlain.Fi">
+<tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain.Fi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.task_plain.GrafTaskPlain.Fr">
+<tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain.Fr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf.timestamp">
+<span id="graf-timestamp-module"></span><h2>graf.timestamp module<a class="headerlink" href="#module-graf.timestamp" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.timestamp.Timestamp">
+<em class="property">class </em><tt class="descclassname">graf.timestamp.</tt><tt class="descname">Timestamp</tt><big>(</big><em>log_file=None</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="graf.timestamp.Timestamp.connect_log">
+<tt class="descname">connect_log</tt><big>(</big><em>log_file</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.connect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.timestamp.Timestamp.elapsed">
+<tt class="descname">elapsed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.elapsed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.timestamp.Timestamp.log">
+<tt class="descname">log</tt><em class="property"> = None</em><a class="headerlink" href="#graf.timestamp.Timestamp.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.timestamp.Timestamp.progress">
+<tt class="descname">progress</tt><big>(</big><em>msg</em>, <em>newline=True</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.progress" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.timestamp.Timestamp.timestamp">
+<tt class="descname">timestamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.timestamp.Timestamp.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-graf">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="graf.Graf">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">Graf</tt><big>(</big><em>bin_dir</em><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for compiling LAF resources and running analytic tasks on them.</p>
+<p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
+and running analytic tasks is done by the GrafTask class.</p>
+<p>Create empty datastructures to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
+<p>The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
+This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.</p>
+<p>Other things that happen:</p>
+<p>#. a fresh Timestamp object is created, which records the current time and can issue progress messages containing the amount
+of time that has elapsed since this object has been created.
+#. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
+the LAF resource has to be (re)compiled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bin_dir</strong> (<em>str</em>) &#8211;
+location of the compiled data on disk (one directory contains all those files)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object with data structures initialized, ready to load the compiled data from disk.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="graf.Graf.BIN_EXT">
+<tt class="descname">BIN_EXT</tt><em class="property"> = 'bin'</em><a class="headerlink" href="#graf.Graf.BIN_EXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.COMPILE_TASK">
+<tt class="descname">COMPILE_TASK</tt><em class="property"> = 'compile'</em><a class="headerlink" href="#graf.Graf.COMPILE_TASK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.LOG_NAME">
+<tt class="descname">LOG_NAME</tt><em class="property"> = '__log__'</em><a class="headerlink" href="#graf.Graf.LOG_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.STAT_NAME">
+<tt class="descname">STAT_NAME</tt><em class="property"> = '__stat__'</em><a class="headerlink" href="#graf.Graf.STAT_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.TEXT_EXT">
+<tt class="descname">TEXT_EXT</tt><em class="property"> = 'txt'</em><a class="headerlink" href="#graf.Graf.TEXT_EXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.Graf.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up</p>
+<p>Close all file handles that are still open.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.Graf.add_logfile">
+<tt class="descname">add_logfile</tt><big>(</big><em>log_dir</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.add_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.add_logfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and open a log file for a given task.</p>
+<p>When tasks run, they generate progress messages with timing information in them.
+They may issue errors and warnings. All this information also goes into a log file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_dir</strong> (<em>str</em>) &#8211;
+the name of the directory in which the log file must be placed</li>
+<li><strong>task</strong> (<em>str</em>) &#8211;
+the name of the task the log file is for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.bin_dir">
+<tt class="descname">bin_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Graf.bin_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.log">
+<tt class="descname">log</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Graf.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.Graf.progress">
+<tt class="descname">progress</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to call the progress of the associated stamp directly from the Graf object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.Graf.read_stats">
+<tt class="descname">read_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.read_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.read_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read compilation statistics from file</p>
+<p>The compile process generates some statistics that must be read by the task that loads the compiled data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.stamp">
+<tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Graf.stamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Graf.stat_file">
+<tt class="descname">stat_file</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Graf.stat_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.Graf.write_stats">
+<tt class="descname">write_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf.write_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf.write_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write compilation statistics to file</p>
+<p>The compile process generates some statistics that must be read by the task that loads the compiled data.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.GrafCompiler">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafCompiler</tt><big>(</big><em>graf_dir</em>, <em>graf_header_file</em>, <em>bin_dir</em><big>)</big><a class="headerlink" href="#graf.GrafCompiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<dl class="method">
+<dt id="graf.GrafCompiler.compiler">
+<tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="headerlink" href="#graf.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafCompiler.header_file">
+<tt class="descname">header_file</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafCompiler.header_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafCompiler.model">
+<tt class="descname">model</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafCompiler.needs_compiling">
+<tt class="descname">needs_compiling</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.needs_compiling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafCompiler.parse">
+<tt class="descname">parse</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafCompiler.temp_data_items">
+<tt class="descname">temp_data_items</tt><em class="property"> = {}</em><a class="headerlink" href="#graf.GrafCompiler.temp_data_items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafCompiler.write_data">
+<tt class="descname">write_data</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.write_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.GrafTask">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTask</tt><big>(</big><em>task=None</em>, <em>source=None</em>, <em>compile=False</em>, <em>data_dir=None</em>, <em>data_file=None</em>, <em>bin_dir=None</em>, <em>result_dir=None</em><big>)</big><a class="headerlink" href="#graf.GrafTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="graf.GrafTask.processor_factory">
+<tt class="descname">processor_factory</tt><big>(</big><em>flavour='plain'</em>, <em>flavour_detail='plain'</em>, <em>index=False</em><big>)</big><a class="headerlink" href="#graf.GrafTask.processor_factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.GrafTaskBase">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskBase</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<dl class="method">
+<dt id="graf.GrafTaskBase.add_result">
+<tt class="descname">add_result</tt><big>(</big><em>file_name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.add_result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.finish_task">
+<tt class="descname">finish_task</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.finish_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.get_mappings">
+<tt class="descname">get_mappings</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.get_mappings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.getitems">
+<tt class="descname">getitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.getitems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.hasitem">
+<tt class="descname">hasitem</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.hasitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.hasitems">
+<tt class="descname">hasitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.hasitems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.init_task">
+<tt class="descname">init_task</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.init_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.int_fname">
+<tt class="descname">int_fname</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.int_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.int_fval">
+<tt class="descname">int_fval</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.int_fval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.int_label">
+<tt class="descname">int_label</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.int_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.loader">
+<tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.next_node">
+<tt class="descname">next_node</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.next_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.next_node_with_fval">
+<tt class="descname">next_node_with_fval</tt><big>(</big><em>label</em>, <em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.next_node_with_fval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.rep_fname">
+<tt class="descname">rep_fname</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.rep_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.rep_fval">
+<tt class="descname">rep_fval</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.rep_fval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.rep_label">
+<tt class="descname">rep_label</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.rep_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskBase.result_dir">
+<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskBase.result_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskBase.result_files">
+<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.GrafTaskBase.result_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskBase.setup">
+<tt class="descname">setup</tt><big>(</big><em>directives</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskBase.source">
+<tt class="descname">source</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskBase.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskBase.task">
+<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskBase.task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.GrafTaskPlain">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskPlain</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<dl class="method">
+<dt id="graf.GrafTaskPlain.Fi">
+<tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain.Fi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskPlain.Fr">
+<tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain.Fr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.GrafTaskAssembler">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskAssembler</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em>, <em>force</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<dl class="method">
+<dt id="graf.GrafTaskAssembler.Fi">
+<tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.Fi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskAssembler.Fr">
+<tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.Fr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskAssembler.assemble">
+<tt class="descname">assemble</tt><big>(</big><em>kind</em>, <em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em>, <em>only</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.assemble" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskAssembler.assemble_all">
+<tt class="descname">assemble_all</tt><big>(</big><em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.assemble_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskAssembler.assemble_only">
+<tt class="descname">assemble_only</tt><big>(</big><em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em>, <em>onlystring</em>, <em>kind</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.assemble_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskAssembler.loader">
+<tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskAssembler.result_dir">
+<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskAssembler.result_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskAssembler.result_files">
+<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.GrafTaskAssembler.result_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.GrafTaskAssembler.task">
+<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskAssembler.task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.GrafTaskMemo">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskMemo</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<dl class="method">
+<dt id="graf.GrafTaskMemo.Fi">
+<tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo.Fi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTaskMemo.Fr">
+<tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo.Fr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.Timestamp">
+<em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">Timestamp</tt><big>(</big><em>log_file=None</em><big>)</big><a class="headerlink" href="#graf.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="graf.Timestamp.connect_log">
+<tt class="descname">connect_log</tt><big>(</big><em>log_file</em><big>)</big><a class="headerlink" href="#graf.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.Timestamp.elapsed">
+<tt class="descname">elapsed</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.Timestamp.elapsed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Timestamp.log">
+<tt class="descname">log</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Timestamp.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.Timestamp.progress">
+<tt class="descname">progress</tt><big>(</big><em>msg</em>, <em>newline=True</em><big>)</big><a class="headerlink" href="#graf.Timestamp.progress" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.Timestamp.timestamp">
+<tt class="descname">timestamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Timestamp.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">graf package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-graf.compiler">graf.compiler module</a></li>
+<li><a class="reference internal" href="#module-graf.graf">graf.graf module</a></li>
+<li><a class="reference internal" href="#module-graf.model">graf.model module</a></li>
+<li><a class="reference internal" href="#module-graf.parse">graf.parse module</a></li>
+<li><a class="reference internal" href="#module-graf.task">graf.task module</a></li>
+<li><a class="reference internal" href="#module-graf.task_ass">graf.task_ass module</a></li>
+<li><a class="reference internal" href="#module-graf.task_base">graf.task_base module</a></li>
+<li><a class="reference internal" href="#module-graf.task_mem">graf.task_mem module</a></li>
+<li><a class="reference internal" href="#module-graf.task_plain">graf.task_plain module</a></li>
+<li><a class="reference internal" href="#module-graf.timestamp">graf.timestamp module</a></li>
+<li><a class="reference internal" href="#module-graf">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../overview.html"
+                        title="previous chapter">LAF/GrAF and data analysis</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">tasks</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/source/graf.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="tasks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../overview.html" title="LAF/GrAF and data analysis"
+             >previous</a> |</li>
+        <li><a href="../index.html">Graf 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

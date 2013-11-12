@@ -1,5 +1,9 @@
 #!/bin/sh
 
+pushd docs
+make html
+popd
+
 git add --ignore-removal .
 git rm -r -f '*.pyc'
 git rm -r -f '*.swp'

@@ -19,6 +19,9 @@ class Graf(object):
 
     This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
     and running analytic tasks is done by the GrafTask class.
+
+    XXX
+
     '''
 
     BIN_EXT = 'bin'

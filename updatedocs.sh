@@ -1,8 +1,9 @@
 #!/bin/sh
 
-git add docs
-git add tasks
-git add graf
-git commit -m "updating documentation" 
+git add .
+git rm -r -f '*.pyc'
+git rm -r -f '*.swp'
+git rm -r -f '.DS_Store'
+git commit -m "$1" 
 git push origin master
 

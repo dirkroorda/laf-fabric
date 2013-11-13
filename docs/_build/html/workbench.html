@@ -123,12 +123,13 @@ This header file has references to all files that make up the resource. You migh
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">«source»</span></tt></dt>
 <dd>the key for the GrAF header file that you use to point to your LAF resource</dd>
+<dt><tt class="docutils literal"><span class="pre">«task»</span></tt></dt>
+<dd>the task that you want to execute. Must be a python script in the <em>tasks</em> directory</dd>
 <dt><tt class="docutils literal"><span class="pre">«flavour»</span></tt></dt>
-<dd><p class="first">the flavour of the optimization that you want to apply. Choices are:
-<tt class="docutils literal"><span class="pre">plain</span></tt></p>
-<blockquote>
-<div>no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.</div></blockquote>
+<dd><p class="first">the flavour of the optimization that you want to apply. Choices are:</p>
 <dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">plain</span></tt></dt>
+<dd>no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.</dd>
 <dt><tt class="docutils literal"><span class="pre">assemble</span></tt></dt>
 <dd>read the feature declarations of the task at hand, and ensure that indexes exist for those features. Create and save them if they do not exist, load them when they do exist.</dd>
 <dt><tt class="docutils literal"><span class="pre">assemble-all</span></tt></dt>
@@ -137,6 +138,10 @@ This header file has references to all files that make up the resource. You migh
 <dd>feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible. Otherwise the feature value will be looked up and stored in the cache. It turns out not to be very efficient, because in many tasks feature values are only needed once. So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space.</dd>
 </dl>
 </dd>
+<dt><tt class="docutils literal"><span class="pre">--force-compile</span></tt></dt>
+<dd>If you have changed the LAF resource, the workbench will detect it and recompile it. The detection is based on the modified dates of the GrAF header file and the compiled files. In cases where the workbench did not detect a change, but you need to recompile, use this flag.</dd>
+<dt><tt class="docutils literal"><span class="pre">--force-index</span></tt></dt>
+<dd>Only relevant for the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour. If indexes are outdated without the system detecting it, you can force re-indexing by giving this flag.</dd>
 </dl>
 </div>
 </div>

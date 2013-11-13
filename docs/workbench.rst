@@ -81,8 +81,11 @@ Explanation
 
 ``«source»``
 	the key for the GrAF header file that you use to point to your LAF resource
+``«task»``
+	the task that you want to execute. Must be a python script in the *tasks* directory
 ``«flavour»``
 	the flavour of the optimization that you want to apply. Choices are:
+
 	``plain``
 		no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.
 	``assemble``
@@ -91,6 +94,13 @@ Explanation
 		create all possible indexes. This takes a few minutes, but takes a fair amount of space, both on disk and in memory. At present there is no provision to save the index. It is recommended to use ``assemble-all``. The index is shared between tasks on the same «source», so the indexes will be built gradually on demand and not exceed what is really needed. After a while there will be little need for new tasks to create new indexes.
 	``memo``
 		feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible. Otherwise the feature value will be looked up and stored in the cache. It turns out not to be very efficient, because in many tasks feature values are only needed once. So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space. 
+
+``--force-compile``
+	If you have changed the LAF resource, the workbench will detect it and recompile it. The detection is based on the modified dates of the GrAF header file and the compiled files. In cases where the workbench did not detect a change, but you need to recompile, use this flag.
+
+``--force-index``
+	Only relevant for the ``assemble`` flavour. If indexes are outdated without the system detecting it, you can force re-indexing by giving this flag.
+
 
 Designed for Performance
 ------------------------

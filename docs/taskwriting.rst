@@ -94,4 +94,39 @@ In order to write an efficient task, it is convenient to import the names of the
 The method ``get_mappings`` delivers the methods, and it is up to you to give them names. It is recommended to stick to the names provided here in this example. Here is a short description of the corresponding methods.
 
 ``Fi`` and ``Fr``
+    Feature value lookup functions. They need a node or edge, then an annotation label, then a feature name, and then they return the value. All arguments must be given as integers, the integers to which nodes and labels and names have been mapped during compiling. (There are ways to get those numbers). The difference between ``Fi`` and ``Fr`` is that ``Fi`` returns the internal number corresponding to the value, and ``Fr`` the original string value as encountered in the original LAF resource. Use ``Fi`` when the value is needed in other parts of your script, use ``Fr`` when you need to output values. 
+
+``Li`` and ``Lr``
+    Convert between annotation labels as string values found in the original LAF and the integers they have been mapped to during compilation. ``Li`` yields integers from string representations, ``Lr`` yields representations (strings) from internal integers.
+
+``Ni`` and ``Nr``
+    Same pattern as above, but now for feature names.
+
+``Vi`` and ``Vr``
+    Same pattern as above, but now for feature values.
+
+``NN`` and ``NNFV`` are *iterators* that yield a new node everytime they are called. They yield the nodes in so-called *resource* order, which will be explained below. The difference between ``NN`` and ``NNFV`` is that ``NN`` iterates over absolutely all nodes, and ``NNFV`` only yields node that have a certain value for a certain feature. See :class:`GrafTaskBase <graf.task_base>`, methods :meth:`nextnode() <graf.task_base.GrafTaskBase.next_node>` and :meth:`next_node_with_fval() <graf.task_base.GrafTaskBase.next_node_with_fval>`.
+
+Output
+------
+You can create an output filehandle, open for writing, by calling the method :meth:`add_result() <graf.task_base.GrafTaskBase.add_result>` of the :class:`GrafTaskBase <graf.task_base>` class and assigning the result to a variable, say ``out``.  From then on you can write output simply by saying::
+
+    out.write(text)
+
+You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.
+
+Node order
+----------
+There is an implicit partial order on nodes, derived from their attachment to *regions* which are stretches of primary data, and the primary data is totally ordered.
+The order we use in the workbench is defined as follows.
+
+Suppose we compare node *A* and node *B*. Look up all regions for *A* and for *B* and determine the first point of the first region and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
+
+Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
+
+In other words: if *A* starts before *B*, then *A* becomes before *B*. If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
+
+If neither *A* < *B* nor *B* < *A* then the order is not specified. The workbench will select an arbitrary but consistent order between thoses nodes. The only way this can happen is when *A* and *B* start and end at the same point. Between those points they might be very different. 
+
+The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding, the order specifies a walk through the nodes were enclosing nodes come first, and embedded children come in the order dictated by the primary data.
 

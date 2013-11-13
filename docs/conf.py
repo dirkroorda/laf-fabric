@@ -53,7 +53,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Graf'
+project = u'LAF-workbench'
 copyright = u'2013, Dirk Roorda'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -237,7 +237,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'graf', u'Graf Documentation',
+    ('index', 'LAF-workbench', u'LAF-workbench Documentation',
      [u'Dirk Roorda'], 1)
 ]
 
@@ -251,8 +251,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Graf', u'Graf Documentation',
-   u'Dirk Roorda', 'Graf', 'One line description of project.',
+  ('index', 'LAF-workbench', u'LAF-workbench Documentation',
+   u'Dirk Roorda', 'LAF-workbench', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -272,7 +272,7 @@ texinfo_documents = [
 # -- Options for Epub output ----------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Graf'
+epub_title = u'LAF-workbench'
 epub_author = u'Dirk Roorda'
 epub_publisher = u'Dirk Roorda'
 epub_copyright = u'2013, Dirk Roorda'

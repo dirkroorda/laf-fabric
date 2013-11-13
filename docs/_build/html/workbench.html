@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>LAF workbench &mdash; LAF-workbench 0.1 documentation</title>
+    <title>LAF workbench &mdash; LAF-Fabric 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="LAF-workbench 0.1 documentation" href="index.html" />
+    <link rel="top" title="LAF-Fabric 0.1 documentation" href="index.html" />
     <link rel="next" title="graf package" href="source/graf.html" />
     <link rel="prev" title="LAF/GrAF and data analysis" href="overview.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="overview.html" title="LAF/GrAF and data analysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">LAF-workbench 0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">LAF-Fabric 0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -82,6 +82,35 @@ All subsequent times the compiled data will be loaded directly, which takes, in 
 <p>Here are detailed instructions for installing, configuring and using the workbench.</p>
 <div class="section" id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>This package is called <em>graf</em> and is a pure Python package. A recommended way of installing it is to download <em>graf-version.tar.gz</em> from the distribution directory on  <a class="reference external" href="https://github.com/dirkroorda/laf-fabric/tree/master/dist">Github</a> and unpack it in a directory of your choice. You get a directory with documentation, the package <em>graf</em>, a calling script <em>laf-fabric.py</em> and a directory <em>tasks</em> with example tasks. Either you run <em>setup.py</em> to install this package in your local Python tree, or you leave the package where you unpacked it. Here are the directions if you do the latter.</p>
+</div>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>The calling script is <em>laf-fabric.py</em>. In it is a configuration section between:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## CONFIG START</span>
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## CONFIG END.</span>
+</pre></div>
+</div>
+<p>The things to change here are:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">data_root</span></tt></dt>
+<dd>Path to the directory containing the LAF resource.</dd>
+<dt><tt class="docutils literal"><span class="pre">laf_source</span></tt></dt>
+<dd>The directory name of the LAF resource.</dd>
+<dt><tt class="docutils literal"><span class="pre">compiled</span> <span class="pre">source</span></tt></dt>
+<dd>The directory name of the compiled resource. This directory will be created next to the <tt class="docutils literal"><span class="pre">laf_source</span></tt> directory.</dd>
+<dt><tt class="docutils literal"><span class="pre">source_choices</span></tt></dt>
+<dd>A dictionaries with abbreviations for the names of the header files within the LAF resource that the workbench can refer to.</dd>
+</dl>
+<p>Normally, a LAF resource has a <em>LAF-header file</em> and a <em>primary data header file</em>, aka. <em>the GrAF header file</em>. The workbench needs to look at a GrAF header file.
+This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The <tt class="docutils literal"><span class="pre">source_choices</span></tt> dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option <tt class="docutils literal"><span class="pre">--source=key</span></tt> to select the header file that you want to point the workbench to.</p>
+<p>Now you are set to run your tasks. You might want to run an example task from the examples in the <em>tasks</em> directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the <em>tasks</em> directory.</p>
+</div>
+<div class="section" id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="designed-for-performance">
@@ -106,6 +135,8 @@ In fact, performance has been the most important design criterion of all.</p>
 <li><a class="reference internal" href="#what-is-this-workbench">What is this workbench?</a></li>
 <li><a class="reference internal" href="#how-to-use-the-workbench">How to use the workbench?</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#designed-for-performance">Designed for Performance</a></li>
@@ -157,7 +188,7 @@ In fact, performance has been the most important design criterion of all.</p>
         <li class="right" >
           <a href="overview.html" title="LAF/GrAF and data analysis"
              >previous</a> |</li>
-        <li><a href="index.html">LAF-workbench 0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">LAF-Fabric 0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

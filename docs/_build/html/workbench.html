@@ -114,7 +114,7 @@ This header file has references to all files that make up the resource. You migh
 <p>The workbench is a Python program that is invoked from the command line. It loads data, runs a task script, and then exits. Between invocations the workbench is not loaded in memory and does not eat CPU cycles.</p>
 <p>For every single task execution you invoke the workbench by its calling script <em>laf-fabric.py</em>, supplying parameters for selecting the LAF source, the task and the optimization flavour. And there are miscellaneous options, of course.</p>
 <p>Go to the directory where <em>laf-fabric.py</em> resides:</p>
-<div class="highlight-python"><pre>cd &lt;path_to_dir_of_laf-fabric.py&gt;</pre>
+<div class="highlight-python"><pre>cd «path_to_dir_of_laf-fabric.py»</pre>
 </div>
 <p>Then issue the following command, where <tt class="docutils literal"><span class="pre">«string»</span></tt> stands for variable text that you should provide, and material within <tt class="docutils literal"><span class="pre">[</span> <span class="pre">]</span></tt> is optional:</p>
 <div class="highlight-python"><pre>python laf-fabric.py --source=«source» --optim=«flavour» --task=«task» [--force-compile] [--force-index]</pre>
@@ -148,10 +148,37 @@ This header file has references to all files that make up the resource. You migh
 <div class="section" id="designed-for-performance">
 <h2>Designed for Performance<a class="headerlink" href="#designed-for-performance" title="Permalink to this headline">¶</a></h2>
 <p>Since there is a generic LAF tool for smaller resources, this tool has been designed with performance in mind.
-In fact, performance has been the most important design criterion of all.</p>
+In fact, performance has been the most important design criterion of all. In this section the decision and particulars are listed.</p>
 </div>
 <div class="section" id="graf-feature-coverage">
 <h2>GrAF feature coverage<a class="headerlink" href="#graf-feature-coverage" title="Permalink to this headline">¶</a></h2>
+<p>This tool cannot deal with LAF resources in their full generality.</p>
+<p>In LAF, annotations have labels, and annotations are organized in annotation spaces. So an annotation space and a label uniquely define a kind of annotation. The content of an annotation can be a feature structure. A feature structure is a set of features and sub features, ordered again as a graph.
+These are the main simplifications:</p>
+<dl class="docutils">
+<dt><em>annotation spaces</em></dt>
+<dd>The workbench ignores annotation spaces altogether. So annotations are only grouped by annotation labels.</dd>
+<dt><em>feature structures</em></dt>
+<dd>This workbench can deal with feature structures that are merely sets of key-value pairs. The graph-like model of features and subfeatures is not supported.</dd>
+<dt><em>annotations</em></dt>
+<dd>Even annotations get lost. The workbench is primarily interested in features and values. It forgets the annotations in which they have been packaged except for:
+* the annotation label,
+* the target of the annotation (node or edge)
+So in order to retrieve a feature value, one must specify an annotation label, a feature name, and a node or edge to which the annotation containing the feature had been attached.</dd>
+<dt><em>dependencies</em></dt>
+<dd>In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations. The workbench assumes that all dependent files are present in the resource. Hence the workbench reads all files mentioned in the GrAF header, in no particular order.</dd>
+</dl>
+</div>
+<div class="section" id="development">
+<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
+<p>Many reasonable candidates for an API have not yet been implemented. Basically we have only:</p>
+<dl class="docutils">
+<dt><em>node iterator</em></dt>
+<dd>iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered)</dd>
+<dt><em>feature lookup</em></dt>
+<dd>a function that gives the value of a feature attached by some annotation to some edge or node</dd>
+</dl>
+<p>Now Python does not have strict encapsulation of data structures, so by just inspecting the classes and objects you can reach out for all aspects of the LAF data that went into the compiled data. See the GrAF feature coverage for a specification of what data ends up in the compilation.</p>
 </div>
 </div>
 
@@ -173,6 +200,7 @@ In fact, performance has been the most important design criterion of all.</p>
 </li>
 <li><a class="reference internal" href="#designed-for-performance">Designed for Performance</a></li>
 <li><a class="reference internal" href="#graf-feature-coverage">GrAF feature coverage</a></li>
+<li><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
 </ul>

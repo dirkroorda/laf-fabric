@@ -71,7 +71,7 @@ For every single task execution you invoke the workbench by its calling script *
 
 Go to the directory where *laf-fabric.py* resides::
 
-	cd <path_to_dir_of_laf-fabric.py>
+	cd «path_to_dir_of_laf-fabric.py»
 
 Then issue the following command, where ``«string»`` stands for variable text that you should provide, and material within ``[ ]`` is optional::
 
@@ -105,7 +105,39 @@ Explanation
 Designed for Performance
 ------------------------
 Since there is a generic LAF tool for smaller resources, this tool has been designed with performance in mind. 
-In fact, performance has been the most important design criterion of all.
+In fact, performance has been the most important design criterion of all. In this section the decision and particulars are listed.
 
 GrAF feature coverage
 ---------------------
+This tool cannot deal with LAF resources in their full generality.
+
+In LAF, annotations have labels, and annotations are organized in annotation spaces. So an annotation space and a label uniquely define a kind of annotation. The content of an annotation can be a feature structure. A feature structure is a set of features and sub features, ordered again as a graph.
+These are the main simplifications:
+	
+*annotation spaces*
+	The workbench ignores annotation spaces altogether. So annotations are only grouped by annotation labels.
+
+*feature structures*
+	This workbench can deal with feature structures that are merely sets of key-value pairs. The graph-like model of features and subfeatures is not supported.
+
+*annotations*
+	Even annotations get lost. The workbench is primarily interested in features and values. It forgets the annotations in which they have been packaged except for: 
+	* the annotation label,
+	* the target of the annotation (node or edge)
+	So in order to retrieve a feature value, one must specify an annotation label, a feature name, and a node or edge to which the annotation containing the feature had been attached.
+
+*dependencies*
+	In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations. The workbench assumes that all dependent files are present in the resource. Hence the workbench reads all files mentioned in the GrAF header, in no particular order.
+ 
+
+Development
+-----------
+Many reasonable candidates for an API have not yet been implemented. Basically we have only:
+
+*node iterator*
+	iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered)
+
+*feature lookup*
+	a function that gives the value of a feature attached by some annotation to some edge or node
+
+Now Python does not have strict encapsulation of data structures, so by just inspecting the classes and objects you can reach out for all aspects of the LAF data that went into the compiled data. See the GrAF feature coverage for a specification of what data ends up in the compilation.

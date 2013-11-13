@@ -56,9 +56,33 @@
 <h1>LAF workbench<a class="headerlink" href="#laf-workbench" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="what-is-this-workbench">
 <h2>What is this workbench?<a class="headerlink" href="#what-is-this-workbench" title="Permalink to this headline">¶</a></h2>
+<p>This workbench is a pure Python tool for running Python scripts with access to the information in a LAF resource.
+It has two major components:</p>
+<ol class="arabic simple">
+<li>a LAF compiler for transforming a LAF resource into binary data that loads very fast by Python</li>
+<li>an execution environment that gives Python scripts access to LAF data and optimalization features</li>
+</ol>
+<p>The selling point of the workbench is performance, both in terms of speed and memory usage.
+The second goal is to make it really easy for users to write analytic tasks straightforwardly in terms of LAF concepts
+without bothering about performance.</p>
+<p>The typical workflow is:</p>
+<ol class="arabic simple">
+<li>install a LAF resource somewhere on the filesystem. A LAF resource is a directory with a primary data file, annotation files and header files.</li>
+<li>install the LAF workbench package somewhere on a computing system.</li>
+<li>configure a calling script with the locations of the LAF directory and a work/results directory</li>
+<li>write your own script, and put it where the workbench can see it</li>
+<li>run the workbench by invoking the calling script</li>
+</ol>
+<p>The first time the workbench is used, the LAF resource will be compiled. This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
+All subsequent times the compiled data will be loaded directly, which takes, in the same setting, 5 to 10 seconds.</p>
+<p>After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold.</p>
 </div>
 <div class="section" id="how-to-use-the-workbench">
 <h2>How to use the workbench?<a class="headerlink" href="#how-to-use-the-workbench" title="Permalink to this headline">¶</a></h2>
+<p>Here are detailed instructions for installing, configuring and using the workbench.</p>
+<div class="section" id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 <div class="section" id="designed-for-performance">
 <h2>Designed for Performance<a class="headerlink" href="#designed-for-performance" title="Permalink to this headline">¶</a></h2>
@@ -80,7 +104,10 @@ In fact, performance has been the most important design criterion of all.</p>
   <ul>
 <li><a class="reference internal" href="#">LAF workbench</a><ul>
 <li><a class="reference internal" href="#what-is-this-workbench">What is this workbench?</a></li>
-<li><a class="reference internal" href="#how-to-use-the-workbench">How to use the workbench?</a></li>
+<li><a class="reference internal" href="#how-to-use-the-workbench">How to use the workbench?</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#designed-for-performance">Designed for Performance</a></li>
 <li><a class="reference internal" href="#graf-feature-coverage">GrAF feature coverage</a></li>
 </ul>

@@ -8,10 +8,9 @@ Contents:
 
 	overview
 	workbench
+	taskwriting
 	source/graf
 	source/modules
-
-
 
 Indices and tables
 ==================

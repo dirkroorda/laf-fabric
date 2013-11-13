@@ -138,7 +138,35 @@ If you use the <tt class="docutils literal"><span class="pre">assemble</span></t
 <p>The workbench will call the function <tt class="docutils literal"><span class="pre">task(object)</span></tt> in your task script, and the thing that is passed to it as <tt class="docutils literal"><span class="pre">object</span></tt> is an object of class <tt class="docutils literal"><span class="pre">GrafTask</span></tt> (see <a class="reference internal" href="source/graf.html#module-graf.task" title="graf.task"><tt class="xref py py-class docutils literal"><span class="pre">graf.task</span></tt></a>). By using this object, you have to access all of its methods.</p>
 <p>In order to write an efficient task, it is convenient to import the names of the most important methods as <em>local variables</em> of the <tt class="docutils literal"><span class="pre">task</span></tt> function. The lookup of names in Python is fastest for local names. And it makes the code much cleaner.</p>
 <p>The method <tt class="docutils literal"><span class="pre">get_mappings</span></tt> delivers the methods, and it is up to you to give them names. It is recommended to stick to the names provided here in this example. Here is a short description of the corresponding methods.</p>
-<p><tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt></p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt></dt>
+<dd>Feature value lookup functions. They need a node or edge, then an annotation label, then a feature name, and then they return the value. All arguments must be given as integers, the integers to which nodes and labels and names have been mapped during compiling. (There are ways to get those numbers). The difference between <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt> is that <tt class="docutils literal"><span class="pre">Fi</span></tt> returns the internal number corresponding to the value, and <tt class="docutils literal"><span class="pre">Fr</span></tt> the original string value as encountered in the original LAF resource. Use <tt class="docutils literal"><span class="pre">Fi</span></tt> when the value is needed in other parts of your script, use <tt class="docutils literal"><span class="pre">Fr</span></tt> when you need to output values.</dd>
+<dt><tt class="docutils literal"><span class="pre">Li</span></tt> and <tt class="docutils literal"><span class="pre">Lr</span></tt></dt>
+<dd>Convert between annotation labels as string values found in the original LAF and the integers they have been mapped to during compilation. <tt class="docutils literal"><span class="pre">Li</span></tt> yields integers from string representations, <tt class="docutils literal"><span class="pre">Lr</span></tt> yields representations (strings) from internal integers.</dd>
+<dt><tt class="docutils literal"><span class="pre">Ni</span></tt> and <tt class="docutils literal"><span class="pre">Nr</span></tt></dt>
+<dd>Same pattern as above, but now for feature names.</dd>
+<dt><tt class="docutils literal"><span class="pre">Vi</span></tt> and <tt class="docutils literal"><span class="pre">Vr</span></tt></dt>
+<dd>Same pattern as above, but now for feature values.</dd>
+</dl>
+<p><tt class="docutils literal"><span class="pre">NN</span></tt> and <tt class="docutils literal"><span class="pre">NNFV</span></tt> are <em>iterators</em> that yield a new node everytime they are called. They yield the nodes in so-called <em>resource</em> order, which will be explained below. The difference between <tt class="docutils literal"><span class="pre">NN</span></tt> and <tt class="docutils literal"><span class="pre">NNFV</span></tt> is that <tt class="docutils literal"><span class="pre">NN</span></tt> iterates over absolutely all nodes, and <tt class="docutils literal"><span class="pre">NNFV</span></tt> only yields node that have a certain value for a certain feature. See <a class="reference internal" href="source/graf.html#module-graf.task_base" title="graf.task_base"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, methods <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node" title="graf.task_base.GrafTaskBase.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a> and <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node_with_fval" title="graf.task_base.GrafTaskBase.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</p>
+</div>
+<div class="section" id="output">
+<h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>You can create an output filehandle, open for writing, by calling the method <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.add_result" title="graf.task_base.GrafTaskBase.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a> of the <a class="reference internal" href="source/graf.html#module-graf.task_base" title="graf.task_base"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a> class and assigning the result to a variable, say <tt class="docutils literal"><span class="pre">out</span></tt>.  From then on you can write output simply by saying:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.</p>
+</div>
+<div class="section" id="node-order">
+<h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
+<p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em> which are stretches of primary data, and the primary data is totally ordered.
+The order we use in the workbench is defined as follows.</p>
+<p>Suppose we compare node <em>A</em> and node <em>B</em>. Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
+<p>Then region <em>A</em> comes before region <em>B</em> if and only if <em>Amin</em> &lt; <em>Bmin</em> or <em>Amin</em> = <em>Bmin</em> and <em>Amax</em> &gt; <em>Bmax</em>.</p>
+<p>In other words: if <em>A</em> starts before <em>B</em>, then <em>A</em> becomes before <em>B</em>. If <em>A</em> and <em>B</em> start at the same point, the one that ends last, counts as the earlier of the two.</p>
+<p>If neither <em>A</em> &lt; <em>B</em> nor <em>B</em> &lt; <em>A</em> then the order is not specified. The workbench will select an arbitrary but consistent order between thoses nodes. The only way this can happen is when <em>A</em> and <em>B</em> start and end at the same point. Between those points they might be very different.</p>
+<p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding, the order specifies a walk through the nodes were enclosing nodes come first, and embedded children come in the order dictated by the primary data.</p>
 </div>
 </div>
 
@@ -155,6 +183,8 @@ If you use the <tt class="docutils literal"><span class="pre">assemble</span></t
 <li><a class="reference internal" href="#a-leading-example">A leading example</a></li>
 <li><a class="reference internal" href="#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li><a class="reference internal" href="#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
+<li><a class="reference internal" href="#output">Output</a></li>
+<li><a class="reference internal" href="#node-order">Node order</a></li>
 </ul>
 </li>
 </ul>

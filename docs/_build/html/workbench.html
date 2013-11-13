@@ -75,7 +75,7 @@ without bothering about performance.</p>
 </ol>
 <p>The first time the workbench is used, the LAF resource will be compiled. This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
 All subsequent times the compiled data will be loaded directly, which takes, in the same setting, 5 to 10 seconds.</p>
-<p>After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold.</p>
+<p>After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold. There are several <em>optimization flavours</em>, but the one that builds indexes is the only one that actually manages to increase the performance.</p>
 </div>
 <div class="section" id="how-to-use-the-workbench">
 <h2>How to use the workbench?<a class="headerlink" href="#how-to-use-the-workbench" title="Permalink to this headline">¶</a></h2>
@@ -111,6 +111,33 @@ This header file has references to all files that make up the resource. You migh
 </div>
 <div class="section" id="usage">
 <h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>The workbench is a Python program that is invoked from the command line. It loads data, runs a task script, and then exits. Between invocations the workbench is not loaded in memory and does not eat CPU cycles.</p>
+<p>For every single task execution you invoke the workbench by its calling script <em>laf-fabric.py</em>, supplying parameters for selecting the LAF source, the task and the optimization flavour. And there are miscellaneous options, of course.</p>
+<p>Go to the directory where <em>laf-fabric.py</em> resides:</p>
+<div class="highlight-python"><pre>cd &lt;path_to_dir_of_laf-fabric.py&gt;</pre>
+</div>
+<p>Then issue the following command, where <tt class="docutils literal"><span class="pre">«string»</span></tt> stands for variable text that you should provide, and material within <tt class="docutils literal"><span class="pre">[</span> <span class="pre">]</span></tt> is optional:</p>
+<div class="highlight-python"><pre>python laf-fabric.py --source=«source» --optim=«flavour» --task=«task» [--force-compile] [--force-index]</pre>
+</div>
+<p>Explanation</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">«source»</span></tt></dt>
+<dd>the key for the GrAF header file that you use to point to your LAF resource</dd>
+<dt><tt class="docutils literal"><span class="pre">«flavour»</span></tt></dt>
+<dd><p class="first">the flavour of the optimization that you want to apply. Choices are:
+<tt class="docutils literal"><span class="pre">plain</span></tt></p>
+<blockquote>
+<div>no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.</div></blockquote>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">assemble</span></tt></dt>
+<dd>read the feature declarations of the task at hand, and ensure that indexes exist for those features. Create and save them if they do not exist, load them when they do exist.</dd>
+<dt><tt class="docutils literal"><span class="pre">assemble-all</span></tt></dt>
+<dd>create all possible indexes. This takes a few minutes, but takes a fair amount of space, both on disk and in memory. At present there is no provision to save the index. It is recommended to use <tt class="docutils literal"><span class="pre">assemble-all</span></tt>. The index is shared between tasks on the same «source», so the indexes will be built gradually on demand and not exceed what is really needed. After a while there will be little need for new tasks to create new indexes.</dd>
+<dt><tt class="docutils literal"><span class="pre">memo</span></tt></dt>
+<dd>feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible. Otherwise the feature value will be looked up and stored in the cache. It turns out not to be very efficient, because in many tasks feature values are only needed once. So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space.</dd>
+</dl>
+</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="designed-for-performance">

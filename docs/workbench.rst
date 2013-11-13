@@ -101,11 +101,33 @@ Explanation
 ``--force-index``
 	Only relevant for the ``assemble`` flavour. If indexes are outdated without the system detecting it, you can force re-indexing by giving this flag.
 
-
 Designed for Performance
 ------------------------
 Since there is a generic LAF tool for smaller resources, this tool has been designed with performance in mind. 
-In fact, performance has been the most important design criterion of all. In this section the decision and particulars are listed.
+In fact, performance has been the most important design criterion of all. In this section the decision and particulars are listed. There are also a few simplifications involved, see the section of *GrAF feature coverage* below.
+
+There are several ideas involved in compiling a LAF resource into something that is compact, fast loadable, and amenable to efficient computing.
+
+#. Replace everything by integers (nearly everything)
+#. Store relationships between integers in *arrays*, that is, Python arrays
+#. Store relationships between integers and sets of integers also in *arrays*.
+
+Explanation of these ideas
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Everything is integer**
+In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers. Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not. In the compiled version we get rid of all identifiers. Everything: regions, nodes, edges, features, feature names, feature values, annotation labels will end up in an array, and hence can be identified by its numerical index in that array. For the only things that are essentially not integers (feature names, feature values, annotation labels) we will create mapping tables.
+
+**Relationships between integers as Python arrays**
+In Python, an array is a C-like structure of memory slots of fixed size. You do not have arrays of arrays, nor arrays with mixed types. This makes array handling very efficient, especially loading data from disk and saving it to disk. Moreover, the amount of space in memory needed is like in C, without the overhead a scripting language usually adds to its data types.
+
+There is an other advantage: a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column. In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.
+
+**Relationships between integers as Python arrays**
+If we want to map numbers to sets of numbers, we need to be more tricky, because we cannot store sets of numbers as integers. What we do instead is: we build two arrays, the first array points to data records in the second array. A data record in the second array consists of a number giving the length of the record, followed by that number of integers. The method ``arrayify`` (in *model.py*) takes a list of items and turns it in a double array. 
+
+Consequences
+^^^^^^^^^^^^
+The concrete XML identifiers present in the LAF resource get lost. Whoever designs a LAF resource to be worked on by this workbench, should not rely on the values of the XML identifiers to derive implicit meanings from. I did that in initial stages, producing identifiers ``n_1, n_2, e_1, e_2`` etcetera for node 1, 2 and edge 1, 2. Don't do that!
 
 GrAF feature coverage
 ---------------------

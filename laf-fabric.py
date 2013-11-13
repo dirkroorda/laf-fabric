@@ -13,7 +13,7 @@ from graf import GrafTask
 # Optionally recompiles the source and indexes.
 # Normally, the program detects when recompilation of sources is needed anda recreation of indexes.
 
-## CONFIG
+## CONFIG START
 
 # directory structure:
 #
@@ -23,8 +23,8 @@ from graf import GrafTask
 # task => { __log_task.txt, output_file* }
 # bin_dir => { laf_file*.bin, laf_file*.txt, index*.bin }
 #
+
 # directory under which the uncompiled laf source resides and the directory with compiled laf resources.
-# corresponding to --source=name reside as sub-directories
 data_root = '/Users/dirk/Scratch/shebanq/results'
 
 # subdirectory of root where the uncompiled laf resource is found 
@@ -32,6 +32,17 @@ laf_source = 'laf'
 
 #subdirectory of root where the compiled laf resource is found
 compiled_source = 'db'
+
+# sources are subsets of the given laf resource. 
+# A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations
+# that are present in the LAF resource.
+source_choices = {
+    "tiny": 'bhs3.txt-tiny.hdr',
+    "test": 'bhs3.txt-bhstext.hdr',
+    "total": 'bhs3.txt.hdr',
+}
+
+## CONFIG END
 
 # subdirectory of specific tasks where the compiled data is found
 bin_dir = 'bin'
@@ -44,15 +55,6 @@ cur_dir = os.getcwd()
 
 task_dir = 'tasks'
 task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("tasks/*.py")]
-
-# sources are subsets of the given laf resource. 
-# A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations
-# that are present in the LAF resource.
-source_choices = {
-    "tiny": 'bhs3.txt-tiny.hdr',
-    "test": 'bhs3.txt-bhstext.hdr',
-    "total": 'bhs3.txt.hdr',
-}
 
 # The action of feature lookup for nodes and edges is costly, because of the compact nature of the compiled data.
 # So we study means of improving the efficiency of feature lookups.

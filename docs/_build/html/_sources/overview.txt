@@ -21,9 +21,9 @@ that can read generic GrAF resources.
 It exposes an API to work with the graph and annotations of such resources.
 However, when feeding it a resource with 430 k words and 2 GB of annotation material, the performance is such that the graph does not fit into memory of a laptop. Clearly, the tool has been defined for bunches of smaller GrAF documents, and not for a single documents of 500 k words and GBs of annotation material.
 
-This tool
----------
-This tool seeks to remedy that situation. Its aim is to provide a framework on top of which users can write small Python scripts that perform analytic tasks on big GrAF resources. It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.
+This workbench
+--------------
+The present workbench seeks to remedy that situation. Its aim is to provide a framework on top of which users can write small Python scripts that perform analytic tasks on big GrAF resources. It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.
 
 Limitations
 ^^^^^^^^^^^

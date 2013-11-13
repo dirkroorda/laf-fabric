@@ -61,7 +61,7 @@ The things to change here are:
 Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*. The workbench needs to look at a GrAF header file.
 This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The ``source_choices`` dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option ``--source=key`` to select the header file that you want to point the workbench to.
 
-Now you are set to run your tasks. You might want to run an example task from the examples in the *tasks* directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the *tasks* directory.
+Now you are set to run your tasks. You might want to run an example task from the examples in the *tasks* directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the *tasks* directory. See :doc:`Writing Tasks <taskwriting>`.
 
 Usage
 ^^^^^

@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="LAF-Fabric 0.1 documentation" href="index.html" />
-    <link rel="next" title="graf package" href="source/graf.html" />
+    <link rel="next" title="Writing Tasks" href="taskwriting.html" />
     <link rel="prev" title="LAF/GrAF and data analysis" href="overview.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="source/graf.html" title="graf package"
+          <a href="taskwriting.html" title="Writing Tasks"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="overview.html" title="LAF/GrAF and data analysis"
@@ -107,7 +107,7 @@ All subsequent times the compiled data will be loaded directly, which takes, in 
 </dl>
 <p>Normally, a LAF resource has a <em>LAF-header file</em> and a <em>primary data header file</em>, aka. <em>the GrAF header file</em>. The workbench needs to look at a GrAF header file.
 This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The <tt class="docutils literal"><span class="pre">source_choices</span></tt> dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option <tt class="docutils literal"><span class="pre">--source=key</span></tt> to select the header file that you want to point the workbench to.</p>
-<p>Now you are set to run your tasks. You might want to run an example task from the examples in the <em>tasks</em> directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the <em>tasks</em> directory.</p>
+<p>Now you are set to run your tasks. You might want to run an example task from the examples in the <em>tasks</em> directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the <em>tasks</em> directory. See <a class="reference internal" href="taskwriting.html"><em>Writing Tasks</em></a>.</p>
 </div>
 <div class="section" id="usage">
 <h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
@@ -233,8 +233,8 @@ So in order to retrieve a feature value, one must specify an annotation label, a
   <p class="topless"><a href="overview.html"
                         title="previous chapter">LAF/GrAF and data analysis</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="source/graf.html"
-                        title="next chapter">graf package</a></p>
+  <p class="topless"><a href="taskwriting.html"
+                        title="next chapter">Writing Tasks</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/workbench.txt"
@@ -267,7 +267,7 @@ So in order to retrieve a feature value, one must specify an annotation label, a
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="source/graf.html" title="graf package"
+          <a href="taskwriting.html" title="Writing Tasks"
              >next</a> |</li>
         <li class="right" >
           <a href="overview.html" title="LAF/GrAF and data analysis"

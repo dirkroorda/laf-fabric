@@ -24,7 +24,7 @@ The typical workflow is:
 The first time the workbench is used, the LAF resource will be compiled. This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
 All subsequent times the compiled data will be loaded directly, which takes, in the same setting, 5 to 10 seconds.
 
-After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold.
+After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold. There are several *optimization flavours*, but the one that builds indexes is the only one that actually manages to increase the performance.
 
 How to use the workbench?
 -------------------------
@@ -65,6 +65,32 @@ Now you are set to run your tasks. You might want to run an example task from th
 
 Usage
 ^^^^^
+The workbench is a Python program that is invoked from the command line. It loads data, runs a task script, and then exits. Between invocations the workbench is not loaded in memory and does not eat CPU cycles.
+
+For every single task execution you invoke the workbench by its calling script *laf-fabric.py*, supplying parameters for selecting the LAF source, the task and the optimization flavour. And there are miscellaneous options, of course. 
+
+Go to the directory where *laf-fabric.py* resides::
+
+	cd <path_to_dir_of_laf-fabric.py>
+
+Then issue the following command, where ``«string»`` stands for variable text that you should provide, and material within ``[ ]`` is optional::
+
+	python laf-fabric.py --source=«source» --optim=«flavour» --task=«task» [--force-compile] [--force-index]
+
+Explanation
+
+``«source»``
+	the key for the GrAF header file that you use to point to your LAF resource
+``«flavour»``
+	the flavour of the optimization that you want to apply. Choices are:
+	``plain``
+		no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.
+	``assemble``
+		read the feature declarations of the task at hand, and ensure that indexes exist for those features. Create and save them if they do not exist, load them when they do exist.
+	``assemble-all``
+		create all possible indexes. This takes a few minutes, but takes a fair amount of space, both on disk and in memory. At present there is no provision to save the index. It is recommended to use ``assemble-all``. The index is shared between tasks on the same «source», so the indexes will be built gradually on demand and not exceed what is really needed. After a while there will be little need for new tasks to create new indexes.
+	``memo``
+		feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible. Otherwise the feature value will be looked up and stored in the cache. It turns out not to be very efficient, because in many tasks feature values are only needed once. So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space. 
 
 Designed for Performance
 ------------------------

@@ -12,6 +12,7 @@ Contents:
 	:maxdepth: 2
 
 	overview
+	workbench
 	source/graf
 	source/modules
 

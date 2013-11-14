@@ -13,24 +13,31 @@ from graf import GrafTask
 # Optionally recompiles the source and indexes.
 # Normally, the program detects when recompilation of sources is needed anda recreation of indexes.
 
+# directory structure of the data (not of the package!):
+#
+# data_root/laf_source
+# data_root/compiled_source
+# data_root/compiled_source/specific_source1
+# data_root/compiled_source/specific_source1/bin_dir
+# data_root/compiled_source/specific_source1/bin_dir/compiled_laf_file*.bin
+# data_root/compiled_source/specific_source1/bin_dir/compiled_laf_file*.txt
+# data_root/compiled_source/specific_source1/bin_dir/index*.txt
+# data_root/compiled_source/specific_source1/task1
+# data_root/compiled_source/specific_source1/task1/__log_task1.txt
+# data_root/compiled_source/specific_source1/task1/__output.txt
+# data_root/compiled_source/specific_source1/task2
+# data_root/compiled_source/specific_source2
+# ...
+
 ## CONFIG START
 
-# directory structure:
-#
-# data_root => { laf_source, compiled_source }
-# compiled_source => { specific_source* }
-# specific_source => { bin_dir, task* }
-# task => { __log_task.txt, output_file* }
-# bin_dir => { laf_file*.bin, laf_file*.txt, index*.bin }
-#
-
-# directory under which the uncompiled laf source resides and the directory with compiled laf resources.
+# working directory: contains subdirectories for (1) the LAF data (2) the task results
 data_root = '/Users/dirk/Scratch/shebanq/results'
 
-# subdirectory of root where the uncompiled laf resource is found 
+# subdirectory for the LAF data
 laf_source = 'laf'
 
-#subdirectory of root where the compiled laf resource is found
+# subdirectory for task results
 compiled_source = 'db'
 
 # sources are subsets of the given laf resource. 

@@ -32,33 +32,54 @@ Here are detailed instructions for installing, configuring and using the workben
 
 Installation
 ^^^^^^^^^^^^
-This package is called *graf* and is a pure Python package. A recommended way of installing it is to download *graf-version.tar.gz* from the distribution directory on  `Github <https://github.com/dirkroorda/laf-fabric/tree/master/dist>`_ and unpack it in a directory of your choice. You get a directory with documentation, the package *graf*, a calling script *laf-fabric.py* and a directory *tasks* with example tasks. Either you run *setup.py* to install this package in your local Python tree, or you leave the package where you unpacked it. Here are the directions if you do the latter.
+This package is called *graf* and is a Python package without extension modules. I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation. You can just clone it fron github and work with it right away::
+
+	cd «directory of your choice»
+	git clone https://github.com/dirkroorda/laf-fabric
+
+You get a directory ``laf-fabric`` with the following inside:
+
+* ``graf``: the workbench itself, a Python package
+* ``laf-fabric.py``: a script to call the workbench
+* ``tasks``: a directory with example tasks.
+
+Before running the workbench, the calling script has to be configured.
 
 Configuration
 ^^^^^^^^^^^^^
-The calling script is *laf-fabric.py*. In it is a configuration section between::
+The calling script is ``laf-fabric.py``.
+In it is a configuration section::
 
 	## CONFIG START
 
-and::
+	# working directory: contains subdirectories for (1) the LAF data (2) the task results
+	data_root = '/Users/dirk/Scratch/shebanq/results'
 
-	## CONFIG END.
+	# subdirectory for the LAF data
+	laf_source = 'laf'
+
+	# subdirectory for task results
+	compiled_source = 'db'
+
+	# sources are subsets of the given laf resource. 
+	# A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations
+	# that are present in the LAF resource.
+	source_choices = {
+    	"tiny": 'bhs3.txt-tiny.hdr',
+    	"test": 'bhs3.txt-bhstext.hdr',
+    	"total": 'bhs3.txt.hdr',
+	}
+
+	## CONFIG END
 
 The things to change here are:
 
-``data_root``
-	Path to the directory containing the LAF resource. 
+* ``data_root``: point to the folder containing your LAF directory.
+* ``laf_source``: change into the directory name of your LAF directory.
+* ``compiled source``: this directory will be created.
+* ``source_choices``: read on ...
 
-``laf_source``
-	The directory name of the LAF resource.
-
-``compiled source``
-	The directory name of the compiled resource. This directory will be created next to the ``laf_source`` directory.
-
-``source_choices``
-	A dictionaries with abbreviations for the names of the header files within the LAF resource that the workbench can refer to.
-
-Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*. The workbench needs to look at a GrAF header file.
+Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*. The workbench needs to look at a *GrAF header file*.
 This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The ``source_choices`` dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option ``--source=key`` to select the header file that you want to point the workbench to.
 
 Now you are set to run your tasks. You might want to run an example task from the examples in the *tasks* directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the *tasks* directory. See :doc:`Writing Tasks <taskwriting>`.

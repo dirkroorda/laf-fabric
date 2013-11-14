@@ -82,30 +82,53 @@ All subsequent times the compiled data will be loaded directly, which takes, in 
 <p>Here are detailed instructions for installing, configuring and using the workbench.</p>
 <div class="section" id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
-<p>This package is called <em>graf</em> and is a pure Python package. A recommended way of installing it is to download <em>graf-version.tar.gz</em> from the distribution directory on  <a class="reference external" href="https://github.com/dirkroorda/laf-fabric/tree/master/dist">Github</a> and unpack it in a directory of your choice. You get a directory with documentation, the package <em>graf</em>, a calling script <em>laf-fabric.py</em> and a directory <em>tasks</em> with example tasks. Either you run <em>setup.py</em> to install this package in your local Python tree, or you leave the package where you unpacked it. Here are the directions if you do the latter.</p>
+<p>This package is called <em>graf</em> and is a Python package without extension modules. I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation. You can just clone it fron github and work with it right away:</p>
+<div class="highlight-python"><pre>cd «directory of your choice»
+git clone https://github.com/dirkroorda/laf-fabric</pre>
+</div>
+<p>You get a directory <tt class="docutils literal"><span class="pre">laf-fabric</span></tt> with the following inside:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">graf</span></tt>: the workbench itself, a Python package</li>
+<li><tt class="docutils literal"><span class="pre">laf-fabric.py</span></tt>: a script to call the workbench</li>
+<li><tt class="docutils literal"><span class="pre">tasks</span></tt>: a directory with example tasks.</li>
+</ul>
+<p>Before running the workbench, the calling script has to be configured.</p>
 </div>
 <div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
-<p>The calling script is <em>laf-fabric.py</em>. In it is a configuration section between:</p>
+<p>The calling script is <tt class="docutils literal"><span class="pre">laf-fabric.py</span></tt>.
+In it is a configuration section:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c">## CONFIG START</span>
-</pre></div>
-</div>
-<p>and:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">## CONFIG END.</span>
+
+<span class="c"># working directory: contains subdirectories for (1) the LAF data (2) the task results</span>
+<span class="n">data_root</span> <span class="o">=</span> <span class="s">&#39;/Users/dirk/Scratch/shebanq/results&#39;</span>
+
+<span class="c"># subdirectory for the LAF data</span>
+<span class="n">laf_source</span> <span class="o">=</span> <span class="s">&#39;laf&#39;</span>
+
+<span class="c"># subdirectory for task results</span>
+<span class="n">compiled_source</span> <span class="o">=</span> <span class="s">&#39;db&#39;</span>
+
+<span class="c"># sources are subsets of the given laf resource.</span>
+<span class="c"># A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations</span>
+<span class="c"># that are present in the LAF resource.</span>
+<span class="n">source_choices</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s">&quot;tiny&quot;</span><span class="p">:</span> <span class="s">&#39;bhs3.txt-tiny.hdr&#39;</span><span class="p">,</span>
+<span class="s">&quot;test&quot;</span><span class="p">:</span> <span class="s">&#39;bhs3.txt-bhstext.hdr&#39;</span><span class="p">,</span>
+<span class="s">&quot;total&quot;</span><span class="p">:</span> <span class="s">&#39;bhs3.txt.hdr&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c">## CONFIG END</span>
 </pre></div>
 </div>
 <p>The things to change here are:</p>
-<dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">data_root</span></tt></dt>
-<dd>Path to the directory containing the LAF resource.</dd>
-<dt><tt class="docutils literal"><span class="pre">laf_source</span></tt></dt>
-<dd>The directory name of the LAF resource.</dd>
-<dt><tt class="docutils literal"><span class="pre">compiled</span> <span class="pre">source</span></tt></dt>
-<dd>The directory name of the compiled resource. This directory will be created next to the <tt class="docutils literal"><span class="pre">laf_source</span></tt> directory.</dd>
-<dt><tt class="docutils literal"><span class="pre">source_choices</span></tt></dt>
-<dd>A dictionaries with abbreviations for the names of the header files within the LAF resource that the workbench can refer to.</dd>
-</dl>
-<p>Normally, a LAF resource has a <em>LAF-header file</em> and a <em>primary data header file</em>, aka. <em>the GrAF header file</em>. The workbench needs to look at a GrAF header file.
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">data_root</span></tt>: point to the folder containing your LAF directory.</li>
+<li><tt class="docutils literal"><span class="pre">laf_source</span></tt>: change into the directory name of your LAF directory.</li>
+<li><tt class="docutils literal"><span class="pre">compiled</span> <span class="pre">source</span></tt>: this directory will be created.</li>
+<li><tt class="docutils literal"><span class="pre">source_choices</span></tt>: read on ...</li>
+</ul>
+<p>Normally, a LAF resource has a <em>LAF-header file</em> and a <em>primary data header file</em>, aka. <em>the GrAF header file</em>. The workbench needs to look at a <em>GrAF header file</em>.
 This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The <tt class="docutils literal"><span class="pre">source_choices</span></tt> dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option <tt class="docutils literal"><span class="pre">--source=key</span></tt> to select the header file that you want to point the workbench to.</p>
 <p>Now you are set to run your tasks. You might want to run an example task from the examples in the <em>tasks</em> directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the <em>tasks</em> directory. See <a class="reference internal" href="taskwriting.html"><em>Writing Tasks</em></a>.</p>
 </div>

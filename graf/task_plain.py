@@ -29,7 +29,6 @@ class GrafTaskPlain(GrafTaskBase):
         If a node does not carry the specified feature, the method returns ``None``.
 
         .. caution:: Multiple features with the same label and name on the same node.
-
             We consider this a design error in the LAF resource. You should not add features with the same labels and names as existing features.
             In full LAF this can be solved by using annotation spaces, which we have not implemented. But even then, had we implemented it, then the
             situation could arise that we have multiple features with the same annotation space and label and the same name. The that would be a design

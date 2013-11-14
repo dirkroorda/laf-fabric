@@ -105,7 +105,7 @@ The method ``get_mappings`` delivers the methods, and it is up to you to give th
 ``Vi`` and ``Vr``
     Same pattern as above, but now for feature values.
 
-``NN`` and ``NNFV`` are *iterators* that yield a new node everytime they are called. They yield the nodes in so-called *resource* order, which will be explained below. The difference between ``NN`` and ``NNFV`` is that ``NN`` iterates over absolutely all nodes, and ``NNFV`` only yields node that have a certain value for a certain feature. See :class:`GrafTaskBase <graf.task_base>`, methods :meth:`nextnode() <graf.task_base.GrafTaskBase.next_node>` and :meth:`next_node_with_fval() <graf.task_base.GrafTaskBase.next_node_with_fval>`.
+``NN`` and ``NNFV`` are *iterators* that yield a new node everytime they are called. They yield the nodes in so-called *primary data order*, which will be explained below. The difference between ``NN`` and ``NNFV`` is that ``NN`` iterates over absolutely all nodes, and ``NNFV`` only yields node that have a certain value for a certain feature. See :class:`GrafTaskBase <graf.task_base>`, methods :meth:`nextnode() <graf.task_base.GrafTaskBase.next_node>` and :meth:`next_node_with_fval() <graf.task_base.GrafTaskBase.next_node_with_fval>`.
 
 Output
 ------
@@ -115,6 +115,7 @@ You can create an output filehandle, open for writing, by calling the method :me
 
 You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.
 
+.. _node-order:
 Node order
 ----------
 There is an implicit partial order on nodes, derived from their attachment to *regions* which are stretches of primary data, and the primary data is totally ordered.

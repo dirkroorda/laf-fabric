@@ -583,20 +583,71 @@ Currently the loader does not have any need for directives. Yet they are passed 
 <dt id="graf.task_base.GrafTaskBase">
 <em class="property">class </em><tt class="descclassname">graf.task_base.</tt><tt class="descname">GrafTaskBase</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<p>Base class for task execution.</p>
+<p>All classes that implement flavours of optimizations are derived from this class.
+The methods in this class are either low level methods or methods common to all derived classes.
+The methods in the derived classes that are implemented differently are not defined in this class.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The methods <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt> must be defined in all derived classes.</p>
+<p class="last">The base class method <a class="reference internal" href="#graf.task_base.GrafTaskBase.get_mappings" title="graf.task_base.GrafTaskBase.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt></a> returns a set of code references, so that the task can give those methods
+convenient, local names. It also returns references to <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt>, despite the fact that these are only defined in
+derived classes.</p>
+</div>
+<p>Upon creation, an object is passes the locations for his source and destination data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>bin_dir</strong> (<em>str</em>) &#8211;
+piece of the file path between the <tt class="docutils literal"><span class="pre">result_dir</span></tt> and the compiled LAF binary files</li>
+<li><strong>result_dir</strong> (<em>str</em>) &#8211;
+path to the result directory</li>
+<li><strong>source</strong> (<em>str</em>) &#8211;
+name of the selected source (a <em>GrAF header file</em>), usually specified by the user on the command line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="graf.task_base.GrafTaskBase.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upon destruction, all file handles used by the task will be closed.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.add_result">
 <tt class="descname">add_result</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.add_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.add_result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Opens a file for writing and stores the handle.</p>
+<p>Every task is advised to use this method for opening files for its output.
+The file will be closed by the workbench when the task terminates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<em>str</em>) &#8211;
+name of the output file. Its location is the result directory for this task and this source.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.finish_task">
 <tt class="descname">finish_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.finish_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.finish_task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Finalizes the current task.</p>
+<p>There will be a progress message, and a directory listing of the result directory, for the convenience of the user.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.get_mappings">
 <tt class="descname">get_mappings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.get_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.get_mappings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return references to methods of <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a> or its derived classes.</p>
+<p>The caller can give convenient, local names to these methods. It also saves method lookup,
+at least, I think so.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.getitems">
@@ -616,7 +667,9 @@ Currently the loader does not have any need for directives. Yet they are passed 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.init_task">
 <tt class="descname">init_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.init_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.init_task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initializes the current task.</p>
+<p>Very trivial initialization: just issue a progress message.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.int_fname">
@@ -636,12 +689,29 @@ Currently the loader does not have any need for directives. Yet they are passed 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.loader">
 <tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.loader" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Loads the compiled LAF data.</p>
+<p>This is the standard loader.
+In order to succesfully load the arrays with compiled data, the loader has to know how many items the arrays have on before hand.
+That is why the compilation process has gathered statistics and written them to a statistics file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directives</strong> (<em>dict</em>) &#8211;
+Not yet used.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.next_node">
 <tt class="descname">next_node</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.next_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.next_node" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: iterator of all nodes in primary data order.</p>
+<p>Each call returns the next node. The iterator walks through all nodes.
+The order is implied by the attachment of nodes to the primary data, which is itself linearly ordered.
+This order is explained in the <a class="reference internal" href="../taskwriting.html#node-order"><em>guidelines for task writing</em></a>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.next_node_with_fval">
@@ -676,7 +746,18 @@ Currently the loader does not have any need for directives. Yet they are passed 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.setup">
 <tt class="descname">setup</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Set up everything that is needed to run a task.
+That is: load the compiled data, follow the directives of the chosen flavour of optimization, and initialize the task itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directives</strong> (<em>dict</em>) &#8211;
+a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.task_base.GrafTaskBase.source">
@@ -1086,20 +1167,71 @@ whether or not to force the (re)creation of indexes, only relevant for the <tt c
 <dt id="graf.GrafTaskBase">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskBase</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<p>Base class for task execution.</p>
+<p>All classes that implement flavours of optimizations are derived from this class.
+The methods in this class are either low level methods or methods common to all derived classes.
+The methods in the derived classes that are implemented differently are not defined in this class.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The methods <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt> must be defined in all derived classes.</p>
+<p class="last">The base class method <a class="reference internal" href="#graf.GrafTaskBase.get_mappings" title="graf.GrafTaskBase.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt></a> returns a set of code references, so that the task can give those methods
+convenient, local names. It also returns references to <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt>, despite the fact that these are only defined in
+derived classes.</p>
+</div>
+<p>Upon creation, an object is passes the locations for his source and destination data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>bin_dir</strong> (<em>str</em>) &#8211;
+piece of the file path between the <tt class="docutils literal"><span class="pre">result_dir</span></tt> and the compiled LAF binary files</li>
+<li><strong>result_dir</strong> (<em>str</em>) &#8211;
+path to the result directory</li>
+<li><strong>source</strong> (<em>str</em>) &#8211;
+name of the selected source (a <em>GrAF header file</em>), usually specified by the user on the command line</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="graf.GrafTaskBase.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upon destruction, all file handles used by the task will be closed.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="graf.GrafTaskBase.add_result">
 <tt class="descname">add_result</tt><big>(</big><em>file_name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.add_result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Opens a file for writing and stores the handle.</p>
+<p>Every task is advised to use this method for opening files for its output.
+The file will be closed by the workbench when the task terminates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<em>str</em>) &#8211;
+name of the output file. Its location is the result directory for this task and this source.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.finish_task">
 <tt class="descname">finish_task</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.finish_task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Finalizes the current task.</p>
+<p>There will be a progress message, and a directory listing of the result directory, for the convenience of the user.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.get_mappings">
 <tt class="descname">get_mappings</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.get_mappings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return references to methods of <a class="reference internal" href="#graf.GrafTaskBase" title="graf.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a> or its derived classes.</p>
+<p>The caller can give convenient, local names to these methods. It also saves method lookup,
+at least, I think so.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.getitems">
@@ -1119,7 +1251,9 @@ whether or not to force the (re)creation of indexes, only relevant for the <tt c
 <dl class="method">
 <dt id="graf.GrafTaskBase.init_task">
 <tt class="descname">init_task</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.init_task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initializes the current task.</p>
+<p>Very trivial initialization: just issue a progress message.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.int_fname">
@@ -1139,12 +1273,29 @@ whether or not to force the (re)creation of indexes, only relevant for the <tt c
 <dl class="method">
 <dt id="graf.GrafTaskBase.loader">
 <tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.loader" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Loads the compiled LAF data.</p>
+<p>This is the standard loader.
+In order to succesfully load the arrays with compiled data, the loader has to know how many items the arrays have on before hand.
+That is why the compilation process has gathered statistics and written them to a statistics file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directives</strong> (<em>dict</em>) &#8211;
+Not yet used.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.next_node">
 <tt class="descname">next_node</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.next_node" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: iterator of all nodes in primary data order.</p>
+<p>Each call returns the next node. The iterator walks through all nodes.
+The order is implied by the attachment of nodes to the primary data, which is itself linearly ordered.
+This order is explained in the <a class="reference internal" href="../taskwriting.html#node-order"><em>guidelines for task writing</em></a>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.next_node_with_fval">
@@ -1179,7 +1330,18 @@ whether or not to force the (re)creation of indexes, only relevant for the <tt c
 <dl class="method">
 <dt id="graf.GrafTaskBase.setup">
 <tt class="descname">setup</tt><big>(</big><em>directives</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Set up everything that is needed to run a task.
+That is: load the compiled data, follow the directives of the chosen flavour of optimization, and initialize the task itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directives</strong> (<em>dict</em>) &#8211;
+a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.GrafTaskBase.source">

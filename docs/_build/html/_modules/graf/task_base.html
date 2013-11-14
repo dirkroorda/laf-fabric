@@ -73,12 +73,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">(</span><span class="n">result_dir</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;INITIALIZATION TASK={} SOURCE={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">source</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GrafTaskBase.__del__"><a class="viewcode-back" href="../../source/graf.html#graf.task_base.GrafTaskBase.__del__">[docs]</a>    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
                 <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
+</div>
 <div class="viewcode-block" id="GrafTaskBase.setup"><a class="viewcode-back" href="../../source/graf.html#graf.task_base.GrafTaskBase.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directives</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loader</span><span class="p">(</span><span class="n">directives</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">flavour_detail</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_task</span><span class="p">()</span>

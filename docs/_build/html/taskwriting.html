@@ -148,7 +148,7 @@ If you use the <tt class="docutils literal"><span class="pre">assemble</span></t
 <dt><tt class="docutils literal"><span class="pre">Vi</span></tt> and <tt class="docutils literal"><span class="pre">Vr</span></tt></dt>
 <dd>Same pattern as above, but now for feature values.</dd>
 </dl>
-<p><tt class="docutils literal"><span class="pre">NN</span></tt> and <tt class="docutils literal"><span class="pre">NNFV</span></tt> are <em>iterators</em> that yield a new node everytime they are called. They yield the nodes in so-called <em>resource</em> order, which will be explained below. The difference between <tt class="docutils literal"><span class="pre">NN</span></tt> and <tt class="docutils literal"><span class="pre">NNFV</span></tt> is that <tt class="docutils literal"><span class="pre">NN</span></tt> iterates over absolutely all nodes, and <tt class="docutils literal"><span class="pre">NNFV</span></tt> only yields node that have a certain value for a certain feature. See <a class="reference internal" href="source/graf.html#module-graf.task_base" title="graf.task_base"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, methods <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node" title="graf.task_base.GrafTaskBase.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a> and <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node_with_fval" title="graf.task_base.GrafTaskBase.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</p>
+<p><tt class="docutils literal"><span class="pre">NN</span></tt> and <tt class="docutils literal"><span class="pre">NNFV</span></tt> are <em>iterators</em> that yield a new node everytime they are called. They yield the nodes in so-called <em>primary data order</em>, which will be explained below. The difference between <tt class="docutils literal"><span class="pre">NN</span></tt> and <tt class="docutils literal"><span class="pre">NNFV</span></tt> is that <tt class="docutils literal"><span class="pre">NN</span></tt> iterates over absolutely all nodes, and <tt class="docutils literal"><span class="pre">NNFV</span></tt> only yields node that have a certain value for a certain feature. See <a class="reference internal" href="source/graf.html#module-graf.task_base" title="graf.task_base"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, methods <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node" title="graf.task_base.GrafTaskBase.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a> and <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node_with_fval" title="graf.task_base.GrafTaskBase.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</p>
 </div>
 <div class="section" id="output">
 <h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
@@ -158,8 +158,8 @@ If you use the <tt class="docutils literal"><span class="pre">assemble</span></t
 </div>
 <p>You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.</p>
 </div>
-<div class="section" id="node-order">
-<h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h2>Node order<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em> which are stretches of primary data, and the primary data is totally ordered.
 The order we use in the workbench is defined as follows.</p>
 <p>Suppose we compare node <em>A</em> and node <em>B</em>. Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
@@ -184,7 +184,7 @@ The order we use in the workbench is defined as follows.</p>
 <li><a class="reference internal" href="#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li><a class="reference internal" href="#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
 <li><a class="reference internal" href="#output">Output</a></li>
-<li><a class="reference internal" href="#node-order">Node order</a></li>
+<li><a class="reference internal" href="#id1">Node order</a></li>
 </ul>
 </li>
 </ul>

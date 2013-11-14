@@ -1,4 +1,4 @@
-Graf
-====
+LAF-Fabric
+==========
 
-Tool for analysing LAF/GrAF resources efficiently
+Workbench for analysing LAF/GrAF resources efficiently

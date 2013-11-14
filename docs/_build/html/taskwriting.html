@@ -158,8 +158,8 @@ If you use the <tt class="docutils literal"><span class="pre">assemble</span></t
 </div>
 <p>You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.</p>
 </div>
-<div class="section" id="id1">
-<h2>Node order<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="node-order">
+<span id="id1"></span><h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
 <p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em> which are stretches of primary data, and the primary data is totally ordered.
 The order we use in the workbench is defined as follows.</p>
 <p>Suppose we compare node <em>A</em> and node <em>B</em>. Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
@@ -184,7 +184,7 @@ The order we use in the workbench is defined as follows.</p>
 <li><a class="reference internal" href="#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li><a class="reference internal" href="#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
 <li><a class="reference internal" href="#output">Output</a></li>
-<li><a class="reference internal" href="#id1">Node order</a></li>
+<li><a class="reference internal" href="#node-order">Node order</a></li>
 </ul>
 </li>
 </ul>

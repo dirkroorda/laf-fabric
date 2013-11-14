@@ -116,6 +116,7 @@ You can create an output filehandle, open for writing, by calling the method :me
 You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.
 
 .. _node-order:
+
 Node order
 ----------
 There is an implicit partial order on nodes, derived from their attachment to *regions* which are stretches of primary data, and the primary data is totally ordered.

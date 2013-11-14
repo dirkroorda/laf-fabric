@@ -35,10 +35,11 @@ class GrafTaskMemo(GrafTaskBase):
         self.cache_fr = {}
 
     def Fi(self, node, label, name):
-        '''Feature value lookup returning the value code. See the plain method :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>`.
+        '''Feature value lookup returning the value code.
+        
+        Straightforward memoization of the plain method :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>`.
 
         .. caution:: Code duplication.
-
             Part of the code for this method is identical to the code in :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>`.
             However, we do not call that method, because method calls are expensive. We just copy the code.
         ''' 
@@ -62,7 +63,9 @@ class GrafTaskMemo(GrafTaskBase):
         return the_value
 
     def Fr(self, node, label, name):
-        '''Feature value lookup returning the value string representation. See the plain method :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>`.
+        '''Feature value lookup returning the value string representation.
+        
+        See method :meth:`Fi`.
         ''' 
         cache = self.cache_fr
         if (node, label, name) in cache:

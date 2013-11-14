@@ -31,8 +31,13 @@ class GrafTaskMemo(GrafTaskBase):
         '''
         GrafTaskBase.__init__(self, bin_dir, result_dir, task, source)
         self.flavour_detail = flavour_detail
+        '''instance member storing the current flavour'''
+
         self.cache_fi = {}
+        '''instance member: the memoization cache for :meth:`Fi` calls.'''
+
         self.cache_fr = {}
+        '''instance member: the memoization cache for :meth:`Fr` calls.'''
 
     def Fi(self, node, label, name):
         '''Feature value lookup returning the value code.

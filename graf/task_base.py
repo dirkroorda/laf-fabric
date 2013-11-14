@@ -25,9 +25,13 @@ class GrafTaskBase(Graf):
     '''
 
     task = None
+    '''Holds the current task'''
     source = None
+    '''Holds the current source selection (the GrAF header file)'''
     result_dir = None
+    '''The path to the result directory'''
     result_files = []
+    '''List of handles to result files created by the task through the method :meth:`add_result`'''
 
     def __init__(self, bin_dir, result_dir, task, source):
         '''Upon creation, an object is passes the locations for his source and destination data.
@@ -137,26 +141,47 @@ class GrafTaskBase(Graf):
             yield node
 
     def next_node_with_fval(self, label, name, value):
+        '''API: iterator of all nodes in primary data order that have a given value for a given feature.
+
+        See also :meth:`next_node`.
+
+        Args:
+            label (int): the code of an annotation label
+            name (int): the code of a feature name
+            value (int): the code of a feature value
+        '''
         for node in self.data_items["node_sort"][1]:
             if value == self.Fi(node, label, name):
                 yield node
 
     def int_label(self, rep):
+        '''API: *label* conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.
+        '''
         return self.data_items["annot_label_list_rep"][1][rep]
 
     def int_fname(self, rep):
+        '''API: *feature name* conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.
+        '''
         return self.data_items["feat_name_list_rep"][1][rep]
 
     def int_fval(self, rep):
+        '''API: *feature value* conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.
+        '''
         return self.data_items["feat_value_list_rep"][1][rep]
 
     def rep_label(self, intl):
+        '''API: *label* conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.
+        '''
         return self.data_items["annot_label_list_int"][1][intl]
 
     def rep_fname(self, intl):
+        '''API: *feature name* conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.
+        '''
         return self.data_items["feat_name_list_int"][1][intl]
 
     def rep_fval(self, intl):
+        '''API: *feature value* conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.
+        '''
         return self.data_items["feat_value_list_int"][1][intl]
 
     def get_mappings(self):
@@ -180,6 +205,14 @@ class GrafTaskBase(Graf):
         )
 
     def getitems(self, data, data_items, elem):
+        '''Get related items from an arrayified data structure.
+        If a relation between integers and sets of integers has been stored as a double array by the :func:`arrayify() <graf.model.arrayify>` function, this is the way to look up the set of related integers for each integer.
+
+        Args:
+            data (array): see next
+            data_items (array): together with ``data`` the arrayified data
+            elem (int): the integer for which we want its related set of integers.
+        '''
         data_items_index = data[elem - 1]
         n_items = data_items[data_items_index]
         items = {}
@@ -188,9 +221,25 @@ class GrafTaskBase(Graf):
         return items
 
     def hasitem(self, data, data_items, elem, item):
+        '''Check whether an integer is in the set of related items with respect to an arrayified data structure (see also :meth:`getitems`).
+
+        Args:
+            data (array): see next
+            data_items (array): together with ``data`` the arrayified data
+            elem (int): the integer for which we want its related set of integers.
+            item (int): the integer whose presence in the related items set is to be tested.
+        '''
         return item in self.getitems(data, data_items, elem) 
 
     def hasitems(self, data, data_items, elem, items):
+        '''Check whether a set of integers intersects with the set of related items with respect to an arrayified data structure (see also :meth:`getitems`).
+
+        Args:
+            data (array): see next
+            data_items (array): together with ``data`` the arrayified data
+            elem (int): the integer for which we want its related set of integers.
+            items (array or list of integers): the set of integers whose presence in the related items set is to be tested.
+        '''
         these_items = self.getitems(data, data_items, elem) 
         found = None
         for item in items:

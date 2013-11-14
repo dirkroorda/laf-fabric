@@ -32,9 +32,14 @@ class GrafTask(object):
                 See :meth:`needs_compiling() <graf.compiler.GrafCompiler.needs_compiling>`.
         '''
         self.task = task
+        '''Instance member: Holds the current task'''
         self.source = source
+        '''Instance member: Holds the current source selection (the GrAF header file)'''
         self.bin_dir = bin_dir
+        '''Instance member: The path to the result directory'''
         self.result_dir = result_dir
+        '''Instance member: List of handles to result files created by the task through the method :meth:`add_result`'''
+
         grafcompiler = GrafCompiler(data_dir, data_file, bin_dir)
         grafcompiler.compiler(force=compile)
         grafcompiler = None
@@ -69,5 +74,6 @@ class GrafTask(object):
         else:
             return None
         self.processor = obj
+        '''Instance member: Holds the current task processor'''
         return obj
 

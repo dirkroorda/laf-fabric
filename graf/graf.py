@@ -17,8 +17,11 @@ class GrafException(Exception):
 class Graf(object):
     '''Base class for compiling LAF resources and running analytic tasks on them.
 
-    This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
+    This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler derived class
     and running analytic tasks is done by the GrafTask class.
+
+    The data of this class represents the compiled data on the basis of which tasks can run.
+    This data is created by a :class:`GrafCompiler <graf.compiler.GrafCompiler>` that derives from this class.
 
     '''
 
@@ -42,7 +45,7 @@ class Graf(object):
     '''location of the compiled data files corresponding to a LAF resource
     '''
     stamp = None
-    '''object that contains a timestamp and can deliver progress messages
+    '''object that contains a timestamp and can deliver progress messages with timing information
     '''
     log = None
     '''handle of a log file, open for writing
@@ -71,6 +74,7 @@ class Graf(object):
             object with data structures initialized, ready to load the compiled data from disk.
         '''
         self.stamp = Timestamp()
+        '''Instance member holding the :class:`Timestamp <graf.timestamp.Timestamp>` object.'''
 
         self.data_items = {
             "annot_label_list_rep": [False, {}],
@@ -98,8 +102,14 @@ class Graf(object):
             "feat_name": [True, array.array('H')],
             "feat_value": [True, array.array('I')],
         }
+        '''Instance member holding the compiled data in the form of a dictionary of arrays and lists.
+
+        See the :mod:`compiler <graf.compiler>` and :mod:`model <graf.model>` modules for the way the compiled data is organised.
+        '''
 
         self.bin_dir = bin_dir
+        '''Instance member holding location of the compiled data on disk (one directory contains all those files)'''
+
         try:
             if not os.path.exists(bin_dir):
                 os.makedirs(bin_dir)
@@ -111,6 +121,7 @@ class Graf(object):
         self.stat_file = "{}/{}{}.{}".format(
             bin_dir, self.STAT_NAME, self.COMPILE_TASK, self.TEXT_EXT
         )
+        '''Instance member holding name and location of the statistics file that describes the compiled data'''
 
     def __del__(self):
         '''Clean up
@@ -147,6 +158,8 @@ class Graf(object):
             log_dir, self.LOG_NAME, task, self.TEXT_EXT
         )
         self.log = codecs.open(log_file, "w", encoding = 'utf-8')
+        '''Instance member holding the open log handle'''
+
         self.stamp.connect_log(self.log)
         self.stamp.progress("LOGFILE={}".format(log_file))
 

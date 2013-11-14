@@ -52,23 +52,23 @@ class Graf(object):
     '''
 
     def __init__(self, bin_dir):
-        '''Create empty datastructures to hold the binary, compiled LAF data and create a directory for their serializations on disk.
+        '''Upon creation, empty datastructures are initialized to hold the binary, compiled LAF data and create a directory for their serializations on disk.
 
-The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
-This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.
+        The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
+        This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.
 
-Other things that happen: 
+        Other things that happen: 
 
-#. a fresh Timestamp object is created, which records the current time and can issue progress messages containing the amount
-   of time that has elapsed since this object has been created.
-#. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
-   the LAF resource has to be (re)compiled. 
+        #. a fresh Timestamp object is created, which records the current time and can issue progress messages containing the amount
+           of time that has elapsed since this object has been created.
+        #. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
+           the LAF resource has to be (re)compiled. 
 
-Args:
-    bin_dir (str): location of the compiled data on disk (one directory contains all those files)
+        Args:
+            bin_dir (str): location of the compiled data on disk (one directory contains all those files)
 
-Returns:
-    object with data structures initialized, ready to load the compiled data from disk.
+        Returns:
+            object with data structures initialized, ready to load the compiled data from disk.
         '''
         self.stamp = Timestamp()
 

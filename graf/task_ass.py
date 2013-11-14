@@ -19,6 +19,13 @@ class GrafTaskAssembler(GrafTaskBase):
     result_files = []
 
     def __init__(self, bin_dir, result_dir, task, source, flavour_detail, force):
+        '''An object is created with the parameters for the base class :class:`GrafTaskBase <graf.task_base.GrafTaskBase>`
+        plus a flavour related parameter.
+
+        Args:
+            flavour_detail (str): there are two options in this flavour: ``assemble`` and ``assemble_all``. This parameter specifies the option.
+                This value is used to look up the flavour directives in the task script's ``precompute`` dictionary.
+        '''
         GrafTaskBase.__init__(self, bin_dir, result_dir, task, source)
         self.flavour_detail = flavour_detail
         self.force = force
@@ -133,9 +140,13 @@ class GrafTaskAssembler(GrafTaskBase):
         return not os.path.exists(index_file) or os.path.getmtime(index_file) < os.path.getmtime(self.stat_file)
 
     def Fi(self, node, label, name):
+        '''Feature value lookup returning the value string representation. See the plain method :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>`.
+        ''' 
         return node_prop[label][name][node]
 
     def Fr(self, node, label, name):
+        '''Feature value lookup returning the value string representation. See the plain method :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>`.
+        ''' 
         feat_value_list_int = self.data_items["feat_value_list_int"][1]
         return feat_value_list_int[node_prop[label][name][node]]
 

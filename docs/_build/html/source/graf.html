@@ -110,7 +110,7 @@
 <p>Base class for compiling LAF resources and running analytic tasks on them.</p>
 <p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
 and running analytic tasks is done by the GrafTask class.</p>
-<p>Create empty datastructures to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
+<p>Upon creation, empty datastructures are initialized to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
 <p>The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
 This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.</p>
 <p>Other things that happen:</p>
@@ -342,10 +342,67 @@ the name of the task the log file is for</li>
 <dt id="graf.task.GrafTask">
 <em class="property">class </em><tt class="descclassname">graf.task.</tt><tt class="descname">GrafTask</tt><big>(</big><em>task=None</em>, <em>source=None</em>, <em>compile=False</em>, <em>data_dir=None</em>, <em>data_file=None</em>, <em>bin_dir=None</em>, <em>result_dir=None</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Factory class to produce task processors.</p>
+<p>A task processor must know how to compile, where the source data is and where the result is going to.
+For the actual processing of tasks, the user can choose a <em>flavour</em>, and depending on this <em>flavour</em> of optimization,
+a different class is used to process tasks.
+When an object of the chosen class is produced (by <a class="reference internal" href="#graf.task.GrafTask.processor_factory" title="graf.task.GrafTask.processor_factory"><tt class="xref py py-meth docutils literal"><span class="pre">processor_factory()</span></tt></a>), a reference to it is stored in the producing <tt class="docutils literal"><span class="pre">GrafTask</span></tt> object.</p>
+<p>Upon creation, information is passed and stored about locations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_dir</strong> (<em>str</em>) &#8211;
+the directory of the original LAF resource.</li>
+<li><strong>data_file</strong> (<em>str</em>) &#8211;
+the GrAF header file by which to consume the LAF resource.</li>
+<li><strong>bin_dir</strong> (<em>str</em>) &#8211;
+the directory where the compiled data is located, relative to the <tt class="docutils literal"><span class="pre">result_dir</span></tt>.</li>
+<li><strong>result_dir</strong> (<em>str</em>) &#8211;
+the directory where the task should operate: the compiled data is there, the results go there.</li>
+<li><strong>compile</strong> (<em>bool</em>) &#8211;
+whether to force (re)compilation of the LAF resource. Normally (re)compilation is only done if the need for it has been detected.
+See <a class="reference internal" href="#graf.compiler.GrafCompiler.needs_compiling" title="graf.compiler.GrafCompiler.needs_compiling"><tt class="xref py py-meth docutils literal"><span class="pre">needs_compiling()</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="graf.task.GrafTask.processor_factory">
 <tt class="descname">processor_factory</tt><big>(</big><em>flavour='plain'</em>, <em>flavour_detail='plain'</em>, <em>index=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.processor_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.processor_factory" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Produces a task executing object depending on the chosen <em>flavour</em>.</p>
+<p>Task execution may be optimized according to several flavours. Each flavour corresponds to a class with optimized methods.
+All flavoured classes derive from a base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, so they share a lot of methods.
+They only implement the flavoured methods. So this is <em>duck typing</em>, we have several flavoured classes with the same method signatures.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>flavour</strong> (<em>str</em>) &#8211;
+currently <tt class="docutils literal"><span class="pre">plain</span></tt>, <tt class="docutils literal"><span class="pre">memo</span></tt>, or <tt class="docutils literal"><span class="pre">assemble</span></tt>.</li>
+<li><strong>flavour_detail</strong> (<em>str</em>) &#8211;
+the same and also <tt class="docutils literal"><span class="pre">assemble_all</span></tt>, which is a variant of the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour.</li>
+<li><strong>index</strong> (<em>bool</em>) &#8211;
+whether or not to force the (re)creation of indexes, only relevant for the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>An object of a specific subclass of
+<a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, one of the following options:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#graf.task_plain.GrafTaskPlain" title="graf.task_plain.GrafTaskPlain"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskPlain</span></tt></a></li>
+<li><a class="reference internal" href="#graf.task_mem.GrafTaskMemo" title="graf.task_mem.GrafTaskMemo"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskMemo</span></tt></a></li>
+<li><a class="reference internal" href="#graf.task_ass.GrafTaskAssembler" title="graf.task_ass.GrafTaskAssembler"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskAssembler</span></tt></a></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -356,15 +413,29 @@ the name of the task the log file is for</li>
 <dt id="graf.task_ass.GrafTaskAssembler">
 <em class="property">class </em><tt class="descclassname">graf.task_ass.</tt><tt class="descname">GrafTaskAssembler</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em>, <em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
+plus a flavour related parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flavour_detail</strong> (<em>str</em>) &#8211;
+there are two options in this flavour: <tt class="docutils literal"><span class="pre">assemble</span></tt> and <tt class="docutils literal"><span class="pre">assemble_all</span></tt>. This parameter specifies the option.
+This value is used to look up the flavour directives in the task script&#8217;s <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="graf.task_ass.GrafTaskAssembler.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.Fi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_ass.GrafTaskAssembler.Fr">
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.Fr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_ass.GrafTaskAssembler.assemble">
@@ -524,15 +595,37 @@ the name of the task the log file is for</li>
 <dt id="graf.task_mem.GrafTaskMemo">
 <em class="property">class </em><tt class="descclassname">graf.task_mem.</tt><tt class="descname">GrafTaskMemo</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<p>Class with optimization flavour <tt class="docutils literal"><span class="pre">memo</span></tt> for task execution.</p>
+<p>This flavour implements memoization for feature lookup. A cache is being used to store the values for looked up features.</p>
+<p>Evaluation: so far memoization turns out to be not useful, even harmful. The reason is that a lot of features only have to be looked up once. So:</p>
+<ul class="simple">
+<li>we incur the processing overhead of the logic of caching</li>
+<li>we incur a huge memory overhead of cached results that will never be used</li>
+</ul>
+<p>Anyway, I keep the flavour alive:</p>
+<ul class="simple">
+<li>just to be able to show the negative effects</li>
+<li>for the case that some future task does benefit from it</li>
+</ul>
+<p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
+plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.task_mem.GrafTaskMemo.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.Fi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value code. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Code duplication.</p>
+<p class="last">Part of the code for this method is identical to the code in <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.
+However, we do not call that method, because method calls are expensive. We just copy the code.</p>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_mem.GrafTaskMemo.Fr">
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.Fr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -543,15 +636,76 @@ the name of the task the log file is for</li>
 <dt id="graf.task_plain.GrafTaskPlain">
 <em class="property">class </em><tt class="descclassname">graf.task_plain.</tt><tt class="descname">GrafTaskPlain</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<p>Class with optimization flavour <tt class="docutils literal"><span class="pre">plain</span></tt> for task execution.</p>
+<p>This flavour is in fact the <em>unoptimized</em> way of doing things.
+The feature lookup methods are implemented straightforwardly on the basis of the compiled data structures,
+without any precomputing or memoization.</p>
+<p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
+plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.task_plain.GrafTaskPlain.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain.Fi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value code.</p>
+<p>If a node does not carry the specified feature, the method returns <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Multiple features with the same label and name on the same node.</p>
+<p class="last">We consider this a design error in the LAF resource. You should not add features with the same labels and names as existing features.
+In full LAF this can be solved by using annotation spaces, which we have not implemented. But even then, had we implemented it, then the
+situation could arise that we have multiple features with the same annotation space and label and the same name. The that would be a design
+error.
+When the error occurs, we do not signal it, we just return the value of the first feature that we happen to see.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>int</em>) &#8211;
+the integer identifying the node.</li>
+<li><strong>label</strong> (<em>int</em>) &#8211;
+the integer specifying the annotation label of the feature in question</li>
+<li><strong>name</strong> (<em>int</em>) &#8211;
+the integer specifying the name of the feature in question</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the integer of the value that the given node carries for the specified feature, or <tt class="docutils literal"><span class="pre">None</span></tt> if the node does not carry that feature.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>It is messy work to dig out the desired value code from the compiled data.
+First we give the relevant arrays local names. Then we fetch <em>all</em> feature items that target the node in question.
+Finally we filter those according to annotation label and feature name. We return the first candidate.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_plain.GrafTaskPlain.Fr">
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain.Fr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation.</p>
+<p>It calls <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> to do the messy work of digging up the right value code out of the compiled data.
+Then it fetches the representation by looking in the list of value representations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>int</em>) &#8211;
+the integer identifying the node.</li>
+<li><strong>label</strong> (<em>int</em>) &#8211;
+the integer specifying the annotation label of the feature in question</li>
+<li><strong>name</strong> (<em>int</em>) &#8211;
+the integer specifying the name of the feature in question</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the string representation of the value that the given node carries for the specified feature</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -598,7 +752,7 @@ the name of the task the log file is for</li>
 <p>Base class for compiling LAF resources and running analytic tasks on them.</p>
 <p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
 and running analytic tasks is done by the GrafTask class.</p>
-<p>Create empty datastructures to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
+<p>Upon creation, empty datastructures are initialized to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
 <p>The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
 This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.</p>
 <p>Other things that happen:</p>
@@ -760,10 +914,67 @@ the name of the task the log file is for</li>
 <dt id="graf.GrafTask">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTask</tt><big>(</big><em>task=None</em>, <em>source=None</em>, <em>compile=False</em>, <em>data_dir=None</em>, <em>data_file=None</em>, <em>bin_dir=None</em>, <em>result_dir=None</em><big>)</big><a class="headerlink" href="#graf.GrafTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Factory class to produce task processors.</p>
+<p>A task processor must know how to compile, where the source data is and where the result is going to.
+For the actual processing of tasks, the user can choose a <em>flavour</em>, and depending on this <em>flavour</em> of optimization,
+a different class is used to process tasks.
+When an object of the chosen class is produced (by <a class="reference internal" href="#graf.GrafTask.processor_factory" title="graf.GrafTask.processor_factory"><tt class="xref py py-meth docutils literal"><span class="pre">processor_factory()</span></tt></a>), a reference to it is stored in the producing <tt class="docutils literal"><span class="pre">GrafTask</span></tt> object.</p>
+<p>Upon creation, information is passed and stored about locations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_dir</strong> (<em>str</em>) &#8211;
+the directory of the original LAF resource.</li>
+<li><strong>data_file</strong> (<em>str</em>) &#8211;
+the GrAF header file by which to consume the LAF resource.</li>
+<li><strong>bin_dir</strong> (<em>str</em>) &#8211;
+the directory where the compiled data is located, relative to the <tt class="docutils literal"><span class="pre">result_dir</span></tt>.</li>
+<li><strong>result_dir</strong> (<em>str</em>) &#8211;
+the directory where the task should operate: the compiled data is there, the results go there.</li>
+<li><strong>compile</strong> (<em>bool</em>) &#8211;
+whether to force (re)compilation of the LAF resource. Normally (re)compilation is only done if the need for it has been detected.
+See <a class="reference internal" href="#graf.compiler.GrafCompiler.needs_compiling" title="graf.compiler.GrafCompiler.needs_compiling"><tt class="xref py py-meth docutils literal"><span class="pre">needs_compiling()</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="graf.GrafTask.processor_factory">
 <tt class="descname">processor_factory</tt><big>(</big><em>flavour='plain'</em>, <em>flavour_detail='plain'</em>, <em>index=False</em><big>)</big><a class="headerlink" href="#graf.GrafTask.processor_factory" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Produces a task executing object depending on the chosen <em>flavour</em>.</p>
+<p>Task execution may be optimized according to several flavours. Each flavour corresponds to a class with optimized methods.
+All flavoured classes derive from a base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, so they share a lot of methods.
+They only implement the flavoured methods. So this is <em>duck typing</em>, we have several flavoured classes with the same method signatures.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>flavour</strong> (<em>str</em>) &#8211;
+currently <tt class="docutils literal"><span class="pre">plain</span></tt>, <tt class="docutils literal"><span class="pre">memo</span></tt>, or <tt class="docutils literal"><span class="pre">assemble</span></tt>.</li>
+<li><strong>flavour_detail</strong> (<em>str</em>) &#8211;
+the same and also <tt class="docutils literal"><span class="pre">assemble_all</span></tt>, which is a variant of the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour.</li>
+<li><strong>index</strong> (<em>bool</em>) &#8211;
+whether or not to force the (re)creation of indexes, only relevant for the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>An object of a specific subclass of
+<a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, one of the following options:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#graf.task_plain.GrafTaskPlain" title="graf.task_plain.GrafTaskPlain"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskPlain</span></tt></a></li>
+<li><a class="reference internal" href="#graf.task_mem.GrafTaskMemo" title="graf.task_mem.GrafTaskMemo"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskMemo</span></tt></a></li>
+<li><a class="reference internal" href="#graf.task_ass.GrafTaskAssembler" title="graf.task_ass.GrafTaskAssembler"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskAssembler</span></tt></a></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -882,15 +1093,76 @@ the name of the task the log file is for</li>
 <dt id="graf.GrafTaskPlain">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskPlain</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<p>Class with optimization flavour <tt class="docutils literal"><span class="pre">plain</span></tt> for task execution.</p>
+<p>This flavour is in fact the <em>unoptimized</em> way of doing things.
+The feature lookup methods are implemented straightforwardly on the basis of the compiled data structures,
+without any precomputing or memoization.</p>
+<p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
+plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.GrafTaskPlain.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain.Fi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value code.</p>
+<p>If a node does not carry the specified feature, the method returns <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Multiple features with the same label and name on the same node.</p>
+<p class="last">We consider this a design error in the LAF resource. You should not add features with the same labels and names as existing features.
+In full LAF this can be solved by using annotation spaces, which we have not implemented. But even then, had we implemented it, then the
+situation could arise that we have multiple features with the same annotation space and label and the same name. The that would be a design
+error.
+When the error occurs, we do not signal it, we just return the value of the first feature that we happen to see.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>int</em>) &#8211;
+the integer identifying the node.</li>
+<li><strong>label</strong> (<em>int</em>) &#8211;
+the integer specifying the annotation label of the feature in question</li>
+<li><strong>name</strong> (<em>int</em>) &#8211;
+the integer specifying the name of the feature in question</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the integer of the value that the given node carries for the specified feature, or <tt class="docutils literal"><span class="pre">None</span></tt> if the node does not carry that feature.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>It is messy work to dig out the desired value code from the compiled data.
+First we give the relevant arrays local names. Then we fetch <em>all</em> feature items that target the node in question.
+Finally we filter those according to annotation label and feature name. We return the first candidate.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskPlain.Fr">
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain.Fr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation.</p>
+<p>It calls <a class="reference internal" href="#graf.GrafTaskPlain.Fi" title="graf.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> to do the messy work of digging up the right value code out of the compiled data.
+Then it fetches the representation by looking in the list of value representations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>int</em>) &#8211;
+the integer identifying the node.</li>
+<li><strong>label</strong> (<em>int</em>) &#8211;
+the integer specifying the annotation label of the feature in question</li>
+<li><strong>name</strong> (<em>int</em>) &#8211;
+the integer specifying the name of the feature in question</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the string representation of the value that the given node carries for the specified feature</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -898,15 +1170,29 @@ the name of the task the log file is for</li>
 <dt id="graf.GrafTaskAssembler">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskAssembler</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em>, <em>force</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
+plus a flavour related parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flavour_detail</strong> (<em>str</em>) &#8211;
+there are two options in this flavour: <tt class="docutils literal"><span class="pre">assemble</span></tt> and <tt class="docutils literal"><span class="pre">assemble_all</span></tt>. This parameter specifies the option.
+This value is used to look up the flavour directives in the task script&#8217;s <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="graf.GrafTaskAssembler.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.Fi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskAssembler.Fr">
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.Fr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskAssembler.assemble">
@@ -949,15 +1235,37 @@ the name of the task the log file is for</li>
 <dt id="graf.GrafTaskMemo">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskMemo</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
+<p>Class with optimization flavour <tt class="docutils literal"><span class="pre">memo</span></tt> for task execution.</p>
+<p>This flavour implements memoization for feature lookup. A cache is being used to store the values for looked up features.</p>
+<p>Evaluation: so far memoization turns out to be not useful, even harmful. The reason is that a lot of features only have to be looked up once. So:</p>
+<ul class="simple">
+<li>we incur the processing overhead of the logic of caching</li>
+<li>we incur a huge memory overhead of cached results that will never be used</li>
+</ul>
+<p>Anyway, I keep the flavour alive:</p>
+<ul class="simple">
+<li>just to be able to show the negative effects</li>
+<li>for the case that some future task does benefit from it</li>
+</ul>
+<p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
+plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.GrafTaskMemo.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo.Fi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value code. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Code duplication.</p>
+<p class="last">Part of the code for this method is identical to the code in <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.
+However, we do not call that method, because method calls are expensive. We just copy the code.</p>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskMemo.Fr">
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo.Fr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Feature value lookup returning the value string representation. See the plain method <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
 
 </dd></dl>
 

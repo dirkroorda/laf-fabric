@@ -79,14 +79,17 @@ However, when feeding it a resource with 430 k words and 2 GB of annotation mate
 <h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
 <p>While the <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a> module mentioned above is capable to read generic resources, the present Graf tool is less generic.
 It does not support the full complexity of the Graf model.
-In particular, it does not support annotation spaces, it does not read dependencies, and it cannot handle feature structures in full generality, it only handles key-value pairs.</p>
+In particular, it does not support annotation spaces, it does not read dependencies, and it cannot handle feature structures in full generality, it only handles key-value pairs.
+Currently, there is very little API support for dealing with <em>edges</em> and their features.</p>
 </div>
 <div class="section" id="future-work">
 <h3>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h3>
-<p>My plans for further development are:</p>
+<p>The current workbench has proven to function well for a small set of tasks. This proves that the methodology works and that we can try more challenging tasks.
+The direction of the future work should be determined by the experiences coming out of that. That said, it is not difficult to spot immediate areas for improvement:</p>
 <ol class="arabic simple">
 <li>gain experience with the tool by adding more example tasks</li>
-<li>improve the API, add extra primitives, make it more user friendly</li>
+<li>improve the API, add extra primitives, especially for edges</li>
+<li>make the workbench more programmer friendly</li>
 <li>look out for even better performance for various tasks</li>
 <li>increase the support for more GrAF features, and to make the workbench fully compatible with GrAF/LAF</li>
 <li>merge the tool with the existing <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a>, preferably as a user selectable implementation choice</li>

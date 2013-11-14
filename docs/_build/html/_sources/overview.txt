@@ -30,13 +30,16 @@ Limitations
 While the `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_ module mentioned above is capable to read generic resources, the present Graf tool is less generic.
 It does not support the full complexity of the Graf model.
 In particular, it does not support annotation spaces, it does not read dependencies, and it cannot handle feature structures in full generality, it only handles key-value pairs.
+Currently, there is very little API support for dealing with *edges* and their features.
 
 Future work
 ^^^^^^^^^^^
-My plans for further development are:
+The current workbench has proven to function well for a small set of tasks. This proves that the methodology works and that we can try more challenging tasks.
+The direction of the future work should be determined by the experiences coming out of that. That said, it is not difficult to spot immediate areas for improvement:
 
 #. gain experience with the tool by adding more example tasks
-#. improve the API, add extra primitives, make it more user friendly
+#. improve the API, add extra primitives, especially for edges
+#. make the workbench more programmer friendly
 #. look out for even better performance for various tasks
 #. increase the support for more GrAF features, and to make the workbench fully compatible with GrAF/LAF
 #. merge the tool with the existing `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_, preferably as a user selectable implementation choice 

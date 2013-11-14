@@ -144,7 +144,7 @@ In Python, an array is a C-like structure of memory slots of fixed size. You do 
 There is an other advantage: a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column. In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.
 
 **Relationships between integers as Python arrays**
-If we want to map numbers to sets of numbers, we need to be more tricky, because we cannot store sets of numbers as integers. What we do instead is: we build two arrays, the first array points to data records in the second array. A data record in the second array consists of a number giving the length of the record, followed by that number of integers. The method ``arrayify`` (in *model.py*) takes a list of items and turns it in a double array. 
+If we want to map numbers to sets of numbers, we need to be more tricky, because we cannot store sets of numbers as integers. What we do instead is: we build two arrays, the first array points to data records in the second array. A data record in the second array consists of a number giving the length of the record, followed by that number of integers. The function :func:`arrayify() <graf.model.arrayify>` takes a list of items and turns it in a double array. 
 
 Consequences
 ^^^^^^^^^^^^

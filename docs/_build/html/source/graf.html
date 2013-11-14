@@ -63,40 +63,88 @@
 <dt id="graf.compiler.GrafCompiler">
 <em class="property">class </em><tt class="descclassname">graf.compiler.</tt><tt class="descname">GrafCompiler</tt><big>(</big><em>graf_dir</em>, <em>graf_header_file</em>, <em>bin_dir</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<p>Takes care of the compilation of LAF xml data into binary data.</p>
+<p>There are two stages in compilation:</p>
+<ul class="simple">
+<li>parsing the XML data by means of a SAX parser (a lengthy process)</li>
+<li>remodeling the parse results in really tight data structures</li>
+</ul>
+<p>Upon creation, the relevant directories are communicated.</p>
+<p>The initialization of the base class is performed, and we change working directory to the location of the LAF source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>graf_dir</strong> (<em>str</em>) &#8211;
+the directory where the LAF resource resides.</li>
+<li><strong>graf_header_file</strong> (<em>str</em>) &#8211;
+the GrAF header file from which we read which files are to be considered part of the LAF resource.</li>
+<li><strong>bin_dir</strong> (<em>str</em>) &#8211;
+the relative name of the directory where the compiled binary data is to be stored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="graf.compiler.GrafCompiler.compiler">
 <tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.compiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Manages the complete compilation process.</p>
+<p>Detects the need for compiling, responds to the <tt class="docutils literal"><span class="pre">force</span></tt> argument. Then parses, remodels and writes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>bool</em>) &#8211;
+whether to compile even if the binary data looks up to date.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.compiler.GrafCompiler.header_file">
 <tt class="descname">header_file</tt><em class="property"> = None</em><a class="headerlink" href="#graf.compiler.GrafCompiler.header_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Holds the chosen source, i.e. the GrAF header file used to draw in the LAF data.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.compiler.GrafCompiler.model">
 <tt class="descname">model</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Call the remodeler and store the remodeled data in the object.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.compiler.GrafCompiler.needs_compiling">
 <tt class="descname">needs_compiling</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.needs_compiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.needs_compiling" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Checks whether the compiled binary data is still up to date.</p>
+<p>The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.compiler.GrafCompiler.parse">
 <tt class="descname">parse</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.parse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Call the XML parser and collect the parse results.</p>
+<p>Some parse results must be remodelled afterwards.
+After remodelling some parse data can be thrown away.
+Only store data that is needed for task execution in the object.</p>
+<p>The actual parsing is done in the module <a class="reference internal" href="#module-graf.parse" title="graf.parse"><tt class="xref py py-mod docutils literal"><span class="pre">parse</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.compiler.GrafCompiler.temp_data_items">
 <tt class="descname">temp_data_items</tt><em class="property"> = {}</em><a class="headerlink" href="#graf.compiler.GrafCompiler.temp_data_items" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Holds some data delivered by the parsed that can be thrown away later. The data that we must keep is stored in the object, of course.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.compiler.GrafCompiler.write_data">
 <tt class="descname">write_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.write_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Writes compiled data to disk.</p>
+<p>Compiled data is either in array shape, and written fast with the <tt class="xref py py-meth docutils literal"><span class="pre">array.tofile()</span></tt> method, or it is
+a list of strings, in which case it is dumped with the <tt class="xref py py-meth docutils literal"><span class="pre">cPickle.dump()</span></tt> method.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -108,8 +156,10 @@
 <em class="property">class </em><tt class="descclassname">graf.graf.</tt><tt class="descname">Graf</tt><big>(</big><em>bin_dir</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Base class for compiling LAF resources and running analytic tasks on them.</p>
-<p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
+<p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler derived class
 and running analytic tasks is done by the GrafTask class.</p>
+<p>The data of this class represents the compiled data on the basis of which tasks can run.
+This data is created by a <a class="reference internal" href="#graf.compiler.GrafCompiler" title="graf.compiler.GrafCompiler"><tt class="xref py py-class docutils literal"><span class="pre">GrafCompiler</span></tt></a> that derives from this class.</p>
 <p>Upon creation, empty datastructures are initialized to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
 <p>The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
 This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.</p>
@@ -193,7 +243,14 @@ the name of the task the log file is for</li>
 <dl class="attribute">
 <dt id="graf.graf.Graf.bin_dir">
 <tt class="descname">bin_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.bin_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>location of the compiled data files corresponding to a LAF resource</p>
+<dd><p>Instance member holding location of the compiled data on disk (one directory contains all those files)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.data_items">
+<tt class="descname">data_items</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.data_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member holding the compiled data in the form of a dictionary of arrays and lists.</p>
+<p>See the <a class="reference internal" href="#module-graf.compiler" title="graf.compiler"><tt class="xref py py-mod docutils literal"><span class="pre">compiler</span></tt></a> and <a class="reference internal" href="#module-graf.model" title="graf.model"><tt class="xref py py-mod docutils literal"><span class="pre">model</span></tt></a> modules for the way the compiled data is organised.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -218,13 +275,13 @@ the name of the task the log file is for</li>
 <dl class="attribute">
 <dt id="graf.graf.Graf.stamp">
 <tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.stamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>object that contains a timestamp and can deliver progress messages</p>
+<dd><p>Instance member holding the <a class="reference internal" href="#graf.timestamp.Timestamp" title="graf.timestamp.Timestamp"><tt class="xref py py-class docutils literal"><span class="pre">Timestamp</span></tt></a> object.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="graf.graf.Graf.stat_file">
 <tt class="descname">stat_file</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.stat_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>handle of a statistics file, open for writing</p>
+<dd><p>Instance member holding name and location of the statistics file that describes the compiled data</p>
 </dd></dl>
 
 <dl class="method">
@@ -262,6 +319,27 @@ the name of the task the log file is for</li>
 <dt id="graf.parse.AnnotationHandler">
 <em class="property">class </em><tt class="descclassname">graf.parse.</tt><tt class="descname">AnnotationHandler</tt><big>(</big><em>annotation_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<p>Handlers used by SAX parsing the annotation files themselves</p>
+<p>We have to collect all elements <tt class="docutils literal"><span class="pre">region</span></tt>, <tt class="docutils literal"><span class="pre">node</span></tt> and subelement <tt class="docutils literal"><span class="pre">link</span></tt>, <tt class="docutils literal"><span class="pre">edge</span></tt>, <tt class="docutils literal"><span class="pre">a</span></tt> (annotation) and <tt class="docutils literal"><span class="pre">f</span></tt> (feature).
+From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.</p>
+<p>The parse process is robust, we are not dependent on a particular ordering or distribution of the regions, nodes, edges, annotations and features in/over the annotation files.</p>
+<p>Here is a description of the arrays we create:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">region_begin</span></tt>, <tt class="docutils literal"><span class="pre">region_end</span></tt></dt>
+<dd>Every region has an <tt class="docutils literal"><span class="pre">anchors</span></tt> attribute specifying a point or interval in the primary data. We consider a point <tt class="docutils literal"><span class="pre">i</span></tt> as the interval <tt class="docutils literal"><span class="pre">i</span> <span class="pre">..</span> <span class="pre">i</span></tt>.
+<tt class="docutils literal"><span class="pre">region_begin</span></tt> contains the start anchor of region <tt class="docutils literal"><span class="pre">i</span></tt> for each <tt class="docutils literal"><span class="pre">i</span></tt>, and <tt class="docutils literal"><span class="pre">region_end</span></tt> the end anchor.</dd>
+<dt><tt class="docutils literal"><span class="pre">edges_from</span></tt>, <tt class="docutils literal"><span class="pre">edges_to</span></tt></dt>
+<dd>Every edge goes from one node to an other. <tt class="docutils literal"><span class="pre">edges_from</span></tt> contains the from node of edge <tt class="docutils literal"><span class="pre">i</span></tt> for each <tt class="docutils literal"><span class="pre">i</span></tt>, and <tt class="docutils literal"><span class="pre">edges_end</span></tt> the to node.</dd>
+</dl>
+<p>Here is a description of the dictionaries we create:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">annot_label_list_rep</span></tt>, <tt class="docutils literal"><span class="pre">annot_label_list_int</span></tt></dt>
+<dd>Mappings from the string representations to the internal codes and vice versa, respectively, for annotation labels.</dd>
+<dt><tt class="docutils literal"><span class="pre">feat_name_list_rep</span></tt>, <tt class="docutils literal"><span class="pre">feat_name_list_int</span></tt></dt>
+<dd>Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.</dd>
+<dt><tt class="docutils literal"><span class="pre">feat_value_list_rep</span></tt>, <tt class="docutils literal"><span class="pre">feat_value_list_int</span></tt></dt>
+<dd>Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.</dd>
+</dl>
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.aid">
 <tt class="descname">aid</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.aid" title="Permalink to this definition">¶</a></dt>
@@ -308,6 +386,9 @@ the name of the task the log file is for</li>
 <dt id="graf.parse.HeaderHandler">
 <em class="property">class </em><tt class="descclassname">graf.parse.</tt><tt class="descname">HeaderHandler</tt><big>(</big><em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<p>Handlers used by SAX parsing the GrAF header file.</p>
+<p>We just collect the contents of the <tt class="docutils literal"><span class="pre">loc</span></tt> attributes of the <tt class="docutils literal"><span class="pre">annotation</span></tt> elements.
+These are the annotation files that we have to fetch and compile.</p>
 <dl class="method">
 <dt id="graf.parse.HeaderHandler.characters">
 <tt class="descname">characters</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.characters" title="Permalink to this definition">¶</a></dt>
@@ -369,6 +450,12 @@ See <a class="reference internal" href="#graf.compiler.GrafCompiler.needs_compil
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="graf.task.GrafTask.bin_dir">
+<tt class="descname">bin_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.bin_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member: The path to the result directory</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="graf.task.GrafTask.processor_factory">
 <tt class="descname">processor_factory</tt><big>(</big><em>flavour='plain'</em>, <em>flavour_detail='plain'</em>, <em>index=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.processor_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.processor_factory" title="Permalink to this definition">¶</a></dt>
@@ -402,6 +489,24 @@ whether or not to force the (re)creation of indexes, only relevant for the <tt c
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task.GrafTask.result_dir">
+<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.result_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member: List of handles to result files created by the task through the method <tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task.GrafTask.source">
+<tt class="descname">source</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member: Holds the current source selection (the GrAF header file)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task.GrafTask.task">
+<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member: Holds the current task</p>
 </dd></dl>
 
 </dd></dl>
@@ -545,6 +650,18 @@ string specifying the features selected for indexing</li>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="graf.task_ass.GrafTaskAssembler.flavour_detail">
+<tt class="descname">flavour_detail</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.flavour_detail" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance member storing the current flavour</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_ass.GrafTaskAssembler.force">
+<tt class="descname">force</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.force" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance member storing whether index building should be forced</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="graf.task_ass.GrafTaskAssembler.loader">
 <tt class="descname">loader</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.loader" title="Permalink to this definition">¶</a></dt>
@@ -558,21 +675,6 @@ string specifying the features selected for indexing</li>
 Currently the loader does not have any need for directives. Yet they are passed to it, in case the need will arise in the near future.</p>
 </div>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task_ass.GrafTaskAssembler.result_dir">
-<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.result_dir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task_ass.GrafTaskAssembler.result_files">
-<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.result_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task_ass.GrafTaskAssembler.task">
-<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -652,17 +754,73 @@ at least, I think so.</p>
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.getitems">
 <tt class="descname">getitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.getitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.getitems" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get related items from an arrayified data structure.
+If a relation between integers and sets of integers has been stored as a double array by the <a class="reference internal" href="#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> function, this is the way to look up the set of related integers for each integer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array</em>) &#8211;
+see next</li>
+<li><strong>data_items</strong> (<em>array</em>) &#8211;
+together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+<li><strong>elem</strong> (<em>int</em>) &#8211;
+the integer for which we want its related set of integers.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.hasitem">
 <tt class="descname">hasitem</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.hasitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.hasitem" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check whether an integer is in the set of related items with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task_base.GrafTaskBase.getitems" title="graf.task_base.GrafTaskBase.getitems"><tt class="xref py py-meth docutils literal"><span class="pre">getitems()</span></tt></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array</em>) &#8211;
+see next</li>
+<li><strong>data_items</strong> (<em>array</em>) &#8211;
+together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+<li><strong>elem</strong> (<em>int</em>) &#8211;
+the integer for which we want its related set of integers.</li>
+<li><strong>item</strong> (<em>int</em>) &#8211;
+the integer whose presence in the related items set is to be tested.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.hasitems">
 <tt class="descname">hasitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.hasitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.hasitems" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check whether a set of integers intersects with the set of related items with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task_base.GrafTaskBase.getitems" title="graf.task_base.GrafTaskBase.getitems"><tt class="xref py py-meth docutils literal"><span class="pre">getitems()</span></tt></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array</em>) &#8211;
+see next</li>
+<li><strong>data_items</strong> (<em>array</em>) &#8211;
+together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+<li><strong>elem</strong> (<em>int</em>) &#8211;
+the integer for which we want its related set of integers.</li>
+<li><strong>items</strong> (<em>array or list of integers</em>) &#8211;
+the set of integers whose presence in the related items set is to be tested.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.init_task">
@@ -674,17 +832,20 @@ at least, I think so.</p>
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.int_fname">
 <tt class="descname">int_fname</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.int_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.int_fname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature name</em> conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.int_fval">
 <tt class="descname">int_fval</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.int_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.int_fval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature value</em> conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.int_label">
 <tt class="descname">int_label</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.int_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.int_label" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>label</em> conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.loader">
@@ -716,32 +877,55 @@ This order is explained in the <a class="reference internal" href="../taskwritin
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.next_node_with_fval">
 <tt class="descname">next_node_with_fval</tt><big>(</big><em>label</em>, <em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.next_node_with_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.next_node_with_fval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: iterator of all nodes in primary data order that have a given value for a given feature.</p>
+<p>See also <a class="reference internal" href="#graf.task_base.GrafTaskBase.next_node" title="graf.task_base.GrafTaskBase.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label</strong> (<em>int</em>) &#8211;
+the code of an annotation label</li>
+<li><strong>name</strong> (<em>int</em>) &#8211;
+the code of a feature name</li>
+<li><strong>value</strong> (<em>int</em>) &#8211;
+the code of a feature value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.rep_fname">
 <tt class="descname">rep_fname</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.rep_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.rep_fname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature name</em> conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.rep_fval">
 <tt class="descname">rep_fval</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.rep_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.rep_fval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature value</em> conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.rep_label">
 <tt class="descname">rep_label</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task_base.html#GrafTaskBase.rep_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_base.GrafTaskBase.rep_label" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>label</em> conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.task_base.GrafTaskBase.result_dir">
 <tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.result_dir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The path to the result directory</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.task_base.GrafTaskBase.result_files">
 <tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.result_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>List of handles to result files created by the task through the method <a class="reference internal" href="#graf.task_base.GrafTaskBase.add_result" title="graf.task_base.GrafTaskBase.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.task_base.GrafTaskBase.setup">
@@ -762,12 +946,14 @@ a dictionary of information items relevant to the chosen optimization flavour. T
 <dl class="attribute">
 <dt id="graf.task_base.GrafTaskBase.source">
 <tt class="descname">source</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.source" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Holds the current source selection (the GrAF header file)</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.task_base.GrafTaskBase.task">
 <tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_base.GrafTaskBase.task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Holds the current task</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -810,6 +996,24 @@ However, we do not call that method, because method calls are expensive. We just
 <tt class="descname">Fr</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo.Fr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.Fr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Feature value lookup returning the value string representation.</p>
 <p>See method <a class="reference internal" href="#graf.task_mem.GrafTaskMemo.Fi" title="graf.task_mem.GrafTaskMemo.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_mem.GrafTaskMemo.cache_fi">
+<tt class="descname">cache_fi</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.cache_fi" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance member: the memoization cache for <a class="reference internal" href="#graf.task_mem.GrafTaskMemo.Fi" title="graf.task_mem.GrafTaskMemo.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> calls.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_mem.GrafTaskMemo.cache_fr">
+<tt class="descname">cache_fr</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.cache_fr" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance member: the memoization cache for <a class="reference internal" href="#graf.task_mem.GrafTaskMemo.Fr" title="graf.task_mem.GrafTaskMemo.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a> calls.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task_mem.GrafTaskMemo.flavour_detail">
+<tt class="descname">flavour_detail</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.flavour_detail" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance member storing the current flavour</p>
 </dd></dl>
 
 </dd></dl>
@@ -900,30 +1104,76 @@ the integer specifying the name of the feature in question</li>
 <dl class="class">
 <dt id="graf.timestamp.Timestamp">
 <em class="property">class </em><tt class="descclassname">graf.timestamp.</tt><tt class="descname">Timestamp</tt><big>(</big><em>log_file=None</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Time management.</p>
+<p>Objects remember their creation time. So they can issue statements about how much time has been elapsed.
+All timed log messages of the program should be issued through the <a class="reference internal" href="#graf.timestamp.Timestamp.progress" title="graf.timestamp.Timestamp.progress"><tt class="xref py py-meth docutils literal"><span class="pre">progress()</span></tt></a> method of this class.</p>
+<p>It is also possible to connect a logfile to these objects.
+When progress messages are issued, they are also written to the connected log file.</p>
+<p>Upon creation, retrieves the time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_file</strong> (<em>file</em>) &#8211;
+open file handle for writing. Optional. If not <tt class="docutils literal"><span class="pre">None</span></tt> stores the handle in the object&#8217;s data.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
 <dt id="graf.timestamp.Timestamp.connect_log">
 <tt class="descname">connect_log</tt><big>(</big><em>log_file</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.connect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Connects a log file to the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_file</strong> (<em>file</em>) &#8211;
+open handle for writing.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.timestamp.Timestamp.elapsed">
 <tt class="descname">elapsed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.elapsed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.timestamp.Timestamp.log">
-<tt class="descname">log</tt><em class="property"> = None</em><a class="headerlink" href="#graf.timestamp.Timestamp.log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the time elapsed since creation of the <a class="reference internal" href="#graf.timestamp.Timestamp" title="graf.timestamp.Timestamp"><tt class="xref py py-class docutils literal"><span class="pre">Timestamp</span></tt></a> object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A pretty formatted string, ready to include in a message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.timestamp.Timestamp.progress">
 <tt class="descname">progress</tt><big>(</big><em>msg</em>, <em>newline=True</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.progress" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: issues a timed progress message.</p>
+<p>The message is issued to the standard output, and, if a log file has been connected, also to the log file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> (<em>str</em>) &#8211;
+text of the message</li>
+<li><strong>newline</strong> (<em>bool</em>) &#8211;
+whether or not to add a newline. Optional. Make it <tt class="docutils literal"><span class="pre">False</span></tt> to not add a newline.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.timestamp.Timestamp.timestamp">
 <tt class="descname">timestamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.timestamp.Timestamp.timestamp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Instance member holding the time the object was created</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -935,8 +1185,10 @@ the integer specifying the name of the feature in question</li>
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">Graf</tt><big>(</big><em>bin_dir</em><big>)</big><a class="reference internal" href="../_modules/graf.html#Graf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.Graf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Base class for compiling LAF resources and running analytic tasks on them.</p>
-<p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler subclass
+<p>This class has only a rudimentary method set. Compiling a LAF resource is done by the GrafCompiler derived class
 and running analytic tasks is done by the GrafTask class.</p>
+<p>The data of this class represents the compiled data on the basis of which tasks can run.
+This data is created by a <a class="reference internal" href="#graf.compiler.GrafCompiler" title="graf.compiler.GrafCompiler"><tt class="xref py py-class docutils literal"><span class="pre">GrafCompiler</span></tt></a> that derives from this class.</p>
 <p>Upon creation, empty datastructures are initialized to hold the binary, compiled LAF data and create a directory for their serializations on disk.</p>
 <p>The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
 This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.</p>
@@ -1058,10 +1310,45 @@ the name of the task the log file is for</li>
 <dt id="graf.GrafCompiler">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafCompiler</tt><big>(</big><em>graf_dir</em>, <em>graf_header_file</em>, <em>bin_dir</em><big>)</big><a class="headerlink" href="#graf.GrafCompiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
+<p>Takes care of the compilation of LAF xml data into binary data.</p>
+<p>There are two stages in compilation:</p>
+<ul class="simple">
+<li>parsing the XML data by means of a SAX parser (a lengthy process)</li>
+<li>remodeling the parse results in really tight data structures</li>
+</ul>
+<p>Upon creation, the relevant directories are communicated.</p>
+<p>The initialization of the base class is performed, and we change working directory to the location of the LAF source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>graf_dir</strong> (<em>str</em>) &#8211;
+the directory where the LAF resource resides.</li>
+<li><strong>graf_header_file</strong> (<em>str</em>) &#8211;
+the GrAF header file from which we read which files are to be considered part of the LAF resource.</li>
+<li><strong>bin_dir</strong> (<em>str</em>) &#8211;
+the relative name of the directory where the compiled binary data is to be stored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="graf.GrafCompiler.compiler">
 <tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="headerlink" href="#graf.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Manages the complete compilation process.</p>
+<p>Detects the need for compiling, responds to the <tt class="docutils literal"><span class="pre">force</span></tt> argument. Then parses, remodels and writes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>bool</em>) &#8211;
+whether to compile even if the binary data looks up to date.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.GrafCompiler.header_file">
@@ -1071,17 +1358,25 @@ the name of the task the log file is for</li>
 <dl class="method">
 <dt id="graf.GrafCompiler.model">
 <tt class="descname">model</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Call the remodeler and store the remodeled data in the object.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafCompiler.needs_compiling">
 <tt class="descname">needs_compiling</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.needs_compiling" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Checks whether the compiled binary data is still up to date.</p>
+<p>The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafCompiler.parse">
 <tt class="descname">parse</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.parse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Call the XML parser and collect the parse results.</p>
+<p>Some parse results must be remodelled afterwards.
+After remodelling some parse data can be thrown away.
+Only store data that is needed for task execution in the object.</p>
+<p>The actual parsing is done in the module <a class="reference internal" href="#module-graf.parse" title="graf.parse"><tt class="xref py py-mod docutils literal"><span class="pre">parse</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.GrafCompiler.temp_data_items">
@@ -1091,7 +1386,10 @@ the name of the task the log file is for</li>
 <dl class="method">
 <dt id="graf.GrafCompiler.write_data">
 <tt class="descname">write_data</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.GrafCompiler.write_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Writes compiled data to disk.</p>
+<p>Compiled data is either in array shape, and written fast with the <tt class="xref py py-meth docutils literal"><span class="pre">array.tofile()</span></tt> method, or it is
+a list of strings, in which case it is dumped with the <tt class="xref py py-meth docutils literal"><span class="pre">cPickle.dump()</span></tt> method.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1236,17 +1534,73 @@ at least, I think so.</p>
 <dl class="method">
 <dt id="graf.GrafTaskBase.getitems">
 <tt class="descname">getitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.getitems" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get related items from an arrayified data structure.
+If a relation between integers and sets of integers has been stored as a double array by the <a class="reference internal" href="#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> function, this is the way to look up the set of related integers for each integer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array</em>) &#8211;
+see next</li>
+<li><strong>data_items</strong> (<em>array</em>) &#8211;
+together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+<li><strong>elem</strong> (<em>int</em>) &#8211;
+the integer for which we want its related set of integers.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.hasitem">
 <tt class="descname">hasitem</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.hasitem" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check whether an integer is in the set of related items with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.GrafTaskBase.getitems" title="graf.GrafTaskBase.getitems"><tt class="xref py py-meth docutils literal"><span class="pre">getitems()</span></tt></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array</em>) &#8211;
+see next</li>
+<li><strong>data_items</strong> (<em>array</em>) &#8211;
+together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+<li><strong>elem</strong> (<em>int</em>) &#8211;
+the integer for which we want its related set of integers.</li>
+<li><strong>item</strong> (<em>int</em>) &#8211;
+the integer whose presence in the related items set is to be tested.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.hasitems">
 <tt class="descname">hasitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.hasitems" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check whether a set of integers intersects with the set of related items with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.GrafTaskBase.getitems" title="graf.GrafTaskBase.getitems"><tt class="xref py py-meth docutils literal"><span class="pre">getitems()</span></tt></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>array</em>) &#8211;
+see next</li>
+<li><strong>data_items</strong> (<em>array</em>) &#8211;
+together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+<li><strong>elem</strong> (<em>int</em>) &#8211;
+the integer for which we want its related set of integers.</li>
+<li><strong>items</strong> (<em>array or list of integers</em>) &#8211;
+the set of integers whose presence in the related items set is to be tested.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.init_task">
@@ -1258,17 +1612,20 @@ at least, I think so.</p>
 <dl class="method">
 <dt id="graf.GrafTaskBase.int_fname">
 <tt class="descname">int_fname</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.int_fname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature name</em> conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.int_fval">
 <tt class="descname">int_fval</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.int_fval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature value</em> conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.int_label">
 <tt class="descname">int_label</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.int_label" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>label</em> conversion from string representation as found in LAF resource to corresponding integer as used in compiled resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.loader">
@@ -1300,22 +1657,43 @@ This order is explained in the <a class="reference internal" href="../taskwritin
 <dl class="method">
 <dt id="graf.GrafTaskBase.next_node_with_fval">
 <tt class="descname">next_node_with_fval</tt><big>(</big><em>label</em>, <em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.next_node_with_fval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: iterator of all nodes in primary data order that have a given value for a given feature.</p>
+<p>See also <a class="reference internal" href="#graf.GrafTaskBase.next_node" title="graf.GrafTaskBase.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label</strong> (<em>int</em>) &#8211;
+the code of an annotation label</li>
+<li><strong>name</strong> (<em>int</em>) &#8211;
+the code of a feature name</li>
+<li><strong>value</strong> (<em>int</em>) &#8211;
+the code of a feature value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.rep_fname">
 <tt class="descname">rep_fname</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.rep_fname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature name</em> conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.rep_fval">
 <tt class="descname">rep_fval</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.rep_fval" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>feature value</em> conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.GrafTaskBase.rep_label">
 <tt class="descname">rep_label</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.GrafTaskBase.rep_label" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: <em>label</em> conversion from integer code as used in compiled LAF resource to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="graf.GrafTaskBase.result_dir">
@@ -1582,21 +1960,6 @@ Currently the loader does not have any need for directives. Yet they are passed 
 </div>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="graf.GrafTaskAssembler.result_dir">
-<tt class="descname">result_dir</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskAssembler.result_dir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.GrafTaskAssembler.result_files">
-<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.GrafTaskAssembler.result_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.GrafTaskAssembler.task">
-<tt class="descname">task</tt><em class="property"> = None</em><a class="headerlink" href="#graf.GrafTaskAssembler.task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -1642,30 +2005,70 @@ However, we do not call that method, because method calls are expensive. We just
 <dl class="class">
 <dt id="graf.Timestamp">
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">Timestamp</tt><big>(</big><em>log_file=None</em><big>)</big><a class="headerlink" href="#graf.Timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Time management.</p>
+<p>Objects remember their creation time. So they can issue statements about how much time has been elapsed.
+All timed log messages of the program should be issued through the <a class="reference internal" href="#graf.Timestamp.progress" title="graf.Timestamp.progress"><tt class="xref py py-meth docutils literal"><span class="pre">progress()</span></tt></a> method of this class.</p>
+<p>It is also possible to connect a logfile to these objects.
+When progress messages are issued, they are also written to the connected log file.</p>
+<p>Upon creation, retrieves the time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_file</strong> (<em>file</em>) &#8211;
+open file handle for writing. Optional. If not <tt class="docutils literal"><span class="pre">None</span></tt> stores the handle in the object&#8217;s data.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
 <dt id="graf.Timestamp.connect_log">
 <tt class="descname">connect_log</tt><big>(</big><em>log_file</em><big>)</big><a class="headerlink" href="#graf.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Connects a log file to the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_file</strong> (<em>file</em>) &#8211;
+open handle for writing.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.Timestamp.elapsed">
 <tt class="descname">elapsed</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.Timestamp.elapsed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.Timestamp.log">
-<tt class="descname">log</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Timestamp.log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the time elapsed since creation of the <a class="reference internal" href="#graf.Timestamp" title="graf.Timestamp"><tt class="xref py py-class docutils literal"><span class="pre">Timestamp</span></tt></a> object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A pretty formatted string, ready to include in a message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="graf.Timestamp.progress">
 <tt class="descname">progress</tt><big>(</big><em>msg</em>, <em>newline=True</em><big>)</big><a class="headerlink" href="#graf.Timestamp.progress" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.Timestamp.timestamp">
-<tt class="descname">timestamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.Timestamp.timestamp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>API: issues a timed progress message.</p>
+<p>The message is issued to the standard output, and, if a log file has been connected, also to the log file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> (<em>str</em>) &#8211;
+text of the message</li>
+<li><strong>newline</strong> (<em>bool</em>) &#8211;
+whether or not to add a newline. Optional. Make it <tt class="docutils literal"><span class="pre">False</span></tt> to not add a newline.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

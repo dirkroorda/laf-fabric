@@ -10,6 +10,9 @@ import array
 
 from task_base import GrafTaskBase
 
+# I wonder whether there is still reason to have these as globals instead of class or instance variables.
+# Probably a performance thing.
+
 edge_prop = {}
 node_prop = {}
 
@@ -39,10 +42,6 @@ class GrafTaskAssembler(GrafTaskBase):
 
     '''
 
-    task = None
-    result_dir = None
-    result_files = []
-
     def __init__(self, bin_dir, result_dir, task, source, flavour_detail, force):
         '''An object is created with the parameters for the base class :class:`GrafTaskBase <graf.task_base.GrafTaskBase>`
         plus a flavour related parameter.
@@ -53,8 +52,12 @@ class GrafTaskAssembler(GrafTaskBase):
         '''
 
         GrafTaskBase.__init__(self, bin_dir, result_dir, task, source)
+
         self.flavour_detail = flavour_detail
+        '''instance member storing the current flavour'''
+
         self.force = force
+        '''instance member storing whether index building should be forced'''
 
     def loader(self, directives):
         '''Loads compiled LAF data and assembles indexes.

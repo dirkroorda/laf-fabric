@@ -53,6 +53,11 @@ feat_name = array.array('H')
 feat_value = array.array('I')
 
 class HeaderHandler(ContentHandler):
+    '''Handlers used by SAX parsing the GrAF header file.
+
+    We just collect the contents of the ``loc`` attributes of the ``annotation`` elements.
+    These are the annotation files that we have to fetch and compile.
+    '''
     stamp = None
 
     def __init__(self, stamp):
@@ -72,6 +77,34 @@ class HeaderHandler(ContentHandler):
         name = self._tag_stack[-1]
 
 class AnnotationHandler(ContentHandler):
+    '''Handlers used by SAX parsing the annotation files themselves
+
+    We have to collect all elements ``region``, ``node`` and subelement ``link``, ``edge``, ``a`` (annotation) and ``f`` (feature).
+    From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.
+
+    The parse process is robust, we are not dependent on a particular ordering or distribution of the regions, nodes, edges, annotations and features in/over the annotation files.
+
+    Here is a description of the arrays we create:
+
+    ``region_begin``, ``region_end``
+        Every region has an ``anchors`` attribute specifying a point or interval in the primary data. We consider a point ``i`` as the interval ``i .. i``.
+        ``region_begin`` contains the start anchor of region ``i`` for each ``i``, and ``region_end`` the end anchor.
+
+    ``edges_from``, ``edges_to``
+        Every edge goes from one node to an other. ``edges_from`` contains the from node of edge ``i`` for each ``i``, and ``edges_end`` the to node.
+
+    Here is a description of the dictionaries we create:
+
+    ``annot_label_list_rep``, ``annot_label_list_int``
+        Mappings from the string representations to the internal codes and vice versa, respectively, for annotation labels.
+
+    ``feat_name_list_rep``, ``feat_name_list_int``
+        Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.
+
+    ``feat_value_list_rep``, ``feat_value_list_int``
+        Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.
+    '''
+
     file_name = None
     nid = None
     aid = None

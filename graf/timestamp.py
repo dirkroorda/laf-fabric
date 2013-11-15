@@ -22,6 +22,9 @@ class Timestamp():
         self.timestamp = time.time()
         '''Instance member holding the time the object was created'''
 
+        self.log = None
+        '''Instance member holding a handle to a logfile, open for writing, if a log file has been attached to the object.'''
+
         if log_file:
             self.connect_log(log_file)
 
@@ -50,7 +53,6 @@ class Timestamp():
         '''
 
         self.log = log_file
-        '''Instance member holding a handle to a logfile, open for writing, if a log file has been attached to the object.'''
 
     def progress(self, msg, newline=True):
         '''API: issues a timed progress message.

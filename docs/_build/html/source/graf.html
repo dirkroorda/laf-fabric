@@ -91,7 +91,7 @@ the relative name of the directory where the compiled binary data is to be store
 <dt id="graf.compiler.GrafCompiler.compiler">
 <tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.compiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manages the complete compilation process.</p>
-<p>Detects the need for compiling, responds to the <tt class="docutils literal"><span class="pre">force</span></tt> argument. Then parses, remodels and writes.</p>
+<p>Detects the need for compiling, responds to the <em>force</em> argument. Then parses, remodels and writes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -305,7 +305,28 @@ the name of the task the log file is for</li>
 <dl class="function">
 <dt id="graf.model.arrayify">
 <tt class="descclassname">graf.model.</tt><tt class="descname">arrayify</tt><big>(</big><em>source_list</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#arrayify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.arrayify" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Efficient storage of a list of lists of integers in two Python <a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a>.</p>
+<p><em>This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>source_list</strong> (<em>iterable</em>) &#8211;
+a list of lists of integers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(index_array, items_array)</em> &#8211;
+two <a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> s.
+<em>index_array</em> contains an index for each item in <em>source_list</em>.
+<em>items_array</em> contains all the items in the following way: if an item with <em>n</em> members has to be added,
+then first the number <em>n</em> is added, and then all the members.
+This is how you get the original information back: if you want the
+members of item <em>i</em> in <em>source_list</em>, read number <em>i</em> in <em>index_array</em>, say <em>k</em>, go to position <em>k</em> in
+<em>items_array</em>, read the number at that position, say <em>n</em>,
+and then find the members at the next <em>n</em> positions in <em>items_array</em>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="graf.model.model">
@@ -320,25 +341,34 @@ the name of the task the log file is for</li>
 <em class="property">class </em><tt class="descclassname">graf.parse.</tt><tt class="descname">AnnotationHandler</tt><big>(</big><em>annotation_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
 <p>Handlers used by SAX parsing the annotation files themselves</p>
-<p>We have to collect all elements <tt class="docutils literal"><span class="pre">region</span></tt>, <tt class="docutils literal"><span class="pre">node</span></tt> and subelement <tt class="docutils literal"><span class="pre">link</span></tt>, <tt class="docutils literal"><span class="pre">edge</span></tt>, <tt class="docutils literal"><span class="pre">a</span></tt> (annotation) and <tt class="docutils literal"><span class="pre">f</span></tt> (feature).
+<p>We have to collect all elements <em>region</em>, <em>node</em> and subelement <em>link</em>, <em>edge</em>, <em>a</em> (annotation) and <em>f</em> (feature).
 From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.</p>
 <p>The parse process is robust, we are not dependent on a particular ordering or distribution of the regions, nodes, edges, annotations and features in/over the annotation files.</p>
 <p>Here is a description of the arrays we create:</p>
 <dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">region_begin</span></tt>, <tt class="docutils literal"><span class="pre">region_end</span></tt></dt>
-<dd>Every region has an <tt class="docutils literal"><span class="pre">anchors</span></tt> attribute specifying a point or interval in the primary data. We consider a point <tt class="docutils literal"><span class="pre">i</span></tt> as the interval <tt class="docutils literal"><span class="pre">i</span> <span class="pre">..</span> <span class="pre">i</span></tt>.
-<tt class="docutils literal"><span class="pre">region_begin</span></tt> contains the start anchor of region <tt class="docutils literal"><span class="pre">i</span></tt> for each <tt class="docutils literal"><span class="pre">i</span></tt>, and <tt class="docutils literal"><span class="pre">region_end</span></tt> the end anchor.</dd>
-<dt><tt class="docutils literal"><span class="pre">edges_from</span></tt>, <tt class="docutils literal"><span class="pre">edges_to</span></tt></dt>
-<dd>Every edge goes from one node to an other. <tt class="docutils literal"><span class="pre">edges_from</span></tt> contains the from node of edge <tt class="docutils literal"><span class="pre">i</span></tt> for each <tt class="docutils literal"><span class="pre">i</span></tt>, and <tt class="docutils literal"><span class="pre">edges_end</span></tt> the to node.</dd>
+<dt><em>region_begin</em>, <em>region_end</em></dt>
+<dd>Every region has an <em>anchors</em> attribute specifying a point or interval in the primary data. We consider a point <em>i</em> as the interval <em>i .. i</em>.
+<em>region_begin</em> contains the start anchor of region <em>i</em> for each <em>i</em>, and <em>region_end</em> the end anchor.</dd>
+<dt><em>edges_from</em>, <em>edges_to</em></dt>
+<dd>Every edge goes from one node to an other. <em>edges_from</em> contains the from node of edge <em>i</em> for each <em>i</em>, and <em>edges_end</em> the to node.</dd>
+<dt><em>annot_type</em>, <em>annot_ref</em>, <em>annot_label</em></dt>
+<dd>Three arrays, all describing in position <em>i</em> something of annotation <em>i</em>: whether the annotation targets a node or an edge, which node or edge it targets, and the label of the annotation, respectively.</dd>
+<dt><em>feat_annot</em>, <em>feat_name</em>, <em>feat_value</em></dt>
+<dd>Three arrays, all describing in position <em>i</em> something of feature <em>i</em>: the annotation in which this feature occurs, the name of the feature, the value of the feature, respectively.</dd>
 </dl>
 <p>Here is a description of the dictionaries we create:</p>
 <dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">annot_label_list_rep</span></tt>, <tt class="docutils literal"><span class="pre">annot_label_list_int</span></tt></dt>
+<dt><em>annot_label_list_rep</em>, <em>annot_label_list_int</em></dt>
 <dd>Mappings from the string representations to the internal codes and vice versa, respectively, for annotation labels.</dd>
-<dt><tt class="docutils literal"><span class="pre">feat_name_list_rep</span></tt>, <tt class="docutils literal"><span class="pre">feat_name_list_int</span></tt></dt>
+<dt><em>feat_name_list_rep</em>, <em>feat_name_list_int</em></dt>
 <dd>Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.</dd>
-<dt><tt class="docutils literal"><span class="pre">feat_value_list_rep</span></tt>, <tt class="docutils literal"><span class="pre">feat_value_list_int</span></tt></dt>
+<dt><em>feat_value_list_rep</em>, <em>feat_value_list_int</em></dt>
 <dd>Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.</dd>
+</dl>
+<p>There is also a list of arrays:</p>
+<dl class="docutils">
+<dt><em>node_region_list</em></dt>
+<dd>Element <em>i</em> of this list contains an array with the regions attached to node <em>i</em>.</dd>
 </dl>
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.aid">
@@ -387,7 +417,7 @@ From these elements we retrieve identifiers and other attributes. we map all ide
 <em class="property">class </em><tt class="descclassname">graf.parse.</tt><tt class="descname">HeaderHandler</tt><big>(</big><em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
 <p>Handlers used by SAX parsing the GrAF header file.</p>
-<p>We just collect the contents of the <tt class="docutils literal"><span class="pre">loc</span></tt> attributes of the <tt class="docutils literal"><span class="pre">annotation</span></tt> elements.
+<p>We just collect the contents of the <em>loc</em> attributes of the <em>annotation</em> elements.
 These are the annotation files that we have to fetch and compile.</p>
 <dl class="method">
 <dt id="graf.parse.HeaderHandler.characters">
@@ -414,7 +444,29 @@ These are the annotation files that we have to fetch and compile.</p>
 <dl class="function">
 <dt id="graf.parse.parse">
 <tt class="descclassname">graf.parse.</tt><tt class="descname">parse</tt><big>(</big><em>graf_header_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.parse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Parse a GrAF resource.</p>
+<p>Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
+files mentioned in that header file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graf_header_file</strong> (<em>str</em>) &#8211;
+path to the GrAF header file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple of items which comprise the parse results.</td>
+</tr>
+</tbody>
+</table>
+<p>Every member of the returned tuple is itself a tuple of 3 pieces of information:</p>
+<ol class="arabic simple">
+<li>A <em>key</em> which acts as a name for this part of the result data</li>
+<li>The data itself, as described in <a class="reference internal" href="#graf.parse.AnnotationHandler" title="graf.parse.AnnotationHandler"><tt class="xref py py-class docutils literal"><span class="pre">AnnotationHandler</span></tt></a></li>
+<li>A boolean indicating whether this data is a temporary result or a permanent result</li>
+</ol>
+<p>Temporary results will be discarded after the remodeling step, permanent results will be incorporated in
+the task-executing object.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-graf.task">
@@ -427,7 +479,8 @@ These are the annotation files that we have to fetch and compile.</p>
 <p>A task processor must know how to compile, where the source data is and where the result is going to.
 For the actual processing of tasks, the user can choose a <em>flavour</em>, and depending on this <em>flavour</em> of optimization,
 a different class is used to process tasks.
-When an object of the chosen class is produced (by <a class="reference internal" href="#graf.task.GrafTask.processor_factory" title="graf.task.GrafTask.processor_factory"><tt class="xref py py-meth docutils literal"><span class="pre">processor_factory()</span></tt></a>), a reference to it is stored in the producing <tt class="docutils literal"><span class="pre">GrafTask</span></tt> object.</p>
+When an object of the chosen class is produced (by <a class="reference internal" href="#graf.task.GrafTask.processor_factory" title="graf.task.GrafTask.processor_factory"><tt class="xref py py-meth docutils literal"><span class="pre">processor_factory()</span></tt></a>),
+a reference to it is stored in the producing <a class="reference internal" href="#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a> object.</p>
 <p>Upon creation, information is passed and stored about locations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -439,7 +492,7 @@ the directory of the original LAF resource.</li>
 <li><strong>data_file</strong> (<em>str</em>) &#8211;
 the GrAF header file by which to consume the LAF resource.</li>
 <li><strong>bin_dir</strong> (<em>str</em>) &#8211;
-the directory where the compiled data is located, relative to the <tt class="docutils literal"><span class="pre">result_dir</span></tt>.</li>
+the directory where the compiled data is located, relative to the <em>result_dir</em>.</li>
 <li><strong>result_dir</strong> (<em>str</em>) &#8211;
 the directory where the task should operate: the compiled data is there, the results go there.</li>
 <li><strong>compile</strong> (<em>bool</em>) &#8211;
@@ -519,7 +572,9 @@ whether or not to force the (re)creation of indexes, only relevant for the <tt c
 <em class="property">class </em><tt class="descclassname">graf.task_ass.</tt><tt class="descname">GrafTaskAssembler</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em>, <em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
 <p>Class with optimization flavour <tt class="docutils literal"><span class="pre">assemble</span></tt> or <tt class="docutils literal"><span class="pre">assemble_all</span></tt> for task execution.</p>
-<p>This flavour uses indexes to speed up feature lookup. The <tt class="docutils literal"><span class="pre">plain</span></tt> implementations of the methods <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt>
+<p>This flavour uses indexes to speed up feature lookup.
+The <tt class="docutils literal"><span class="pre">plain</span></tt> implementations of the methods
+<a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a>
 first fetch the set of all features that belong to a node and then filter by iterating over them. This implementation
 builds indexes for the features, so that given label and name of a feature its value for a certain node or edge can be
 looked up from a dictionary.</p>
@@ -530,7 +585,7 @@ and continues with index building, saving and/or loading.</p>
 <dt><tt class="docutils literal"><span class="pre">assemble_all</span></tt></dt>
 <dd>index absolutely every feature</dd>
 <dt><tt class="docutils literal"><span class="pre">assemble</span></tt></dt>
-<dd>index only the features that the task declares as being used (in its <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary)</dd>
+<dd>index only the features that the task declares as being used (in its <em>precompute</em> dictionary)</dd>
 </dl>
 <p>The latter method is recommended. Although the indexing of all features does not cost much more time than the indexing of a single feature,
 the space requirement can be huge. The reason for the speed behaviour is that even if you index just one feature, the indexer has to
@@ -544,7 +599,7 @@ plus a flavour related parameter.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flavour_detail</strong> (<em>str</em>) &#8211;
 there are two options in this flavour: <tt class="docutils literal"><span class="pre">assemble</span></tt> and <tt class="docutils literal"><span class="pre">assemble_all</span></tt>. This parameter specifies the option.
-This value is used to look up the flavour directives in the task script&#8217;s <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary.</td>
+This value is used to look up the flavour directives in the task script&#8217;s <em>precompute</em> dictionary.</td>
 </tr>
 </tbody>
 </table>
@@ -584,7 +639,7 @@ indication whether nodes or edges are considered. Only used for progress and log
 <li><strong>lsource_feat</strong> (<em>array</em>) &#8211;
 see below</li>
 <li><strong>lsource_feat_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">lsource_feat</span></tt> the array data for the feature set to be indexed</li>
+together with <em>lsource_feat</em> the array data for the feature set to be indexed</li>
 <li><strong>dest</strong> (<em>dict</em>) &#8211;
 the destination dictionary for the index</li>
 <li><strong>only</strong> (<em>str</em>) &#8211;
@@ -608,7 +663,7 @@ string specifying the features selected for indexing</li>
 <li><strong>lsource_feat</strong> (<em>array</em>) &#8211;
 see below</li>
 <li><strong>lsource_feat_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">lsource_feat</span></tt> the array data for the feature set to be indexed</li>
+together with <em>lsource_feat</em> the array data for the feature set to be indexed</li>
 <li><strong>dest</strong> (<em>dict</em>) &#8211;
 the destination dictionary for the index</li>
 </ul>
@@ -623,7 +678,7 @@ the destination dictionary for the index</li>
 <tt class="descname">assemble_only</tt><big>(</big><em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em>, <em>onlystring</em>, <em>kind</em><big>)</big><a class="reference internal" href="../_modules/graf/task_ass.html#GrafTaskAssembler.assemble_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_ass.GrafTaskAssembler.assemble_only" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assemble indexes for sleected features only.</p>
 <p>The specification of which features are selected is still a string.
-Here we compile it into a dictionary <tt class="docutils literal"><span class="pre">only</span></tt>, keyed with the feature label and then the feature name.
+Here we compile it into a dictionary <em>only</em>, keyed with the feature label and then the feature name.
 While doing so we check whether the indexes exist and are all up to date (<tt class="xref py py-meth docutils literal"><span class="pre">_needs_indexing()</span></tt>).
 If even one index needs to be (re)built, we (re)build all indexes needed and save them.
 Otherwise we load all indexes instead of building and saving them.</p>
@@ -638,7 +693,7 @@ These dictionaries will be pickeled and written to disk as individual indexes.</
 <li><strong>lsource_feat</strong> (<em>array</em>) &#8211;
 see below</li>
 <li><strong>lsource_feat_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">lsource_feat</span></tt> the array data for the feature set to be indexed</li>
+together with <em>lsource_feat</em> the array data for the feature set to be indexed</li>
 <li><strong>dest</strong> (<em>dict</em>) &#8211;
 the destination dictionary for the overall index</li>
 <li><strong>onlystring</strong> (<em>str</em>) &#8211;
@@ -691,9 +746,10 @@ The methods in this class are either low level methods or methods common to all 
 The methods in the derived classes that are implemented differently are not defined in this class.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The methods <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt> must be defined in all derived classes.</p>
+<p>The methods <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a> must be defined in all derived classes.</p>
 <p class="last">The base class method <a class="reference internal" href="#graf.task_base.GrafTaskBase.get_mappings" title="graf.task_base.GrafTaskBase.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt></a> returns a set of code references, so that the task can give those methods
-convenient, local names. It also returns references to <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt>, despite the fact that these are only defined in
+convenient, local names.
+It also returns references to <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a>, despite the fact that these are only defined in
 derived classes.</p>
 </div>
 <p>Upon creation, an object is passes the locations for his source and destination data.</p>
@@ -703,7 +759,7 @@ derived classes.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>bin_dir</strong> (<em>str</em>) &#8211;
-piece of the file path between the <tt class="docutils literal"><span class="pre">result_dir</span></tt> and the compiled LAF binary files</li>
+piece of the file path between the <em>result_dir</em> and the compiled LAF binary files</li>
 <li><strong>result_dir</strong> (<em>str</em>) &#8211;
 path to the result directory</li>
 <li><strong>source</strong> (<em>str</em>) &#8211;
@@ -764,7 +820,7 @@ If a relation between integers and sets of integers has been stored as a double 
 <li><strong>data</strong> (<em>array</em>) &#8211;
 see next</li>
 <li><strong>data_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+together with <em>data</em> the arrayified data</li>
 <li><strong>elem</strong> (<em>int</em>) &#8211;
 the integer for which we want its related set of integers.</li>
 </ul>
@@ -786,7 +842,7 @@ the integer for which we want its related set of integers.</li>
 <li><strong>data</strong> (<em>array</em>) &#8211;
 see next</li>
 <li><strong>data_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+together with <em>data</em> the arrayified data</li>
 <li><strong>elem</strong> (<em>int</em>) &#8211;
 the integer for which we want its related set of integers.</li>
 <li><strong>item</strong> (<em>int</em>) &#8211;
@@ -810,7 +866,7 @@ the integer whose presence in the related items set is to be tested.</li>
 <li><strong>data</strong> (<em>array</em>) &#8211;
 see next</li>
 <li><strong>data_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+together with <em>data</em> the arrayified data</li>
 <li><strong>elem</strong> (<em>int</em>) &#8211;
 the integer for which we want its related set of integers.</li>
 <li><strong>items</strong> (<em>array or list of integers</em>) &#8211;
@@ -937,7 +993,7 @@ That is: load the compiled data, follow the directives of the chosen flavour of 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directives</strong> (<em>dict</em>) &#8211;
-a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary).</td>
+a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the <em>precompute</em> dictionary).</td>
 </tr>
 </tbody>
 </table>
@@ -977,7 +1033,7 @@ a dictionary of information items relevant to the chosen optimization flavour. T
 <li>for the case that some future task does benefit from it</li>
 </ul>
 <p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
-plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
+plus a flavour related parameter <em>flavour_detail</em> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.task_mem.GrafTaskMemo.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_mem.html#GrafTaskMemo.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_mem.GrafTaskMemo.Fi" title="Permalink to this definition">¶</a></dt>
@@ -1030,7 +1086,7 @@ However, we do not call that method, because method calls are expensive. We just
 The feature lookup methods are implemented straightforwardly on the basis of the compiled data structures,
 without any precomputing or memoization.</p>
 <p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
-plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
+plus a flavour related parameter <em>flavour_detail</em> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.task_plain.GrafTaskPlain.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task_plain.html#GrafTaskPlain.Fi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task_plain.GrafTaskPlain.Fi" title="Permalink to this definition">¶</a></dt>
@@ -1338,7 +1394,7 @@ the relative name of the directory where the compiled binary data is to be store
 <dt id="graf.GrafCompiler.compiler">
 <tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="headerlink" href="#graf.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manages the complete compilation process.</p>
-<p>Detects the need for compiling, responds to the <tt class="docutils literal"><span class="pre">force</span></tt> argument. Then parses, remodels and writes.</p>
+<p>Detects the need for compiling, responds to the <em>force</em> argument. Then parses, remodels and writes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1401,7 +1457,8 @@ a list of strings, in which case it is dumped with the <tt class="xref py py-met
 <p>A task processor must know how to compile, where the source data is and where the result is going to.
 For the actual processing of tasks, the user can choose a <em>flavour</em>, and depending on this <em>flavour</em> of optimization,
 a different class is used to process tasks.
-When an object of the chosen class is produced (by <a class="reference internal" href="#graf.GrafTask.processor_factory" title="graf.GrafTask.processor_factory"><tt class="xref py py-meth docutils literal"><span class="pre">processor_factory()</span></tt></a>), a reference to it is stored in the producing <tt class="docutils literal"><span class="pre">GrafTask</span></tt> object.</p>
+When an object of the chosen class is produced (by <a class="reference internal" href="#graf.GrafTask.processor_factory" title="graf.GrafTask.processor_factory"><tt class="xref py py-meth docutils literal"><span class="pre">processor_factory()</span></tt></a>),
+a reference to it is stored in the producing <a class="reference internal" href="#graf.GrafTask" title="graf.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a> object.</p>
 <p>Upon creation, information is passed and stored about locations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1413,7 +1470,7 @@ the directory of the original LAF resource.</li>
 <li><strong>data_file</strong> (<em>str</em>) &#8211;
 the GrAF header file by which to consume the LAF resource.</li>
 <li><strong>bin_dir</strong> (<em>str</em>) &#8211;
-the directory where the compiled data is located, relative to the <tt class="docutils literal"><span class="pre">result_dir</span></tt>.</li>
+the directory where the compiled data is located, relative to the <em>result_dir</em>.</li>
 <li><strong>result_dir</strong> (<em>str</em>) &#8211;
 the directory where the task should operate: the compiled data is there, the results go there.</li>
 <li><strong>compile</strong> (<em>bool</em>) &#8211;
@@ -1471,9 +1528,10 @@ The methods in this class are either low level methods or methods common to all 
 The methods in the derived classes that are implemented differently are not defined in this class.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The methods <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt> must be defined in all derived classes.</p>
+<p>The methods <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a> must be defined in all derived classes.</p>
 <p class="last">The base class method <a class="reference internal" href="#graf.GrafTaskBase.get_mappings" title="graf.GrafTaskBase.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt></a> returns a set of code references, so that the task can give those methods
-convenient, local names. It also returns references to <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt>, despite the fact that these are only defined in
+convenient, local names.
+It also returns references to <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a>, despite the fact that these are only defined in
 derived classes.</p>
 </div>
 <p>Upon creation, an object is passes the locations for his source and destination data.</p>
@@ -1483,7 +1541,7 @@ derived classes.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>bin_dir</strong> (<em>str</em>) &#8211;
-piece of the file path between the <tt class="docutils literal"><span class="pre">result_dir</span></tt> and the compiled LAF binary files</li>
+piece of the file path between the <em>result_dir</em> and the compiled LAF binary files</li>
 <li><strong>result_dir</strong> (<em>str</em>) &#8211;
 path to the result directory</li>
 <li><strong>source</strong> (<em>str</em>) &#8211;
@@ -1544,7 +1602,7 @@ If a relation between integers and sets of integers has been stored as a double 
 <li><strong>data</strong> (<em>array</em>) &#8211;
 see next</li>
 <li><strong>data_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+together with <em>data</em> the arrayified data</li>
 <li><strong>elem</strong> (<em>int</em>) &#8211;
 the integer for which we want its related set of integers.</li>
 </ul>
@@ -1566,7 +1624,7 @@ the integer for which we want its related set of integers.</li>
 <li><strong>data</strong> (<em>array</em>) &#8211;
 see next</li>
 <li><strong>data_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+together with <em>data</em> the arrayified data</li>
 <li><strong>elem</strong> (<em>int</em>) &#8211;
 the integer for which we want its related set of integers.</li>
 <li><strong>item</strong> (<em>int</em>) &#8211;
@@ -1590,7 +1648,7 @@ the integer whose presence in the related items set is to be tested.</li>
 <li><strong>data</strong> (<em>array</em>) &#8211;
 see next</li>
 <li><strong>data_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">data</span></tt> the arrayified data</li>
+together with <em>data</em> the arrayified data</li>
 <li><strong>elem</strong> (<em>int</em>) &#8211;
 the integer for which we want its related set of integers.</li>
 <li><strong>items</strong> (<em>array or list of integers</em>) &#8211;
@@ -1715,7 +1773,7 @@ That is: load the compiled data, follow the directives of the chosen flavour of 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directives</strong> (<em>dict</em>) &#8211;
-a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary).</td>
+a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the <em>precompute</em> dictionary).</td>
 </tr>
 </tbody>
 </table>
@@ -1742,7 +1800,7 @@ a dictionary of information items relevant to the chosen optimization flavour. T
 The feature lookup methods are implemented straightforwardly on the basis of the compiled data structures,
 without any precomputing or memoization.</p>
 <p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
-plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
+plus a flavour related parameter <em>flavour_detail</em> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.GrafTaskPlain.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskPlain.Fi" title="Permalink to this definition">¶</a></dt>
@@ -1815,7 +1873,9 @@ the integer specifying the name of the feature in question</li>
 <em class="property">class </em><tt class="descclassname">graf.</tt><tt class="descname">GrafTaskAssembler</tt><big>(</big><em>bin_dir</em>, <em>result_dir</em>, <em>task</em>, <em>source</em>, <em>flavour_detail</em>, <em>force</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">graf.task_base.GrafTaskBase</span></tt></a></p>
 <p>Class with optimization flavour <tt class="docutils literal"><span class="pre">assemble</span></tt> or <tt class="docutils literal"><span class="pre">assemble_all</span></tt> for task execution.</p>
-<p>This flavour uses indexes to speed up feature lookup. The <tt class="docutils literal"><span class="pre">plain</span></tt> implementations of the methods <tt class="docutils literal"><span class="pre">Fi</span></tt> and <tt class="docutils literal"><span class="pre">Fr</span></tt>
+<p>This flavour uses indexes to speed up feature lookup.
+The <tt class="docutils literal"><span class="pre">plain</span></tt> implementations of the methods
+<a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a>
 first fetch the set of all features that belong to a node and then filter by iterating over them. This implementation
 builds indexes for the features, so that given label and name of a feature its value for a certain node or edge can be
 looked up from a dictionary.</p>
@@ -1826,7 +1886,7 @@ and continues with index building, saving and/or loading.</p>
 <dt><tt class="docutils literal"><span class="pre">assemble_all</span></tt></dt>
 <dd>index absolutely every feature</dd>
 <dt><tt class="docutils literal"><span class="pre">assemble</span></tt></dt>
-<dd>index only the features that the task declares as being used (in its <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary)</dd>
+<dd>index only the features that the task declares as being used (in its <em>precompute</em> dictionary)</dd>
 </dl>
 <p>The latter method is recommended. Although the indexing of all features does not cost much more time than the indexing of a single feature,
 the space requirement can be huge. The reason for the speed behaviour is that even if you index just one feature, the indexer has to
@@ -1840,7 +1900,7 @@ plus a flavour related parameter.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flavour_detail</strong> (<em>str</em>) &#8211;
 there are two options in this flavour: <tt class="docutils literal"><span class="pre">assemble</span></tt> and <tt class="docutils literal"><span class="pre">assemble_all</span></tt>. This parameter specifies the option.
-This value is used to look up the flavour directives in the task script&#8217;s <tt class="docutils literal"><span class="pre">precompute</span></tt> dictionary.</td>
+This value is used to look up the flavour directives in the task script&#8217;s <em>precompute</em> dictionary.</td>
 </tr>
 </tbody>
 </table>
@@ -1880,7 +1940,7 @@ indication whether nodes or edges are considered. Only used for progress and log
 <li><strong>lsource_feat</strong> (<em>array</em>) &#8211;
 see below</li>
 <li><strong>lsource_feat_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">lsource_feat</span></tt> the array data for the feature set to be indexed</li>
+together with <em>lsource_feat</em> the array data for the feature set to be indexed</li>
 <li><strong>dest</strong> (<em>dict</em>) &#8211;
 the destination dictionary for the index</li>
 <li><strong>only</strong> (<em>str</em>) &#8211;
@@ -1904,7 +1964,7 @@ string specifying the features selected for indexing</li>
 <li><strong>lsource_feat</strong> (<em>array</em>) &#8211;
 see below</li>
 <li><strong>lsource_feat_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">lsource_feat</span></tt> the array data for the feature set to be indexed</li>
+together with <em>lsource_feat</em> the array data for the feature set to be indexed</li>
 <li><strong>dest</strong> (<em>dict</em>) &#8211;
 the destination dictionary for the index</li>
 </ul>
@@ -1919,7 +1979,7 @@ the destination dictionary for the index</li>
 <tt class="descname">assemble_only</tt><big>(</big><em>lsource_feat</em>, <em>lsource_feat_items</em>, <em>dest</em>, <em>onlystring</em>, <em>kind</em><big>)</big><a class="headerlink" href="#graf.GrafTaskAssembler.assemble_only" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assemble indexes for sleected features only.</p>
 <p>The specification of which features are selected is still a string.
-Here we compile it into a dictionary <tt class="docutils literal"><span class="pre">only</span></tt>, keyed with the feature label and then the feature name.
+Here we compile it into a dictionary <em>only</em>, keyed with the feature label and then the feature name.
 While doing so we check whether the indexes exist and are all up to date (<tt class="xref py py-meth docutils literal"><span class="pre">_needs_indexing()</span></tt>).
 If even one index needs to be (re)built, we (re)build all indexes needed and save them.
 Otherwise we load all indexes instead of building and saving them.</p>
@@ -1934,7 +1994,7 @@ These dictionaries will be pickeled and written to disk as individual indexes.</
 <li><strong>lsource_feat</strong> (<em>array</em>) &#8211;
 see below</li>
 <li><strong>lsource_feat_items</strong> (<em>array</em>) &#8211;
-together with <tt class="docutils literal"><span class="pre">lsource_feat</span></tt> the array data for the feature set to be indexed</li>
+together with <em>lsource_feat</em> the array data for the feature set to be indexed</li>
 <li><strong>dest</strong> (<em>dict</em>) &#8211;
 the destination dictionary for the overall index</li>
 <li><strong>onlystring</strong> (<em>str</em>) &#8211;
@@ -1979,7 +2039,7 @@ Currently the loader does not have any need for directives. Yet they are passed 
 <li>for the case that some future task does benefit from it</li>
 </ul>
 <p>An object is created with the parameters for the base class <a class="reference internal" href="#graf.task_base.GrafTaskBase" title="graf.task_base.GrafTaskBase"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>
-plus a flavour related parameter <tt class="docutils literal"><span class="pre">flavour_detail</span></tt> that is not relevant for this flavour.</p>
+plus a flavour related parameter <em>flavour_detail</em> that is not relevant for this flavour.</p>
 <dl class="method">
 <dt id="graf.GrafTaskMemo.Fi">
 <tt class="descname">Fi</tt><big>(</big><em>node</em>, <em>label</em>, <em>name</em><big>)</big><a class="headerlink" href="#graf.GrafTaskMemo.Fi" title="Permalink to this definition">¶</a></dt>

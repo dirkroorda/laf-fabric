@@ -17,7 +17,8 @@ class GrafTask(object):
     A task processor must know how to compile, where the source data is and where the result is going to.
     For the actual processing of tasks, the user can choose a *flavour*, and depending on this *flavour* of optimization,
     a different class is used to process tasks.
-    When an object of the chosen class is produced (by :meth:`processor_factory`), a reference to it is stored in the producing ``GrafTask`` object.
+    When an object of the chosen class is produced (by :meth:`processor_factory`),
+    a reference to it is stored in the producing :class:`GrafTask` object.
     '''
 
     def __init__(self, task=None, source=None, compile=False, data_dir=None, data_file=None, bin_dir=None, result_dir=None):
@@ -26,7 +27,7 @@ class GrafTask(object):
         Args:
             data_dir (str): the directory of the original LAF resource.
             data_file (str): the GrAF header file by which to consume the LAF resource.
-            bin_dir (str): the directory where the compiled data is located, relative to the ``result_dir``.
+            bin_dir (str): the directory where the compiled data is located, relative to the *result_dir*.
             result_dir (str): the directory where the task should operate: the compiled data is there, the results go there.
             compile (bool): whether to force (re)compilation of the LAF resource. Normally (re)compilation is only done if the need for it has been detected.
                 See :meth:`needs_compiling() <graf.compiler.GrafCompiler.needs_compiling>`.

@@ -37,17 +37,17 @@ This package is called *graf* and is a Python package without extension modules.
 	cd «directory of your choice»
 	git clone https://github.com/dirkroorda/laf-fabric
 
-You get a directory ``laf-fabric`` with the following inside:
+You get a directory *laf-fabric* with the following inside:
 
-* ``graf``: the workbench itself, a Python package
-* ``laf-fabric.py``: a script to call the workbench
-* ``tasks``: a directory with example tasks.
+* *graf*: the workbench itself, a Python package
+* *laf-fabric.py*: a script to call the workbench
+* *tasks*: a directory with example tasks.
 
 Before running the workbench, the calling script has to be configured.
 
 Configuration
 ^^^^^^^^^^^^^
-The calling script is ``laf-fabric.py``.
+The calling script is *laf-fabric.py*.
 In it is a configuration section::
 
 	## CONFIG START
@@ -74,13 +74,13 @@ In it is a configuration section::
 
 The things to change here are:
 
-* ``data_root``: point to the folder containing your LAF directory.
-* ``laf_source``: change into the directory name of your LAF directory.
-* ``compiled source``: this directory will be created.
-* ``source_choices``: read on ...
+* *data_root*: point to the folder containing your LAF directory.
+* *laf_source*: change into the directory name of your LAF directory.
+* *compiled source*: this directory will be created.
+* *source_choices*: read on ...
 
 Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*. The workbench needs to look at a *GrAF header file*.
-This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The ``source_choices`` dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option ``--source=key`` to select the header file that you want to point the workbench to.
+This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The *source_choices* dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option ``--source=key`` to select the header file that you want to point the workbench to.
 
 Now you are set to run your tasks. You might want to run an example task from the examples in the *tasks* directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the *tasks* directory. See :doc:`Writing Tasks <taskwriting>`.
 
@@ -175,6 +175,9 @@ These are the main simplifications:
 
 Development
 -----------
+
+API completion
+^^^^^^^^^^^^^^
 Many reasonable candidates for an API have not yet been implemented. Basically we have only:
 
 *node iterator*
@@ -184,3 +187,8 @@ Many reasonable candidates for an API have not yet been implemented. Basically w
 	a function that gives the value of a feature attached by some annotation to some edge or node
 
 Now Python does not have strict encapsulation of data structures, so by just inspecting the classes and objects you can reach out for all aspects of the LAF data that went into the compiled data. See the GrAF feature coverage for a specification of what data ends up in the compilation.
+
+User Interface
+^^^^^^^^^^^^^^
+The current command line interface allows the execution of a single task, and then the workbench exits. Rerunning the task requires reloading the data and indexes.
+This is cumbersome when you are debugging tasks. I want to extend the command line interface to allow for repeated task execution and source switching with minimal reloading.

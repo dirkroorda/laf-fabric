@@ -55,7 +55,7 @@ feat_value = array.array('I')
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
 
-    We just collect the contents of the ``loc`` attributes of the ``annotation`` elements.
+    We just collect the contents of the *loc* attributes of the *annotation* elements.
     These are the annotation files that we have to fetch and compile.
     '''
     stamp = None
@@ -79,30 +79,41 @@ class HeaderHandler(ContentHandler):
 class AnnotationHandler(ContentHandler):
     '''Handlers used by SAX parsing the annotation files themselves
 
-    We have to collect all elements ``region``, ``node`` and subelement ``link``, ``edge``, ``a`` (annotation) and ``f`` (feature).
+    We have to collect all elements *region*, *node* and subelement *link*, *edge*, *a* (annotation) and *f* (feature).
     From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.
 
     The parse process is robust, we are not dependent on a particular ordering or distribution of the regions, nodes, edges, annotations and features in/over the annotation files.
 
     Here is a description of the arrays we create:
 
-    ``region_begin``, ``region_end``
-        Every region has an ``anchors`` attribute specifying a point or interval in the primary data. We consider a point ``i`` as the interval ``i .. i``.
-        ``region_begin`` contains the start anchor of region ``i`` for each ``i``, and ``region_end`` the end anchor.
+    *region_begin*, *region_end*
+        Every region has an *anchors* attribute specifying a point or interval in the primary data. We consider a point *i* as the interval *i .. i*.
+        *region_begin* contains the start anchor of region *i* for each *i*, and *region_end* the end anchor.
 
-    ``edges_from``, ``edges_to``
-        Every edge goes from one node to an other. ``edges_from`` contains the from node of edge ``i`` for each ``i``, and ``edges_end`` the to node.
+    *edges_from*, *edges_to*
+        Every edge goes from one node to an other. *edges_from* contains the from node of edge *i* for each *i*, and *edges_end* the to node.
+
+    *annot_type*, *annot_ref*, *annot_label*
+        Three arrays, all describing in position *i* something of annotation *i*: whether the annotation targets a node or an edge, which node or edge it targets, and the label of the annotation, respectively.
+
+    *feat_annot*, *feat_name*, *feat_value*
+        Three arrays, all describing in position *i* something of feature *i*: the annotation in which this feature occurs, the name of the feature, the value of the feature, respectively.
 
     Here is a description of the dictionaries we create:
 
-    ``annot_label_list_rep``, ``annot_label_list_int``
+    *annot_label_list_rep*, *annot_label_list_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for annotation labels.
 
-    ``feat_name_list_rep``, ``feat_name_list_int``
+    *feat_name_list_rep*, *feat_name_list_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.
 
-    ``feat_value_list_rep``, ``feat_value_list_int``
+    *feat_value_list_rep*, *feat_value_list_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.
+
+    There is also a list of arrays:
+
+    *node_region_list*
+        Element *i* of this list contains an array with the regions attached to node *i*.
     '''
 
     file_name = None
@@ -251,6 +262,27 @@ class AnnotationHandler(ContentHandler):
         pass
 
 def parse(graf_header_file, stamp):
+    '''Parse a GrAF resource.
+    
+    Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
+    files mentioned in that header file.
+
+    Args:
+        graf_header_file (str): path to the GrAF header file
+
+    Returns:
+        a tuple of items which comprise the parse results.
+
+    Every member of the returned tuple is itself a tuple of 3 pieces of information:
+
+    #. A *key* which acts as a name for this part of the result data
+    #. The data itself, as described in :class:`AnnotationHandler`
+    #. A boolean indicating whether this data is a temporary result or a permanent result
+
+    Temporary results will be discarded after the remodeling step, permanent results will be incorporated in 
+    the task-executing object.
+    '''
+
     saxparse(graf_header_file, HeaderHandler(stamp))
 
     for annotation_file in annotation_files:

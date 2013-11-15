@@ -14,7 +14,7 @@ Apart from these things, your script may contain arbitrary Python code, it may i
 
 A leading example
 -----------------
-Our target LAF resource is the conversion of a text database with objects to nodes with annotations. Nodes correspond to objects. The types of objects translate to annotations with label ``db`` with the feature ``otype``. Likewise for the id of objects and the anchoring of objects to primary data: the features ``minmonad``, ``maxmonad`` and ``monads`` take care of that. In the original LAF it looks like this::
+Our target LAF resource is the conversion of a text database with objects to nodes with annotations. Nodes correspond to objects. The types of objects translate to annotations with label *db* with the feature *otype*. Likewise for the id of objects and the anchoring of objects to primary data: the features *minmonad*, *maxmonad* and *monads* take care of that. In the original LAF it looks like this::
 
     <node xml:id="n28737"><link targets="w_1 w_2 w_3 w_4 w_5 w_6 w_7 w_8 w_9 w_10 w_11"/></node>
     <a xml:id="al28737" label="db" ref="n28737"><fs>
@@ -42,7 +42,7 @@ Not very useful, but handy for debugging or linking new annotation files to the 
      862058   40768 phrase_atom          {3            }
           4       5 word                 {4            }
 
-Note the same clause object ``28737`` as in the original LAF file.
+Note the same clause object *28737* as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output::
 
     # -*- coding: utf8 -*-
@@ -73,8 +73,8 @@ Information flow from task to workbench
 ---------------------------------------
 The main thing the workbench needs to know about the task are directives for its processing. Remember that tasks can be run with different *flavours*.
 A flavour is a way of optimizing tasks and it can be specified on the command line which flavour to use. A flavour may take some directives, such as
-the indexes that have to be built, and the ``precompute`` dictionary is the place to specify the directives. 
-Currently, only the ``assemble`` flavour needs any directives. It needs to be told for which features indexes should be built. This must be specified separately for features that occur on nodes and that occur on edges.
+the indexes that have to be built, and the *precompute* dictionary is the place to specify the directives. 
+Currently, only the *assemble* flavour needs any directives. It needs to be told for which features indexes should be built. This must be specified separately for features that occur on nodes and that occur on edges.
 
 The feature specification takes the form of a space separated string of items of the form::
 
@@ -87,29 +87,38 @@ where ``«feature names»`` is a comma separated list of feature names. For all 
 
 Information flow from workbench to task
 ---------------------------------------
-The workbench will call the function ``task(object)`` in your task script, and the thing that is passed to it as ``object`` is an object of class ``GrafTask`` (see :class:`graf.task`). By using this object, you have to access all of its methods. 
+The workbench will call the function *task(object)* in your task script, and the thing that is passed to it as *object* is an object of class :class:`GrafTask <graf.task.GrafTask>`.
+By using this object, you have to access all of its methods. 
 
-In order to write an efficient task, it is convenient to import the names of the most important methods as *local variables* of the ``task`` function. The lookup of names in Python is fastest for local names. And it makes the code much cleaner.
+In order to write an efficient task, it is convenient to import the names of the most important methods as *local variables* of the *task* function. The lookup of names in Python is fastest for local names. And it makes the code much cleaner.
 
-The method ``get_mappings`` delivers the methods, and it is up to you to give them names. It is recommended to stick to the names provided here in this example. Here is a short description of the corresponding methods.
+The method :meth:`get_mappings() <graf.task.GrafTask.get_mappings>` delivers the methods, and it is up to you to give them names. It is recommended to stick to the names provided here in this example. Here is a short description of the corresponding methods.
 
-``Fi`` and ``Fr``
-    Feature value lookup functions. They need a node or edge, then an annotation label, then a feature name, and then they return the value. All arguments must be given as integers, the integers to which nodes and labels and names have been mapped during compiling. (There are ways to get those numbers). The difference between ``Fi`` and ``Fr`` is that ``Fi`` returns the internal number corresponding to the value, and ``Fr`` the original string value as encountered in the original LAF resource. Use ``Fi`` when the value is needed in other parts of your script, use ``Fr`` when you need to output values. 
+*Fi()* and *Fr()*
+    Feature value lookup functions.
+    They need a node or edge, then an annotation label, then a feature name, and then they return the value.
+    All arguments must be given as integers, the integers to which nodes and labels and names have been mapped during compiling.
+    (There are ways to get those numbers).
+    The difference between :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>` and :meth:`Fr() <graf.task_plain.GrafTaskPlain.Fr>` is that
+    :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>` returns the internal number corresponding to the value,
+    and :meth:`Fr() <graf.task_plain.GrafTaskPlain.Fr>` the original string value as encountered in the original LAF resource.
+    Use :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>` when the value is needed in other parts of your script,
+    use :meth:`Fr() <graf.task_plain.GrafTaskPlain.Fr>` when you need to output values. 
 
-``Li`` and ``Lr``
-    Convert between annotation labels as string values found in the original LAF and the integers they have been mapped to during compilation. ``Li`` yields integers from string representations, ``Lr`` yields representations (strings) from internal integers.
+*Li* and *Lr*
+    Tables to convert between annotation labels as string values found in the original LAF and the integers they have been mapped to during compilation. *Li* yields integers from string representations, *Lr* yields representations (strings) from internal integers.
 
-``Ni`` and ``Nr``
+*Ni* and *Nr*
     Same pattern as above, but now for feature names.
 
-``Vi`` and ``Vr``
+*Vi* and *Vr*
     Same pattern as above, but now for feature values.
 
-``NN`` and ``NNFV`` are *iterators* that yield a new node everytime they are called. They yield the nodes in so-called *primary data order*, which will be explained below. The difference between ``NN`` and ``NNFV`` is that ``NN`` iterates over absolutely all nodes, and ``NNFV`` only yields node that have a certain value for a certain feature. See :class:`GrafTaskBase <graf.task_base>`, methods :meth:`nextnode() <graf.task_base.GrafTaskBase.next_node>` and :meth:`next_node_with_fval() <graf.task_base.GrafTaskBase.next_node_with_fval>`.
+*NN()* and *NNFV()* are *iterators* that yield a new node everytime they are called. They yield the nodes in so-called *primary data order*, which will be explained below. The difference between *NN()* and *NNFV()* is that *NN()* iterates over absolutely all nodes, and *NNFV()* only yields node that have a certain value for a certain feature. See :class:`GrafTaskBase <graf.task_base>`, methods :meth:`nextnode() <graf.task_base.GrafTaskBase.next_node>` and :meth:`next_node_with_fval() <graf.task_base.GrafTaskBase.next_node_with_fval>`.
 
 Output
 ------
-You can create an output filehandle, open for writing, by calling the method :meth:`add_result() <graf.task_base.GrafTaskBase.add_result>` of the :class:`GrafTaskBase <graf.task_base>` class and assigning the result to a variable, say ``out``.  From then on you can write output simply by saying::
+You can create an output filehandle, open for writing, by calling the method :meth:`add_result() <graf.task_base.GrafTaskBase.add_result>` of the :class:`GrafTaskBase <graf.task_base>` class and assigning the result to a variable, say *out*.  From then on you can write output simply by saying::
 
     out.write(text)
 

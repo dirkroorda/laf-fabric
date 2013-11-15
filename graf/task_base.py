@@ -16,10 +16,11 @@ class GrafTaskBase(Graf):
     The methods in this class are either low level methods or methods common to all derived classes.
     The methods in the derived classes that are implemented differently are not defined in this class.
 
-    .. note:: The methods ``Fi`` and ``Fr`` must be defined in all derived classes.
+    .. note:: The methods :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>` and :meth:`Fr() <graf.task_plain.GrafTaskPlain.Fr>` must be defined in all derived classes.
 
         The base class method :meth:`get_mappings` returns a set of code references, so that the task can give those methods
-        convenient, local names. It also returns references to ``Fi`` and ``Fr``, despite the fact that these are only defined in
+        convenient, local names.
+        It also returns references to :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>` and :meth:`Fr() <graf.task_plain.GrafTaskPlain.Fr>`, despite the fact that these are only defined in
         derived classes.
 
     '''
@@ -37,7 +38,7 @@ class GrafTaskBase(Graf):
         '''Upon creation, an object is passes the locations for his source and destination data.
         
         Args:
-            bin_dir (str): piece of the file path between the ``result_dir`` and the compiled LAF binary files
+            bin_dir (str): piece of the file path between the *result_dir* and the compiled LAF binary files
             result_dir (str): path to the result directory
             source (str): name of the selected source (a *GrAF header file*), usually specified by the user on the command line
         '''
@@ -62,7 +63,7 @@ class GrafTaskBase(Graf):
         That is: load the compiled data, follow the directives of the chosen flavour of optimization, and initialize the task itself.
 
         Args:
-            directives (dict): a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the ``precompute`` dictionary).
+            directives (dict): a dictionary of information items relevant to the chosen optimization flavour. This information is read from the chosen task (the *precompute* dictionary).
         '''
         self.loader(directives[self.flavour_detail])
         self.init_task()
@@ -210,7 +211,7 @@ class GrafTaskBase(Graf):
 
         Args:
             data (array): see next
-            data_items (array): together with ``data`` the arrayified data
+            data_items (array): together with *data* the arrayified data
             elem (int): the integer for which we want its related set of integers.
         '''
         data_items_index = data[elem - 1]
@@ -225,7 +226,7 @@ class GrafTaskBase(Graf):
 
         Args:
             data (array): see next
-            data_items (array): together with ``data`` the arrayified data
+            data_items (array): together with *data* the arrayified data
             elem (int): the integer for which we want its related set of integers.
             item (int): the integer whose presence in the related items set is to be tested.
         '''
@@ -236,7 +237,7 @@ class GrafTaskBase(Graf):
 
         Args:
             data (array): see next
-            data_items (array): together with ``data`` the arrayified data
+            data_items (array): together with *data* the arrayified data
             elem (int): the integer for which we want its related set of integers.
             items (array or list of integers): the set of integers whose presence in the related items set is to be tested.
         '''

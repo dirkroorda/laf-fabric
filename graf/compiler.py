@@ -119,7 +119,7 @@ class GrafCompiler(Graf):
     def compiler(self, force=False):
         '''Manages the complete compilation process.
 
-        Detects the need for compiling, responds to the ``force`` argument. Then parses, remodels and writes.
+        Detects the need for compiling, responds to the *force* argument. Then parses, remodels and writes.
 
         Args:
             force (bool): whether to compile even if the binary data looks up to date.

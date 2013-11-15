@@ -5,6 +5,24 @@ import os
 import array
 
 def arrayify(source_list):
+    '''Efficient storage of a list of lists of integers in two Python :py:mod:`array`.
+
+    *This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!*
+
+    Args:
+        source_list (iterable): a list of lists of integers
+    
+    Returns:
+        (index_array, items_array): two :py:mod:`array` s.
+        *index_array* contains an index for each item in *source_list*.
+        *items_array* contains all the items in the following way: if an item with *n* members has to be added,
+        then first the number *n* is added, and then all the members.
+        This is how you get the original information back: if you want the 
+        members of item *i* in *source_list*, read number *i* in *index_array*, say *k*, go to position *k* in
+        *items_array*, read the number at that position, say *n*,
+        and then find the members at the next *n* positions in *items_array*.
+
+    '''
     dest_array = array.array('I')
     dests_array = array.array('I')
     j = 0

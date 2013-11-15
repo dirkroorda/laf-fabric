@@ -18,7 +18,7 @@ class GrafTaskPlain(GrafTaskBase):
 
     def __init__(self, bin_dir, result_dir, task, source, flavour_detail):
         '''An object is created with the parameters for the base class :class:`GrafTaskBase <graf.task_base.GrafTaskBase>`
-        plus a flavour related parameter ``flavour_detail`` that is not relevant for this flavour.
+        plus a flavour related parameter *flavour_detail* that is not relevant for this flavour.
         '''
         GrafTaskBase.__init__(self, bin_dir, result_dir, task, source)
         self.flavour_detail = flavour_detail

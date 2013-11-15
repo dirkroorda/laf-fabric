@@ -19,7 +19,9 @@ node_prop = {}
 class GrafTaskAssembler(GrafTaskBase):
     '''Class with optimization flavour ``assemble`` or ``assemble_all`` for task execution.
 
-    This flavour uses indexes to speed up feature lookup. The ``plain`` implementations of the methods ``Fi`` and ``Fr``
+    This flavour uses indexes to speed up feature lookup.
+    The ``plain`` implementations of the methods
+    :meth:`Fi() <graf.task_plain.GrafTaskPlain.Fi>` and :meth:`Fr() <graf.task_plain.GrafTaskPlain.Fr>` 
     first fetch the set of all features that belong to a node and then filter by iterating over them. This implementation
     builds indexes for the features, so that given label and name of a feature its value for a certain node or edge can be
     looked up from a dictionary.
@@ -32,7 +34,7 @@ class GrafTaskAssembler(GrafTaskBase):
     ``assemble_all``
         index absolutely every feature
     ``assemble``
-        index only the features that the task declares as being used (in its ``precompute`` dictionary)
+        index only the features that the task declares as being used (in its *precompute* dictionary)
 
     The latter method is recommended. Although the indexing of all features does not cost much more time than the indexing of a single feature,
     the space requirement can be huge. The reason for the speed behaviour is that even if you index just one feature, the indexer has to
@@ -48,7 +50,7 @@ class GrafTaskAssembler(GrafTaskBase):
 
         Args:
             flavour_detail (str): there are two options in this flavour: ``assemble`` and ``assemble_all``. This parameter specifies the option.
-                This value is used to look up the flavour directives in the task script's ``precompute`` dictionary.
+                This value is used to look up the flavour directives in the task script's *precompute* dictionary.
         '''
 
         GrafTaskBase.__init__(self, bin_dir, result_dir, task, source)
@@ -92,7 +94,7 @@ class GrafTaskAssembler(GrafTaskBase):
         Args:
             kind (str): indication whether nodes or edges are considered. Only used for progress and log messages.
             lsource_feat (array): see below
-            lsource_feat_items (array): together with ``lsource_feat`` the array data for the feature set to be indexed
+            lsource_feat_items (array): together with *lsource_feat* the array data for the feature set to be indexed
             dest (dict): the destination dictionary for the index
             only (str): string specifying the features selected for indexing
         '''
@@ -113,7 +115,7 @@ class GrafTaskAssembler(GrafTaskBase):
         '''Assemble indexes for sleected features only.
 
         The specification of which features are selected is still a string.
-        Here we compile it into a dictionary ``only``, keyed with the feature label and then the feature name.
+        Here we compile it into a dictionary *only*, keyed with the feature label and then the feature name.
         While doing so we check whether the indexes exist and are all up to date (:meth:`_needs_indexing`).
         If even one index needs to be (re)built, we (re)build all indexes needed and save them.
         Otherwise we load all indexes instead of building and saving them.
@@ -124,7 +126,7 @@ class GrafTaskAssembler(GrafTaskBase):
 
         Args:
             lsource_feat (array): see below
-            lsource_feat_items (array): together with ``lsource_feat`` the array data for the feature set to be indexed
+            lsource_feat_items (array): together with *lsource_feat* the array data for the feature set to be indexed
             dest (dict): the destination dictionary for the overall index
             onlystring (str): string specifying the features selected for indexing
 
@@ -181,7 +183,7 @@ class GrafTaskAssembler(GrafTaskBase):
 
         Args:
             lsource_feat (array): see below
-            lsource_feat_items (array): together with ``lsource_feat`` the array data for the feature set to be indexed
+            lsource_feat_items (array): together with *lsource_feat* the array data for the feature set to be indexed
             dest (dict): the destination dictionary for the index
         '''
 
@@ -231,22 +233,22 @@ class GrafTaskAssembler(GrafTaskBase):
                 dest[label][name] = cPickle.load(p_handle)
 
     def _index_file(self, kind, label, name):
-        '''Compute the file path of the index for the feature with ``name`` and ``label``.
+        '''Compute the file path of the index for the feature with *name* and *label*.
         '''
         return "{}/index_{}_{}_{}.bin".format(self.bin_dir, kind, self.rep_label(label), self.rep_fname(name))
 
     def _needs_indexing(self, kind, label, name):
-        '''Determine whether the index for the feature with ``name`` and ``label`` exists and is up to date.
+        '''Determine whether the index for the feature with *name* and *label* exists and is up to date.
 
         Up to date means that the index is newer than the compiled LAF resource.
         Every compiled LAF resource has a statistics file, and its modification time is used as reference.
-        So if you ``touch`` that file, all indexes will be recomputed. But you can also pass the ``--force-index`` flag.
+        So if you *touch* that file, all indexes will be recomputed. But you can also pass the ``--force-index`` flag.
 
         .. note:: Rebuilding the index.
             There is a difference however. If you say ``--force-index`` when issuing a task, only indexes used by that task 
             will be rebuilt.
 
-            If you ``touch`` the compiled statistics file, every task will recompute its indexes until all indexes have been rebuilt.
+            If you *touch* the compiled statistics file, every task will recompute its indexes until all indexes have been rebuilt.
         '''
 
         index_file = self._index_file(kind, label, name)
@@ -262,7 +264,7 @@ class GrafTaskAssembler(GrafTaskBase):
 
     def Fr(self, node, label, name):
         '''Feature value lookup returning the value string representation.
-        See method :meth:`Fi`.
+        See method :meth:`Fi()`.
         ''' 
         feat_value_list_int = self.data_items["feat_value_list_int"][1]
         return feat_value_list_int[node_prop[label][name][node]]

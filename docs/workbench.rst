@@ -17,12 +17,17 @@ The typical workflow is:
 
 #. install a LAF resource somewhere on the filesystem. A LAF resource is a directory with a primary data file, annotation files and header files.
 #. install the LAF workbench package somewhere on a computing system.
-#. configure a calling script with the locations of the LAF directory and a work/results directory
-#. write your own script, and put it where the workbench can see it
+#. in a configuration file, adapt the locations of the LAF directory and a work/results directory
+#. write your own script, and put it in the right directory
 #. run the workbench by invoking the calling script
 
-The first time the workbench is used, the LAF resource will be compiled. This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
+The workbench provides you with a prompt, after which you can select among the available data sources, tasks and optimization flavours (see below).
+You can run your selection, modify the selection, run it again, ad libitum. During this session loading and unloading of data will be done
+only when it is really needed. So I you have to debug a script, you can do so without irritating waits for loading data all the time.
+
+The first time a source is used, the LAF resource will be compiled. This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
 All subsequent times the compiled data will be loaded directly, which takes, in the same setting, 5 to 10 seconds.
+But loading will only occur the first time when you execute a task in a session after switching to it.
 
 After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold. There are several *optimization flavours*, but the one that builds indexes is the only one that actually manages to increase the performance.
 
@@ -47,32 +52,19 @@ Before running the workbench, the calling script has to be configured.
 
 Configuration
 ^^^^^^^^^^^^^
-The calling script is *laf-fabric.py*.
+The configuration file script is *laf-fabric.cfg*.
 In it is a configuration section::
 
-	## CONFIG START
+    [locations]                                     ; paths in the file system
+    data_root: /Users/dirk/Scratch/shebanq/results  ; working directory
+    laf_source: laf                                 ; subdirectory for the LAF data
+    compiled_source: db                             ; subdirectory for task results
+    bin_dir: bin                                    ; subdirectory of specific tasks
 
-	# working directory: contains subdirectories for (1) the LAF data (2) the task results
-	data_root = '/Users/dirk/Scratch/shebanq/results'
-
-	# subdirectory for the LAF data
-	laf_source = 'laf'
-
-	# subdirectory for task results
-	compiled_source = 'db'
-
-	# sources are subsets of the given laf resource. 
-	# A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations
-	# that are present in the LAF resource.
-	source_choices = {
-    	"tiny": 'bhs3.txt-tiny.hdr',
-    	"test": 'bhs3.txt-bhstext.hdr',
-    	"total": 'bhs3.txt.hdr',
-	}
-
-	## CONFIG END
-
-The things to change here are:
+    [source_choices]                                ; several GrAF header files
+    tiny: bhs3.txt-tiny.hdr
+    test: bhs3.txt-bhstext.hdr
+    total: bhs3.txt.hdr
 
 * *data_root*: point to the folder containing your LAF directory.
 * *laf_source*: change into the directory name of your LAF directory.
@@ -80,42 +72,43 @@ The things to change here are:
 * *source_choices*: read on ...
 
 Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*. The workbench needs to look at a *GrAF header file*.
-This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The *source_choices* dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option ``--source=key`` to select the header file that you want to point the workbench to.
+This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The *source_choices* dictionary must contain all GrAF header files that you want to choose from.
 
 Now you are set to run your tasks. You might want to run an example task from the examples in the *tasks* directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the *tasks* directory. See :doc:`Writing Tasks <taskwriting>`.
 
 Usage
 ^^^^^
-The workbench is a Python program that is invoked from the command line. It loads data, runs a task script, and then exits. Between invocations the workbench is not loaded in memory and does not eat CPU cycles.
-
-For every single task execution you invoke the workbench by its calling script *laf-fabric.py*, supplying parameters for selecting the LAF source, the task and the optimization flavour. And there are miscellaneous options, of course. 
+The workbench is a Python program that is invoked from the command line.
+It prompts you for tasks and source and flavour and commands to run tasks or quit.
 
 Go to the directory where *laf-fabric.py* resides::
 
 	cd «path_to_dir_of_laf-fabric.py»
 
-Then issue the following command, where ``«string»`` stands for variable text that you should provide, and material within ``[ ]`` is optional::
+	python laf-fabric.py 
 
-	python laf-fabric.py --source=«source» --optim=«flavour» --task=«task» [--force-compile] [--force-index]
+Explanation of the *flavour* options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*plain*
+    no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive.
+    By not optimizing you pay for that.
+*assemble*
+    read the feature declarations of the task at hand, and ensure that indexes exist for those features
+    Create and save them if they do not exist, load them when they do exist.
+*assemble-all*
+    create all possible indexes.
+    This takes a few minutes, but takes a fair amount of space, both on disk and in memory.
+    At present there is no provision to save the index. It is recommended to use ``assemble-all``.
+    The index is shared between tasks on the same «source», so the indexes will be built gradually on demand and not exceed what is really needed.
+    After a while there will be little need for new tasks to create new indexes.
+*memo*
+    feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible.
+    Otherwise the feature value will be looked up and stored in the cache.
+    It turns out not to be very efficient, because in many tasks feature values are only needed once.
+    So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space. 
 
-Explanation
-
-``«source»``
-	the key for the GrAF header file that you use to point to your LAF resource
-``«task»``
-	the task that you want to execute. Must be a python script in the *tasks* directory
-``«flavour»``
-	the flavour of the optimization that you want to apply. Choices are:
-
-	``plain``
-		no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.
-	``assemble``
-		read the feature declarations of the task at hand, and ensure that indexes exist for those features. Create and save them if they do not exist, load them when they do exist.
-	``assemble-all``
-		create all possible indexes. This takes a few minutes, but takes a fair amount of space, both on disk and in memory. At present there is no provision to save the index. It is recommended to use ``assemble-all``. The index is shared between tasks on the same «source», so the indexes will be built gradually on demand and not exceed what is really needed. After a while there will be little need for new tasks to create new indexes.
-	``memo``
-		feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible. Otherwise the feature value will be looked up and stored in the cache. It turns out not to be very efficient, because in many tasks feature values are only needed once. So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space. 
-
+Other options
+^^^^^^^^^^^^^
 ``--force-compile``
 	If you have changed the LAF resource, the workbench will detect it and recompile it. The detection is based on the modified dates of the GrAF header file and the compiled files. In cases where the workbench did not detect a change, but you need to recompile, use this flag.
 
@@ -188,7 +181,3 @@ Many reasonable candidates for an API have not yet been implemented. Basically w
 
 Now Python does not have strict encapsulation of data structures, so by just inspecting the classes and objects you can reach out for all aspects of the LAF data that went into the compiled data. See the GrAF feature coverage for a specification of what data ends up in the compilation.
 
-User Interface
-^^^^^^^^^^^^^^
-The current command line interface allows the execution of a single task, and then the workbench exits. Rerunning the task requires reloading the data and indexes.
-This is cumbersome when you are debugging tasks. I want to extend the command line interface to allow for repeated task execution and source switching with minimal reloading.

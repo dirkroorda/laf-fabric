@@ -45,6 +45,11 @@ class Timestamp():
             return "{:>2d}m {:>02d}s".format(interval // 60, interval % 60)
         return "{:>2d}h {:>02d}m {:>02d}s".format(interval // 3600, (interval % 3600) // 60, interval % 60)
 
+    def reset(self):
+        '''Set the time to the current time
+        '''
+        self.timestamp = time.time()
+
     def connect_log(self, log_file):
         '''Connects a log file to the object.
 

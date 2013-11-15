@@ -1,88 +1,37 @@
 # -*- coding: utf8 -*-
 import os
+import codecs
 import glob
 import sys
 import argparse
+import ConfigParser
 from graf import GrafTask
 
-## USAGE
+### USAGE
 
-# python do_graf_task --source=name --task=name --optim=name --force-compile --force-index
+# python laf-fabric.py
 
-# Executes a task on source material, using a certain method of optimization.
-# Optionally recompiles the source and indexes.
-# Normally, the program detects when recompilation of sources is needed anda recreation of indexes.
+### CONFIG
 
-# directory structure of the data (not of the package!):
-#
-# data_root/laf_source
-# data_root/compiled_source
-# data_root/compiled_source/specific_source1
-# data_root/compiled_source/specific_source1/bin_dir
-# data_root/compiled_source/specific_source1/bin_dir/compiled_laf_file*.bin
-# data_root/compiled_source/specific_source1/bin_dir/compiled_laf_file*.txt
-# data_root/compiled_source/specific_source1/bin_dir/index*.txt
-# data_root/compiled_source/specific_source1/task1
-# data_root/compiled_source/specific_source1/task1/__log_task1.txt
-# data_root/compiled_source/specific_source1/task1/__output.txt
-# data_root/compiled_source/specific_source1/task2
-# data_root/compiled_source/specific_source2
-# ...
+MAIN_CFG = 'laf-fabric.cfg'
 
-## CONFIG START
+settings = ConfigParser.ConfigParser()
+settings.readfp(codecs.open(MAIN_CFG, encoding = 'utf-8'))
 
-# working directory: contains subdirectories for (1) the LAF data (2) the task results
-data_root = '/Users/dirk/Scratch/shebanq/results'
+source_choices = {}
+for (key, value) in settings.items('source_choices'):
+    source_choices[key] = value
 
-# subdirectory for the LAF data
-laf_source = 'laf'
-
-# subdirectory for task results
-compiled_source = 'db'
-
-# sources are subsets of the given laf resource. 
-# A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations
-# that are present in the LAF resource.
-source_choices = {
-    "tiny": 'bhs3.txt-tiny.hdr',
-    "test": 'bhs3.txt-bhstext.hdr',
-    "total": 'bhs3.txt.hdr',
-}
-
-## CONFIG END
-
-# subdirectory of specific tasks where the compiled data is found
-bin_dir = 'bin'
+data_root = settings.get('locations', 'data_root')
+laf_source = settings.get('locations', 'laf_source')
+compiled_source = settings.get('locations', 'compiled_source')
+bin_dir = settings.get('locations', 'bin_dir')
 
 cur_dir = os.getcwd()
-
-# tasks are the python scripts in the tasks directory, below the current directory which must be
-# the directory of this script.
-# The chosen task is imported by the graf module.
 
 task_dir = 'tasks'
 task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("tasks/*.py")]
 
-# The action of feature lookup for nodes and edges is costly, because of the compact nature of the compiled data.
-# So we study means of improving the efficiency of feature lookups.
-#
-# Process flavours are optimizations of the ways in tasks are executed.
-# The assemble flavours build indexes (and save and load them) for looking up features.
-# The assemble_all flavour builds an index for all features. This drives memory usage close to unacceptable levels.
-# Assemble_all does not save and reload indexes between runs. It takes one to two minutes.
-# Assemble (without all) selectively indexes the features that have been declared in the task. It usually takes 40 seconds to 2 minutes.
-# The computed indexes are saved, and loaded the next time. Loading takes 10 to 15 seconds.
-# Currently, this is the most efficient way of running tasks. 
-#
-# The memo flavour stores results of feature lookups to be used instead of subsequent lookups.
-# The results are not promising. Probably in many tasks the majority of features needs to be computed only once.
-# Moreover, there is overhead in deciding whether a value has to be facthed from cache or to be computed fresh.
-#
-# The plain flavour does not do optimizations.
-# Typically, a task that takes 3 minutes under the plain flavour, takes a few seconds under the assemble flavour.
-# The plain flavour does not have to compute/load indexes, so the task is started 10 to 15 seconds earlier.
-# When debugging, this can be handy.
- 
 process_flavours = {
     "plain": "plain",
     "memo": "memo",

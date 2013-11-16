@@ -2,19 +2,13 @@
 import collections
 import sys
 
-precompute = {
-    "plain": {},
-    "memo": {},
-    "assemble": {
-        "only_nodes": "db:otype ft:gender sft:verse_label,chapter,book",
-        "only_edges": '',
-    },
-    "assemble_all": {
-    },
+features = {
+    "nodes": "db:otype ft:gender sft:verse_label,chapter,book",
+    "edges": '',
 }
 
 def task(graftask):
-    (msg, Li, Lr, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
+    (msg, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
     stats_file = graftask.add_result("stats.txt")
 
     type_map = collections.defaultdict(lambda: None, [
@@ -27,7 +21,7 @@ def task(graftask):
 
     cur_chapter = None
     for node in NN():
-        otype = Fr(node, Li["db"], Ni["otype"])
+        otype = Fr(node, Ni["db.otype"])
         if not otype:
             continue
         ob = type_map[otype]
@@ -35,12 +29,12 @@ def task(graftask):
             continue
         if ob == "w":
             stats[0] += 1
-            if Fi(node, Li["ft"], Ni["gender"]) == Vi["masculine"]:
+            if Fi(node, Ni["ft.gender"]) == Vi["masculine"]:
                 stats[1] += 1
-            elif Fi(node, Li["ft"], Ni["gender"]) == Vi["feminine"]:
+            elif Fi(node, Ni["ft.gender"]) == Vi["feminine"]:
                 stats[2] += 1
         elif ob == "Ch":
-            this_chapter = "{} {}".format(Fr(node, Li["sft"], Ni["book"]), Fr(node, Li["sft"], Ni["chapter"]))
+            this_chapter = "{} {}".format(Fr(node, Ni["sft.book"]), Fr(node, Ni["sft.chapter"]))
             sys.stderr.write("\r{:<15}".format(this_chapter))
             if stats[0] == None:
                 stats_file.write("\t".join(('chapter', 'masc_f', 'fem_f', 'fem_masc_r')) + "\n")

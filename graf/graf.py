@@ -41,8 +41,8 @@ class Graf(object):
     '''name of the compile task
     '''
 
-    bin_dir = None
-    '''location of the compiled data files corresponding to a LAF resource
+    env = None
+    '''Holds the environment parameters for the current task
     '''
     stamp = None
     '''object that contains a timestamp and can deliver progress messages with timing information
@@ -50,11 +50,8 @@ class Graf(object):
     log = None
     '''handle of a log file, open for writing
     '''
-    stat_file = None
-    '''handle of a statistics file, open for writing
-    '''
 
-    def __init__(self, bin_dir):
+    def __init__(self):
         '''Upon creation, empty datastructures are initialized to hold the binary, compiled LAF data and create a directory for their serializations on disk.
 
         The Graf object holds information that Graf tasks need to perform their operations. The most important piece of information is the data itself.
@@ -67,9 +64,6 @@ class Graf(object):
         #. if the directory that should hold the compiled data does not exist, a new directory is created Of course this means that before executing any tasks,
            the LAF resource has to be (re)compiled. 
 
-        Args:
-            bin_dir (str): location of the compiled data on disk (one directory contains all those files)
-
         Returns:
             object with data structures initialized, ready to load the compiled data from disk.
         '''
@@ -77,8 +71,6 @@ class Graf(object):
         '''Instance member holding the :class:`Timestamp <graf.timestamp.Timestamp>` object.'''
 
         self.data_items = {
-            "annot_label_list_rep": [False, {}],
-            "annot_label_list_int": [False, {}],
             "feat_name_list_rep": [False, {}],
             "feat_name_list_int": [False, {}],
             "feat_value_list_rep": [False, {}],
@@ -107,21 +99,55 @@ class Graf(object):
         See the :mod:`compiler <graf.compiler>` and :mod:`model <graf.model>` modules for the way the compiled data is organised.
         '''
 
-        self.bin_dir = bin_dir
-        '''Instance member holding location of the compiled data on disk (one directory contains all those files)'''
-
         try:
-            if not os.path.exists(bin_dir):
-                os.makedirs(bin_dir)
+            if not os.path.exists(env['bin_dir']):
+                os.makedirs(env['bin_dir'])
         except os.error:
             raise GrafException(
-                "ERROR: could not create bin directory {}".format(bin_dir),
+                "ERROR: could not create bin directory {}".format(env['bin_dir']),
                 self.stamp, os.error
             )
-        self.stat_file = "{}/{}{}.{}".format(
-            bin_dir, self.STAT_NAME, self.COMPILE_TASK, self.TEXT_EXT
+        self.env['stat_file'] = "{}/{}{}.{}".format(
+            env['bin_dir'], self.STAT_NAME, self.COMPILE_TASK, self.TEXT_EXT
         )
         '''Instance member holding name and location of the statistics file that describes the compiled data'''
+
+    def set_environment(self, source, task, settings):
+        '''Set the source and result locations for a task execution.
+
+        Args:
+            source (str): key for the source
+            task: the chosen task
+            settings (dict): the parsed contents of the main configuration file
+
+        Sets *self.env*, a dictionary containg:
+
+        * source: *source*
+        * task: *task*
+        * data_file (str): file name of the GrAF header file indicated by *source*
+        * data_dir (str): absolute path to where the LAF data resides
+        * bin_dir (str): absolute path to where the compiled binary data resides
+        * feat_dir (str): absolute path to where the compiled binary feature data resides
+        * result_dir (str): absolute path to where the results of the execution of *task* ends up
+        * compile (bool): whether to force (re)compilation
+
+        '''
+        data_root = settings.get('locations', 'data_root')
+        laf_source = settings.get('locations', 'laf_source')
+        compiled_source = settings.get('locations', 'compiled_source')
+        bin_subdir = settings.get('locations', 'bin_subdir')
+        feat_subdir = settings.get('locations', 'feat_subdir')
+
+        self.env = {
+            'source': source,
+            'task': task,
+            'data_file': source_choices[source],
+            'data_dir': '{}/{}'.format(data_root, laf_source),
+            'bin_dir': '{}/{}/{}/{}'.format(data_root, compiled_source, source, bin_subdir),
+            'feat_dir': '{}/{}/{}/{}/{}'.format(data_root, compiled_source, source, bin_subdir, feat_subdir),
+            'result_dir': '{}/{}/{}/{}'.format(data_root, compiled_source, source, task),
+            'compile': False,
+        }
 
     def __del__(self):
         '''Clean up
@@ -135,16 +161,19 @@ class Graf(object):
             if handle and not handle.closed:
                 handle.close()
 
-    def add_logfile(self, log_dir, task):
+    def add_logfile(self, location=None, name=None):
         '''Create and open a log file for a given task.
 
         When tasks run, they generate progress messages with timing information in them.
         They may issue errors and warnings. All this information also goes into a log file.
+        The log file is placed in the result directory of the task at hand.
 
         Args:
-            log_dir (str): the name of the directory in which the log file must be placed
-            task (str): the name of the task the log file is for
+            location (str): override default directory for log file
+            name (str): override default name for log file
         '''
+        log_dir = self.env['result_dir'] if not location and not name else u'{}/{}'.format(location, name)
+
         try:
             if not os.path.exists(log_dir):
                 os.makedirs(log_dir)
@@ -155,7 +184,7 @@ class Graf(object):
             )
 
         log_file = "{}/{}{}.{}".format(
-            log_dir, self.LOG_NAME, task, self.TEXT_EXT
+            log_dir, self.LOG_NAME, self.env['task'], self.TEXT_EXT
         )
         self.log = codecs.open(log_file, "w", encoding = 'utf-8')
         '''Instance member holding the open log handle'''
@@ -172,7 +201,7 @@ class Graf(object):
 
         The compile process generates some statistics that must be read by the task that loads the compiled data.
         '''
-        stat = codecs.open(self.stat_file, "w", encoding = 'utf-8')
+        stat = codecs.open(self.env['stat_file'], "w", encoding = 'utf-8')
         for (label, info) in self.data_items.items():
             (is_binary, data) = info 
             stat.write(u"{}={}\n".format(label, len(data)))
@@ -183,7 +212,7 @@ class Graf(object):
 
         The compile process generates some statistics that must be read by the task that loads the compiled data.
         '''
-        stat = codecs.open(self.stat_file, "r", encoding = 'utf-8')
+        stat = codecs.open(self.env['stat_file'], "r", encoding = 'utf-8')
         self.stats = {}
         for line in stat:
             (label, count) = line.rstrip("\n").split("=")

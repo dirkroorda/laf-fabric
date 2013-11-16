@@ -3,19 +3,13 @@
 import collections
 import sys
 
-precompute = {
-    "plain": {},
-    "memo": {},
-    "assemble": {
-        "only_nodes": "db:otype,monads,maxmonad,minmonad ft:gender,part_of_speech sft:verse_label",
-        "only_edges": '',
-    },
-    "assemble_all": {
-    },
+features = {
+    "nodes": "db:otype,monads,maxmonad,minmonad ft:gender,part_of_speech sft:verse_label",
+    "edges": '',
 }
 
 def task(graftask):
-    (msg, Li, Lr, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
+    (msg, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 
@@ -43,14 +37,14 @@ def task(graftask):
                 out.write(u"◘".format(monads))
             else:
                 outchar = u"."
-                if Fi(node, Li["ft"], Ni["part_of_speech"]) == Vi["noun"]:
-                    if Fi(node, Li["ft"], Ni["gender"]) == Vi["masculine"]:
+                if Fi(node, Ni["ft.part_of_speech"]) == Vi["noun"]:
+                    if Fi(node, Ni["ft.gender"]) == Vi["masculine"]:
                         outchar = u"♂"
-                    elif Fi(node, Li["ft"], Ni["gender"]) == Vi["feminine"]:
+                    elif Fi(node, Ni["ft.gender"]) == Vi["feminine"]:
                         outchar = u"♀"
-                    elif Fi(node, Li["ft"], Ni["gender"]) == Vi["unknown"]:
+                    elif Fi(node, Ni["ft.gender"]) == Vi["unknown"]:
                         outchar = u"?"
-                if Fi(node, Li["ft"], Ni["part_of_speech"]) == Vi["verb"]:
+                if Fi(node, Ni["ft.part_of_speech"]) == Vi["verb"]:
                     outchar = u"♠"
                 out.write(outchar)
             if monads in watch:
@@ -60,7 +54,7 @@ def task(graftask):
                         out.write("{})".format(o))
                 del watch[monads]
         elif ob == "V":
-            this_verse_label = Fr(node, Li["sft"], Ni["verse_label"])
+            this_verse_label = Fr(node, Ni["sft.verse_label"])
             cur_verse_label[0] = this_verse_label
             cur_verse_label[1] = this_verse_label
         elif ob == "S":
@@ -77,16 +71,16 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = Fr(i, Li["db"], Ni["otype"])
+        otype = Fr(i, Ni["db.otype"])
         if not otype:
             continue
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = Fr(i, Li["db"], Ni["monads"])
-        minm = Fr(i, Li["db"], Ni["minmonad"])
-        maxm = Fr(i, Li["db"], Ni["maxmonad"])
+        monads = Fr(i, Ni["db.monads"])
+        minm = Fr(i, Ni["db.minmonad"])
+        maxm = Fr(i, Ni["db.maxmonad"])
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

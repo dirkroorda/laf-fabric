@@ -23,23 +23,12 @@ source_choices = {}
 for (key, value) in settings.items('source_choices'):
     source_choices[key] = value
 
-data_root = settings.get('locations', 'data_root')
-laf_source = settings.get('locations', 'laf_source')
-compiled_source = settings.get('locations', 'compiled_source')
-bin_dir = settings.get('locations', 'bin_dir')
 
 cur_dir = os.getcwd()
 sys.path.append("{}/tasks".format(cur_dir))
 
 task_dir = 'tasks'
 task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("tasks/*.py")]
-
-process_flavours = {
-    "plain": "plain",
-    "memo": "memo",
-    "assemble": "assemble",
-    "assemble_all": "assemble",
-}
 
 def weave(data):
     n_rows = max([len(col) for col in data])
@@ -126,13 +115,11 @@ def command_loop():
     kindrep = [
         'source',
         'task',
-        'flavour',
     ]
 
     default = [
         2, # source
         0, # task
-        0, # flavour
     ]
 
     for i in range(len(kindrep)):
@@ -141,7 +128,7 @@ def command_loop():
         kinds[krlong] = i
         kinds[krshort] = i
 
-    (prompt_data, index) = weave((sorted(source_choices.keys()), sorted(task_choices), sorted(process_flavours)))
+    (prompt_data, index) = weave((sorted(source_choices.keys()), sorted(task_choices)))
     cur = [default[i] for i in range(len(index))]
 
     goodcommand = True
@@ -205,14 +192,14 @@ def command_loop():
 
 graftask = None
 
-def runtask(source, task, flavour):
+def runtask(source, task):
     '''Runs a single task in a given setting.
 
     Depending on the parameters it loads and unloads data.
     It takes care not to reload things that are already in memory.
     However, it will unload everything that is not needed for this task in this setting, in order not to burden tasks with unnecessary memory consumption.
 
-    Even if none of *source*, *task*, and *flavour* have changed since the last run, it might be needed to unload and load indexes, because
+    Even if none of *source* and *task* have changed since the last run, it might be needed to unload and load feature data, because
     the code for the task itself may have changed.
 
     If *source* has changed, we really do have to start a new
@@ -220,39 +207,29 @@ def runtask(source, task, flavour):
     Args:
         source (str): the name of the source that provides the data for this task.
         task (str): the name of the task.
-        flavour (str): the optimization flavour to be used when executing the task.
     '''
-    print "Running task(source={}, task={}, flavour={})".format(source, task, flavour)
+
+    print "Running task(source={}, task={})".format(source, task)
+
     global graftask
     if not graftask or graftask.source != source:
         if graftask:
             graftask = None # take care that there are no other pointers to this object
-        graftask = GrafTask(
-            task=task,
-            source=source,
-            data_dir='{}/{}'.format(data_root, laf_source),
-            data_file=source_choices[source],
-            bin_dir='{}/{}/{}/{}'.format(data_root, compiled_source, source, bin_dir),
-            result_dir='{}/{}/{}/{}'.format(data_root, compiled_source, source, task),
-            compile=False,
-        ).processor_factory(
-            flavour=process_flavours[flavour],
-            flavour_detail=flavour,
-            index=False
-        )
+        graftask = GrafTask(source, task, settings)
 
-        exec("from {} import precompute".format(task))
+        exec("from {} import features".format(task))
         exec("from {} import task".format(task))
 
-        graftask.setup(precompute)
+        graftask.setup(features)
         task(graftask) 
         graftask.finish_task()
     else:
-        if graftask.source == source and graftask.task == task and graftask.flavour_detail == flavour:
-            exec("from {} import precompute".format(task))
+        if graftask.env['source'] == source and graftask.env['task'] == task:
+            exec("from {} import features".format(task))
             exec("from {} import task".format(task))
 
             graftask.stamp.reset()
+            graftask.setup(features)
             task(graftask) 
             graftask.finish_task()
         else:

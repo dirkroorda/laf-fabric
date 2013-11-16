@@ -1,23 +1,17 @@
 # -*- coding: utf8 -*-
 
-precompute = {
-    "plain": {},
-    "memo": {},
-    "assemble": {
-        "only_nodes": "db:oid,otype,monads",
-        "only_edges": '',
-    },
-    "assemble_all": {
-    },
+features = {
+    "nodes": "db:oid,otype,monads",
+    "edges": '',
 }
 
 def task(graftask):
-    (msg, Li, Lr, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
+    (msg, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 
     for i in NN():
-        oid = Fr(i, Li["db"], Ni["oid"])
-        otype = Fr(i, Li["db"], Ni["otype"])
-        monads = Fr(i, Li["db"], Ni["monads"])
+        oid = Fr(i, Ni["db.oid"])
+        otype = Fr(i, Ni["db.otype"])
+        monads = Fr(i, Ni["db.monads"])
         out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))

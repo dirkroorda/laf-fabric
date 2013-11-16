@@ -129,49 +129,5 @@ def model(data_items, temp_data_items, stamp):
     edges_out = None
     edges_in = None
 
-    stamp.progress("NODES/EDGES AND FEATURES")
-
-    annot_type = temp_data_items["annot_type"]
-    annot_ref = temp_data_items["annot_ref"]
-    annot_label = temp_data_items["annot_label"]
-
-    feat_annot = temp_data_items["feat_annot"]
-    n_feat = len(feat_annot)
-
-    feat_label = array.array('H')
-    node_feats = [[] for i in xrange(n_node)]
-    edge_feats = [[] for i in xrange(n_edge)]
-
-    for i in xrange(n_feat):
-        aref = feat_annot[i]
-        label = annot_label[aref - 1]
-        atype = annot_type[aref - 1]
-        ref = annot_ref[aref - 1]
-        feat_label.append(label)
-        if atype == 'n':
-            node_feats[ref - 1].append(i + 1)
-        elif atype == 'e':
-            edge_feats[ref - 1].append(i + 1)
-
-    (node_feat, node_feat_items) = arrayify(node_feats)
-    (edge_feat, edge_feat_items) = arrayify(edge_feats)
-    result_items.append(("feat_label", feat_label))
-    result_items.append(("node_feat", node_feat))
-    result_items.append(("node_feat_items", node_feat_items))
-    result_items.append(("edge_feat", edge_feat))
-    result_items.append(("edge_feat_items", edge_feat_items))
-
-    node_feats = None
-    edge_feats = None
-
-    annot_type = None
-    del temp_data_items["annot_type"]
-    annot_ref = None
-    del temp_data_items["annot_ref"]
-    annot_label = None
-    del temp_data_items["annot_label"]
-    feat_annot = None
-    del temp_data_items["feat_annot"]
-
     return result_items
 

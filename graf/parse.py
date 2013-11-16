@@ -6,6 +6,7 @@ from xml.sax import parse as saxparse, SAXException
 from xml.sax.handler import ContentHandler
 
 import array
+import collections
 
 good_regions = 0
 linked_nodes = 0
@@ -34,8 +35,6 @@ id_node = 0
 id_edge = 0
 id_annot = 0
 
-annot_label_list_rep = {}
-annot_label_list_int = {}
 feat_name_list_rep = {}
 feat_name_list_int = {}
 feat_value_list_rep = {}
@@ -45,12 +44,9 @@ region_end = array.array('I')
 node_region_list = []
 edges_from = array.array('I')
 edges_to = array.array('I')
-annot_type = array.array('c')
-annot_ref = array.array('I')
-annot_label = array.array('H')
-feat_annot = array.array('I')
-feat_name = array.array('H')
-feat_value = array.array('I')
+feat_type = collections.defaultdict(lambda:array.array('B'))
+feat_ref = collections.defaultdict(lambda:array.array('I'))
+feat_value = collections.defaultdict(lambda:array.array('I'))
 
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
@@ -93,19 +89,11 @@ class AnnotationHandler(ContentHandler):
     *edges_from*, *edges_to*
         Every edge goes from one node to an other. *edges_from* contains the from node of edge *i* for each *i*, and *edges_end* the to node.
 
-    *annot_type*, *annot_ref*, *annot_label*
-        Three arrays, all describing in position *i* something of annotation *i*: whether the annotation targets a node or an edge, which node or edge it targets, and the label of the annotation, respectively.
-
-    *feat_annot*, *feat_name*, *feat_value*
-        Three arrays, all describing in position *i* something of feature *i*: the annotation in which this feature occurs, the name of the feature, the value of the feature, respectively.
-
     Here is a description of the dictionaries we create:
-
-    *annot_label_list_rep*, *annot_label_list_int*
-        Mappings from the string representations to the internal codes and vice versa, respectively, for annotation labels.
 
     *feat_name_list_rep*, *feat_name_list_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.
+        These are the *extended* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
 
     *feat_value_list_rep*, *feat_value_list_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.
@@ -119,6 +107,9 @@ class AnnotationHandler(ContentHandler):
     file_name = None
     nid = None
     aid = None
+    alabel = None
+    atype = None
+    aref = None
     node_link = None
     stamp = None
 
@@ -185,14 +176,6 @@ class AnnotationHandler(ContentHandler):
             identifiers_a[aid] = id_annot
             self.aid = aid
             label = attrs["label"]
-            this_al_id = None
-            if label in annot_label_list_rep:
-                this_al_id = annot_label_list_rep[label]
-            else:
-                id_annot_label += 1
-                annot_label_list_rep[label] = id_annot_label
-                annot_label_list_int[id_annot_label] = label
-                this_al_id = id_annot_label
             node_or_edge = attrs["ref"]
             if not label or not node_or_edge:
                 faulty_annots += 1
@@ -204,20 +187,20 @@ class AnnotationHandler(ContentHandler):
                 ref_type = None
                 if node_or_edge in identifiers_n:
                     ref_id = identifiers_n[node_or_edge]
-                    ref_type = "n"
+                    ref_type = 'n'
                 else:
                     ref_id = identifiers_e[node_or_edge]
-                    ref_type = "e"
+                    ref_type = 'e'
                 good_annots += 1
-                annot_type.append(ref_type)
-                annot_ref.append(ref_id)
-                annot_label.append(this_al_id)
+                self.alabel = label
+                self.atype = ref_type
+                self.aref = refid
         elif name == "f":
             global faulty_feats
             global good_feats
             global id_feat_name
             global id_feat_value
-            name = attrs["name"]
+            name = u'{}.{}'.format(self.alabel, attrs["name"])
             value = attrs["value"]
             this_fn_id = None
             if name in feat_name_list_rep:
@@ -242,9 +225,9 @@ class AnnotationHandler(ContentHandler):
                 print msg
             else:
                 good_feats += 1
-                feat_annot.append(identifiers_a[self.aid])
-                feat_name.append(this_fn_id)
-                feat_value.append(this_fv_id)
+                feat_type[this_fn_id].append(self.atype)
+                feat_ref[this_fn_id].append(self.aref)
+                feat_value[this_fn_id].append(this_fv_id)
 
     def endElement(self, name):
         if name == "node":
@@ -296,7 +279,6 @@ def parse(graf_header_file, stamp):
 {:>10} good   edges    and {:>5} faulty ones
 {:>10} good   annots   and {:>5} faulty ones
 {:>10} good   features and {:>5} faulty ones
-{:>10} distinct annotation labels
 {:>10} distinct feature names
 {:>10} distinct feature values
 {:>10} distinct xml identifiers
@@ -306,15 +288,12 @@ def parse(graf_header_file, stamp):
         good_edges, faulty_edges,
         good_annots, faulty_annots,
         good_feats, faulty_feats,  
-        len(annot_label_list_rep),
         len(feat_name_list_rep),
         len(feat_value_list_rep),
         id_region + id_node + id_edge + id_annot
     )
     stamp.progress(msg)
     return (
-        ("annot_label_list_rep", annot_label_list_rep, True),
-        ("annot_label_list_int", annot_label_list_int, True),
         ("feat_name_list_rep", feat_name_list_rep, True),
         ("feat_name_list_int", feat_name_list_int, True),
         ("feat_value_list_rep", feat_value_list_rep, True),
@@ -324,11 +303,8 @@ def parse(graf_header_file, stamp):
         ("node_region_list", node_region_list, False),
         ("edges_from", edges_from, True),
         ("edges_to", edges_to, True),
-        ("annot_type", annot_type, False),
-        ("annot_ref", annot_ref, False),
-        ("annot_label", annot_label, False),
-        ("feat_annot", feat_annot, False),
-        ("feat_name", feat_name, True),
+        ("feat_type", feat_type, True),
+        ("feat_ref", feat_ref, True),
         ("feat_value", feat_value, True),
     )
 

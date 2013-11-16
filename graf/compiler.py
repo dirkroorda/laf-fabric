@@ -21,29 +21,25 @@ class GrafCompiler(Graf):
     * remodeling the parse results in really tight data structures
 
     '''
-    header_file = None
-    '''Holds the chosen source, i.e. the GrAF header file used to draw in the LAF data.'''
 
     temp_data_items = {}
     '''Holds some data delivered by the parsed that can be thrown away later. The data that we must keep is stored in the object, of course.'''
 
-    def __init__(self, graf_dir, graf_header_file, bin_dir):
+    def __init__(self, env):
         '''Upon creation, the relevant directories are communicated.
 
         The initialization of the base class is performed, and we change working directory to the location of the LAF source.
 
         Args:
-            graf_dir (str): the directory where the LAF resource resides.
-            graf_header_file (str): the GrAF header file from which we read which files are to be considered part of the LAF resource.
-            bin_dir (str): the relative name of the directory where the compiled binary data is to be stored.
+            env (str): path information
         '''
-        Graf.__init__(self, bin_dir)
-        self.header_file = graf_header_file
+        Graf.__init__(self)
+        self.env = env
 
         try:
-            os.chdir(graf_dir)
+            os.chdir(self.env['data_dir'])
         except os.error:
-            raise GrafException("ERROR: could not create result directory {}".format(bin_dir),
+            raise GrafException("ERROR: could not change to LAF data directory {}".format(env['data_dir']),
                 self.stamp, os.error
             )
 
@@ -60,7 +56,7 @@ class GrafCompiler(Graf):
         The actual parsing is done in the module :mod:`parse <graf.parse>`.
         '''
         self.progress("PARSING ANNOTATION FILES")
-        parsed_data_items = xmlparse(self.header_file, self.stamp)
+        parsed_data_items = xmlparse(self.env['data_file'], self.stamp)
         for parsed_data_item in parsed_data_items:
             (label, data, keep) = parsed_data_item
             if keep:
@@ -92,7 +88,7 @@ class GrafCompiler(Graf):
 
         for (label, info) in sorted(self.data_items.items()):
             (is_binary, data) = info 
-            absolute_path = "{}/{}.{}".format(self.bin_dir, label, self.BIN_EXT)
+            absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
             r_handle = open(absolute_path, "wb")
             self.progress("writing ({} ... ".format(label))
             if is_binary:
@@ -103,10 +99,10 @@ class GrafCompiler(Graf):
 
         self.progress("FINALIZATION")
 
-        msg = subprocess.check_output("ls -lh {}".format(self.bin_dir), shell=True)
+        msg = subprocess.check_output("ls -lh {}".format(self.env['bin_dir']), shell=True)
         self.progress("\n" + msg)
 
-        msg = subprocess.check_output("du -h {}".format(self.bin_dir), shell=True)
+        msg = subprocess.check_output("du -h {}".format(self.env['bin_dir']), shell=True)
         self.progress("\n" + msg)
 
     def needs_compiling(self):
@@ -114,7 +110,7 @@ class GrafCompiler(Graf):
 
         The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.
         '''
-        return not os.path.exists(self.stat_file) or os.path.getmtime(self.stat_file) < os.path.getmtime(self.header_file)
+        return not os.path.exists(self.env['stat_file']) or os.path.getmtime(self.env['stat_file']) < os.path.getmtime(self.env['data_file'])
 
     def compiler(self, force=False):
         '''Manages the complete compilation process.
@@ -125,8 +121,8 @@ class GrafCompiler(Graf):
             force (bool): whether to compile even if the binary data looks up to date.
         '''
         if force or self.needs_compiling():
-            self.add_logfile(bin_dir, self.COMPILE_TASK)
-            self.progress("BEGIN COMPILE {}".format(graf_header_file))
+            self.add_logfile(self.env['bin_dir'], self.COMPILE_TASK)
+            self.progress("BEGIN COMPILE {}".format(self.env['data_file']))
             self.parse()
             self.model()
             self.write_data()

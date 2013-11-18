@@ -4,34 +4,10 @@ graf package
 Submodules
 ----------
 
-graf.compiler module
---------------------
-
-.. automodule:: graf.compiler
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-graf.graf module
-----------------
-
-.. automodule:: graf.graf
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-graf.model module
+graf.shell module
 -----------------
 
-.. automodule:: graf.model
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-graf.parse module
------------------
-
-.. automodule:: graf.parse
+.. automodule:: graf.shell
     :members:
     :undoc-members:
     :show-inheritance:
@@ -44,34 +20,34 @@ graf.task module
     :undoc-members:
     :show-inheritance:
 
-graf.task_ass module
+graf.compiler module
 --------------------
 
-.. automodule:: graf.task_ass
+.. automodule:: graf.compiler
     :members:
     :undoc-members:
     :show-inheritance:
 
-graf.task_base module
----------------------
+graf.parse module
+-----------------
 
-.. automodule:: graf.task_base
+.. automodule:: graf.parse
     :members:
     :undoc-members:
     :show-inheritance:
 
-graf.task_mem module
---------------------
+graf.model module
+-----------------
 
-.. automodule:: graf.task_mem
+.. automodule:: graf.model
     :members:
     :undoc-members:
     :show-inheritance:
 
-graf.task_plain module
-----------------------
+graf.graf module
+----------------
 
-.. automodule:: graf.task_plain
+.. automodule:: graf.graf
     :members:
     :undoc-members:
     :show-inheritance:
@@ -83,7 +59,6 @@ graf.timestamp module
     :members:
     :undoc-members:
     :show-inheritance:
-
 
 Module contents
 ---------------

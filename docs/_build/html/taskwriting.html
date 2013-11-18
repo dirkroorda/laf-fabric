@@ -56,14 +56,30 @@
 <h1>Writing Tasks<a class="headerlink" href="#writing-tasks" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="what-is-a-task">
 <h2>What is a task?<a class="headerlink" href="#what-is-a-task" title="Permalink to this headline">¶</a></h2>
-<p>A task is an ordinary Python script with some magical capabilities for looking into a LAF resource (a <em>compiled</em> LAF resource to be precise).</p>
-<p>A task gets those capabilities because it is called by the workbench. In order to be called by the workbench, you have to put into the <em>tasks</em> directory, next to the example tasks.</p>
-<p>The workbench passes an object to your task, which contains the information needed to peek into the LAF resource. Conversely, in your task script you can pass some initialization information to the workbench, so that it can build or load the appropriate indexes.</p>
-<p>Apart from these things, your script may contain arbitrary Python code, it may import arbitrary modules. The workbench is agnostic of your code.</p>
+<p>A task is an ordinary Python script with some magical capabilities
+for looking into a LAF resource (a <em>compiled</em> LAF resource to be precise).</p>
+<p>A task gets those capabilities because it is called by the workbench.
+In order to be called by the workbench, you have to put into the <em>tasks</em> directory
+(see <a class="reference internal" href="workbench.html#task-dir"><em>configuration</em></a>).</p>
+<p>The workbench passes an object to your task,
+which contains the information needed to peek into the LAF resource.
+Conversely, in your task script you can pass some initialization information to the workbench,
+so that it can build or load the appropriate feature data.</p>
+<p>Apart from these things, your script may contain arbitrary Python code,
+it may import arbitrary modules.
+The workbench is agnostic of your code.</p>
 </div>
 <div class="section" id="a-leading-example">
 <h2>A leading example<a class="headerlink" href="#a-leading-example" title="Permalink to this headline">¶</a></h2>
-<p>Our target LAF resource is the conversion of a text database with objects to nodes with annotations. Nodes correspond to objects. The types of objects translate to annotations with label <em>db</em> with the feature <em>otype</em>. Likewise for the id of objects and the anchoring of objects to primary data: the features <em>minmonad</em>, <em>maxmonad</em> and <em>monads</em> take care of that. In the original LAF it looks like this:</p>
+<p>Our target LAF resource is the Hebrew text data base (see <a class="reference internal" href="overview.html#data"><em>Data</em></a>).
+In the text database there are objects carrying features.
+The conversion to LAF has translated objects in to nodes, and relationships between objects into edges.
+The features of the text database have been grouped and put into annotations, which carry labels.
+Objects have types in the database.
+The types of objects translate to annotations with label <em>db</em> with the feature <em>otype</em>.
+Likewise the <em>id</em> of objects translates into feature <em>db.oid</em>.
+The anchoring of objects to primary data: the features <em>minmonad</em>, <em>maxmonad</em> and <em>monads</em> take care of that.
+In the original LAF it looks like this:</p>
 <div class="highlight-python"><pre>&lt;node xml:id="n28737"&gt;&lt;link targets="w_1 w_2 w_3 w_4 w_5 w_6 w_7 w_8 w_9 w_10 w_11"/&gt;&lt;/node&gt;
 &lt;a xml:id="al28737" label="db" ref="n28737"&gt;&lt;fs&gt;
     &lt;f name="otype" value="clause"/&gt;
@@ -73,8 +89,30 @@
     &lt;f name="maxmonad" value="11"/&gt;
 &lt;/fs&gt;&lt;/a&gt;</pre>
 </div>
-<p>The example task <em>object.py</em> lists all objects in &#8220;resource order&#8221; with their original ids, object types etc and even their node number in the compiled resource.
-Not very useful, but handy for debugging or linking new annotation files to the existing data. Here is a snippet of output:</p>
+</div>
+<div class="section" id="more-on-features">
+<h2>More on features<a class="headerlink" href="#more-on-features" title="Permalink to this headline">¶</a></h2>
+<p>When the workbench compiles features into binary data, it forgets the annotations in which the features come,
+but the annotation <em>label</em> is retained as a prefix to the feature name.
+In the example above, you see an annotation with label <tt class="docutils literal"><span class="pre">db</span></tt> and in it a feature structure
+with features named <tt class="docutils literal"><span class="pre">otype</span></tt>, <tt class="docutils literal"><span class="pre">oid</span></tt>, etc.
+The workbench remembers those features by their <em>fully qualified</em> names: <tt class="docutils literal"><span class="pre">db.otype</span></tt>, <tt class="docutils literal"><span class="pre">db.oid</span></tt> etc.
+There may also be annotations without feature contents. Such annotations will be stored as features with as name the
+annotation label only, without the dot: <tt class="docutils literal"><span class="pre">db</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Annotations may reference nodes or edges.
+It is possible that nodes and edges have features with the same name.
+However, the workbench maintains a strict distinction between features
+of nodes and features of edges. They have separate name spaces, implicitly.
+The API has different methods to the address the features of nodes and edges.
+And features names that are used for nodes and edges may coexist, but their
+internal representations are separate tables.</p>
+</div>
+<p>The example task <em>object.py</em> lists all objects in &#8220;resource order&#8221; with their original ids,
+object types etc and even their node number in the compiled resource.
+Not very useful, but handy for debugging or linking new annotation files to the existing data.
+Here is a snippet of output:</p>
 <div class="highlight-python"><pre> 426500   28737 clause               {1-11         }
  514887   34680 clause_atom          {1-11         }
 1131695   84383 sentence             {1-11         }
@@ -91,91 +129,128 @@ Not very useful, but handy for debugging or linking new annotation files to the 
 </div>
 <p>Note the same clause object <em>28737</em> as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf8 -*-</span>
-
-<span class="n">precompute</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;plain&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;memo&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;assemble&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;only_nodes&quot;</span><span class="p">:</span> <span class="s">&quot;db:oid,otype,monads&quot;</span><span class="p">,</span>
-        <span class="s">&quot;only_edges&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s">&quot;assemble_all&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="p">},</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:oid,otype,monads&quot;</span><span class="p">,</span>
+        <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Li</span><span class="p">,</span> <span class="n">Lr</span><span class="p">,</span> <span class="n">Ni</span><span class="p">,</span> <span class="n">Nr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">Fi</span><span class="p">,</span> <span class="n">Fr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Ni</span><span class="p">,</span> <span class="n">Nr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">oid</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;oid&quot;</span><span class="p">])</span>
-        <span class="n">otype</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;otype&quot;</span><span class="p">])</span>
-        <span class="n">monads</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;monads&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
+                <span class="n">oid</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;db.oid&quot;</span><span class="p">])</span>
+                <span class="n">otype</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">])</span>
+                <span class="n">monads</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;db.monads&quot;</span><span class="p">])</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="information-flow-from-task-to-workbench">
 <h2>Information flow from task to workbench<a class="headerlink" href="#information-flow-from-task-to-workbench" title="Permalink to this headline">¶</a></h2>
-<p>The main thing the workbench needs to know about the task are directives for its processing. Remember that tasks can be run with different <em>flavours</em>.
-A flavour is a way of optimizing tasks and it can be specified on the command line which flavour to use. A flavour may take some directives, such as
-the indexes that have to be built, and the <em>precompute</em> dictionary is the place to specify the directives.
-Currently, only the <em>assemble</em> flavour needs any directives. It needs to be told for which features indexes should be built. This must be specified separately for features that occur on nodes and that occur on edges.</p>
+<p>The main thing the workbench needs to know about the task are directives for its processing.
+The task needs to be told for which features data should be loaded.
+This must be specified separately for features that occur on nodes and that occur on edges.</p>
 <p>The feature specification takes the form of a space separated string of items of the form:</p>
-<div class="highlight-python"><pre>«annotation label»:«feature names»</pre>
+<div class="highlight-python"><pre>«annotation label»:«unqualified feature names»</pre>
 </div>
-<p>where <tt class="docutils literal"><span class="pre">«feature</span> <span class="pre">names»</span></tt> is a comma separated list of feature names. For all implied features <tt class="docutils literal"><span class="pre">«annotion</span> <span class="pre">label»:«feature</span> <span class="pre">name»</span></tt> an index will be created and saved if it does not already exist. If it exists already, it will be loaded.</p>
+<p>where <tt class="docutils literal"><span class="pre">«unqualified</span> <span class="pre">feature</span> <span class="pre">names»</span></tt> is a comma separated list of feature names without annotation labels.
+For all implied features <tt class="docutils literal"><span class="pre">«annotion</span> <span class="pre">label»:«feature</span> <span class="pre">name»</span></tt> data will be loaded.
+For all other features data will be unloaded, if still loaded.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
-<p class="last">Missing indexes.
-If you use the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour you <strong>must</strong> instruct the workbench to make indexes for all features that you use in your task. The workbench will always use indexes when retrieving feature values. If you forget to mention a feature in the directives, the workbench will deliver the value <tt class="docutils literal"><span class="pre">None</span></tt>, even if the compiled LAF has a real value there. The reason for this behaviour is that it is to costly to let every feature lookup check whether the index exists.</p>
+<p>Missing feature data.</p>
+<dl class="last docutils">
+<dt>If you forget to mention a feature in the directives,</dt>
+<dd>the workbench will deliver the value <tt class="docutils literal"><span class="pre">None</span></tt>,
+even if the compiled LAF has a real value there.</dd>
+<dt>The reason for this behaviour is that it is to costly</dt>
+<dd>to let every feature lookup check whether its data has been loaded.</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="information-flow-from-workbench-to-task">
 <h2>Information flow from workbench to task<a class="headerlink" href="#information-flow-from-workbench-to-task" title="Permalink to this headline">¶</a></h2>
-<p>The workbench will call the function <em>task(object)</em> in your task script, and the thing that is passed to it as <em>object</em> is an object of class <a class="reference internal" href="source/graf.html#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>.
+<p>The workbench will call the function <em>task(object)</em> in your task script,
+and the thing that is passed to it as <em>object</em> is an object of
+class <a class="reference internal" href="source/graf.html#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>.
 By using this object, you have to access all of its methods.</p>
-<p>In order to write an efficient task, it is convenient to import the names of the most important methods as <em>local variables</em> of the <em>task</em> function. The lookup of names in Python is fastest for local names. And it makes the code much cleaner.</p>
-<p>The method <tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt> delivers the methods, and it is up to you to give them names. It is recommended to stick to the names provided here in this example. Here is a short description of the corresponding methods.</p>
+<p>In order to write an efficient task,
+it is convenient to import the names of the most important methods as <em>local variables</em> of the <em>task</em> function.
+The lookup of names in Python is fastest for local names.
+And it makes the code much cleaner.</p>
+<p>The method <a class="reference internal" href="source/graf.html#graf.task.GrafTask.get_mappings" title="graf.task.GrafTask.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt></a> delivers the methods,
+and it is up to you to give them names.
+It is recommended to stick to the names provided here in this example.
+Here is a short description of the corresponding methods.</p>
 <dl class="docutils">
-<dt><em>Fi()</em> and <em>Fr()</em></dt>
-<dd>Feature value lookup functions.
-They need a node or edge, then an annotation label, then a feature name, and then they return the value.
-All arguments must be given as integers, the integers to which nodes and labels and names have been mapped during compiling.
+<dt><em>FNi()</em> and <em>FNr()</em>, <em>FEi()</em> and <em>FEr()</em></dt>
+<dd><p class="first">The <em>FNx</em> versions need a node, the <em>FEx</em> versions and edge,
+then they need an a qualified feature name.
+They return the value that the feature carries on that node or edge.
+The <em>FXi</em> versions return the value code that the compiler has assigned
+to the real value (read <em>i</em> as <em>internal</em>).
+The <em>FXr</em> versions return the real values as strings, exactly as
+they appear in the original LAF resource (read <em>r</em> as <em>real</em>).</p>
+<p class="last">All arguments must be given as integers,
+the integers to which nodes and labels and names have been mapped during compiling.
 (There are ways to get those numbers).
-The difference between <a class="reference internal" href="source/graf.html#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> and <a class="reference internal" href="source/graf.html#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a> is that
-<a class="reference internal" href="source/graf.html#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> returns the internal number corresponding to the value,
-and <a class="reference internal" href="source/graf.html#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a> the original string value as encountered in the original LAF resource.
-Use <a class="reference internal" href="source/graf.html#graf.task_plain.GrafTaskPlain.Fi" title="graf.task_plain.GrafTaskPlain.Fi"><tt class="xref py py-meth docutils literal"><span class="pre">Fi()</span></tt></a> when the value is needed in other parts of your script,
-use <a class="reference internal" href="source/graf.html#graf.task_plain.GrafTaskPlain.Fr" title="graf.task_plain.GrafTaskPlain.Fr"><tt class="xref py py-meth docutils literal"><span class="pre">Fr()</span></tt></a> when you need to output values.</dd>
-<dt><em>Li</em> and <em>Lr</em></dt>
-<dd>Tables to convert between annotation labels as string values found in the original LAF and the integers they have been mapped to during compilation. <em>Li</em> yields integers from string representations, <em>Lr</em> yields representations (strings) from internal integers.</dd>
+Use <em>FXi</em> versions when the value is needed in other parts of your script,
+and the <em>FXr</em> versions when you need to output values.</p>
+</dd>
 <dt><em>Ni</em> and <em>Nr</em></dt>
-<dd>Same pattern as above, but now for feature names.</dd>
+<dd><dl class="first last docutils">
+<dt>Tables to convert between qualified feature names as real values</dt>
+<dd>found in the original LAF and the integers they have been mapped to during compilation.
+<em>Ni</em> yields integers from string representations,
+<em>Nr</em> yields representations (strings) from internal integers.</dd>
+</dl>
+</dd>
 <dt><em>Vi</em> and <em>Vr</em></dt>
 <dd>Same pattern as above, but now for feature values.</dd>
+<dt><em>NN()</em> and <em>NNFV()</em></dt>
+<dd><em>iterators</em> that yield a new node everytime they are called.
+They yield the nodes in so-called <em>primary data order</em>, which will be explained below.
+The difference between <em>NN()</em> and <em>NNFV()</em> is
+that <em>NN()</em> iterates over absolutely all nodes,
+and <em>NNFV()</em> only yields node that have a certain value for a certain feature.
+See <a class="reference internal" href="source/graf.html#module-graf.task" title="graf.task"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>,
+methods <a class="reference internal" href="source/graf.html#graf.task.GrafTask.next_node" title="graf.task.GrafTask.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a>
+and <a class="reference internal" href="source/graf.html#graf.task.GrafTask.next_node_with_fval" title="graf.task.GrafTask.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</dd>
 </dl>
-<p><em>NN()</em> and <em>NNFV()</em> are <em>iterators</em> that yield a new node everytime they are called. They yield the nodes in so-called <em>primary data order</em>, which will be explained below. The difference between <em>NN()</em> and <em>NNFV()</em> is that <em>NN()</em> iterates over absolutely all nodes, and <em>NNFV()</em> only yields node that have a certain value for a certain feature. See <a class="reference internal" href="source/graf.html#module-graf.task_base" title="graf.task_base"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a>, methods <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node" title="graf.task_base.GrafTaskBase.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a> and <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.next_node_with_fval" title="graf.task_base.GrafTaskBase.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</p>
 </div>
 <div class="section" id="output">
 <h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<p>You can create an output filehandle, open for writing, by calling the method <a class="reference internal" href="source/graf.html#graf.task_base.GrafTaskBase.add_result" title="graf.task_base.GrafTaskBase.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a> of the <a class="reference internal" href="source/graf.html#module-graf.task_base" title="graf.task_base"><tt class="xref py py-class docutils literal"><span class="pre">GrafTaskBase</span></tt></a> class and assigning the result to a variable, say <em>out</em>.  From then on you can write output simply by saying:</p>
+<p>You can create an output filehandle, open for writing, by calling the
+method <a class="reference internal" href="source/graf.html#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a>
+of the <a class="reference internal" href="source/graf.html#module-graf.task" title="graf.task"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a> class
+and assigning the result to a variable, say <em>out</em>.
+From then on you can write output simply by saying:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can create as many output handles as you like in this way. Once your task has finished, the workbench will close them all.</p>
+<p>You can create as many output handles as you like in this way.
+Once your task has finished, the workbench will close them all.</p>
 </div>
 <div class="section" id="node-order">
 <span id="id1"></span><h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
-<p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em> which are stretches of primary data, and the primary data is totally ordered.
+<p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em>
+which are stretches of primary data, and the primary data is totally ordered.
 The order we use in the workbench is defined as follows.</p>
-<p>Suppose we compare node <em>A</em> and node <em>B</em>. Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
+<p>Suppose we compare node <em>A</em> and node <em>B</em>.
+Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region
+and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
 <p>Then region <em>A</em> comes before region <em>B</em> if and only if <em>Amin</em> &lt; <em>Bmin</em> or <em>Amin</em> = <em>Bmin</em> and <em>Amax</em> &gt; <em>Bmax</em>.</p>
-<p>In other words: if <em>A</em> starts before <em>B</em>, then <em>A</em> becomes before <em>B</em>. If <em>A</em> and <em>B</em> start at the same point, the one that ends last, counts as the earlier of the two.</p>
-<p>If neither <em>A</em> &lt; <em>B</em> nor <em>B</em> &lt; <em>A</em> then the order is not specified. The workbench will select an arbitrary but consistent order between thoses nodes. The only way this can happen is when <em>A</em> and <em>B</em> start and end at the same point. Between those points they might be very different.</p>
-<p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding, the order specifies a walk through the nodes were enclosing nodes come first, and embedded children come in the order dictated by the primary data.</p>
+<p>In other words: if <em>A</em> starts before <em>B</em>, then <em>A</em> becomes before <em>B</em>.
+If <em>A</em> and <em>B</em> start at the same point, the one that ends last, counts as the earlier of the two.</p>
+<p>If neither <em>A</em> &lt; <em>B</em> nor <em>B</em> &lt; <em>A</em> then the order is not specified.
+The workbench will select an arbitrary but consistent order between thoses nodes.
+The only way this can happen is when <em>A</em> and <em>B</em> start and end at the same point.
+Between those points they might be very different.</p>
+<p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
+the order specifies a walk through the nodes were enclosing nodes come first,
+and embedded children come in the order dictated by the primary data.</p>
 </div>
 </div>
 
@@ -190,6 +265,7 @@ The order we use in the workbench is defined as follows.</p>
 <li><a class="reference internal" href="#">Writing Tasks</a><ul>
 <li><a class="reference internal" href="#what-is-a-task">What is a task?</a></li>
 <li><a class="reference internal" href="#a-leading-example">A leading example</a></li>
+<li><a class="reference internal" href="#more-on-features">More on features</a></li>
 <li><a class="reference internal" href="#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li><a class="reference internal" href="#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
 <li><a class="reference internal" href="#output">Output</a></li>

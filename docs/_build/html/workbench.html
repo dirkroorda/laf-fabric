@@ -67,22 +67,48 @@ The second goal is to make it really easy for users to write analytic tasks stra
 without bothering about performance.</p>
 <p>The typical workflow is:</p>
 <ol class="arabic simple">
-<li>install a LAF resource somewhere on the filesystem. A LAF resource is a directory with a primary data file, annotation files and header files.</li>
+<li>install a LAF resource somewhere on the filesystem.
+A LAF resource is a directory with a primary data file, annotation files and header files.
+In testing the workbench, I used a the <a class="reference internal" href="overview.html#data"><em>LAF version of the Hebrew Bible</em></a></li>
 <li>install the LAF workbench package somewhere on a computing system.</li>
-<li>configure a calling script with the locations of the LAF directory and a work/results directory</li>
-<li>write your own script, and put it where the workbench can see it</li>
-<li>run the workbench by invoking the calling script</li>
+<li>in a configuration file, adapt the locations of the LAF directory and a work/results directory.</li>
+<li>write your own script, and put it in the right directory.</li>
+<li>run the workbench by invoking the calling script.</li>
 </ol>
-<p>The first time the workbench is used, the LAF resource will be compiled. This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
-All subsequent times the compiled data will be loaded directly, which takes, in the same setting, 5 to 10 seconds.</p>
-<p>After loading the data, the workbench invokes your script. If your script runs too slow, there are various options to make it run quicker. You can declare the LAF-features that you use in your script, and the workbench will construct indexes for them, if they do not already exist. Indexing costs 30 to 60 seconds (still in the same setting), and the performance gain is typically 20 to 60 fold. There are several <em>optimization flavours</em>, but the one that builds indexes is the only one that actually manages to increase the performance.</p>
+<p>The workbench behaves in the same pattern as the <tt class="docutils literal"><span class="pre">mysql&gt;</span></tt> prompt for a database. You can use it as in interactive
+command interpreter that lets you select and run tasks.
+You can also invoke it to run a single task without interaction.</p>
+<p>During a prompt session you can make a selection of source and task.
+You can run your selection, modify the selection, run it again, ad libitum.
+While this session is alive, loading and unloading of data will be done only when it is really needed.
+Data that is needed for one task, will be reused for the next task.</p>
+<p>So I you have to debug a script, you can do so without repeatedly waiting for the loading of the data.</p>
+<p>The first time a source is used, the LAF resource will be compiled.
+This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
+The compiled source will be saved to disk across runs of the workbench.
+Loading the compiled data takes, in the same setting with the Hebrew Bible, 5 to 10 seconds.
+And you can even cut out this loading time by running multiple tasks in a single session.</p>
+<p>After loading the data, the workbench invokes your task script(s).
+You must declare the LAF-features that you use in your script, and the workbench will load data for them.
+It will also unload the data for features that the script has not declared.
+This is in order not to burden the RAM with data that does not pertain to the task.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>The intention is to make this work freely available, without any restrictions.
+It is free for commerical use and non-commercial use.
+The only limitation is that applications that include this work may not in anyway restrict the freedom
+of others to use it.</p>
 </div>
 <div class="section" id="how-to-use-the-workbench">
 <h2>How to use the workbench?<a class="headerlink" href="#how-to-use-the-workbench" title="Permalink to this headline">¶</a></h2>
 <p>Here are detailed instructions for installing, configuring and using the workbench.</p>
 <div class="section" id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
-<p>This package is called <em>graf</em> and is a Python package without extension modules. I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation. You can just clone it fron github and work with it right away:</p>
+<p>In this Github project <em>LAF-Fabric</em> there is a Python package called <a class="reference internal" href="source/graf.html#module-graf" title="graf"><tt class="xref py py-mod docutils literal"><span class="pre">graf</span></tt></a>.
+It is a package without extension modules, so it will run from anywhere in your system.
+I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation.
+You can just clone it from github and work with it right away:</p>
 <div class="highlight-python"><pre>cd «directory of your choice»
 git clone https://github.com/dirkroorda/laf-fabric</pre>
 </div>
@@ -90,88 +116,114 @@ git clone https://github.com/dirkroorda/laf-fabric</pre>
 <ul class="simple">
 <li><em>graf</em>: the workbench itself, a Python package</li>
 <li><em>laf-fabric.py</em>: a script to call the workbench</li>
+<li><em>docs</em>: this documentation</li>
 <li><em>tasks</em>: a directory with example tasks.</li>
 </ul>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">If you develop your own tasks, put them in a separate directory, otherwise you
+may loose your work in them when you pull updates from Github.
+See <em>Configuration</em> below.</p>
+</div>
 <p>Before running the workbench, the calling script has to be configured.</p>
 </div>
 <div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
-<p>The calling script is <em>laf-fabric.py</em>.
+<p>The configuration file script is <em>laf-fabric.cfg</em>.
 In it is a configuration section:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">## CONFIG START</span>
+<div class="highlight-python"><pre>[locations]                                     ; paths in the file system
+data_root: /Users/dirk/Scratch/shebanq/results  ; working directory
+laf_source: laf                                 ; subdirectory for the LAF data
+task_dir: tasks                                 ; absolute or relative path to the directory with the tasks
+compiled_source: db                             ; subdirectory for task results
+bin_subdir: bin                                 ; subdirectory of specific tasks
+feat_subdir: feat                               ; subdirectory within bin_dir for feature data
 
-<span class="c"># working directory: contains subdirectories for (1) the LAF data (2) the task results</span>
-<span class="n">data_root</span> <span class="o">=</span> <span class="s">&#39;/Users/dirk/Scratch/shebanq/results&#39;</span>
-
-<span class="c"># subdirectory for the LAF data</span>
-<span class="n">laf_source</span> <span class="o">=</span> <span class="s">&#39;laf&#39;</span>
-
-<span class="c"># subdirectory for task results</span>
-<span class="n">compiled_source</span> <span class="o">=</span> <span class="s">&#39;db&#39;</span>
-
-<span class="c"># sources are subsets of the given laf resource.</span>
-<span class="c"># A subset is specified by a GrAF header file that selects some of the files with regions, nodes, edges and annotations</span>
-<span class="c"># that are present in the LAF resource.</span>
-<span class="n">source_choices</span> <span class="o">=</span> <span class="p">{</span>
-<span class="s">&quot;tiny&quot;</span><span class="p">:</span> <span class="s">&#39;bhs3.txt-tiny.hdr&#39;</span><span class="p">,</span>
-<span class="s">&quot;test&quot;</span><span class="p">:</span> <span class="s">&#39;bhs3.txt-bhstext.hdr&#39;</span><span class="p">,</span>
-<span class="s">&quot;total&quot;</span><span class="p">:</span> <span class="s">&#39;bhs3.txt.hdr&#39;</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="c">## CONFIG END</span>
-</pre></div>
+[source_choices]                                ; several GrAF header files
+edge: bhs3.txt-edge.hdr
+tiny: bhs3.txt-tiny.hdr
+test: bhs3.txt-bhstext.hdr
+total: bhs3.txt.hdr</pre>
 </div>
-<p>The things to change here are:</p>
-<ul class="simple">
-<li><em>data_root</em>: point to the folder containing your LAF directory.</li>
-<li><em>laf_source</em>: change into the directory name of your LAF directory.</li>
-<li><em>compiled source</em>: this directory will be created.</li>
-<li><em>source_choices</em>: read on ...</li>
-</ul>
-<p>Normally, a LAF resource has a <em>LAF-header file</em> and a <em>primary data header file</em>, aka. <em>the GrAF header file</em>. The workbench needs to look at a <em>GrAF header file</em>.
-This header file has references to all files that make up the resource. You might want to restrict the workbench to only part of the annotation files in the resource, e.g. if there are big annotation files that do not contain features that are relevant for your analysis. In that case, you can copy the original GrAF header file, and leave out all references to files that you do not want to take into consideration. The <em>source_choices</em> dictionary must contain all GrAF header files that you want to choose from on the command line. There will be an option <tt class="docutils literal"><span class="pre">--source=key</span></tt> to select the header file that you want to point the workbench to.</p>
-<p>Now you are set to run your tasks. You might want to run an example task from the examples in the <em>tasks</em> directory, but they might fail because they refer to features that might not occur in your resource. You can also write a task yourself and add it to the <em>tasks</em> directory. See <a class="reference internal" href="taskwriting.html"><em>Writing Tasks</em></a>.</p>
+<p>You are likely to want to change the following entries:</p>
+<dl class="docutils">
+<dt><em>data_root</em></dt>
+<dd>point to the folder containing your LAF directory.</dd>
+<dt><em>laf_source</em></dt>
+<dd>change into the directory name of your LAF directory.</dd>
+<dt><em>source_choices</em></dt>
+<dd>Normally, a LAF resource has a <em>LAF-header file</em> and a <em>primary data header file</em>, aka. <em>the GrAF header file</em>.
+The workbench needs to look at a <em>GrAF header file</em>.
+This header file has references to all files that make up the resource.
+You might want to restrict the workbench to only part of the annotation files in the resource,
+e.g. if there are big annotation files that do not contain features that are relevant for your analysis.
+In that case, you can copy the original GrAF header file,
+and leave out all references to files that you do not want to take into consideration.
+The <em>source_choices</em> dictionary must contain all GrAF header files that you want to choose from.</dd>
+</dl>
+<dl class="docutils" id="task-dir">
+<dt><em>task_dir</em></dt>
+<dd>The directory in which your tasks can be found. If you have your own tasks outside this distribution,
+adapt <em>task_dir</em> to point to that. By default, <em>task_dir</em> points to the directory with example tasks
+that come with the distribution of the workbench.</dd>
+</dl>
+<p>You probably do not need to change the following settings, since they are used for generating subdirectories under control of
+the workbench.</p>
+<dl class="docutils">
+<dt><em>compiled_source</em></dt>
+<dd>master directory that holds the binary data, compiled from the LAF original,plus the output of tasks,
+organized by source and then task.</dd>
+<dt><em>bin_subdir</em></dt>
+<dd>subdirectory within <em>compiled_source</em> for the binary data only</dd>
+<dt><em>feat_subdir</em></dt>
+<dd>subdirectory within <em>bin_subdir</em> for the feature data only</dd>
+</dl>
+<p>Now you are set to run your tasks.
+You might want to run an example task from the examples in the <em>tasks</em> directory
+but they might fail because they refer to features that might not occur in your resource.
+You can also write a task yourself and add it to the <em>tasks</em> directory. See <a class="reference internal" href="taskwriting.html"><em>Writing Tasks</em></a>.</p>
 </div>
 <div class="section" id="usage">
 <h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
-<p>The workbench is a Python program that is invoked from the command line. It loads data, runs a task script, and then exits. Between invocations the workbench is not loaded in memory and does not eat CPU cycles.</p>
-<p>For every single task execution you invoke the workbench by its calling script <em>laf-fabric.py</em>, supplying parameters for selecting the LAF source, the task and the optimization flavour. And there are miscellaneous options, of course.</p>
 <p>Go to the directory where <em>laf-fabric.py</em> resides:</p>
 <div class="highlight-python"><pre>cd «path_to_dir_of_laf-fabric.py»</pre>
 </div>
-<p>Then issue the following command, where <tt class="docutils literal"><span class="pre">«string»</span></tt> stands for variable text that you should provide, and material within <tt class="docutils literal"><span class="pre">[</span> <span class="pre">]</span></tt> is optional:</p>
-<div class="highlight-python"><pre>python laf-fabric.py --source=«source» --optim=«flavour» --task=«task» [--force-compile] [--force-index]</pre>
+<p><em>single use mode</em>:</p>
+<div class="highlight-python"><pre>python laf-fabric.py --source=«source» --task=«task» [--force-compile]</pre>
 </div>
-<p>Explanation</p>
+<p><em>to start the command interpreter mode</em>:</p>
+<div class="highlight-python"><pre>python laf-fabric.py [--source=«source» ] [--task=«task» ] [--force-compile]</pre>
+</div>
+<p>The workbench is a Python program that is invoked from the command line.</p>
 <dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">«source»</span></tt></dt>
-<dd>the key for the GrAF header file that you use to point to your LAF resource</dd>
-<dt><tt class="docutils literal"><span class="pre">«task»</span></tt></dt>
-<dd>the task that you want to execute. Must be a python script in the <em>tasks</em> directory</dd>
-<dt><tt class="docutils literal"><span class="pre">«flavour»</span></tt></dt>
-<dd><p class="first">the flavour of the optimization that you want to apply. Choices are:</p>
-<dl class="last docutils">
-<dt><tt class="docutils literal"><span class="pre">plain</span></tt></dt>
-<dd>no optimization at all. Due to the extreme packing of feature information in very simple, C-like datastructures, feature lookup is expensive. By not optimizing you pay for that.</dd>
-<dt><tt class="docutils literal"><span class="pre">assemble</span></tt></dt>
-<dd>read the feature declarations of the task at hand, and ensure that indexes exist for those features. Create and save them if they do not exist, load them when they do exist.</dd>
-<dt><tt class="docutils literal"><span class="pre">assemble-all</span></tt></dt>
-<dd>create all possible indexes. This takes a few minutes, but takes a fair amount of space, both on disk and in memory. At present there is no provision to save the index. It is recommended to use <tt class="docutils literal"><span class="pre">assemble-all</span></tt>. The index is shared between tasks on the same «source», so the indexes will be built gradually on demand and not exceed what is really needed. After a while there will be little need for new tasks to create new indexes.</dd>
-<dt><tt class="docutils literal"><span class="pre">memo</span></tt></dt>
-<dd>feature values will be cached. Before feature lookup a value will be retrieved from the cache if possible. Otherwise the feature value will be looked up and stored in the cache. It turns out not to be very efficient, because in many tasks feature values are only needed once. So there is overhead for caching and no gain. Moreover, they cache may easily take up an enormous amount of space.</dd>
+<dt><em>interactive use mode</em></dt>
+<dd>If either or both of the <tt class="docutils literal"><span class="pre">«source»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are missing or if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is present
+it starts in interactive mode prompting you for sources and commands to run tasks.
+The <tt class="docutils literal"><span class="pre">«source»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are given are used for initial values.
+In interactive mode you can change your <tt class="docutils literal"><span class="pre">«source»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> selection, and run tasks.
+the need for it. There is a help command and the prompt is self explanatory.</dd>
+<dt><em>single use mode</em></dt>
+<dd>If both the <tt class="docutils literal"><span class="pre">«source»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are present and if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is absent
+the workbench runs the specified task without asking and quits.</dd>
 </dl>
-</dd>
+</div>
+<div class="section" id="other-options">
+<h3>Other options<a class="headerlink" href="#other-options" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">--force-compile</span></tt></dt>
-<dd>If you have changed the LAF resource, the workbench will detect it and recompile it. The detection is based on the modified dates of the GrAF header file and the compiled files. In cases where the workbench did not detect a change, but you need to recompile, use this flag.</dd>
-<dt><tt class="docutils literal"><span class="pre">--force-index</span></tt></dt>
-<dd>Only relevant for the <tt class="docutils literal"><span class="pre">assemble</span></tt> flavour. If indexes are outdated without the system detecting it, you can force re-indexing by giving this flag.</dd>
+<dd>If you have changed the LAF resource, the workbench will detect it and recompile it.
+The detection is based on the modified dates of the GrAF header file and the compiled files.
+In cases where the workbench did not detect a change, but you need to recompile, use this flag.
+In interactive mode, there is a command to force recompilation of the current source.</dd>
 </dl>
 </div>
 </div>
 <div class="section" id="designed-for-performance">
 <h2>Designed for Performance<a class="headerlink" href="#designed-for-performance" title="Permalink to this headline">¶</a></h2>
 <p>Since there is a generic LAF tool for smaller resources, this tool has been designed with performance in mind.
-In fact, performance has been the most important design criterion of all. In this section the decision and particulars are listed. There are also a few simplifications involved, see the section of <em>GrAF feature coverage</em> below.</p>
+In fact, performance has been the most important design criterion of all
+In this section the decision and particulars are listed.
+There are also a few simplifications involved, see the section of GrAF <a class="reference internal" href="#feature-coverage"><em>GrAF feature coverage</em></a> below.</p>
 <p>There are several ideas involved in compiling a LAF resource into something that is compact, fast loadable, and amenable to efficient computing.</p>
 <ol class="arabic simple">
 <li>Replace everything by integers (nearly everything)</li>
@@ -181,35 +233,65 @@ In fact, performance has been the most important design criterion of all. In thi
 <div class="section" id="explanation-of-these-ideas">
 <h3>Explanation of these ideas<a class="headerlink" href="#explanation-of-these-ideas" title="Permalink to this headline">¶</a></h3>
 <p><strong>Everything is integer</strong>
-In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers. Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not. In the compiled version we get rid of all identifiers. Everything: regions, nodes, edges, features, feature names, feature values, annotation labels will end up in an array, and hence can be identified by its numerical index in that array. For the only things that are essentially not integers (feature names, feature values, annotation labels) we will create mapping tables.</p>
+In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
+Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
+In the compiled version we get rid of all identifiers.
+Everything: regions, nodes, edges, features, feature names, feature values, annotation labels will end up in an array,
+and hence can be identified by its numerical index in that array.
+For the only things that are essentially not integers (feature names, feature values, annotation labels) we will create mapping tables.</p>
 <p><strong>Relationships between integers as Python arrays</strong>
-In Python, an array is a C-like structure of memory slots of fixed size. You do not have arrays of arrays, nor arrays with mixed types. This makes array handling very efficient, especially loading data from disk and saving it to disk. Moreover, the amount of space in memory needed is like in C, without the overhead a scripting language usually adds to its data types.</p>
-<p>There is an other advantage: a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column. In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.</p>
+In Python, an array is a C-like structure of memory slots of fixed size.
+You do not have arrays of arrays, nor arrays with mixed types.
+This makes array handling very efficient, especially loading data from disk and saving it to disk.
+Moreover, the amount of space in memory needed is like in C, without the overhead a scripting language usually adds to its data types.</p>
+<p>There is an other advantage:
+a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column.
+In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.</p>
 <p><strong>Relationships between integers as Python arrays</strong>
-If we want to map numbers to sets of numbers, we need to be more tricky, because we cannot store sets of numbers as integers. What we do instead is: we build two arrays, the first array points to data records in the second array. A data record in the second array consists of a number giving the length of the record, followed by that number of integers. The function <a class="reference internal" href="source/graf.html#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
+If we want to map numbers to sets of numbers,
+we need to be more tricky, because we cannot store sets of numbers as integers.
+What we do instead is: we build two arrays, the first array points to data records in the second array.
+A data record in the second array consists of a number giving the length of the record,
+followed by that number of integers.
+The function <a class="reference internal" href="source/graf.html#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
 </div>
 <div class="section" id="consequences">
 <h3>Consequences<a class="headerlink" href="#consequences" title="Permalink to this headline">¶</a></h3>
-<p>The concrete XML identifiers present in the LAF resource get lost. Whoever designs a LAF resource to be worked on by this workbench, should not rely on the values of the XML identifiers to derive implicit meanings from. I did that in initial stages, producing identifiers <tt class="docutils literal"><span class="pre">n_1,</span> <span class="pre">n_2,</span> <span class="pre">e_1,</span> <span class="pre">e_2</span></tt> etcetera for node 1, 2 and edge 1, 2. Don&#8217;t do that!</p>
+<p>The concrete XML identifiers present in the LAF resource get lost.
+Whoever designs a LAF resource to be worked on by this workbench,
+should not rely on the values of the XML identifiers to derive implicit meanings from.
+I did that in initial stages, producing identifiers <tt class="docutils literal"><span class="pre">n_1,</span> <span class="pre">n_2,</span> <span class="pre">e_1,</span> <span class="pre">e_2</span></tt> etcetera for node 1, 2 and edge 1, 2.
+There is nothing wrong with such identifiers, but do not expect to determine in your tasks whether
+something is a node or edge by looking at an identifier.</p>
 </div>
 </div>
 <div class="section" id="graf-feature-coverage">
-<h2>GrAF feature coverage<a class="headerlink" href="#graf-feature-coverage" title="Permalink to this headline">¶</a></h2>
+<span id="feature-coverage"></span><h2>GrAF feature coverage<a class="headerlink" href="#graf-feature-coverage" title="Permalink to this headline">¶</a></h2>
 <p>This tool cannot deal with LAF resources in their full generality.</p>
-<p>In LAF, annotations have labels, and annotations are organized in annotation spaces. So an annotation space and a label uniquely define a kind of annotation. The content of an annotation can be a feature structure. A feature structure is a set of features and sub features, ordered again as a graph.
+<p>In LAF, annotations have labels, and annotations are organized in annotation spaces.
+So an annotation space and a label uniquely define a kind of annotation.
+The content of an annotation can be a feature structure.
+A feature structure is a set of features and sub features, ordered again as a graph.
 These are the main simplifications:</p>
 <dl class="docutils">
 <dt><em>annotation spaces</em></dt>
-<dd>The workbench ignores annotation spaces altogether. So annotations are only grouped by annotation labels.</dd>
+<dd>The workbench ignores annotation spaces altogether.
+So annotations are only grouped by annotation labels.</dd>
 <dt><em>feature structures</em></dt>
-<dd>This workbench can deal with feature structures that are merely sets of key-value pairs. The graph-like model of features and subfeatures is not supported.</dd>
+<dd>This workbench can deal with feature structures that are merely sets of key-value pairs.
+The graph-like model of features and subfeatures is not supported.</dd>
 <dt><em>annotations</em></dt>
-<dd>Even annotations get lost. The workbench is primarily interested in features and values. It forgets the annotations in which they have been packaged except for:
+<dd>Even annotations get lost. The workbench is primarily interested in features and values.
+It forgets the annotations in which they have been packaged except for:
 * the annotation label,
 * the target of the annotation (node or edge)
-So in order to retrieve a feature value, one must specify an annotation label, a feature name, and a node or edge to which the annotation containing the feature had been attached.</dd>
+So in order to retrieve a feature value, one must specify
+an annotation label, a feature name, and a node or edge
+to which the annotation containing the feature had been attached.</dd>
 <dt><em>dependencies</em></dt>
-<dd>In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations. The workbench assumes that all dependent files are present in the resource. Hence the workbench reads all files mentioned in the GrAF header, in no particular order.</dd>
+<dd>In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations.
+The workbench assumes that all dependent files are present in the resource.
+Hence the workbench reads all files mentioned in the GrAF header, in no particular order.</dd>
 </dl>
 </div>
 <div class="section" id="development">
@@ -223,12 +305,10 @@ So in order to retrieve a feature value, one must specify an annotation label, a
 <dt><em>feature lookup</em></dt>
 <dd>a function that gives the value of a feature attached by some annotation to some edge or node</dd>
 </dl>
-<p>Now Python does not have strict encapsulation of data structures, so by just inspecting the classes and objects you can reach out for all aspects of the LAF data that went into the compiled data. See the GrAF feature coverage for a specification of what data ends up in the compilation.</p>
-</div>
-<div class="section" id="user-interface">
-<h3>User Interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
-<p>The current command line interface allows the execution of a single task, and then the workbench exits. Rerunning the task requires reloading the data and indexes.
-This is cumbersome when you are debugging tasks. I want to extend the command line interface to allow for repeated task execution and source switching with minimal reloading.</p>
+<p>Now Python does not have strict encapsulation of data structures,
+so by just inspecting the classes and objects you can reach out
+for all aspects of the LAF data that went into the compiled data.
+See the GrAF <a class="reference internal" href="#feature-coverage"><em>GrAF feature coverage</em></a> for a specification of what data ends up in the compilation.</p>
 </div>
 </div>
 </div>
@@ -243,10 +323,12 @@ This is cumbersome when you are debugging tasks. I want to extend the command li
   <ul>
 <li><a class="reference internal" href="#">LAF workbench</a><ul>
 <li><a class="reference internal" href="#what-is-this-workbench">What is this workbench?</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#how-to-use-the-workbench">How to use the workbench?</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#configuration">Configuration</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#other-options">Other options</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#designed-for-performance">Designed for Performance</a><ul>
@@ -257,7 +339,6 @@ This is cumbersome when you are debugging tasks. I want to extend the command li
 <li><a class="reference internal" href="#graf-feature-coverage">GrAF feature coverage</a></li>
 <li><a class="reference internal" href="#development">Development</a><ul>
 <li><a class="reference internal" href="#api-completion">API completion</a></li>
-<li><a class="reference internal" href="#user-interface">User Interface</a></li>
 </ul>
 </li>
 </ul>

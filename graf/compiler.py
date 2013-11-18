@@ -35,11 +35,23 @@ class GrafCompiler(Graf):
         '''
         Graf.__init__(self)
         self.env = env
+        '''Instance member to hold config settings etc'''
+        self.has_compiled = False
+        '''Instance member to tell whether compilation has actually taken place'''
 
         try:
             os.chdir(self.env['data_dir'])
         except os.error:
-            raise GrafException("ERROR: could not change to LAF data directory {}".format(env['data_dir']),
+            raise GrafException("ERROR: could not change to LAF data directory {}".format(self.env['data_dir']),
+                self.stamp, os.error
+            )
+        try:
+            if not os.path.exists(self.env['bin_dir']):
+                os.makedirs(self.env['bin_dir'])
+            if not os.path.exists(self.env['feat_dir']):
+                os.makedirs(self.env['feat_dir'])
+        except os.error:
+            raise GrafException("ERROR: could not create directories for compiled data {}, {}".format(self.env['bin_dir'], format(self.env['feat_dir'])),
                 self.stamp, os.error
             )
 
@@ -60,7 +72,7 @@ class GrafCompiler(Graf):
         for parsed_data_item in parsed_data_items:
             (label, data, keep) = parsed_data_item
             if keep:
-                self.data_items[label][1] = data
+                self.data_items[label] = data
             else:
                 self.temp_data_items[label] = data
 
@@ -69,33 +81,51 @@ class GrafCompiler(Graf):
         '''
         self.progress("MODELING RESULT FILES")
         data_items = {}
-        for (label, data_item) in self.data_items.items():
-            if len(data_item) > 1:
-                data_items[label] = data_item[1] 
+        for (label, is_binary) in self.data_items_def.items():
+            data_items[label] = self.data_items[label]
         modeled_data_items = remodel(data_items, self.temp_data_items, self.stamp)
         for modeled_data_item in modeled_data_items:
             (label, data) = modeled_data_item
-            self.data_items[label][1] = data
+            self.data_items[label] = data
 
     def write_data(self):
         '''Writes compiled data to disk.
 
-        Compiled data is either in array shape, and written fast with the :py:meth:`array.tofile` method, or it is
-        a list of strings, in which case it is dumped with the :py:meth:`cPickle.dump` method.
+        Compiled data has three possible types:
+        
+        *0: plain array*
+            can be written fast with the :py:meth:`array.tofile` method
+
+        *1: array valued dict*
+            a dictionary, keyed by a feature name and with arrays as values
+
+        *2: list of trings*
+            can be dumped with the :py:meth:`cPickle.dump` method.
         '''
         self.progress("WRITING RESULT FILES")
         self.write_stats()
 
-        for (label, info) in sorted(self.data_items.items()):
-            (is_binary, data) = info 
-            absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
-            r_handle = open(absolute_path, "wb")
-            self.progress("writing ({} ... ".format(label))
-            if is_binary:
-                data.tofile(r_handle)
-            else:
+        for (label, is_binary) in sorted(self.data_items_def.items()):
+            data = self.data_items[label]
+            self.progress("writing {} ... ".format(label))
+            if not is_binary:
+                absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
+                r_handle = open(absolute_path, "wb")
                 cPickle.dump(data, r_handle, 2)
-            r_handle.close()
+                r_handle.close()
+            elif is_binary == 1:
+                absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
+                r_handle = open(absolute_path, "wb")
+                data.tofile(r_handle)
+                r_handle.close()
+            elif is_binary == 2:
+                for kind in data:
+                    for fname in data[kind]:
+                        fname_rep = self.data_items["feat_name_list_int"][fname]
+                        absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname_rep, self.BIN_EXT)
+                        r_handle = open(absolute_feat_path, "wb")
+                        data[kind][fname].tofile(r_handle)
+                        r_handle.close()
 
         self.progress("FINALIZATION")
 
@@ -126,6 +156,7 @@ class GrafCompiler(Graf):
             self.parse()
             self.model()
             self.write_data()
+            self.has_compiled = True
             self.progress("END COMPILE")
         else:
             self.progress("COMPILING: UP TO DATE")

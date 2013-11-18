@@ -1,4 +1,4 @@
-isaiah module
+isaiah script
 =============
 
 .. automodule:: isaiah

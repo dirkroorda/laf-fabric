@@ -4,12 +4,12 @@ import collections
 import sys
 
 features = {
-    "nodes": "db:otype,monads,maxmonad,minmonad ft:gender,part_of_speech sft:verse_label",
-    "edges": '',
+    "node": "db:otype,monads,maxmonad,minmonad ft:gender,part_of_speech sft:verse_label",
+    "edge": '',
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
+    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 
@@ -37,14 +37,14 @@ def task(graftask):
                 out.write(u"◘".format(monads))
             else:
                 outchar = u"."
-                if Fi(node, Ni["ft.part_of_speech"]) == Vi["noun"]:
-                    if Fi(node, Ni["ft.gender"]) == Vi["masculine"]:
+                if FNi(node, Ni["ft.part_of_speech"]) == Vi["noun"]:
+                    if FNi(node, Ni["ft.gender"]) == Vi["masculine"]:
                         outchar = u"♂"
-                    elif Fi(node, Ni["ft.gender"]) == Vi["feminine"]:
+                    elif FNi(node, Ni["ft.gender"]) == Vi["feminine"]:
                         outchar = u"♀"
-                    elif Fi(node, Ni["ft.gender"]) == Vi["unknown"]:
+                    elif FNi(node, Ni["ft.gender"]) == Vi["unknown"]:
                         outchar = u"?"
-                if Fi(node, Ni["ft.part_of_speech"]) == Vi["verb"]:
+                if FNi(node, Ni["ft.part_of_speech"]) == Vi["verb"]:
                     outchar = u"♠"
                 out.write(outchar)
             if monads in watch:
@@ -54,7 +54,7 @@ def task(graftask):
                         out.write("{})".format(o))
                 del watch[monads]
         elif ob == "V":
-            this_verse_label = Fr(node, Ni["sft.verse_label"])
+            this_verse_label = FNr(node, Ni["sft.verse_label"])
             cur_verse_label[0] = this_verse_label
             cur_verse_label[1] = this_verse_label
         elif ob == "S":
@@ -71,16 +71,16 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = Fr(i, Ni["db.otype"])
+        otype = FNr(i, Ni["db.otype"])
         if not otype:
             continue
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = Fr(i, Ni["db.monads"])
-        minm = Fr(i, Ni["db.minmonad"])
-        maxm = Fr(i, Ni["db.maxmonad"])
+        monads = FNr(i, Ni["db.monads"])
+        minm = FNr(i, Ni["db.minmonad"])
+        maxm = FNr(i, Ni["db.maxmonad"])
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

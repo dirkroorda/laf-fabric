@@ -3,12 +3,12 @@ import collections
 import sys
 
 features = {
-    "nodes": "db:otype,monads,maxmonad,minmonad ft:noun_type,gender,part_of_speech sft:verse_label,chapter,book",
-    "edges": '',
+    "node": "db:otype,monads,maxmonad,minmonad ft:noun_type,gender,part_of_speech sft:verse_label,chapter,book",
+    "edge": '',
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, Fi, Fr) = graftask.get_mappings()
+    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
     out = graftask.add_result("output.txt")
     stats_v_raw = graftask.add_result("stats_v_raw.txt")
     stats_v_compact = graftask.add_result("stats_v_compact.txt")
@@ -39,20 +39,20 @@ def task(graftask):
                 outchar = u"─"
                 stats_v[0] += 1
                 stats_c[0] += 1
-                p_o_s = Fi(node, Ni["ft.part_of_speech"])
+                p_o_s = FNi(node, Ni["ft.part_of_speech"])
                 if p_o_s == Vi["noun"]:
-                    if Fi(node, Ni["ft.noun_type"]) == Vi["proper"]:
+                    if FNi(node, Ni["ft.noun_type"]) == Vi["proper"]:
                         stats_v[2] += 1
                         stats_c[2] += 1
-                        if Fi(node, Ni["ft.gender"]) == Vi["masculine"]:
+                        if FNi(node, Ni["ft.gender"]) == Vi["masculine"]:
                             outchar = u"♂"
                             stats_v[3] += 1
                             stats_c[3] += 1
-                        elif Fi(node, Ni["ft.gender"]) == Vi["feminine"]:
+                        elif FNi(node, Ni["ft.gender"]) == Vi["feminine"]:
                             outchar = u"♀"
                             stats_v[4] += 1
                             stats_c[4] += 1
-                        elif Fi(node, Ni["ft.gender"]) == Vi["unknown"]:
+                        elif FNi(node, Ni["ft.gender"]) == Vi["unknown"]:
                             outchar = u"⊙"
                             stats_v[5] += 1
                             stats_c[5] += 1
@@ -74,7 +74,7 @@ def task(graftask):
                             out.write(u"{}»".format(o))
                 del watch[monads]
         elif ob == "Ch":
-            this_chapter_label = "{} {}".format(Fr(node, Ni["sft.book"]), Fr(node, Ni["sft.chapter"]))
+            this_chapter_label = "{} {}".format(FNr(node, Ni["sft.book"]), FNr(node, Ni["sft.chapter"]))
             if stats_c[0] == None:
                 stats_c_compact.write("\t".join(('chapter', 'word', 'verb_f', 'proper_f')) + "\n")
             else:
@@ -84,7 +84,7 @@ def task(graftask):
                 stats_c[i] = 0
             stats_c_compact.write(this_chapter_label + "\t")
         elif ob == "V":
-            this_verse_label = Fr(node, Ni["sft.verse_label"]).strip(" ")
+            this_verse_label = FNr(node, Ni["sft.verse_label"]).strip(" ")
             sys.stderr.write("\r{:<11}".format(this_verse_label))
             if stats_v[0] == None:
                 stats_v_raw.write("\t".join(('verse', 'word', 'verb', 'proper', 'masc', 'fem', 'unknown')) + "\n")
@@ -116,16 +116,16 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = Fr(i, Ni["db.otype"])
+        otype = FNr(i, Ni["db.otype"])
         if not otype:
             continue
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = Fr(i, Ni["db.monads"])
-        minm = Fr(i, Ni["db.minmonad"])
-        maxm = Fr(i, Ni["db.maxmonad"])
+        monads = FNr(i, Ni["db.monads"])
+        minm = FNr(i, Ni["db.minmonad"])
+        maxm = FNr(i, Ni["db.maxmonad"])
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

@@ -27,7 +27,6 @@ identifiers_n = {}
 identifiers_e = {}
 identifiers_a = {}
 
-id_annot_label = 0
 id_feat_name = 0
 id_feat_value = 0
 id_region = 0
@@ -44,9 +43,10 @@ region_end = array.array('I')
 node_region_list = []
 edges_from = array.array('I')
 edges_to = array.array('I')
-feat_type = collections.defaultdict(lambda:array.array('B'))
-feat_ref = collections.defaultdict(lambda:array.array('I'))
-feat_value = collections.defaultdict(lambda:array.array('I'))
+feat_ref_node = collections.defaultdict(lambda:array.array('I'))
+feat_value_node = collections.defaultdict(lambda:array.array('I'))
+feat_ref_edge = collections.defaultdict(lambda:array.array('I'))
+feat_value_edge = collections.defaultdict(lambda:array.array('I'))
 
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
@@ -170,11 +170,11 @@ class AnnotationHandler(ContentHandler):
             global faulty_annots
             global good_annots
             global id_annot
-            global id_annot_label
             aid = attrs["xml:id"]
             id_annot += 1
             identifiers_a[aid] = id_annot
             self.aid = aid
+            self.aempty = True
             label = attrs["label"]
             node_or_edge = attrs["ref"]
             if not label or not node_or_edge:
@@ -187,19 +187,24 @@ class AnnotationHandler(ContentHandler):
                 ref_type = None
                 if node_or_edge in identifiers_n:
                     ref_id = identifiers_n[node_or_edge]
-                    ref_type = 'n'
-                else:
+                    ref_type = "n"
+                elif node_or_edge in identifiers_e:
                     ref_id = identifiers_e[node_or_edge]
-                    ref_type = 'e'
+                    ref_type = "e"
+                else:
+                    msg = u"ERROR: invalid annotation target ref='{} (no node, no edge)' for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
+                    self.stamp.progress(msg)
+                    print msg
                 good_annots += 1
                 self.alabel = label
                 self.atype = ref_type
-                self.aref = refid
+                self.aref = ref_id
         elif name == "f":
             global faulty_feats
             global good_feats
             global id_feat_name
             global id_feat_value
+            self.aempty = True
             name = u'{}.{}'.format(self.alabel, attrs["name"])
             value = attrs["value"]
             this_fn_id = None
@@ -225,9 +230,12 @@ class AnnotationHandler(ContentHandler):
                 print msg
             else:
                 good_feats += 1
-                feat_type[this_fn_id].append(self.atype)
-                feat_ref[this_fn_id].append(self.aref)
-                feat_value[this_fn_id].append(this_fv_id)
+                if self.atype == "n":
+                    feat_ref_node[this_fn_id].append(self.aref)
+                    feat_value_node[this_fn_id].append(this_fv_id)
+                elif self.atype == "e":
+                    feat_ref_edge[this_fn_id].append(self.aref)
+                    feat_value_edge[this_fn_id].append(this_fv_id)
 
     def endElement(self, name):
         if name == "node":
@@ -239,6 +247,37 @@ class AnnotationHandler(ContentHandler):
             else:
                 linked_nodes += 1
                 node_region_list.append(array.array('I',[identifiers_r[r] for r in self.node_link]))
+        elif name == "a":
+            if self.aempty:
+                global good_feats
+                global id_feat_name
+                global id_feat_value
+                name = self.alabel
+                value = 1
+                this_fn_id = None
+                if name in feat_name_list_rep:
+                    this_fn_id = feat_name_list_rep[name]
+                else:
+                    id_feat_name += 1
+                    feat_name_list_rep[name] = id_feat_name
+                    feat_name_list_int[id_feat_name] = name
+                    this_fn_id = id_feat_name
+                this_fv_id = None
+                if value in feat_value_list_rep:
+                    this_fv_id = feat_value_list_rep[value]
+                else:
+                    id_feat_value += 1
+                    feat_value_list_rep[value] = id_feat_value
+                    feat_value_list_int[id_feat_value] = value
+                    this_fv_id = id_feat_value
+                good_feats += 1
+                if self.atype == "n":
+                    feat_ref_node[this_fn_id].append(self.aref)
+                    feat_value_node[this_fn_id].append(this_fv_id)
+                elif self.atype == "e":
+                    feat_ref_edge[this_fn_id].append(self.aref)
+                    feat_value_edge[this_fn_id].append(this_fv_id)
+
         self._tag_stack.pop()
 
     def characters(self, ch):
@@ -303,9 +342,8 @@ def parse(graf_header_file, stamp):
         ("node_region_list", node_region_list, False),
         ("edges_from", edges_from, True),
         ("edges_to", edges_to, True),
-        ("feat_type", feat_type, True),
-        ("feat_ref", feat_ref, True),
-        ("feat_value", feat_value, True),
+        ("feat_ref", {'node': feat_ref_node, 'edge': feat_ref_edge}, True),
+        ("feat_value", {'node': feat_value_node, 'edge': feat_value_edge}, True),
     )
 
 

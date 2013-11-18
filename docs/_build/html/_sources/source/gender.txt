@@ -1,4 +1,4 @@
-gender module
+gender script
 =============
 
 .. automodule:: gender

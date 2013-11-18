@@ -1,4 +1,4 @@
-plain module
+plain script
 ============
 
 .. automodule:: plain

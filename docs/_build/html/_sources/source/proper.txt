@@ -1,4 +1,4 @@
-proper module
+proper script
 =============
 
 .. automodule:: proper

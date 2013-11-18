@@ -1,4 +1,4 @@
-lingo module
+lingo script
 ============
 
 .. automodule:: lingo

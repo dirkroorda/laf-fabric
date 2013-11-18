@@ -1,4 +1,4 @@
-esther module
+esther script
 =============
 
 .. automodule:: esther

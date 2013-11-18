@@ -1,4 +1,4 @@
-involved module
+involved script
 ===============
 
 .. automodule:: involved

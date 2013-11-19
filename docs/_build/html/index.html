@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>LAF-workbench documentation &mdash; LAF-Fabric 0.9 documentation</title>
+    <title>Welcome to LAF-Fabric’s documentation! &mdash; LAF-Fabric 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="LAF-Fabric 0.9 documentation" href="#" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="LAF-Fabric 0.9.1 documentation" href="#" />
     <link rel="next" title="LAF/GrAF and data analysis" href="overview.html" /> 
   </head>
   <body>
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="overview.html" title="LAF/GrAF and data analysis"
              accesskey="N">next</a> |</li>
-        <li><a href="#">LAF-Fabric 0.9 documentation</a> &raquo;</li> 
+        <li><a href="#">LAF-Fabric 0.9.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,19 +49,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="laf-workbench-documentation">
-<h1>LAF-workbench documentation<a class="headerlink" href="#laf-workbench-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="welcome-to-laf-fabric-s-documentation">
+<h1>Welcome to LAF-Fabric&#8217;s documentation!<a class="headerlink" href="#welcome-to-laf-fabric-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">LAF/GrAF and data analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#this-workbench">This workbench</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="overview.html#limitations">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="overview.html#future-work">Future work</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#this-workbench">This workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#author">Author</a></li>
 </ul>
@@ -68,23 +66,10 @@
 <li class="toctree-l1"><a class="reference internal" href="workbench.html">LAF workbench</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#what-is-this-workbench">What is this workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#license">License</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#how-to-use-the-workbench">How to use the workbench?</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#configuration">Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#usage">Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#other-options">Other options</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#designed-for-performance">Designed for Performance</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#explanation-of-these-ideas">Explanation of these ideas</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#consequences">Consequences</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#designed-for-performance">Designed for Performance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#graf-feature-coverage">GrAF feature coverage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#development">Development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workbench.html#api-completion">API completion</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#development">Development</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="taskwriting.html">Writing Tasks</a><ul>
@@ -97,41 +82,22 @@
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="source/graf.html">graf package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.compiler">graf.compiler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf.timestamp">graf.timestamp module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/graf.html#module-graf">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="source/modules.html">tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/esther.html">esther script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/gender.html">gender script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/involved.html">involved script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/isaiah.html">isaiah script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/lingo.html">lingo script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/objects.html">objects module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/plain.html">plain script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/proper.html">proper script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graf/graf.html">graf package</a></li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="author">
-<span id="id1"></span><h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
-<p>This work has been undertaken first in November 2013 by Dirk Roorda, working for
-<a class="reference external" href="http://www.dans.knaw.nl/en">Data Archiving and Networked Services (DANS)</a> and
-<a class="reference external" href="http://tla.mpi.nl">The Language Archive (TLA)</a>.
-The work has been triggered by the execution of the
-<a class="reference external" href="http://www.slideshare.net/dirkroorda/shebanq-gniezno">SHEBANQ</a> project
-together with the researchers at the
-<a class="reference external" href="http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp">Eep Talstra Centre for Bible and Computing (ETCBC), VU University</a>.</p>
-<p>See also a description on the <a class="reference external" href="http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric">DANS-lab site</a>.</p>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -151,8 +117,7 @@ together with the researchers at the
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">LAF-workbench documentation</a><ul>
-<li><a class="reference internal" href="#author">Author</a></li>
+<li><a class="reference internal" href="#">Welcome to LAF-Fabric&#8217;s documentation!</a><ul>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
@@ -195,7 +160,7 @@ together with the researchers at the
         <li class="right" >
           <a href="overview.html" title="LAF/GrAF and data analysis"
              >next</a> |</li>
-        <li><a href="#">LAF-Fabric 0.9 documentation</a> &raquo;</li> 
+        <li><a href="#">LAF-Fabric 0.9.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

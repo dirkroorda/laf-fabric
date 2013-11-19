@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>graf.model &mdash; LAF-Fabric 0.9 documentation</title>
+    <title>graf.model &mdash; LAF-Fabric 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="LAF-Fabric 0.9 documentation" href="../../index.html" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="LAF-Fabric 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="graf" href="../graf.html" /> 
   </head>
   <body>
@@ -36,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
       </ul>
@@ -54,7 +55,25 @@
 
 <span class="kn">import</span> <span class="nn">array</span>
 
-<div class="viewcode-block" id="arrayify"><a class="viewcode-back" href="../../source/graf.html#graf.model.arrayify">[docs]</a><span class="k">def</span> <span class="nf">arrayify</span><span class="p">(</span><span class="n">source_list</span><span class="p">):</span>
+<div class="viewcode-block" id="arrayify"><a class="viewcode-back" href="../../graf/graf.html#graf.model.arrayify">[docs]</a><span class="k">def</span> <span class="nf">arrayify</span><span class="p">(</span><span class="n">source_list</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Efficient storage of a list of lists of integers in two Python :py:mod:`array`.</span>
+
+<span class="sd">    *This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!*</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        source_list (iterable): a list of lists of integers</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        (index_array, items_array): two :py:mod:`array` s.</span>
+<span class="sd">        *index_array* contains an index for each item in *source_list*.</span>
+<span class="sd">        *items_array* contains all the items in the following way: if an item with *n* members has to be added,</span>
+<span class="sd">        then first the number *n* is added, and then all the members.</span>
+<span class="sd">        This is how you get the original information back: if you want the </span>
+<span class="sd">        members of item *i* in *source_list*, read number *i* in *index_array*, say *k*, go to position *k* in</span>
+<span class="sd">        *items_array*, read the number at that position, say *n*,</span>
+<span class="sd">        and then find the members at the next *n* positions in *items_array*.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">dest_array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
     <span class="n">dests_array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
     <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
@@ -67,7 +86,7 @@
         <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">dest_array</span><span class="p">,</span> <span class="n">dests_array</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="model"><a class="viewcode-back" href="../../source/graf.html#graf.model.model">[docs]</a><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">data_items</span><span class="p">,</span> <span class="n">temp_data_items</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
+<div class="viewcode-block" id="model"><a class="viewcode-back" href="../../graf/graf.html#graf.model.model">[docs]</a><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">data_items</span><span class="p">,</span> <span class="n">temp_data_items</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
     <span class="n">result_items</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES AND REGIONS&quot;</span><span class="p">)</span>
@@ -161,50 +180,6 @@
     <span class="n">edges_out</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">edges_in</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES/EDGES AND FEATURES&quot;</span><span class="p">)</span>
-
-    <span class="n">annot_type</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_type&quot;</span><span class="p">]</span>
-    <span class="n">annot_ref</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_ref&quot;</span><span class="p">]</span>
-    <span class="n">annot_label</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_label&quot;</span><span class="p">]</span>
-
-    <span class="n">feat_annot</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;feat_annot&quot;</span><span class="p">]</span>
-    <span class="n">n_feat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feat_annot</span><span class="p">)</span>
-
-    <span class="n">feat_label</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;H&#39;</span><span class="p">)</span>
-    <span class="n">node_feats</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_node</span><span class="p">)]</span>
-    <span class="n">edge_feats</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_edge</span><span class="p">)]</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_feat</span><span class="p">):</span>
-        <span class="n">aref</span> <span class="o">=</span> <span class="n">feat_annot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="n">annot_label</span><span class="p">[</span><span class="n">aref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">atype</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">[</span><span class="n">aref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="n">annot_ref</span><span class="p">[</span><span class="n">aref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">feat_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">atype</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span><span class="p">:</span>
-            <span class="n">node_feats</span><span class="p">[</span><span class="n">ref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">atype</span> <span class="o">==</span> <span class="s">&#39;e&#39;</span><span class="p">:</span>
-            <span class="n">edge_feats</span><span class="p">[</span><span class="n">ref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="p">(</span><span class="n">node_feat</span><span class="p">,</span> <span class="n">node_feat_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">node_feats</span><span class="p">)</span>
-    <span class="p">(</span><span class="n">edge_feat</span><span class="p">,</span> <span class="n">edge_feat_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">edge_feats</span><span class="p">)</span>
-    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;feat_label&quot;</span><span class="p">,</span> <span class="n">feat_label</span><span class="p">))</span>
-    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_feat&quot;</span><span class="p">,</span> <span class="n">node_feat</span><span class="p">))</span>
-    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_feat_items&quot;</span><span class="p">,</span> <span class="n">node_feat_items</span><span class="p">))</span>
-    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;edge_feat&quot;</span><span class="p">,</span> <span class="n">edge_feat</span><span class="p">))</span>
-    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;edge_feat_items&quot;</span><span class="p">,</span> <span class="n">edge_feat_items</span><span class="p">))</span>
-
-    <span class="n">node_feats</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">edge_feats</span> <span class="o">=</span> <span class="bp">None</span>
-
-    <span class="n">annot_type</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_type&quot;</span><span class="p">]</span>
-    <span class="n">annot_ref</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_ref&quot;</span><span class="p">]</span>
-    <span class="n">annot_label</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_label&quot;</span><span class="p">]</span>
-    <span class="n">feat_annot</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;feat_annot&quot;</span><span class="p">]</span>
-
     <span class="k">return</span> <span class="n">result_items</span>
 </pre></div></div>
 
@@ -239,7 +214,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../graf.html" >graf</a> &raquo;</li> 
       </ul>

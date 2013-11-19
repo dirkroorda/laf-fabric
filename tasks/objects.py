@@ -6,12 +6,12 @@ features = {
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    (msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 
     for i in NN():
-        oid = FNr(i, Ni["db.oid"])
-        otype = FNr(i, Ni["db.otype"])
-        monads = FNr(i, Ni["db.monads"])
+        oid = FNr(i, NNi["db.oid"])
+        otype = FNr(i, NNi["db.otype"])
+        monads = FNr(i, NNi["db.monads"])
         out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))

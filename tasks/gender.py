@@ -8,7 +8,8 @@ features = {
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    (msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+
     stats_file = graftask.add_result("stats.txt")
 
     type_map = collections.defaultdict(lambda: None, [
@@ -21,7 +22,7 @@ def task(graftask):
 
     cur_chapter = None
     for node in NN():
-        otype = FNr(node, Ni["db.otype"])
+        otype = FNr(node, NNi["db.otype"])
         if not otype:
             continue
         ob = type_map[otype]
@@ -29,12 +30,12 @@ def task(graftask):
             continue
         if ob == "w":
             stats[0] += 1
-            if FNi(node, Ni["ft.gender"]) == Vi["masculine"]:
+            if FNi(node, NNi["ft.gender"]) == Vi["masculine"]:
                 stats[1] += 1
-            elif FNi(node, Ni["ft.gender"]) == Vi["feminine"]:
+            elif FNi(node, NNi["ft.gender"]) == Vi["feminine"]:
                 stats[2] += 1
         elif ob == "Ch":
-            this_chapter = "{} {}".format(FNr(node, Ni["sft.book"]), FNr(node, Ni["sft.chapter"]))
+            this_chapter = "{} {}".format(FNr(node, NNi["sft.book"]), FNr(node, NNi["sft.chapter"]))
             sys.stderr.write("\r{:<15}".format(this_chapter))
             if stats[0] == None:
                 stats_file.write("\t".join(('chapter', 'masc_f', 'fem_f', 'fem_masc_r')) + "\n")

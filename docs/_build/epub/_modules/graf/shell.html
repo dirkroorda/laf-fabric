@@ -22,7 +22,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
       </ul>
@@ -56,7 +56,7 @@
 
 <span class="c">### END CONFIG</span>
 
-<div class="viewcode-block" id="Shell"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell">[docs]</a><span class="k">class</span> <span class="nc">Shell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell">[docs]</a><span class="k">class</span> <span class="nc">Shell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Execute tasks, either in a single run, or with an interactive prompt.</span>
 
 <span class="sd">    This class knows about the environment, such as command line arguments</span>
@@ -137,7 +137,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">GrafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Shell.processor"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.processor">[docs]</a>    <span class="k">def</span> <span class="nf">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.processor"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.processor">[docs]</a>    <span class="k">def</span> <span class="nf">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Does work. Decides to run one task or start the command prompt.</span>
 
 <span class="sd">        The decision is based on the presence of command line arguments.</span>
@@ -151,7 +151,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_loop</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Shell.command_loop"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.command_loop">[docs]</a>    <span class="k">def</span> <span class="nf">command_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.command_loop"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.command_loop">[docs]</a>    <span class="k">def</span> <span class="nf">command_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Command prompt for repeated running of tasks.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
@@ -161,7 +161,7 @@
             <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">break</span>
 </div>
-<div class="viewcode-block" id="Shell.main_command"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.main_command">[docs]</a>    <span class="k">def</span> <span class="nf">main_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.main_command"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.main_command">[docs]</a>    <span class="k">def</span> <span class="nf">main_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Interprets a top level command.</span>
 
 <span class="sd">        Depending on the command passed, this methods prompts for additional information.</span>
@@ -191,7 +191,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">get_ch</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s">&quot;Press any key to continue ...&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">message</span>
 </div>
-<div class="viewcode-block" id="Shell.do_command"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.do_command">[docs]</a>    <span class="k">def</span> <span class="nf">do_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">helpstr</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.do_command"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.do_command">[docs]</a>    <span class="k">def</span> <span class="nf">do_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">helpstr</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Prompts the user to enter a command and dispatches it, if correct.</span>
 
 <span class="sd">        This method asks the user for a command consisting of a single letter.</span>
@@ -232,7 +232,7 @@
 
         <span class="k">return</span> <span class="n">command</span>
 </div>
-<div class="viewcode-block" id="Shell.get_num"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.get_num">[docs]</a>    <span class="k">def</span> <span class="nf">get_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.get_num"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.get_num">[docs]</a>    <span class="k">def</span> <span class="nf">get_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Asks for a numeric value, and checks whether teh value is in a legal range.</span>
 
 <span class="sd">        Args:</span>
@@ -262,7 +262,7 @@
                 <span class="n">number</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">return</span> <span class="n">number</span>
 </div>
-<div class="viewcode-block" id="Shell.get_ch"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.get_ch">[docs]</a>    <span class="k">def</span> <span class="nf">get_ch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.get_ch"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.get_ch">[docs]</a>    <span class="k">def</span> <span class="nf">get_ch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Asks for unbuffered single character input, with an optional prompt.</span>
 
 <span class="sd">        Args:</span>
@@ -285,7 +285,7 @@
         <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSADRAIN</span><span class="p">,</span> <span class="n">old_settings</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ch</span>
 </div>
-<div class="viewcode-block" id="Shell.prompt"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.prompt">[docs]</a>    <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.prompt"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.prompt">[docs]</a>    <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Writes an self-explanatory prompt text to the terminal.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;clear&quot;</span><span class="p">)</span>
@@ -332,7 +332,7 @@
 <span class="s">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;ON&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span> <span class="k">else</span> <span class="s">&#39;OFF&#39;</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Shell.weave"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.weave">[docs]</a>    <span class="k">def</span> <span class="nf">weave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="Shell.weave"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.weave">[docs]</a>    <span class="k">def</span> <span class="nf">weave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Utility value that prepares data for presenting several columns of options</span>
 <span class="sd">        on a terminal screen.</span>
 

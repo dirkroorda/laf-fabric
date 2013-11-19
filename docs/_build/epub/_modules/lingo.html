@@ -22,7 +22,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -37,19 +37,13 @@
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">precompute</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;plain&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;memo&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;assemble&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;only_nodes&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype,monads,maxmonad,minmonad ft:gender,part_of_speech sft:verse_label&quot;</span><span class="p">,</span>
-        <span class="s">&quot;only_edges&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s">&quot;assemble_all&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="p">},</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype,monads,maxmonad,minmonad ft:gender,part_of_speech sft:verse_label&quot;</span><span class="p">,</span>
+    <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../source/lingo.html#lingo.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Li</span><span class="p">,</span> <span class="n">Lr</span><span class="p">,</span> <span class="n">Ni</span><span class="p">,</span> <span class="n">Nr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">Fi</span><span class="p">,</span> <span class="n">Fr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/lingo.html#lingo.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
@@ -77,14 +71,14 @@
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;◘&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">monads</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;.&quot;</span>
-                <span class="k">if</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;part_of_speech&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;noun&quot;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;masculine&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.part_of_speech&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;noun&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;masculine&quot;</span><span class="p">]:</span>
                         <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;♂&quot;</span>
-                    <span class="k">elif</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;feminine&quot;</span><span class="p">]:</span>
+                    <span class="k">elif</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;feminine&quot;</span><span class="p">]:</span>
                         <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;♀&quot;</span>
-                    <span class="k">elif</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;unknown&quot;</span><span class="p">]:</span>
+                    <span class="k">elif</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;unknown&quot;</span><span class="p">]:</span>
                         <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;?&quot;</span>
-                <span class="k">if</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;part_of_speech&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;verb&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.part_of_speech&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;verb&quot;</span><span class="p">]:</span>
                     <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;♠&quot;</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outchar</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">monads</span> <span class="ow">in</span> <span class="n">watch</span><span class="p">:</span>
@@ -94,7 +88,7 @@
                         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
                 <span class="k">del</span> <span class="n">watch</span><span class="p">[</span><span class="n">monads</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">ob</span> <span class="o">==</span> <span class="s">&quot;V&quot;</span><span class="p">:</span>
-            <span class="n">this_verse_label</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;sft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;verse_label&quot;</span><span class="p">])</span>
+            <span class="n">this_verse_label</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.verse_label&quot;</span><span class="p">])</span>
             <span class="n">cur_verse_label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_verse_label</span>
             <span class="n">cur_verse_label</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_verse_label</span>
         <span class="k">elif</span> <span class="n">ob</span> <span class="o">==</span> <span class="s">&quot;S&quot;</span><span class="p">:</span>
@@ -111,16 +105,16 @@
     <span class="n">lastmax</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">otype</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;otype&quot;</span><span class="p">])</span>
+        <span class="n">otype</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">otype</span><span class="p">:</span>
             <span class="k">continue</span>
 
         <span class="n">ob</span> <span class="o">=</span> <span class="n">type_map</span><span class="p">[</span><span class="n">otype</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">ob</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">monads</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;monads&quot;</span><span class="p">])</span>
-        <span class="n">minm</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;minmonad&quot;</span><span class="p">])</span>
-        <span class="n">maxm</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;maxmonad&quot;</span><span class="p">])</span>
+        <span class="n">monads</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.monads&quot;</span><span class="p">])</span>
+        <span class="n">minm</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.minmonad&quot;</span><span class="p">])</span>
+        <span class="n">maxm</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.maxmonad&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">lastmin</span> <span class="o">==</span> <span class="n">minm</span> <span class="ow">and</span> <span class="n">lastmax</span> <span class="o">==</span> <span class="n">maxm</span><span class="p">:</span>
             <span class="n">start</span><span class="p">[</span><span class="n">ob</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">minm</span><span class="p">,</span> <span class="n">maxm</span><span class="p">,</span> <span class="n">monads</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

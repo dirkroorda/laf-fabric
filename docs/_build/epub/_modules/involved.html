@@ -22,7 +22,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -35,19 +35,13 @@
 <span class="c"># -*- coding: utf8 -*-</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">precompute</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;plain&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;memo&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;assemble&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;only_nodes&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype ft:text,suffix sft:book,chapter,verse&quot;</span><span class="p">,</span>
-        <span class="s">&quot;only_edges&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s">&quot;assemble_all&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="p">},</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype ft:text,suffix sft:book,chapter,verse&quot;</span><span class="p">,</span>
+    <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../source/involved.html#involved.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Li</span><span class="p">,</span> <span class="n">Lr</span><span class="p">,</span> <span class="n">Ni</span><span class="p">,</span> <span class="n">Nr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">Fi</span><span class="p">,</span> <span class="n">Fr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/involved.html#involved.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
@@ -55,22 +49,22 @@
     <span class="n">the_chapter</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">the_verse</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">this_type</span> <span class="o">=</span> <span class="n">Fi</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;otype&quot;</span><span class="p">])</span>
+        <span class="n">this_type</span> <span class="o">=</span> <span class="n">FNi</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">this_type</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">this_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;word&quot;</span><span class="p">]:</span>
-            <span class="n">the_text</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;text&quot;</span><span class="p">])</span>
-            <span class="n">the_suffix</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;suffix&quot;</span><span class="p">])</span>
+            <span class="n">the_text</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.text&quot;</span><span class="p">])</span>
+            <span class="n">the_suffix</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.suffix&quot;</span><span class="p">])</span>
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_text</span> <span class="o">+</span> <span class="n">the_suffix</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;book&quot;</span><span class="p">]:</span>
-            <span class="n">the_book</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;sft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;book&quot;</span><span class="p">])</span>
+            <span class="n">the_book</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.book&quot;</span><span class="p">])</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r</span><span class="s">{:&gt;6} {:&lt;30}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">the_book</span><span class="p">))</span> 
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_book</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;chapter&quot;</span><span class="p">]:</span>
-            <span class="n">the_chapter</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;sft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;chapter&quot;</span><span class="p">])</span>
+            <span class="n">the_chapter</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.chapter&quot;</span><span class="p">])</span>
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{} {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_book</span><span class="p">,</span> <span class="n">the_chapter</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;verse&quot;</span><span class="p">]:</span>
-            <span class="n">the_verse</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;sft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;verse&quot;</span><span class="p">])</span>
+            <span class="n">the_verse</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.verse&quot;</span><span class="p">])</span>
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{}:{} &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_chapter</span><span class="p">,</span> <span class="n">the_verse</span><span class="p">))</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span></div>
 </pre></div>

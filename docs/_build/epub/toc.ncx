@@ -12,7 +12,7 @@
   <navMap>
     <navPoint id="navPoint1" playOrder="1">
       <navLabel>
-        <text>LAF-workbench documentation</text>
+        <text>Welcome to LAF-Fabric&#39;s documentation!</text>
       </navLabel>
       <content src="index.html" />
     </navPoint>
@@ -246,128 +246,140 @@
     </navPoint>
     <navPoint id="navPoint40" playOrder="33">
       <navLabel>
-        <text>graf package</text>
-      </navLabel>
-      <content src="source/graf.html" />
-      <navPoint id="navPoint41" playOrder="33">
-        <navLabel>
-          <text>graf package</text>
-        </navLabel>
-        <content src="source/graf.html" />
-      </navPoint>
-      <navPoint id="navPoint42" playOrder="34">
-        <navLabel>
-          <text>Submodules</text>
-        </navLabel>
-        <content src="source/graf.html#submodules" />
-      </navPoint>
-      <navPoint id="navPoint43" playOrder="35">
-        <navLabel>
-          <text>graf.shell module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.shell" />
-      </navPoint>
-      <navPoint id="navPoint44" playOrder="36">
-        <navLabel>
-          <text>graf.task module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.task" />
-      </navPoint>
-      <navPoint id="navPoint45" playOrder="37">
-        <navLabel>
-          <text>graf.compiler module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.compiler" />
-      </navPoint>
-      <navPoint id="navPoint46" playOrder="38">
-        <navLabel>
-          <text>graf.parse module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.parse" />
-      </navPoint>
-      <navPoint id="navPoint47" playOrder="39">
-        <navLabel>
-          <text>graf.model module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.model" />
-      </navPoint>
-      <navPoint id="navPoint48" playOrder="40">
-        <navLabel>
-          <text>graf.graf module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.graf" />
-      </navPoint>
-      <navPoint id="navPoint49" playOrder="41">
-        <navLabel>
-          <text>graf.timestamp module</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf.timestamp" />
-      </navPoint>
-      <navPoint id="navPoint50" playOrder="42">
-        <navLabel>
-          <text>Module contents</text>
-        </navLabel>
-        <content src="source/graf.html#module-graf" />
-      </navPoint>
-    </navPoint>
-    <navPoint id="navPoint51" playOrder="43">
-      <navLabel>
         <text>tasks</text>
       </navLabel>
-      <content src="source/modules.html" />
-      <navPoint id="navPoint52" playOrder="43">
+      <content src="tasks/modules.html" />
+      <navPoint id="navPoint41" playOrder="33">
         <navLabel>
           <text>tasks</text>
         </navLabel>
-        <content src="source/modules.html" />
+        <content src="tasks/modules.html" />
       </navPoint>
-      <navPoint id="navPoint53" playOrder="44">
+      <navPoint id="navPoint42" playOrder="34">
         <navLabel>
-          <text>esther script</text>
+          <text>esther module</text>
         </navLabel>
-        <content src="source/esther.html" />
+        <content src="tasks/esther.html" />
       </navPoint>
-      <navPoint id="navPoint54" playOrder="45">
+      <navPoint id="navPoint43" playOrder="35">
         <navLabel>
-          <text>gender script</text>
+          <text>gender module</text>
         </navLabel>
-        <content src="source/gender.html" />
+        <content src="tasks/gender.html" />
       </navPoint>
-      <navPoint id="navPoint55" playOrder="46">
+      <navPoint id="navPoint44" playOrder="36">
         <navLabel>
-          <text>involved script</text>
+          <text>involved module</text>
         </navLabel>
-        <content src="source/involved.html" />
+        <content src="tasks/involved.html" />
       </navPoint>
-      <navPoint id="navPoint56" playOrder="47">
+      <navPoint id="navPoint45" playOrder="37">
         <navLabel>
-          <text>isaiah script</text>
+          <text>isaiah module</text>
         </navLabel>
-        <content src="source/isaiah.html" />
+        <content src="tasks/isaiah.html" />
       </navPoint>
-      <navPoint id="navPoint57" playOrder="48">
+      <navPoint id="navPoint46" playOrder="38">
         <navLabel>
-          <text>lingo script</text>
+          <text>lingo module</text>
         </navLabel>
-        <content src="source/lingo.html" />
+        <content src="tasks/lingo.html" />
       </navPoint>
-      <navPoint id="navPoint58" playOrder="49">
+      <navPoint id="navPoint47" playOrder="39">
         <navLabel>
           <text>objects module</text>
         </navLabel>
-        <content src="source/objects.html" />
+        <content src="tasks/objects.html" />
       </navPoint>
-      <navPoint id="navPoint59" playOrder="50">
+      <navPoint id="navPoint48" playOrder="40">
         <navLabel>
-          <text>plain script</text>
+          <text>plain module</text>
         </navLabel>
-        <content src="source/plain.html" />
+        <content src="tasks/plain.html" />
       </navPoint>
-      <navPoint id="navPoint60" playOrder="51">
+      <navPoint id="navPoint49" playOrder="41">
         <navLabel>
-          <text>proper script</text>
+          <text>proper module</text>
         </navLabel>
-        <content src="source/proper.html" />
+        <content src="tasks/proper.html" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint50" playOrder="42">
+      <navLabel>
+        <text>graf</text>
+      </navLabel>
+      <content src="graf/modules.html" />
+      <navPoint id="navPoint51" playOrder="42">
+        <navLabel>
+          <text>graf</text>
+        </navLabel>
+        <content src="graf/modules.html" />
+      </navPoint>
+      <navPoint id="navPoint52" playOrder="43">
+        <navLabel>
+          <text>graf package</text>
+        </navLabel>
+        <content src="graf/graf.html" />
+        <navPoint id="navPoint53" playOrder="43">
+          <navLabel>
+            <text>graf package</text>
+          </navLabel>
+          <content src="graf/graf.html" />
+        </navPoint>
+        <navPoint id="navPoint54" playOrder="44">
+          <navLabel>
+            <text>Submodules</text>
+          </navLabel>
+          <content src="graf/graf.html#submodules" />
+        </navPoint>
+        <navPoint id="navPoint55" playOrder="45">
+          <navLabel>
+            <text>graf.compiler module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.compiler" />
+        </navPoint>
+        <navPoint id="navPoint56" playOrder="46">
+          <navLabel>
+            <text>graf.graf module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.graf" />
+        </navPoint>
+        <navPoint id="navPoint57" playOrder="47">
+          <navLabel>
+            <text>graf.model module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.model" />
+        </navPoint>
+        <navPoint id="navPoint58" playOrder="48">
+          <navLabel>
+            <text>graf.parse module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.parse" />
+        </navPoint>
+        <navPoint id="navPoint59" playOrder="49">
+          <navLabel>
+            <text>graf.shell module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.shell" />
+        </navPoint>
+        <navPoint id="navPoint60" playOrder="50">
+          <navLabel>
+            <text>graf.task module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.task" />
+        </navPoint>
+        <navPoint id="navPoint61" playOrder="51">
+          <navLabel>
+            <text>graf.timestamp module</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf.timestamp" />
+        </navPoint>
+        <navPoint id="navPoint62" playOrder="52">
+          <navLabel>
+            <text>Module contents</text>
+          </navLabel>
+          <content src="graf/graf.html#module-graf" />
+        </navPoint>
       </navPoint>
     </navPoint>
   </navMap>

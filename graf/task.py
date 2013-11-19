@@ -12,9 +12,6 @@ import cPickle
 from compiler import GrafCompiler
 from graf import Graf
 
-node_prop = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-edge_prop = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-
 class GrafTask(Graf):
     '''Task processor.
 
@@ -102,6 +99,7 @@ class GrafTask(Graf):
         taskcommand = eval("{}.task".format(task))
 
         self.loader(source, task, features)
+        self.stamp.reset()
 
         self.init_task()
         taskcommand(self) 
@@ -142,12 +140,8 @@ class GrafTask(Graf):
 
         '''
 
-        self.progress("BEGIN LOADING COMMON DATA")
         self.common_loader(source)
-        self.progress("END   LOADING COMMON DATA")
-        self.progress("BEGIN LOADING FEATURE DATA")
         self.feature_loader(directives)
-        self.progress("END   LOADING FEATURE DATA")
 
     def common_loader(self, source):
         '''Manage the common data to be loaded.
@@ -155,12 +149,10 @@ class GrafTask(Graf):
         Common data is data  common to all tasks but specific to a source.
         '''
         if self.source_changed:
-            self.progress("UNLOADING ALL DATA (source changed)")
-            for label in self.data_items_def:
-                self.init_data(label)
-            node_prop = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-            edge_prop = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+            self.progress("UNLOAD ALL DATA (source changed)")
+            self.init_data()
         if self.has_compiled or self.source_changed or self.source_changed == None:
+            self.progress("BEGIN LOADING COMMON DATA")
             self.read_stats()
             self.feat_labels = []
             for (label, is_binary) in sorted(self.data_items_def.items()):
@@ -178,6 +170,7 @@ class GrafTask(Graf):
                 msg += u"{:>10}".format(len(self.data_items[label]))
                 b_handle.close()
                 self.progress(msg)
+            self.progress("END   LOADING COMMON DATA")
         else:
             self.progress("COMMON DATA ALREADY LOADED")
 
@@ -195,9 +188,11 @@ class GrafTask(Graf):
                 There are two keys: *node* and *edge*, because node features and edge features are handled separately.
         '''
 
+        self.progress("BEGIN LOADING FEATURE DATA")
         for kind in ("node", "edge"):
             only = collections.defaultdict(lambda:collections.defaultdict(lambda:None))
             labelitems = directives[kind].split(" ")
+            feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
 
             for labelitem in labelitems:
                 if not labelitem:
@@ -206,7 +201,7 @@ class GrafTask(Graf):
                 names = namestring.split(",")
                 for name_rep in names:
                     fname_rep = u'{}.{}'.format(label_rep, name_rep)
-                    fname = self.int_fname(fname_rep)
+                    fname = feature_name_rep[fname_rep]
                     if fname == None:
                         self.progress("WARNING: {} feature {}.{} not encountered in this source".format(kind, label_rep, fname_rep))
                         continue
@@ -214,12 +209,12 @@ class GrafTask(Graf):
 
             dest = None
             if kind == 'node':
-                dest = node_prop
+                dest = self.node_feat
             else:
-                dest = edge_prop
+                dest = self.edge_feat
 
             for fname_rep in only:
-                fname = self.int_fname(fname_rep)
+                fname = feature_name_rep[fname_rep]
                 if fname_rep in self.loaded[kind] and not self.source_changed and self.source_changed != None:
                     self.progress("{} feature data for {} already loaded".format(kind, fname_rep))
                     continue
@@ -237,7 +232,7 @@ class GrafTask(Graf):
                     dest[fname][ref] = this_feat_value[i]
 
             for fname_rep in self.loaded[kind]:
-                fname = self.int_fname(fname_rep)
+                fname = feature_name_rep[fname_rep]
                 if fname_rep not in only:
                     self.progress("{} feature data for {} unloading".format(kind, fname_rep))
                     for label in self.feat_labels:
@@ -245,6 +240,7 @@ class GrafTask(Graf):
                     if fname in dest:
                         del dest[fname]
                     self.loaded[kind][fname_rep] = False
+        self.progress("END   LOADING FEATURE DATA")
 
     def add_result(self, file_name):
         '''Opens a file for writing and stores the handle.
@@ -255,6 +251,9 @@ class GrafTask(Graf):
         Args:
             file_name (str): name of the output file.
             Its location is the result directory for this task and this source.
+
+        Returns:
+            A handle to the opened file.
         '''
         result_file = "{}/{}".format(
             self.env['result_dir'], file_name
@@ -288,31 +287,31 @@ class GrafTask(Graf):
     def FNi(self, node, name):
         '''Node feature value lookup returning the value string representation.
         ''' 
-        return node_prop[name][node]
+        return self.node_feat[name][node]
 
     def FNr(self, node, name):
         '''Node feature value lookup returning the value string representation.
         See method :meth:`FNi()`.
         ''' 
         feat_value_list_int = self.data_items["feat_value_list_int"]
-        return feat_value_list_int[node_prop[name][node]]
+        return feat_value_list_int[self.node_feat[name][node]]
 
     def FEi(self, edge, name):
         '''Edge feature value lookup returning the value string representation.
         ''' 
-        return edge_prop[name][edge]
+        return self.edge_feat[name][edge]
 
     def FEr(self, edge, name):
         '''Edge feature value lookup returning the value string representation.
         See method :meth:`FEi()`.
         ''' 
         feat_value_list_int = self.data_items["feat_value_list_int"]
-        return feat_value_list_int[edge_prop[name][edge]]
+        return feat_value_list_int[self.edge_feat[name][edge]]
 
     def next_node(self):
         '''API: iterator of all nodes in primary data order.
 
-        Each call returns the next node. The iterator walks through all nodes.
+        Each call *yields* the next node. The iterator walks through all nodes.
         The order is implied by the attachment of nodes to the primary data,
         which is itself linearly ordered.
         This order is explained in the :ref:`guidelines for task writing <node-order>`.
@@ -337,7 +336,7 @@ class GrafTask(Graf):
     def next_node(self):
         '''API: iterator of all nodes in primary data order.
 
-        Each call returns the next node. The iterator walks through all nodes.
+        Each call *yields* the next node. The iterator walks through all nodes.
         The order is implied by the attachment of nodes to the primary data,
         which is itself linearly ordered.
         This order is explained in the :ref:`guidelines for task writing <node-order>`.
@@ -345,11 +344,17 @@ class GrafTask(Graf):
         for node in self.data_items["node_sort"]:
             yield node
 
-    def int_fname(self, rep):
-        '''API: *feature name* conversion from string representation as found in LAF resource
+    def int_fname_node(self, rep):
+        '''API: *feature name* (on nodes) conversion from string representation as found in LAF resource
         to corresponding integer as used in compiled resource.
         '''
-        return self.data_items["feat_name_list_rep"][rep]
+        return self.data_items["feat_name_list_node_rep"][rep]
+
+    def int_fname_edge(self, rep):
+        '''API: *feature name* (on edges) conversion from string representation as found in LAF resource
+        to corresponding integer as used in compiled resource.
+        '''
+        return self.data_items["feat_name_list_edge_rep"][rep]
 
     def int_fval(self, rep):
         '''API: *feature value* conversion from string representation as found in LAF resource
@@ -357,11 +362,17 @@ class GrafTask(Graf):
         '''
         return self.data_items["feat_value_list_rep"][rep]
 
-    def rep_fname(self, intl):
-        '''API: *feature name* conversion from integer code as used in compiled LAF resource
+    def rep_fname_node(self, intl):
+        '''API: *feature name* (on nodes) conversion from integer code as used in compiled LAF resource
         to corresponding string representation as found in original LAF resource.
         '''
-        return self.data_items["feat_name_list_int"][intl]
+        return self.data_items["feat_name_list_node_int"][intl]
+
+    def rep_fname_edge(self, intl):
+        '''API: *feature name* (on edges) conversion from integer code as used in compiled LAF resource
+        to corresponding string representation as found in original LAF resource.
+        '''
+        return self.data_items["feat_name_list_edge_int"][intl]
 
     def rep_fval(self, intl):
         '''API: *feature value* conversion from integer code as used in compiled LAF resource
@@ -378,8 +389,10 @@ class GrafTask(Graf):
         ''' 
         return (
             self.progress,
-            self.data_items["feat_name_list_rep"],
-            self.data_items["feat_name_list_int"],
+            self.data_items["feat_name_list_node_rep"],
+            self.data_items["feat_name_list_node_int"],
+            self.data_items["feat_name_list_edge_rep"],
+            self.data_items["feat_name_list_edge_int"],
             self.data_items["feat_value_list_rep"],
             self.data_items["feat_value_list_int"],
             self.next_node,
@@ -401,6 +414,9 @@ class GrafTask(Graf):
             data (array): see next
             data_items (array): together with *data* the arrayified data
             elem (int): the integer for which we want its related set of integers.
+
+        Returns:
+            a list of the related integers.
         '''
         data_items_index = data[elem - 1]
         n_items = data_items[data_items_index]
@@ -418,6 +434,9 @@ class GrafTask(Graf):
             data_items (array): together with *data* the arrayified data
             elem (int): the integer for which we want its related set of integers.
             item (int): the integer whose presence in the related items set is to be tested.
+
+        Returns:
+            bool: whether the integer is in the related set or not.
         '''
         return item in self.getitems(data, data_items, elem) 
 
@@ -431,6 +450,9 @@ class GrafTask(Graf):
             elem (int): the integer for which we want its related set of integers.
             items (array or list of integers): the set of integers
             whose presence in the related items set is to be tested.
+
+        Returns:
+            bool: whether one of the integers is in the related set or not.
         '''
         these_items = self.getitems(data, data_items, elem) 
         found = None

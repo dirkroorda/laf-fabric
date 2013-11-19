@@ -75,8 +75,10 @@ class Graf(object):
         '''Instance member holding the :class:`Timestamp <graf.timestamp.Timestamp>` object.'''
 
         self.data_items_def = {
-            "feat_name_list_rep": 0,
-            "feat_name_list_int": 0,
+            "feat_name_list_node_rep": 0,
+            "feat_name_list_node_int": 0,
+            "feat_name_list_edge_rep": 0,
+            "feat_name_list_edge_int": 0,
             "feat_value_list_rep": 0,
             "feat_value_list_int": 0,
             "region_begin": 1,
@@ -99,17 +101,29 @@ class Graf(object):
 
         See the :mod:`compiler <graf.compiler>` and :mod:`model <graf.model>` modules for the way the compiled data is organised.
         '''
-        for label in self.data_items_def:
-            self.init_data(label)
+        self.node_feat = None
+        '''Feature data (for features on nodes) stored in dictionary for fast access'''
+        self.edge_feat = None
+        '''Feature data (for features on edges) stored in dictionary for fast access'''
 
-    def init_data(self, label):
-        is_binary = self.data_items_def[label]
-        if not is_binary:
-            self.data_items[label] = {}
-        elif is_binary == 1:
-            self.data_items[label] = array.array('I')
-        elif is_binary == 2:
-            self.data_items[label] = collections.defaultdict(lambda: collections.defaultdict(lambda:array.array('I')))
+        self.init_data()
+
+    def init_data(self):
+        '''Resets all loaded data to initial values
+
+        This is needed when the task processor switches from one source to another,
+        or when a recompile has been performed.
+        '''
+        self.node_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+        self.edge_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+        for label in self.data_items_def:
+            is_binary = self.data_items_def[label]
+            if not is_binary:
+                self.data_items[label] = {}
+            elif is_binary == 1:
+                self.data_items[label] = array.array('I')
+            elif is_binary == 2:
+                self.data_items[label] = collections.defaultdict(lambda: collections.defaultdict(lambda:array.array('I')))
 
     def set_environment(self, source, task):
         '''Set the source and result locations for a task execution.

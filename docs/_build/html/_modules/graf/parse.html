@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>graf.parse &mdash; LAF-Fabric 0.9 documentation</title>
+    <title>graf.parse &mdash; LAF-Fabric 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="LAF-Fabric 0.9 documentation" href="../../index.html" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="LAF-Fabric 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="graf" href="../graf.html" /> 
   </head>
   <body>
@@ -36,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
       </ul>
@@ -56,6 +57,7 @@
 <span class="kn">from</span> <span class="nn">xml.sax.handler</span> <span class="kn">import</span> <span class="n">ContentHandler</span>
 
 <span class="kn">import</span> <span class="nn">array</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="n">good_regions</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">linked_nodes</span> <span class="o">=</span> <span class="mi">0</span>
@@ -76,18 +78,18 @@
 <span class="n">identifiers_e</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">identifiers_a</span> <span class="o">=</span> <span class="p">{}</span>
 
-<span class="n">id_annot_label</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">id_feat_name</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">id_feat_name_node</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">id_feat_name_edge</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">id_feat_value</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">id_region</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">id_node</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">id_edge</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">id_annot</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="n">annot_label_list_rep</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">annot_label_list_int</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">feat_name_list_rep</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">feat_name_list_int</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">feat_name_list_node_rep</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">feat_name_list_edge_rep</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">feat_name_list_node_int</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">feat_name_list_edge_int</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">feat_value_list_rep</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">feat_value_list_int</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">region_begin</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
@@ -95,14 +97,17 @@
 <span class="n">node_region_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">edges_from</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
 <span class="n">edges_to</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
-<span class="n">annot_type</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
-<span class="n">annot_ref</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
-<span class="n">annot_label</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;H&#39;</span><span class="p">)</span>
-<span class="n">feat_annot</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
-<span class="n">feat_name</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;H&#39;</span><span class="p">)</span>
-<span class="n">feat_value</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
+<span class="n">feat_ref_node</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">))</span>
+<span class="n">feat_value_node</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">))</span>
+<span class="n">feat_ref_edge</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">))</span>
+<span class="n">feat_value_edge</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">))</span>
 
-<div class="viewcode-block" id="HeaderHandler"><a class="viewcode-back" href="../../source/graf.html#graf.parse.HeaderHandler">[docs]</a><span class="k">class</span> <span class="nc">HeaderHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler">[docs]</a><span class="k">class</span> <span class="nc">HeaderHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Handlers used by SAX parsing the GrAF header file.</span>
+
+<span class="sd">    We just collect the contents of the *loc* attributes of the *annotation* elements.</span>
+<span class="sd">    These are the annotation files that we have to fetch and compile.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">stamp</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
@@ -110,21 +115,56 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">stamp</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="HeaderHandler.startElement"><a class="viewcode-back" href="../../source/graf.html#graf.parse.HeaderHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler.startElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;annotation&quot;</span><span class="p">:</span>
             <span class="n">annotation_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&quot;loc&quot;</span><span class="p">])</span>
 </div>
-<div class="viewcode-block" id="HeaderHandler.endElement"><a class="viewcode-back" href="../../source/graf.html#graf.parse.HeaderHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler.endElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="HeaderHandler.characters"><a class="viewcode-back" href="../../source/graf.html#graf.parse.HeaderHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler.characters"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </div></div>
-<div class="viewcode-block" id="AnnotationHandler"><a class="viewcode-back" href="../../source/graf.html#graf.parse.AnnotationHandler">[docs]</a><span class="k">class</span> <span class="nc">AnnotationHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler">[docs]</a><span class="k">class</span> <span class="nc">AnnotationHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Handlers used by SAX parsing the annotation files themselves</span>
+
+<span class="sd">    We have to collect all elements *region*, *node* and subelement *link*, *edge*, *a* (annotation) and *f* (feature).</span>
+<span class="sd">    From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.</span>
+
+<span class="sd">    The parse process is robust, we are not dependent on a particular ordering or distribution of the regions, nodes, edges, annotations and features in/over the annotation files.</span>
+
+<span class="sd">    Here is a description of the arrays we create:</span>
+
+<span class="sd">    *region_begin*, *region_end*</span>
+<span class="sd">        Every region has an *anchors* attribute specifying a point or interval in the primary data. We consider a point *i* as the interval *i .. i*.</span>
+<span class="sd">        *region_begin* contains the start anchor of region *i* for each *i*, and *region_end* the end anchor.</span>
+
+<span class="sd">    *edges_from*, *edges_to*</span>
+<span class="sd">        Every edge goes from one node to an other. *edges_from* contains the from node of edge *i* for each *i*, and *edges_end* the to node.</span>
+
+<span class="sd">    Here is a description of the dictionaries we create:</span>
+
+<span class="sd">    *feat_name_list_node_rep*, *feat_name_list_edge_rep*, *feat_name_list_node_int*, *feat_name_list_edge_int*</span>
+<span class="sd">        Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.</span>
+<span class="sd">        These are the *extended* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).</span>
+<span class="sd">        Features for nodes occupy and features for edges occupy separate but similar datastructures.</span>
+
+<span class="sd">    *feat_value_list_rep*, *feat_value_list_int*</span>
+<span class="sd">        Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.</span>
+
+<span class="sd">    There is also a list of arrays:</span>
+
+<span class="sd">    *node_region_list*</span>
+<span class="sd">        Element *i* of this list contains an array with the regions attached to node *i*.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="n">file_name</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">nid</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">aid</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">alabel</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">atype</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">aref</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">node_link</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">stamp</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -134,7 +174,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">stamp</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="AnnotationHandler.startElement"><a class="viewcode-back" href="../../source/graf.html#graf.parse.AnnotationHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler.startElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;region&quot;</span><span class="p">:</span>
             <span class="k">global</span> <span class="n">faulty_regions</span>
@@ -185,20 +225,12 @@
             <span class="k">global</span> <span class="n">faulty_annots</span>
             <span class="k">global</span> <span class="n">good_annots</span>
             <span class="k">global</span> <span class="n">id_annot</span>
-            <span class="k">global</span> <span class="n">id_annot_label</span>
             <span class="n">aid</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;xml:id&quot;</span><span class="p">]</span>
             <span class="n">id_annot</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">identifiers_a</span><span class="p">[</span><span class="n">aid</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_annot</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">aid</span> <span class="o">=</span> <span class="n">aid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">label</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;label&quot;</span><span class="p">]</span>
-            <span class="n">this_al_id</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">annot_label_list_rep</span><span class="p">:</span>
-                <span class="n">this_al_id</span> <span class="o">=</span> <span class="n">annot_label_list_rep</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">id_annot_label</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">annot_label_list_rep</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_annot_label</span>
-                <span class="n">annot_label_list_int</span><span class="p">[</span><span class="n">id_annot_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
-                <span class="n">this_al_id</span> <span class="o">=</span> <span class="n">id_annot_label</span>
             <span class="n">node_or_edge</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;ref&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">node_or_edge</span><span class="p">:</span>
                 <span class="n">faulty_annots</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -210,49 +242,32 @@
                 <span class="n">ref_type</span> <span class="o">=</span> <span class="bp">None</span>
                 <span class="k">if</span> <span class="n">node_or_edge</span> <span class="ow">in</span> <span class="n">identifiers_n</span><span class="p">:</span>
                     <span class="n">ref_id</span> <span class="o">=</span> <span class="n">identifiers_n</span><span class="p">[</span><span class="n">node_or_edge</span><span class="p">]</span>
-                    <span class="n">ref_type</span> <span class="o">=</span> <span class="s">&quot;n&quot;</span>
-                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ref_type</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">elif</span> <span class="n">node_or_edge</span> <span class="ow">in</span> <span class="n">identifiers_e</span><span class="p">:</span>
                     <span class="n">ref_id</span> <span class="o">=</span> <span class="n">identifiers_e</span><span class="p">[</span><span class="n">node_or_edge</span><span class="p">]</span>
-                    <span class="n">ref_type</span> <span class="o">=</span> <span class="s">&quot;e&quot;</span>
+                    <span class="n">ref_type</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid annotation target ref=&#39;{} (no node, no edge)&#39; for annotation {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_or_edge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="k">print</span> <span class="n">msg</span>
                 <span class="n">good_annots</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">annot_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ref_type</span><span class="p">)</span>
-                <span class="n">annot_ref</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ref_id</span><span class="p">)</span>
-                <span class="n">annot_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_al_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span> <span class="o">=</span> <span class="n">label</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ref_type</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">aref</span> <span class="o">=</span> <span class="n">ref_id</span>
         <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;f&quot;</span><span class="p">:</span>
             <span class="k">global</span> <span class="n">faulty_feats</span>
-            <span class="k">global</span> <span class="n">good_feats</span>
-            <span class="k">global</span> <span class="n">id_feat_name</span>
-            <span class="k">global</span> <span class="n">id_feat_value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
-            <span class="n">this_fn_id</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">feat_name_list_rep</span><span class="p">:</span>
-                <span class="n">this_fn_id</span> <span class="o">=</span> <span class="n">feat_name_list_rep</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">id_feat_name</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">feat_name_list_rep</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_feat_name</span>
-                <span class="n">feat_name_list_int</span><span class="p">[</span><span class="n">id_feat_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
-                <span class="n">this_fn_id</span> <span class="o">=</span> <span class="n">id_feat_name</span>
-            <span class="n">this_fv_id</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">feat_value_list_rep</span><span class="p">:</span>
-                <span class="n">this_fv_id</span> <span class="o">=</span> <span class="n">feat_value_list_rep</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">id_feat_value</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">feat_value_list_rep</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_feat_value</span>
-                <span class="n">feat_value_list_int</span><span class="p">[</span><span class="n">id_feat_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="n">this_fv_id</span> <span class="o">=</span> <span class="n">id_feat_value</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
                 <span class="n">faulty_feats</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid feature spec name=&#39;{}&#39; value=&#39;{}&#39; for feature in annotation in file {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="k">print</span> <span class="n">msg</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">good_feats</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">feat_annot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identifiers_a</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">])</span>
-                <span class="n">feat_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_fn_id</span><span class="p">)</span>
-                <span class="n">feat_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_fv_id</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">u&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">])</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
+            <span class="n">add_feature_instance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AnnotationHandler.endElement"><a class="viewcode-back" href="../../source/graf.html#graf.parse.AnnotationHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler.endElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;node&quot;</span><span class="p">:</span>
             <span class="k">global</span> <span class="n">unlinked_nodes</span>
             <span class="k">global</span> <span class="n">linked_nodes</span>
@@ -262,12 +277,77 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">linked_nodes</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">node_region_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,[</span><span class="n">identifiers_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_link</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;a&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">add_feature_instance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="AnnotationHandler.characters"><a class="viewcode-back" href="../../source/graf.html#graf.parse.AnnotationHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler.characters"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
         <span class="k">pass</span>
 </div></div>
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../source/graf.html#graf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
+<div class="viewcode-block" id="add_feature_instance"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.add_feature_instance">[docs]</a><span class="k">def</span> <span class="nf">add_feature_instance</span><span class="p">(</span><span class="n">atype</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">aref</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">good_feats</span>
+    <span class="k">global</span> <span class="n">id_feat_name_node</span>
+    <span class="k">global</span> <span class="n">id_feat_name_edge</span>
+    <span class="k">global</span> <span class="n">id_feat_value</span>
+    <span class="n">this_fn_id</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">atype</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">feat_name_list_node_rep</span><span class="p">:</span>
+            <span class="n">this_fn_id</span> <span class="o">=</span> <span class="n">feat_name_list_node_rep</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_feat_name_node</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">feat_name_list_node_rep</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_feat_name_node</span>
+            <span class="n">feat_name_list_node_int</span><span class="p">[</span><span class="n">id_feat_name_node</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">this_fn_id</span> <span class="o">=</span> <span class="n">id_feat_name_node</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">feat_name_list_edge_rep</span><span class="p">:</span>
+            <span class="n">this_fn_id</span> <span class="o">=</span> <span class="n">feat_name_list_edge_rep</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_feat_name_edge</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">feat_name_list_edge_rep</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_feat_name_edge</span>
+            <span class="n">feat_name_list_edge_int</span><span class="p">[</span><span class="n">id_feat_name_edge</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">this_fn_id</span> <span class="o">=</span> <span class="n">id_feat_name_edge</span>
+    <span class="n">this_fv_id</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">feat_value_list_rep</span><span class="p">:</span>
+        <span class="n">this_fv_id</span> <span class="o">=</span> <span class="n">feat_value_list_rep</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">id_feat_value</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">feat_value_list_rep</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_feat_value</span>
+        <span class="n">feat_value_list_int</span><span class="p">[</span><span class="n">id_feat_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">this_fv_id</span> <span class="o">=</span> <span class="n">id_feat_value</span>
+    <span class="n">good_feats</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">atype</span><span class="p">:</span>
+        <span class="n">feat_ref_node</span><span class="p">[</span><span class="n">this_fn_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aref</span><span class="p">)</span>
+        <span class="n">feat_value_node</span><span class="p">[</span><span class="n">this_fn_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_fv_id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">feat_ref_edge</span><span class="p">[</span><span class="n">this_fn_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aref</span><span class="p">)</span>
+        <span class="n">feat_value_edge</span><span class="p">[</span><span class="n">this_fn_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_fv_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Parse a GrAF resource.</span>
+<span class="sd">    </span>
+<span class="sd">    Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all</span>
+<span class="sd">    files mentioned in that header file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        graf_header_file (str): path to the GrAF header file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a tuple of items which comprise the parse results.</span>
+
+<span class="sd">    Every member of the returned tuple is itself a tuple of 3 pieces of information:</span>
+
+<span class="sd">    #. A *key* which acts as a name for this part of the result data</span>
+<span class="sd">    #. The data itself, as described in :class:`AnnotationHandler`</span>
+<span class="sd">    #. A boolean indicating whether this data is a temporary result or a permanent result</span>
+
+<span class="sd">    Temporary results will be discarded after the remodeling step, permanent results will be incorporated in </span>
+<span class="sd">    the task-executing object.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="n">saxparse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">HeaderHandler</span><span class="p">(</span><span class="n">stamp</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">annotation_file</span> <span class="ow">in</span> <span class="n">annotation_files</span><span class="p">:</span>
@@ -281,8 +361,8 @@
 <span class="s">{:&gt;10} good   edges    and {:&gt;5} faulty ones</span>
 <span class="s">{:&gt;10} good   annots   and {:&gt;5} faulty ones</span>
 <span class="s">{:&gt;10} good   features and {:&gt;5} faulty ones</span>
-<span class="s">{:&gt;10} distinct annotation labels</span>
-<span class="s">{:&gt;10} distinct feature names</span>
+<span class="s">{:&gt;10} distinct feature names for nodes</span>
+<span class="s">{:&gt;10} distinct feature names for edges</span>
 <span class="s">{:&gt;10} distinct feature values</span>
 <span class="s">{:&gt;10} distinct xml identifiers</span>
 <span class="s">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -291,17 +371,17 @@
         <span class="n">good_edges</span><span class="p">,</span> <span class="n">faulty_edges</span><span class="p">,</span>
         <span class="n">good_annots</span><span class="p">,</span> <span class="n">faulty_annots</span><span class="p">,</span>
         <span class="n">good_feats</span><span class="p">,</span> <span class="n">faulty_feats</span><span class="p">,</span>  
-        <span class="nb">len</span><span class="p">(</span><span class="n">annot_label_list_rep</span><span class="p">),</span>
-        <span class="nb">len</span><span class="p">(</span><span class="n">feat_name_list_rep</span><span class="p">),</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">feat_name_list_node_rep</span><span class="p">),</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">feat_name_list_edge_rep</span><span class="p">),</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">feat_value_list_rep</span><span class="p">),</span>
         <span class="n">id_region</span> <span class="o">+</span> <span class="n">id_node</span> <span class="o">+</span> <span class="n">id_edge</span> <span class="o">+</span> <span class="n">id_annot</span>
     <span class="p">)</span>
     <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="p">(</span><span class="s">&quot;annot_label_list_rep&quot;</span><span class="p">,</span> <span class="n">annot_label_list_rep</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;annot_label_list_int&quot;</span><span class="p">,</span> <span class="n">annot_label_list_int</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;feat_name_list_rep&quot;</span><span class="p">,</span> <span class="n">feat_name_list_rep</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;feat_name_list_int&quot;</span><span class="p">,</span> <span class="n">feat_name_list_int</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;feat_name_list_node_rep&quot;</span><span class="p">,</span> <span class="n">feat_name_list_node_rep</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;feat_name_list_node_int&quot;</span><span class="p">,</span> <span class="n">feat_name_list_node_int</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;feat_name_list_edge_rep&quot;</span><span class="p">,</span> <span class="n">feat_name_list_edge_rep</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;feat_name_list_edge_int&quot;</span><span class="p">,</span> <span class="n">feat_name_list_edge_int</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;feat_value_list_rep&quot;</span><span class="p">,</span> <span class="n">feat_value_list_rep</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;feat_value_list_int&quot;</span><span class="p">,</span> <span class="n">feat_value_list_int</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;region_begin&quot;</span><span class="p">,</span> <span class="n">region_begin</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
@@ -309,12 +389,8 @@
         <span class="p">(</span><span class="s">&quot;node_region_list&quot;</span><span class="p">,</span> <span class="n">node_region_list</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;edges_from&quot;</span><span class="p">,</span> <span class="n">edges_from</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;edges_to&quot;</span><span class="p">,</span> <span class="n">edges_to</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;annot_type&quot;</span><span class="p">,</span> <span class="n">annot_type</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;annot_ref&quot;</span><span class="p">,</span> <span class="n">annot_ref</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;annot_label&quot;</span><span class="p">,</span> <span class="n">annot_label</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;feat_annot&quot;</span><span class="p">,</span> <span class="n">feat_annot</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;feat_name&quot;</span><span class="p">,</span> <span class="n">feat_name</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;feat_value&quot;</span><span class="p">,</span> <span class="n">feat_value</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;feat_ref&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;node&#39;</span><span class="p">:</span> <span class="n">feat_ref_node</span><span class="p">,</span> <span class="s">&#39;edge&#39;</span><span class="p">:</span> <span class="n">feat_ref_edge</span><span class="p">},</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;feat_value&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;node&#39;</span><span class="p">:</span> <span class="n">feat_value_node</span><span class="p">,</span> <span class="s">&#39;edge&#39;</span><span class="p">:</span> <span class="n">feat_value_edge</span><span class="p">},</span> <span class="bp">True</span><span class="p">),</span>
     <span class="p">)</span>
 </pre></div></div>
 
@@ -349,7 +425,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../graf.html" >graf</a> &raquo;</li> 
       </ul>

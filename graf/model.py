@@ -36,6 +36,19 @@ def arrayify(source_list):
     return (dest_array, dests_array)
 
 def model(data_items, temp_data_items, stamp):
+    '''Remodels various data structures
+
+    Args:
+        data_items: data structures coming from :mod:`parse <graf.parse>`, that are here to stay
+        temp_data_items: data structures coming from :mod:`parse <graf.parse>` that may be thrown away
+        stamp (:class:`Timestamp <graf.Timestamp>`): object for issuing progress messages
+
+    Returns:
+        The resulting permanent remodelled data structures.
+
+    Function
+
+    '''
     result_items = []
 
     stamp.progress("NODES AND REGIONS")
@@ -89,6 +102,13 @@ def model(data_items, temp_data_items, stamp):
         If Object1 and Object2 start at the same monad, the object that ends last comes first.
         Otherwise objects count as equal.
         If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.
+
+        Args:
+            l (obj): first member of comparison
+            r (obj): second member of comparison
+
+        Returns:
+            -1 or 0 or 1
         '''
 
         l_min_anchor = node_anchor_min[l - 1]

@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>esther module</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gender.html" title="gender module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="tasks"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">tasks</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="module-esther">
+<span id="esther-module"></span><h1>esther module</h1>
+<dl class="function">
+<dt id="esther.task">
+<tt class="descname">task</tt><big>(</big><em>graftask</em><big>)</big><a class="reference internal" href="../_modules/esther.html#task"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Collect frequency data of common nouns in Esther per bible book.</p>
+<p>This is part of reproducing results in Martijn Naaijer&#8217;s thesis.</p>
+<p>We count lexemes of common nouns throughout the bible
+and we deliver a table of counts of all lexemes and a table of
+frequencies of lexemes restricted to the common nouns of Esther.</p>
+<p>When counting lexemes, we count the occurrences of <em>words</em>.
+If <em>word1</em> and <em>word2</em> have <em>n1</em> and <em>n2</em> occurrences, and both
+have the same <em>lexeme</em>, then <em>lexeme</em> has <em>n1</em> plus <em>n2</em>
+occurrences.</p>
+<p>When we compute frequencies, we divide lexeme occurrences as defined
+above by the total number of word occurrences.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>lexemes_all.txt (file)</em> &#8211;
+a table of all lexemes, ordered by bible book, with the number
+of occurrences in that bible book.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>lexemes_esther.txt (file)</em> &#8211;
+a matrix with as rows the lexemes of
+common nouns in Esther and as columns the books of the bible.
+A cell contain the frequency of that lexeme in that book multiplied by 1000</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<p class="rubric">Footnotes</p>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

@@ -22,7 +22,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -36,19 +36,36 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 
-<span class="n">precompute</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;plain&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;memo&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;assemble&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;only_nodes&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype ft:part_of_speech,noun_type,lexeme_utf8 sft:book&quot;</span><span class="p">,</span>
-        <span class="s">&quot;only_edges&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s">&quot;assemble_all&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="p">},</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype ft:part_of_speech,noun_type,lexeme_utf8 sft:book&quot;</span><span class="p">,</span>
+    <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../source/esther.html#esther.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">Li</span><span class="p">,</span> <span class="n">Lr</span><span class="p">,</span> <span class="n">Ni</span><span class="p">,</span> <span class="n">Nr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">Fi</span><span class="p">,</span> <span class="n">Fr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/esther.html#esther.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Collect frequency data of common nouns in Esther per bible book.</span>
+
+<span class="sd">    This is part of reproducing results in Martijn Naaijer&#39;s thesis.</span>
+
+<span class="sd">    We count lexemes of common nouns throughout the bible</span>
+<span class="sd">    and we deliver a table of counts of all lexemes and a table of</span>
+<span class="sd">    frequencies of lexemes restricted to the common nouns of Esther.</span>
+
+<span class="sd">    When counting lexemes, we count the occurrences of *words*.</span>
+<span class="sd">    If *word1* and *word2* have *n1* and *n2* occurrences, and both</span>
+<span class="sd">    have the same *lexeme*, then *lexeme* has *n1* plus *n2*</span>
+<span class="sd">    occurrences.</span>
+
+<span class="sd">    When we compute frequencies, we divide lexeme occurrences as defined</span>
+<span class="sd">    above by the total number of word occurrences.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        lexemes_all.txt (file):  a table of all lexemes, ordered by bible book, with the number</span>
+<span class="sd">        of occurrences in that bible book.</span>
+<span class="sd">        lexemes_esther.txt (file): a matrix with as rows the lexemes of</span>
+<span class="sd">        common nouns in Esther and as columns the books of the bible.</span>
+<span class="sd">        A cell contain the frequency of that lexeme in that book multiplied by 1000 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">target_book</span> <span class="o">=</span> <span class="s">&quot;Esther&quot;</span>
     <span class="n">lexemes</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="mi">0</span><span class="p">))</span>
@@ -62,22 +79,22 @@
     <span class="n">words</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">this_type</span> <span class="o">=</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;db&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;otype&quot;</span><span class="p">])</span>
+        <span class="n">this_type</span> <span class="o">=</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">this_type</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">this_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;word&quot;</span><span class="p">]:</span>
-            <span class="n">p_o_s</span> <span class="o">=</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;part_of_speech&quot;</span><span class="p">])</span>
+            <span class="n">p_o_s</span> <span class="o">=</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.part_of_speech&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">p_o_s</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;noun&quot;</span><span class="p">]:</span>
-                <span class="n">noun_type</span> <span class="o">=</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;noun_type&quot;</span><span class="p">])</span>
+                <span class="n">noun_type</span> <span class="o">=</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.noun_type&quot;</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">noun_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;common&quot;</span><span class="p">]:</span>
                     <span class="n">words</span><span class="p">[</span><span class="n">book_name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">lexeme</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;ft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;lexeme_utf8&quot;</span><span class="p">])</span>
+                    <span class="n">lexeme</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.lexeme_utf8&quot;</span><span class="p">])</span>
                     <span class="n">lexemes</span><span class="p">[</span><span class="n">book_name</span><span class="p">][</span><span class="n">lexeme</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;book&quot;</span><span class="p">]:</span>
-            <span class="n">book_name</span> <span class="o">=</span> <span class="n">Fr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;sft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;book&quot;</span><span class="p">])</span>
+            <span class="n">book_name</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.book&quot;</span><span class="p">])</span>
             <span class="n">books</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">book_name</span><span class="p">)</span>
-            <span class="n">ontarget</span> <span class="o">=</span> <span class="n">Fi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Li</span><span class="p">[</span><span class="s">&quot;sft&quot;</span><span class="p">],</span> <span class="n">Ni</span><span class="p">[</span><span class="s">&quot;book&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="n">target_book</span><span class="p">]</span>
+            <span class="n">ontarget</span> <span class="o">=</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.book&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="n">target_book</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">ontarget</span><span class="p">:</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">book_name</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>

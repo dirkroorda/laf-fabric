@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>esther module &mdash; LAF-Fabric 0.9.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="LAF-Fabric 0.9.1 documentation" href="../index.html" />
+    <link rel="up" title="tasks" href="modules.html" />
+    <link rel="next" title="gender module" href="gender.html" />
+    <link rel="prev" title="tasks" href="modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gender.html" title="gender module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="tasks"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">tasks</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-esther">
+<span id="esther-module"></span><h1>esther module<a class="headerlink" href="#module-esther" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="esther.task">
+<tt class="descname">task</tt><big>(</big><em>graftask</em><big>)</big><a class="reference internal" href="../_modules/esther.html#task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esther.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect frequency data of common nouns in Esther per bible book.</p>
+<p>This is part of reproducing results in Martijn Naaijer&#8217;s thesis.</p>
+<p>We count lexemes of common nouns throughout the bible
+and we deliver a table of counts of all lexemes and a table of
+frequencies of lexemes restricted to the common nouns of Esther.</p>
+<p>When counting lexemes, we count the occurrences of <em>words</em>.
+If <em>word1</em> and <em>word2</em> have <em>n1</em> and <em>n2</em> occurrences, and both
+have the same <em>lexeme</em>, then <em>lexeme</em> has <em>n1</em> plus <em>n2</em>
+occurrences.</p>
+<p>When we compute frequencies, we divide lexeme occurrences as defined
+above by the total number of word occurrences.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>lexemes_all.txt (file)</em> &#8211;
+a table of all lexemes, ordered by bible book, with the number
+of occurrences in that bible book.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>lexemes_esther.txt (file)</em> &#8211;
+a matrix with as rows the lexemes of
+common nouns in Esther and as columns the books of the bible.
+A cell contain the frequency of that lexeme in that book multiplied by 1000</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">tasks</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gender.html"
+                        title="next chapter">gender module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/tasks/esther.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gender.html" title="gender module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="tasks"
+             >previous</a> |</li>
+        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >tasks</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

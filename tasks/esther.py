@@ -8,7 +8,32 @@ features = {
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    '''Collect frequency data of common nouns in Esther per bible book.
+
+    This is part of reproducing results in Martijn Naaijer's thesis.
+
+    We count lexemes of common nouns throughout the bible
+    and we deliver a table of counts of all lexemes and a table of
+    frequencies of lexemes restricted to the common nouns of Esther.
+
+    When counting lexemes, we count the occurrences of *words*.
+    If *word1* and *word2* have *n1* and *n2* occurrences, and both
+    have the same *lexeme*, then *lexeme* has *n1* plus *n2*
+    occurrences.
+
+    When we compute frequencies, we divide lexeme occurrences as defined
+    above by the total number of word occurrences.
+
+    Returns:
+        lexemes_all.txt (file): a table of all lexemes, ordered by bible book, with the number
+        of occurrences in that bible book.
+
+    Returns:
+        lexemes_esther.txt (file): a matrix with as rows the lexemes of
+        common nouns in Esther and as columns the books of the bible.
+        A cell contain the frequency of that lexeme in that book multiplied by 1000 
+    '''
+    (msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
 
     target_book = "Esther"
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
@@ -22,22 +47,22 @@ def task(graftask):
     words = collections.defaultdict(lambda: 0)
 
     for node in NN():
-        this_type = FNi(node, Ni["db.otype"])
+        this_type = FNi(node, NNi["db.otype"])
         if not this_type:
             continue
         if this_type == Vi["word"]:
-            p_o_s = FNi(node, Ni["ft.part_of_speech"])
+            p_o_s = FNi(node, NNi["ft.part_of_speech"])
             if p_o_s == Vi["noun"]:
-                noun_type = FNi(node, Ni["ft.noun_type"])
+                noun_type = FNi(node, NNi["ft.noun_type"])
                 if noun_type == Vi["common"]:
                     words[book_name] += 1
-                    lexeme = FNr(node, Ni["ft.lexeme_utf8"])
+                    lexeme = FNr(node, NNi["ft.lexeme_utf8"])
                     lexemes[book_name][lexeme] += 1
 
         elif this_type == Vi["book"]:
-            book_name = FNr(node, Ni["sft.book"])
+            book_name = FNr(node, NNi["sft.book"])
             books.append(book_name)
-            ontarget = FNi(node, Ni["sft.book"]) == Vi[target_book]
+            ontarget = FNi(node, NNi["sft.book"]) == Vi[target_book]
             if ontarget:
                 sys.stderr.write(book_name)
             else:

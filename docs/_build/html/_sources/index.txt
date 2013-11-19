@@ -1,6 +1,15 @@
 LAF-workbench documentation
 ===========================
 
+.. toctree::
+	:maxdepth: 3
+
+	overview
+	workbench
+	taskwriting
+	source/graf
+	source/modules
+
 .. _author:
 
 Author
@@ -15,18 +24,6 @@ together with the researchers at the
 <http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp>`_.
 
 See also a description on the `DANS-lab site <http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric>`_.
-
-Contents
---------
-
-.. toctree::
-	:maxdepth: 2
-
-	overview
-	workbench
-	taskwriting
-	source/graf
-	source/modules
 
 Indices and tables
 ==================

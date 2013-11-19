@@ -8,7 +8,7 @@
     
     <title>LAF/GrAF and data analysis</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
   </head>
   <body>
@@ -70,7 +70,7 @@ by following this persistent identifier:
 <a class="reference external" href="http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-ukhm-eb">urn:nbn:nl:ui:13-ukhm-eb</a><a class="footnote-reference" href="#id18" id="id17">[#6]</a>.
 This data is not yet in LAF format.
 The <a class="reference external" href="http://www.slideshare.net/dirkroorda/shebanq-gniezno">SHEBANQ</a><a class="footnote-reference" href="#id20" id="id19">[#7]</a> project has
-converted the database into LAF (the conversion code is to be published on GitHub shortly),
+converted the database into LAF (the conversion code is in <a class="reference external" href="https://github.com/dirkroorda/wivu2laf">GitHub project wivu2laf</a><a class="footnote-reference" href="#id22" id="id21">[#8]</a>),
 and the resulting LAF resource is a file set of 2.27 GB, being predominantly linguistic annotations.
 It is this LAF resource that is the reference context for this workbench.
 It is to be deposited into the DANS archive shortly, under an Open Access licence, with the
@@ -78,7 +78,7 @@ restriction that it may not be used commercially.</p>
 </div>
 <div class="section" id="existing-tools-for-laf-graf-resources">
 <h2>Existing tools for LAF/GrAF resources</h2>
-<p>There is an interesting Python module (<a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a><a class="footnote-reference" href="#id22" id="id21">[#8]</a>)
+<p>There is an interesting Python module (<a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a><a class="footnote-reference" href="#id24" id="id23">[#9]</a>)
 that can read generic GrAF resources.
 It exposes an API to work with the graph and annotations of such resources.
 However, when feeding it a resource with 430 k words and 2 GB of annotation material,
@@ -94,7 +94,7 @@ perform analytic tasks on big GrAF resources.
 It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.</p>
 <div class="section" id="limitations">
 <h3>Limitations</h3>
-<p>While the <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a><a class="footnote-reference" href="#id24" id="id23">[#9]</a> module
+<p>While the <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a><a class="footnote-reference" href="#id26" id="id25">[#10]</a> module
 mentioned above is capable to read generic resources, the present Graf tool is less generic.
 It does not support the full complexity of the Graf model.
 In particular, it does not support annotation spaces, it does not read dependencies,
@@ -113,7 +113,7 @@ That said, it is not difficult to spot immediate areas for improvement:</p>
 <li>make the workbench more programmer friendly</li>
 <li>look out for even better performance for various tasks</li>
 <li>increase the support for more GrAF features, and to make the workbench fully compatible with GrAF/LAF</li>
-<li>merge the tool with the existing <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a><a class="footnote-reference" href="#id26" id="id25">[#10]</a>,
+<li>merge the tool with the existing <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a><a class="footnote-reference" href="#id28" id="id27">[#11]</a>,
 preferably as a user selectable implementation choice</li>
 </ol>
 </div>
@@ -129,7 +129,7 @@ to the wonderful world of computing. With it they can extract data from their re
 feed it into other tools.</p>
 <p>See for example the task <a class="reference internal" href="tasks/esther.html#module-esther" title="esther"><tt class="xref py py-mod docutils literal"><span class="pre">esther</span></tt></a>, which codes in less than a page an extraction of <strong>data tables</strong> relevant to the
 study of linguistic variation in the Hebrew Bible. These tables are suitable for subsequent data analysis
-by means of the open source <a class="reference external" href="http://www.r-project.org">statistics toolkit R</a><a class="footnote-reference" href="#id28" id="id27">[#11]</a>.</p>
+by means of the open source <a class="reference external" href="http://www.r-project.org">statistics toolkit R</a><a class="footnote-reference" href="#id30" id="id29">[#12]</a>.</p>
 <p>An other example is the task <a class="reference internal" href="tasks/proper.html#module-proper" title="proper"><tt class="xref py py-mod docutils literal"><span class="pre">proper</span></tt></a>, which outputs a <strong>vizualization</strong> of the text of the Hebrew Bible in which
 the syntactic structure is visible and the proper nouns and their gender.
 With this visualization it becomes possible to discern genealogies from other genres with the unaided eye,
@@ -142,13 +142,13 @@ the scholarly needs of analysis, review and publication.</p>
 <div class="section" id="author">
 <span id="id5"></span><h2>Author</h2>
 <p>This work has been undertaken first in November 2013 by Dirk Roorda, working for
-<a class="reference external" href="http://www.dans.knaw.nl/en">Data Archiving and Networked Services (DANS)</a><a class="footnote-reference" href="#id30" id="id29">[#12]</a> and
-<a class="reference external" href="http://tla.mpi.nl">The Language Archive (TLA)</a><a class="footnote-reference" href="#id32" id="id31">[#13]</a>.
+<a class="reference external" href="http://www.dans.knaw.nl/en">Data Archiving and Networked Services (DANS)</a><a class="footnote-reference" href="#id32" id="id31">[#13]</a> and
+<a class="reference external" href="http://tla.mpi.nl">The Language Archive (TLA)</a><a class="footnote-reference" href="#id34" id="id33">[#14]</a>.
 The work has been triggered by the execution of the
-<a class="reference external" href="http://www.slideshare.net/dirkroorda/shebanq-gniezno">SHEBANQ</a><a class="footnote-reference" href="#id34" id="id33">[#14]</a> project
+<a class="reference external" href="http://www.slideshare.net/dirkroorda/shebanq-gniezno">SHEBANQ</a><a class="footnote-reference" href="#id36" id="id35">[#15]</a> project
 together with the researchers at the
-<a class="reference external" href="http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp">Eep Talstra Centre for Bible and Computing (ETCBC), VU University</a><a class="footnote-reference" href="#id36" id="id35">[#15]</a>.</p>
-<p>See also a description on the <a class="reference external" href="http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric">DANS-lab site</a><a class="footnote-reference" href="#id38" id="id37">[#16]</a>.</p>
+<a class="reference external" href="http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp">Eep Talstra Centre for Bible and Computing (ETCBC), VU University</a><a class="footnote-reference" href="#id38" id="id37">[#16]</a>.</p>
+<p>See also a description on the <a class="reference external" href="http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric">DANS-lab site</a><a class="footnote-reference" href="#id40" id="id39">[#17]</a>.</p>
 <p>Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbench.</p>
 </div>
 </div>
@@ -198,7 +198,7 @@ together with the researchers at the
 <table class="docutils footnote" frame="void" id="id22" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id21">[#8]</a></td><td>http://media.cidles.eu/poio/graf-python/</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id21">[#8]</a></td><td>https://github.com/dirkroorda/wivu2laf</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id24" rules="none">
@@ -216,37 +216,43 @@ together with the researchers at the
 <table class="docutils footnote" frame="void" id="id28" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id27">[#11]</a></td><td>http://www.r-project.org</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id27">[#11]</a></td><td>http://media.cidles.eu/poio/graf-python/</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id30" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id29">[#12]</a></td><td>http://www.dans.knaw.nl/en</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id29">[#12]</a></td><td>http://www.r-project.org</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id32" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id31">[#13]</a></td><td>http://tla.mpi.nl</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id31">[#13]</a></td><td>http://www.dans.knaw.nl/en</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id34" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id33">[#14]</a></td><td>http://www.slideshare.net/dirkroorda/shebanq-gniezno</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id33">[#14]</a></td><td>http://tla.mpi.nl</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id36" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id35">[#15]</a></td><td>http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id35">[#15]</a></td><td>http://www.slideshare.net/dirkroorda/shebanq-gniezno</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id38" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id37">[#16]</a></td><td>http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id37">[#16]</a></td><td>http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id40" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id39">[#17]</a></td><td>http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric</td></tr>
 </tbody>
 </table>
 

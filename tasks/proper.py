@@ -8,7 +8,28 @@ features = {
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    '''An exercise in visualizing and distant reading.
+
+    We count proper nouns and their relative frequencies, we record the gender of the nouns.
+    We produce output in various tables.
+
+    We also produce a projection of the complete bible text to a set of symbols,
+    where verbs map to ♠, male proper nouns to ♂,
+    female proper nouns to ♀, and unknown gender proper nouns to ⊙.
+    All other words map to a dash. Moreover, the sentence, clause and phrase
+    structure is also rendered by means of boundary characters.
+
+    Returns:
+        output.txt (file): the projection of the full text as described above
+    Returns:
+        stats_v_raw.txt (file): a table with per verse counts for words, verbs, proper nouns per gender
+    Returns:
+        stats_v_compact.txt (file): a table with per verse frequencies for verbs, and proper nouns
+    Returns:
+        stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns
+    '''
+    (msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+
     out = graftask.add_result("output.txt")
     stats_v_raw = graftask.add_result("stats_v_raw.txt")
     stats_v_compact = graftask.add_result("stats_v_compact.txt")
@@ -39,20 +60,20 @@ def task(graftask):
                 outchar = u"─"
                 stats_v[0] += 1
                 stats_c[0] += 1
-                p_o_s = FNi(node, Ni["ft.part_of_speech"])
+                p_o_s = FNi(node, NNi["ft.part_of_speech"])
                 if p_o_s == Vi["noun"]:
-                    if FNi(node, Ni["ft.noun_type"]) == Vi["proper"]:
+                    if FNi(node, NNi["ft.noun_type"]) == Vi["proper"]:
                         stats_v[2] += 1
                         stats_c[2] += 1
-                        if FNi(node, Ni["ft.gender"]) == Vi["masculine"]:
+                        if FNi(node, NNi["ft.gender"]) == Vi["masculine"]:
                             outchar = u"♂"
                             stats_v[3] += 1
                             stats_c[3] += 1
-                        elif FNi(node, Ni["ft.gender"]) == Vi["feminine"]:
+                        elif FNi(node, NNi["ft.gender"]) == Vi["feminine"]:
                             outchar = u"♀"
                             stats_v[4] += 1
                             stats_c[4] += 1
-                        elif FNi(node, Ni["ft.gender"]) == Vi["unknown"]:
+                        elif FNi(node, NNi["ft.gender"]) == Vi["unknown"]:
                             outchar = u"⊙"
                             stats_v[5] += 1
                             stats_c[5] += 1
@@ -74,7 +95,7 @@ def task(graftask):
                             out.write(u"{}»".format(o))
                 del watch[monads]
         elif ob == "Ch":
-            this_chapter_label = "{} {}".format(FNr(node, Ni["sft.book"]), FNr(node, Ni["sft.chapter"]))
+            this_chapter_label = "{} {}".format(FNr(node, NNi["sft.book"]), FNr(node, NNi["sft.chapter"]))
             if stats_c[0] == None:
                 stats_c_compact.write("\t".join(('chapter', 'word', 'verb_f', 'proper_f')) + "\n")
             else:
@@ -84,7 +105,7 @@ def task(graftask):
                 stats_c[i] = 0
             stats_c_compact.write(this_chapter_label + "\t")
         elif ob == "V":
-            this_verse_label = FNr(node, Ni["sft.verse_label"]).strip(" ")
+            this_verse_label = FNr(node, NNi["sft.verse_label"]).strip(" ")
             sys.stderr.write("\r{:<11}".format(this_verse_label))
             if stats_v[0] == None:
                 stats_v_raw.write("\t".join(('verse', 'word', 'verb', 'proper', 'masc', 'fem', 'unknown')) + "\n")
@@ -116,16 +137,16 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = FNr(i, Ni["db.otype"])
+        otype = FNr(i, NNi["db.otype"])
         if not otype:
             continue
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = FNr(i, Ni["db.monads"])
-        minm = FNr(i, Ni["db.minmonad"])
-        maxm = FNr(i, Ni["db.maxmonad"])
+        monads = FNr(i, NNi["db.monads"])
+        minm = FNr(i, NNi["db.minmonad"])
+        maxm = FNr(i, NNi["db.maxmonad"])
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

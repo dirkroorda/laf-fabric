@@ -27,15 +27,18 @@ identifiers_n = {}
 identifiers_e = {}
 identifiers_a = {}
 
-id_feat_name = 0
+id_feat_name_node = 0
+id_feat_name_edge = 0
 id_feat_value = 0
 id_region = 0
 id_node = 0
 id_edge = 0
 id_annot = 0
 
-feat_name_list_rep = {}
-feat_name_list_int = {}
+feat_name_list_node_rep = {}
+feat_name_list_edge_rep = {}
+feat_name_list_node_int = {}
+feat_name_list_edge_int = {}
 feat_value_list_rep = {}
 feat_value_list_int = {}
 region_begin = array.array('I')
@@ -91,9 +94,10 @@ class AnnotationHandler(ContentHandler):
 
     Here is a description of the dictionaries we create:
 
-    *feat_name_list_rep*, *feat_name_list_int*
+    *feat_name_list_node_rep*, *feat_name_list_edge_rep*, *feat_name_list_node_int*, *feat_name_list_edge_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.
         These are the *extended* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
+        Features for nodes occupy and features for edges occupy separate but similar datastructures.
 
     *feat_value_list_rep*, *feat_value_list_int*
         Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.
@@ -187,10 +191,10 @@ class AnnotationHandler(ContentHandler):
                 ref_type = None
                 if node_or_edge in identifiers_n:
                     ref_id = identifiers_n[node_or_edge]
-                    ref_type = "n"
+                    ref_type = True
                 elif node_or_edge in identifiers_e:
                     ref_id = identifiers_e[node_or_edge]
-                    ref_type = "e"
+                    ref_type = False
                 else:
                     msg = u"ERROR: invalid annotation target ref='{} (no node, no edge)' for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
                     self.stamp.progress(msg)
@@ -201,41 +205,16 @@ class AnnotationHandler(ContentHandler):
                 self.aref = ref_id
         elif name == "f":
             global faulty_feats
-            global good_feats
-            global id_feat_name
-            global id_feat_value
             self.aempty = True
-            name = u'{}.{}'.format(self.alabel, attrs["name"])
-            value = attrs["value"]
-            this_fn_id = None
-            if name in feat_name_list_rep:
-                this_fn_id = feat_name_list_rep[name]
-            else:
-                id_feat_name += 1
-                feat_name_list_rep[name] = id_feat_name
-                feat_name_list_int[id_feat_name] = name
-                this_fn_id = id_feat_name
-            this_fv_id = None
-            if value in feat_value_list_rep:
-                this_fv_id = feat_value_list_rep[value]
-            else:
-                id_feat_value += 1
-                feat_value_list_rep[value] = id_feat_value
-                feat_value_list_int[id_feat_value] = value
-                this_fv_id = id_feat_value
+            name = attrs["name"]
             if not name:
                 faulty_feats += 1
                 msg = u"ERROR: invalid feature spec name='{}' value='{}' for feature in annotation in file {}".format(name, value, self.aid, self.file_name)
                 self.stamp.progress(msg)
                 print msg
-            else:
-                good_feats += 1
-                if self.atype == "n":
-                    feat_ref_node[this_fn_id].append(self.aref)
-                    feat_value_node[this_fn_id].append(this_fv_id)
-                elif self.atype == "e":
-                    feat_ref_edge[this_fn_id].append(self.aref)
-                    feat_value_edge[this_fn_id].append(this_fv_id)
+            name = u'{}.{}'.format(self.alabel, attrs["name"])
+            value = attrs["value"]
+            add_feature_instance(self.atype, name, self.aref, value)
 
     def endElement(self, name):
         if name == "node":
@@ -249,39 +228,52 @@ class AnnotationHandler(ContentHandler):
                 node_region_list.append(array.array('I',[identifiers_r[r] for r in self.node_link]))
         elif name == "a":
             if self.aempty:
-                global good_feats
-                global id_feat_name
-                global id_feat_value
                 name = self.alabel
                 value = 1
-                this_fn_id = None
-                if name in feat_name_list_rep:
-                    this_fn_id = feat_name_list_rep[name]
-                else:
-                    id_feat_name += 1
-                    feat_name_list_rep[name] = id_feat_name
-                    feat_name_list_int[id_feat_name] = name
-                    this_fn_id = id_feat_name
-                this_fv_id = None
-                if value in feat_value_list_rep:
-                    this_fv_id = feat_value_list_rep[value]
-                else:
-                    id_feat_value += 1
-                    feat_value_list_rep[value] = id_feat_value
-                    feat_value_list_int[id_feat_value] = value
-                    this_fv_id = id_feat_value
-                good_feats += 1
-                if self.atype == "n":
-                    feat_ref_node[this_fn_id].append(self.aref)
-                    feat_value_node[this_fn_id].append(this_fv_id)
-                elif self.atype == "e":
-                    feat_ref_edge[this_fn_id].append(self.aref)
-                    feat_value_edge[this_fn_id].append(this_fv_id)
+                add_feature_instance(self.atype, name, self.aref, value)
 
         self._tag_stack.pop()
 
     def characters(self, ch):
         pass
+
+def add_feature_instance(atype, name, aref, value):
+    global good_feats
+    global id_feat_name_node
+    global id_feat_name_edge
+    global id_feat_value
+    this_fn_id = None
+    if atype:
+        if name in feat_name_list_node_rep:
+            this_fn_id = feat_name_list_node_rep[name]
+        else:
+            id_feat_name_node += 1
+            feat_name_list_node_rep[name] = id_feat_name_node
+            feat_name_list_node_int[id_feat_name_node] = name
+            this_fn_id = id_feat_name_node
+    else:
+        if name in feat_name_list_edge_rep:
+            this_fn_id = feat_name_list_edge_rep[name]
+        else:
+            id_feat_name_edge += 1
+            feat_name_list_edge_rep[name] = id_feat_name_edge
+            feat_name_list_edge_int[id_feat_name_edge] = name
+            this_fn_id = id_feat_name_edge
+    this_fv_id = None
+    if value in feat_value_list_rep:
+        this_fv_id = feat_value_list_rep[value]
+    else:
+        id_feat_value += 1
+        feat_value_list_rep[value] = id_feat_value
+        feat_value_list_int[id_feat_value] = value
+        this_fv_id = id_feat_value
+    good_feats += 1
+    if atype:
+        feat_ref_node[this_fn_id].append(aref)
+        feat_value_node[this_fn_id].append(this_fv_id)
+    else:
+        feat_ref_edge[this_fn_id].append(aref)
+        feat_value_edge[this_fn_id].append(this_fv_id)
 
 def parse(graf_header_file, stamp):
     '''Parse a GrAF resource.
@@ -318,7 +310,8 @@ def parse(graf_header_file, stamp):
 {:>10} good   edges    and {:>5} faulty ones
 {:>10} good   annots   and {:>5} faulty ones
 {:>10} good   features and {:>5} faulty ones
-{:>10} distinct feature names
+{:>10} distinct feature names for nodes
+{:>10} distinct feature names for edges
 {:>10} distinct feature values
 {:>10} distinct xml identifiers
 '''.format(
@@ -327,14 +320,17 @@ def parse(graf_header_file, stamp):
         good_edges, faulty_edges,
         good_annots, faulty_annots,
         good_feats, faulty_feats,  
-        len(feat_name_list_rep),
+        len(feat_name_list_node_rep),
+        len(feat_name_list_edge_rep),
         len(feat_value_list_rep),
         id_region + id_node + id_edge + id_annot
     )
     stamp.progress(msg)
     return (
-        ("feat_name_list_rep", feat_name_list_rep, True),
-        ("feat_name_list_int", feat_name_list_int, True),
+        ("feat_name_list_node_rep", feat_name_list_node_rep, True),
+        ("feat_name_list_node_int", feat_name_list_node_int, True),
+        ("feat_name_list_edge_rep", feat_name_list_edge_rep, True),
+        ("feat_name_list_edge_int", feat_name_list_edge_int, True),
         ("feat_value_list_rep", feat_value_list_rep, True),
         ("feat_value_list_int", feat_value_list_int, True),
         ("region_begin", region_begin, True),

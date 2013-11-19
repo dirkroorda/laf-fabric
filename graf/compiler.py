@@ -121,7 +121,7 @@ class GrafCompiler(Graf):
             elif is_binary == 2:
                 for kind in data:
                     for fname in data[kind]:
-                        fname_rep = self.data_items["feat_name_list_int"][fname]
+                        fname_rep = self.data_items["feat_name_list_{}_int".format(kind)][fname]
                         absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname_rep, self.BIN_EXT)
                         r_handle = open(absolute_feat_path, "wb")
                         data[kind][fname].tofile(r_handle)
@@ -139,6 +139,9 @@ class GrafCompiler(Graf):
         '''Checks whether the compiled binary data is still up to date.
 
         The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.
+
+        Returns:
+            bool: whether the criterion for compiling holds.
         '''
         return not os.path.exists(self.env['stat_file']) or os.path.getmtime(self.env['stat_file']) < os.path.getmtime(self.env['data_file'])
 

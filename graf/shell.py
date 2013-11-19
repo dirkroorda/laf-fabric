@@ -307,8 +307,10 @@ class Shell(object):
         Returns:
             woven(list of lists): correponds to a table where columns are the lists of options
             and the options occupy rows. The outermost list are the rows. 
+        Returns:
             index(dict of dict): given column number and then row number as keys yields the 
             name of the item at that slot
+        Returns:
             iindex(dict of dict): given column number and then the name of an item as keys yields the 
             row number of that item
 

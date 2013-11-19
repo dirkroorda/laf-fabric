@@ -9,7 +9,7 @@ features = {
 }
 
 def task(graftask):
-    (msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    (msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 
@@ -37,14 +37,14 @@ def task(graftask):
                 out.write(u"◘".format(monads))
             else:
                 outchar = u"."
-                if FNi(node, Ni["ft.part_of_speech"]) == Vi["noun"]:
-                    if FNi(node, Ni["ft.gender"]) == Vi["masculine"]:
+                if FNi(node, NNi["ft.part_of_speech"]) == Vi["noun"]:
+                    if FNi(node, NNi["ft.gender"]) == Vi["masculine"]:
                         outchar = u"♂"
-                    elif FNi(node, Ni["ft.gender"]) == Vi["feminine"]:
+                    elif FNi(node, NNi["ft.gender"]) == Vi["feminine"]:
                         outchar = u"♀"
-                    elif FNi(node, Ni["ft.gender"]) == Vi["unknown"]:
+                    elif FNi(node, NNi["ft.gender"]) == Vi["unknown"]:
                         outchar = u"?"
-                if FNi(node, Ni["ft.part_of_speech"]) == Vi["verb"]:
+                if FNi(node, NNi["ft.part_of_speech"]) == Vi["verb"]:
                     outchar = u"♠"
                 out.write(outchar)
             if monads in watch:
@@ -54,7 +54,7 @@ def task(graftask):
                         out.write("{})".format(o))
                 del watch[monads]
         elif ob == "V":
-            this_verse_label = FNr(node, Ni["sft.verse_label"])
+            this_verse_label = FNr(node, NNi["sft.verse_label"])
             cur_verse_label[0] = this_verse_label
             cur_verse_label[1] = this_verse_label
         elif ob == "S":
@@ -71,16 +71,16 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = FNr(i, Ni["db.otype"])
+        otype = FNr(i, NNi["db.otype"])
         if not otype:
             continue
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = FNr(i, Ni["db.monads"])
-        minm = FNr(i, Ni["db.minmonad"])
-        maxm = FNr(i, Ni["db.maxmonad"])
+        monads = FNr(i, NNi["db.monads"])
+        minm = FNr(i, NNi["db.minmonad"])
+        maxm = FNr(i, NNi["db.maxmonad"])
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

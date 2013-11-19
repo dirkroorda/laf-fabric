@@ -88,14 +88,14 @@ Finally, here is the complete Python code of the task that produced this output:
 	}
 
 	def task(graftask):
-		(msg, Ni, Nr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+		(msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
 
 		out = graftask.add_result("output.txt")
 
 		for i in NN():
-			oid = FNr(i, Ni["db.oid"])
-			otype = FNr(i, Ni["db.otype"])
-			monads = FNr(i, Ni["db.monads"])
+			oid = FNr(i, NNi["db.oid"])
+			otype = FNr(i, NNi["db.otype"])
+			monads = FNr(i, NNi["db.monads"])
 			out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))
 
 
@@ -153,11 +153,13 @@ Here is a short description of the corresponding methods.
 	Use *FXi* versions when the value is needed in other parts of your script,
 	and the *FXr* versions when you need to output values. 
 
-*Ni* and *Nr*
+*NNi*, *NEi* and *NNr*, *NEr*
     Tables to convert between qualified feature names as real values
-	found in the original LAF and the integers they have been mapped to during compilation.
-	*Ni* yields integers from string representations,
-	*Nr* yields representations (strings) from internal integers.
+    found in the original LAF and the integers they have been mapped to during compilation.
+    *NXi* yields integers from string representations,
+    *NXr* yields representations (strings) from internal integers.
+    *XNx* is for features on nodes,
+    *XEx* is for features on edges.
 
 *Vi* and *Vr*
     Same pattern as above, but now for feature values.

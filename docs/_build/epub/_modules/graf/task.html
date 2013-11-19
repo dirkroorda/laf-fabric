@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>graf.task</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for graf.task</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">array</span>
+
+<span class="kn">from</span> <span class="nn">compiler</span> <span class="kn">import</span> <span class="n">GrafCompiler</span>
+<span class="kn">from</span> <span class="nn">task_plain</span> <span class="kn">import</span> <span class="n">GrafTaskPlain</span>
+<span class="kn">from</span> <span class="nn">task_mem</span> <span class="kn">import</span> <span class="n">GrafTaskMemo</span>
+<span class="kn">from</span> <span class="nn">task_ass</span> <span class="kn">import</span> <span class="n">GrafTaskAssembler</span>
+
+<div class="viewcode-block" id="GrafTask"><a class="viewcode-back" href="../../source/graf.html#graf.task.GrafTask">[docs]</a><span class="k">class</span> <span class="nc">GrafTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">compile</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bin_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_dir</span> <span class="o">=</span> <span class="n">bin_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span> <span class="o">=</span> <span class="n">result_dir</span>
+        <span class="n">grafcompiler</span> <span class="o">=</span> <span class="n">GrafCompiler</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">data_file</span><span class="p">,</span> <span class="n">bin_dir</span><span class="p">)</span>
+        <span class="n">grafcompiler</span><span class="o">.</span><span class="n">compiler</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="nb">compile</span><span class="p">)</span>
+        <span class="n">grafcompiler</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="GrafTask.processor_factory"><a class="viewcode-back" href="../../source/graf.html#graf.task.GrafTask.processor_factory">[docs]</a>    <span class="k">def</span> <span class="nf">processor_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flavour</span><span class="o">=</span><span class="s">&quot;plain&quot;</span><span class="p">,</span> <span class="n">flavour_detail</span><span class="o">=</span><span class="s">&quot;plain&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s">&#39;plain&#39;</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">GrafTaskPlain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">flavour_detail</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s">&#39;memo&#39;</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">GrafTaskMemo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">flavour_detail</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s">&#39;assemble&#39;</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">GrafTaskAssembler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">flavour_detail</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">return</span> <span class="n">obj</span>
+</pre></div></div></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,374 @@
+<?xml version="1.0"?>
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+  <head>
+    <meta name="dtb:uid" content="unknown"/>
+    <meta name="dtb:depth" content="3"/>
+    <meta name="dtb:totalPageCount" content="0"/>
+    <meta name="dtb:maxPageNumber" content="0"/>
+  </head>
+  <docTitle>
+    <text>LAF-Fabric</text>
+  </docTitle>
+  <navMap>
+    <navPoint id="navPoint1" playOrder="1">
+      <navLabel>
+        <text>LAF-workbench documentation</text>
+      </navLabel>
+      <content src="index.html" />
+    </navPoint>
+    <navPoint id="navPoint2" playOrder="2">
+      <navLabel>
+        <text>LAF/GrAF and data analysis</text>
+      </navLabel>
+      <content src="overview.html" />
+      <navPoint id="navPoint3" playOrder="2">
+        <navLabel>
+          <text>LAF/GrAF and data analysis</text>
+        </navLabel>
+        <content src="overview.html" />
+      </navPoint>
+      <navPoint id="navPoint4" playOrder="3">
+        <navLabel>
+          <text>What is LAF/GrAF</text>
+        </navLabel>
+        <content src="overview.html#what-is-laf-graf" />
+      </navPoint>
+      <navPoint id="navPoint5" playOrder="4">
+        <navLabel>
+          <text>Data</text>
+        </navLabel>
+        <content src="overview.html#data" />
+      </navPoint>
+      <navPoint id="navPoint6" playOrder="5">
+        <navLabel>
+          <text>Existing tools for LAF/GrAF resources</text>
+        </navLabel>
+        <content src="overview.html#existing-tools-for-laf-graf-resources" />
+      </navPoint>
+      <navPoint id="navPoint7" playOrder="6">
+        <navLabel>
+          <text>This workbench</text>
+        </navLabel>
+        <content src="overview.html#this-workbench" />
+        <navPoint id="navPoint8" playOrder="6">
+          <navLabel>
+            <text>This workbench</text>
+          </navLabel>
+          <content src="overview.html#this-workbench" />
+        </navPoint>
+        <navPoint id="navPoint9" playOrder="7">
+          <navLabel>
+            <text>Limitations</text>
+          </navLabel>
+          <content src="overview.html#limitations" />
+        </navPoint>
+        <navPoint id="navPoint10" playOrder="8">
+          <navLabel>
+            <text>Future work</text>
+          </navLabel>
+          <content src="overview.html#future-work" />
+        </navPoint>
+      </navPoint>
+      <navPoint id="navPoint11" playOrder="9">
+        <navLabel>
+          <text>Rationale</text>
+        </navLabel>
+        <content src="overview.html#rationale" />
+      </navPoint>
+      <navPoint id="navPoint12" playOrder="10">
+        <navLabel>
+          <text>Author</text>
+        </navLabel>
+        <content src="overview.html#author" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint13" playOrder="11">
+      <navLabel>
+        <text>LAF workbench</text>
+      </navLabel>
+      <content src="workbench.html" />
+      <navPoint id="navPoint14" playOrder="11">
+        <navLabel>
+          <text>LAF workbench</text>
+        </navLabel>
+        <content src="workbench.html" />
+      </navPoint>
+      <navPoint id="navPoint15" playOrder="12">
+        <navLabel>
+          <text>What is this workbench?</text>
+        </navLabel>
+        <content src="workbench.html#what-is-this-workbench" />
+      </navPoint>
+      <navPoint id="navPoint16" playOrder="13">
+        <navLabel>
+          <text>License</text>
+        </navLabel>
+        <content src="workbench.html#license" />
+      </navPoint>
+      <navPoint id="navPoint17" playOrder="14">
+        <navLabel>
+          <text>How to use the workbench?</text>
+        </navLabel>
+        <content src="workbench.html#how-to-use-the-workbench" />
+        <navPoint id="navPoint18" playOrder="14">
+          <navLabel>
+            <text>How to use the workbench?</text>
+          </navLabel>
+          <content src="workbench.html#how-to-use-the-workbench" />
+        </navPoint>
+        <navPoint id="navPoint19" playOrder="15">
+          <navLabel>
+            <text>Installation</text>
+          </navLabel>
+          <content src="workbench.html#installation" />
+        </navPoint>
+        <navPoint id="navPoint20" playOrder="16">
+          <navLabel>
+            <text>Configuration</text>
+          </navLabel>
+          <content src="workbench.html#configuration" />
+        </navPoint>
+        <navPoint id="navPoint21" playOrder="17">
+          <navLabel>
+            <text>Usage</text>
+          </navLabel>
+          <content src="workbench.html#usage" />
+        </navPoint>
+        <navPoint id="navPoint22" playOrder="18">
+          <navLabel>
+            <text>Other options</text>
+          </navLabel>
+          <content src="workbench.html#other-options" />
+        </navPoint>
+      </navPoint>
+      <navPoint id="navPoint23" playOrder="19">
+        <navLabel>
+          <text>Designed for Performance</text>
+        </navLabel>
+        <content src="workbench.html#designed-for-performance" />
+        <navPoint id="navPoint24" playOrder="19">
+          <navLabel>
+            <text>Designed for Performance</text>
+          </navLabel>
+          <content src="workbench.html#designed-for-performance" />
+        </navPoint>
+        <navPoint id="navPoint25" playOrder="20">
+          <navLabel>
+            <text>Explanation of these ideas</text>
+          </navLabel>
+          <content src="workbench.html#explanation-of-these-ideas" />
+        </navPoint>
+        <navPoint id="navPoint26" playOrder="21">
+          <navLabel>
+            <text>Consequences</text>
+          </navLabel>
+          <content src="workbench.html#consequences" />
+        </navPoint>
+      </navPoint>
+      <navPoint id="navPoint27" playOrder="22">
+        <navLabel>
+          <text>GrAF feature coverage</text>
+        </navLabel>
+        <content src="workbench.html#graf-feature-coverage" />
+      </navPoint>
+      <navPoint id="navPoint28" playOrder="23">
+        <navLabel>
+          <text>Development</text>
+        </navLabel>
+        <content src="workbench.html#development" />
+        <navPoint id="navPoint29" playOrder="23">
+          <navLabel>
+            <text>Development</text>
+          </navLabel>
+          <content src="workbench.html#development" />
+        </navPoint>
+        <navPoint id="navPoint30" playOrder="24">
+          <navLabel>
+            <text>API completion</text>
+          </navLabel>
+          <content src="workbench.html#api-completion" />
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint31" playOrder="25">
+      <navLabel>
+        <text>Writing Tasks</text>
+      </navLabel>
+      <content src="taskwriting.html" />
+      <navPoint id="navPoint32" playOrder="25">
+        <navLabel>
+          <text>Writing Tasks</text>
+        </navLabel>
+        <content src="taskwriting.html" />
+      </navPoint>
+      <navPoint id="navPoint33" playOrder="26">
+        <navLabel>
+          <text>What is a task?</text>
+        </navLabel>
+        <content src="taskwriting.html#what-is-a-task" />
+      </navPoint>
+      <navPoint id="navPoint34" playOrder="27">
+        <navLabel>
+          <text>A leading example</text>
+        </navLabel>
+        <content src="taskwriting.html#a-leading-example" />
+      </navPoint>
+      <navPoint id="navPoint35" playOrder="28">
+        <navLabel>
+          <text>More on features</text>
+        </navLabel>
+        <content src="taskwriting.html#more-on-features" />
+      </navPoint>
+      <navPoint id="navPoint36" playOrder="29">
+        <navLabel>
+          <text>Information flow from task to workbench</text>
+        </navLabel>
+        <content src="taskwriting.html#information-flow-from-task-to-workbench" />
+      </navPoint>
+      <navPoint id="navPoint37" playOrder="30">
+        <navLabel>
+          <text>Information flow from workbench to task</text>
+        </navLabel>
+        <content src="taskwriting.html#information-flow-from-workbench-to-task" />
+      </navPoint>
+      <navPoint id="navPoint38" playOrder="31">
+        <navLabel>
+          <text>Output</text>
+        </navLabel>
+        <content src="taskwriting.html#output" />
+      </navPoint>
+      <navPoint id="navPoint39" playOrder="32">
+        <navLabel>
+          <text>Node order</text>
+        </navLabel>
+        <content src="taskwriting.html#node-order" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint40" playOrder="33">
+      <navLabel>
+        <text>graf package</text>
+      </navLabel>
+      <content src="source/graf.html" />
+      <navPoint id="navPoint41" playOrder="33">
+        <navLabel>
+          <text>graf package</text>
+        </navLabel>
+        <content src="source/graf.html" />
+      </navPoint>
+      <navPoint id="navPoint42" playOrder="34">
+        <navLabel>
+          <text>Submodules</text>
+        </navLabel>
+        <content src="source/graf.html#submodules" />
+      </navPoint>
+      <navPoint id="navPoint43" playOrder="35">
+        <navLabel>
+          <text>graf.shell module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.shell" />
+      </navPoint>
+      <navPoint id="navPoint44" playOrder="36">
+        <navLabel>
+          <text>graf.task module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.task" />
+      </navPoint>
+      <navPoint id="navPoint45" playOrder="37">
+        <navLabel>
+          <text>graf.compiler module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.compiler" />
+      </navPoint>
+      <navPoint id="navPoint46" playOrder="38">
+        <navLabel>
+          <text>graf.parse module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.parse" />
+      </navPoint>
+      <navPoint id="navPoint47" playOrder="39">
+        <navLabel>
+          <text>graf.model module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.model" />
+      </navPoint>
+      <navPoint id="navPoint48" playOrder="40">
+        <navLabel>
+          <text>graf.graf module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.graf" />
+      </navPoint>
+      <navPoint id="navPoint49" playOrder="41">
+        <navLabel>
+          <text>graf.timestamp module</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf.timestamp" />
+      </navPoint>
+      <navPoint id="navPoint50" playOrder="42">
+        <navLabel>
+          <text>Module contents</text>
+        </navLabel>
+        <content src="source/graf.html#module-graf" />
+      </navPoint>
+    </navPoint>
+    <navPoint id="navPoint51" playOrder="43">
+      <navLabel>
+        <text>tasks</text>
+      </navLabel>
+      <content src="source/modules.html" />
+      <navPoint id="navPoint52" playOrder="43">
+        <navLabel>
+          <text>tasks</text>
+        </navLabel>
+        <content src="source/modules.html" />
+      </navPoint>
+      <navPoint id="navPoint53" playOrder="44">
+        <navLabel>
+          <text>esther script</text>
+        </navLabel>
+        <content src="source/esther.html" />
+      </navPoint>
+      <navPoint id="navPoint54" playOrder="45">
+        <navLabel>
+          <text>gender script</text>
+        </navLabel>
+        <content src="source/gender.html" />
+      </navPoint>
+      <navPoint id="navPoint55" playOrder="46">
+        <navLabel>
+          <text>involved script</text>
+        </navLabel>
+        <content src="source/involved.html" />
+      </navPoint>
+      <navPoint id="navPoint56" playOrder="47">
+        <navLabel>
+          <text>isaiah script</text>
+        </navLabel>
+        <content src="source/isaiah.html" />
+      </navPoint>
+      <navPoint id="navPoint57" playOrder="48">
+        <navLabel>
+          <text>lingo script</text>
+        </navLabel>
+        <content src="source/lingo.html" />
+      </navPoint>
+      <navPoint id="navPoint58" playOrder="49">
+        <navLabel>
+          <text>objects module</text>
+        </navLabel>
+        <content src="source/objects.html" />
+      </navPoint>
+      <navPoint id="navPoint59" playOrder="50">
+        <navLabel>
+          <text>plain script</text>
+        </navLabel>
+        <content src="source/plain.html" />
+      </navPoint>
+      <navPoint id="navPoint60" playOrder="51">
+        <navLabel>
+          <text>proper script</text>
+        </navLabel>
+        <content src="source/proper.html" />
+      </navPoint>
+    </navPoint>
+  </navMap>
+</ncx>

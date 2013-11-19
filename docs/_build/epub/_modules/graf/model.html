@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>graf.model</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for graf.model</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">array</span>
+
+<div class="viewcode-block" id="arrayify"><a class="viewcode-back" href="../../source/graf.html#graf.model.arrayify">[docs]</a><span class="k">def</span> <span class="nf">arrayify</span><span class="p">(</span><span class="n">source_list</span><span class="p">):</span>
+    <span class="n">dest_array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
+    <span class="n">dests_array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">source_list</span><span class="p">)):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">source_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">dest_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">dests_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
+        <span class="n">dests_array</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">dest_array</span><span class="p">,</span> <span class="n">dests_array</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="model"><a class="viewcode-back" href="../../source/graf.html#graf.model.model">[docs]</a><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">data_items</span><span class="p">,</span> <span class="n">temp_data_items</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
+    <span class="n">result_items</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES AND REGIONS&quot;</span><span class="p">)</span>
+
+    <span class="n">node_region_list</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;node_region_list&quot;</span><span class="p">]</span>
+    <span class="n">n_node</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_region_list</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">node_region</span><span class="p">,</span> <span class="n">node_region_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">node_region_list</span><span class="p">)</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_region&quot;</span><span class="p">,</span> <span class="n">node_region</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_region_items&quot;</span><span class="p">,</span> <span class="n">node_region_items</span><span class="p">))</span>
+
+    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES DETERMINING ANCHOR BOUNDARIES&quot;</span><span class="p">)</span>
+
+    <span class="n">node_anchor_min</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_node</span><span class="p">)])</span>
+    <span class="n">node_anchor_max</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_node</span><span class="p">)])</span>
+    <span class="n">node_linked</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
+    <span class="n">region_begin</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="s">&quot;region_begin&quot;</span><span class="p">]</span>
+    <span class="n">region_end</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="s">&quot;region_end&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_node</span><span class="p">):</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="n">node_region_list</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">links</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">node_linked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">cur_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cur_max</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+            <span class="n">this_anchor_begin</span> <span class="o">=</span> <span class="n">region_begin</span><span class="p">[</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">this_anchor_end</span> <span class="o">=</span> <span class="n">region_end</span><span class="p">[</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                <span class="n">cur_min</span> <span class="o">=</span> <span class="n">this_anchor_begin</span>
+                <span class="n">cur_max</span> <span class="o">=</span> <span class="n">this_anchor_end</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">this_anchor_begin</span> <span class="o">&lt;</span> <span class="n">cur_min</span><span class="p">:</span>
+                    <span class="n">cur_min</span> <span class="o">=</span> <span class="n">this_anchor_begin</span>
+                <span class="k">if</span> <span class="n">this_anchor_end</span> <span class="o">&gt;</span> <span class="n">cur_max</span><span class="p">:</span>
+                    <span class="n">cur_max</span> <span class="o">=</span> <span class="n">this_anchor_end</span>
+        <span class="n">node_anchor_min</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_min</span>
+        <span class="n">node_anchor_max</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_max</span>
+
+    <span class="n">node_region_list</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;node_region_list&quot;</span><span class="p">]</span>
+
+    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES SORTING BY REGIONS&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sort_by_region</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Comparison function used when sorting objects according to the extreme boundaries of its regions.</span>
+<span class="sd">        Object1 comes before Object2 if Object 1 starts before Object 2.</span>
+<span class="sd">        Object1 comes after Object2 if Object 1 starts after Object 2.</span>
+<span class="sd">        If Object1 and Object2 start at the same monad, the object that ends last comes first.</span>
+<span class="sd">        Otherwise objects count as equal.</span>
+<span class="sd">        If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">l_min_anchor</span> <span class="o">=</span> <span class="n">node_anchor_min</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">l_max_anchor</span> <span class="o">=</span> <span class="n">node_anchor_max</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">r_min_anchor</span> <span class="o">=</span> <span class="n">node_anchor_min</span><span class="p">[</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">r_max_anchor</span> <span class="o">=</span> <span class="n">node_anchor_max</span><span class="p">[</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">maincmp</span> <span class="o">=</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">l_min_anchor</span><span class="p">,</span> <span class="n">r_min_anchor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">maincmp</span> <span class="k">if</span> <span class="n">maincmp</span> <span class="k">else</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">r_max_anchor</span><span class="p">,</span> <span class="n">l_max_anchor</span><span class="p">)</span>
+
+    <span class="n">node_sort</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">node_linked</span><span class="p">,</span> <span class="n">sort_by_region</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_sort&quot;</span><span class="p">,</span> <span class="n">node_sort</span><span class="p">))</span>
+
+    <span class="n">node_anchor_min</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">node_anchor_max</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES AND EDGES&quot;</span><span class="p">)</span>
+
+    <span class="n">edges_from</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="s">&quot;edges_from&quot;</span><span class="p">]</span>
+    <span class="n">edges_to</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="s">&quot;edges_to&quot;</span><span class="p">]</span>
+    <span class="n">n_edge</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges_from</span><span class="p">)</span>
+
+    <span class="n">edges_in</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_node</span><span class="p">)]</span>
+    <span class="n">edges_out</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_node</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_edge</span><span class="p">):</span>
+        <span class="n">node_from</span> <span class="o">=</span> <span class="n">edges_from</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">node_to</span> <span class="o">=</span> <span class="n">edges_to</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">edges_out</span><span class="p">[</span><span class="n">node_from</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_to</span><span class="p">)</span>
+        <span class="n">edges_in</span><span class="p">[</span><span class="n">node_to</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_from</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">node_out</span><span class="p">,</span> <span class="n">node_out_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">edges_out</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">node_in</span><span class="p">,</span> <span class="n">node_in_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">edges_in</span><span class="p">)</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_out&quot;</span><span class="p">,</span> <span class="n">node_out</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_out_items&quot;</span><span class="p">,</span> <span class="n">node_out_items</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_in&quot;</span><span class="p">,</span> <span class="n">node_in</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_in_items&quot;</span><span class="p">,</span> <span class="n">node_in_items</span><span class="p">))</span>
+
+    <span class="n">edges_out</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">edges_in</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES/EDGES AND FEATURES&quot;</span><span class="p">)</span>
+
+    <span class="n">annot_type</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_type&quot;</span><span class="p">]</span>
+    <span class="n">annot_ref</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_ref&quot;</span><span class="p">]</span>
+    <span class="n">annot_label</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_label&quot;</span><span class="p">]</span>
+
+    <span class="n">feat_annot</span> <span class="o">=</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;feat_annot&quot;</span><span class="p">]</span>
+    <span class="n">n_feat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feat_annot</span><span class="p">)</span>
+
+    <span class="n">feat_label</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;H&#39;</span><span class="p">)</span>
+    <span class="n">node_feats</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_node</span><span class="p">)]</span>
+    <span class="n">edge_feats</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_edge</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_feat</span><span class="p">):</span>
+        <span class="n">aref</span> <span class="o">=</span> <span class="n">feat_annot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">annot_label</span><span class="p">[</span><span class="n">aref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">atype</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">[</span><span class="n">aref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">annot_ref</span><span class="p">[</span><span class="n">aref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">feat_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">atype</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span><span class="p">:</span>
+            <span class="n">node_feats</span><span class="p">[</span><span class="n">ref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">atype</span> <span class="o">==</span> <span class="s">&#39;e&#39;</span><span class="p">:</span>
+            <span class="n">edge_feats</span><span class="p">[</span><span class="n">ref</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">node_feat</span><span class="p">,</span> <span class="n">node_feat_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">node_feats</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">edge_feat</span><span class="p">,</span> <span class="n">edge_feat_items</span><span class="p">)</span> <span class="o">=</span> <span class="n">arrayify</span><span class="p">(</span><span class="n">edge_feats</span><span class="p">)</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;feat_label&quot;</span><span class="p">,</span> <span class="n">feat_label</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_feat&quot;</span><span class="p">,</span> <span class="n">node_feat</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;node_feat_items&quot;</span><span class="p">,</span> <span class="n">node_feat_items</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;edge_feat&quot;</span><span class="p">,</span> <span class="n">edge_feat</span><span class="p">))</span>
+    <span class="n">result_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;edge_feat_items&quot;</span><span class="p">,</span> <span class="n">edge_feat_items</span><span class="p">))</span>
+
+    <span class="n">node_feats</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">edge_feats</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">annot_type</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_type&quot;</span><span class="p">]</span>
+    <span class="n">annot_ref</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_ref&quot;</span><span class="p">]</span>
+    <span class="n">annot_label</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;annot_label&quot;</span><span class="p">]</span>
+    <span class="n">feat_annot</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">del</span> <span class="n">temp_data_items</span><span class="p">[</span><span class="s">&quot;feat_annot&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">result_items</span>
+</pre></div></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

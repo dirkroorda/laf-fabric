@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>graf.graf</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for graf.graf</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+
+<span class="kn">import</span> <span class="nn">array</span>
+
+<span class="kn">from</span> <span class="nn">timestamp</span> <span class="kn">import</span> <span class="n">Timestamp</span>
+
+<div class="viewcode-block" id="GrafException"><a class="viewcode-back" href="../../source/graf.html#graf.graf.GrafException">[docs]</a><span class="k">class</span> <span class="nc">GrafException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">Errors</span><span class="p">):</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">raise</span>
+</div>
+<div class="viewcode-block" id="Graf"><a class="viewcode-back" href="../../source/graf.html#graf.graf.Graf">[docs]</a><span class="k">class</span> <span class="nc">Graf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">BIN_EXT</span> <span class="o">=</span> <span class="s">&#39;bin&#39;</span>
+    <span class="n">TEXT_EXT</span> <span class="o">=</span> <span class="s">&#39;txt&#39;</span>
+    <span class="n">LOG_NAME</span> <span class="o">=</span> <span class="s">&#39;__log__&#39;</span>
+    <span class="n">STAT_NAME</span> <span class="o">=</span> <span class="s">&#39;__stat__&#39;</span>
+    <span class="n">COMPILE_TASK</span> <span class="o">=</span> <span class="s">&#39;compile&#39;</span>
+
+    <span class="n">bin_dir</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">stamp</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">stat_file</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">clog_file</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">data_items</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bin_dir</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;annot_label_list_rep&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="p">{}],</span>
+            <span class="s">&quot;annot_label_list_int&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="p">{}],</span>
+            <span class="s">&quot;feat_name_list_rep&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="p">{}],</span>
+            <span class="s">&quot;feat_name_list_int&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="p">{}],</span>
+            <span class="s">&quot;feat_value_list_rep&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="p">{}],</span>
+            <span class="s">&quot;feat_value_list_int&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="p">{}],</span>
+            <span class="s">&quot;region_begin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;region_end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_region&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_region_items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_sort&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_out&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_out_items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_in_items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_feat&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;node_feat_items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;edges_from&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;edges_to&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;edge_feat&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;edge_feat_items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;feat_label&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;H&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;feat_name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;H&#39;</span><span class="p">)],</span>
+            <span class="s">&quot;feat_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)],</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_dir</span> <span class="o">=</span> <span class="n">bin_dir</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bin_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">bin_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GrafException</span><span class="p">(</span>
+                <span class="s">&quot;ERROR: could not create bin directory {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bin_dir</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stat_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">bin_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">STAT_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPILE_TASK</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEXT_EXT</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Graf.__del__"><a class="viewcode-back" href="../../source/graf.html#graf.graf.Graf.__del__">[docs]</a>    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Graf.add_logfile"><a class="viewcode-back" href="../../source/graf.html#graf.graf.Graf.add_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">add_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">log_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GrafException</span><span class="p">(</span>
+                <span class="s">&quot;ERROR: could not create log directory {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_dir</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span>
+            <span class="p">)</span>
+
+        <span class="n">log_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">log_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG_NAME</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEXT_EXT</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">connect_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;LOGFILE={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Graf.progress"><a class="viewcode-back" href="../../source/graf.html#graf.graf.Graf.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Graf.write_stats"><a class="viewcode-back" href="../../source/graf.html#graf.graf.Graf.write_stats">[docs]</a>    <span class="k">def</span> <span class="nf">write_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stat_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="p">(</span><span class="n">is_binary</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="n">info</span> 
+            <span class="n">stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;{}={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
+        <span class="n">stat</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Graf.read_stats"><a class="viewcode-back" href="../../source/graf.html#graf.graf.Graf.read_stats">[docs]</a>    <span class="k">def</span> <span class="nf">read_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stat_file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stat</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;=&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+        <span class="n">stat</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div></div></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

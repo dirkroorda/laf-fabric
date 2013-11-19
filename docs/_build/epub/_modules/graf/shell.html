@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>graf.shell</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> 
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">LAF-Fabric 0.9 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../graf.html" accesskey="U">graf</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for graf.shell</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf8 -*-</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">ConfigParser</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">tty</span><span class="o">,</span> <span class="nn">termios</span>
+
+<span class="kn">from</span> <span class="nn">task</span> <span class="kn">import</span> <span class="n">GrafTask</span>
+
+<span class="c">### USAGE</span>
+
+<span class="c"># python laf-fabric.py</span>
+
+<span class="c">### BEGIN CONFIG</span>
+
+<span class="n">MAIN_CFG</span> <span class="o">=</span> <span class="s">&#39;laf-fabric.cfg&#39;</span>
+
+<span class="c">### END CONFIG</span>
+
+<div class="viewcode-block" id="Shell"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell">[docs]</a><span class="k">class</span> <span class="nc">Shell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Execute tasks, either in a single run, or with an interactive prompt.</span>
+
+<span class="sd">    This class knows about the environment, such as command line arguments</span>
+<span class="sd">    and configuration files. </span>
+<span class="sd">    It collects those information pieces and passes them in suitable form</span>
+<span class="sd">    to the factual task processor.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, create a :class:`GrafTask &lt;graf.task.GrafTask&gt;` object based on settings.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="c"># source</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="c"># task</span>
+        <span class="p">]</span>
+        <span class="sd">&#39;&#39;&#39;Defaults for the selectable items: *source* and *task*.</span>
+<span class="sd">        If the user does not pass values for them both on the command lines, these ones are used.</span>
+<span class="sd">        If the user does pass some of these values and the command prompt is started, the</span>
+<span class="sd">        command line values are parsed here, and the command prompt will use them as initial values.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">MAIN_CFG</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s">&#39;source_choices&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&quot;tasks/*.py&quot;</span><span class="p">)]</span>
+
+        <span class="n">argsparser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Conversion of LAF to Binary&#39;</span><span class="p">)</span>
+        <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">&quot;--source&quot;</span><span class="p">,</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="s">&#39;source&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+            <span class="n">metavar</span> <span class="o">=</span> <span class="s">&#39;Source&#39;</span><span class="p">,</span>
+            <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;which source to take&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">&quot;--task&quot;</span><span class="p">,</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="s">&#39;task&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span><span class="p">,</span>
+            <span class="n">metavar</span> <span class="o">=</span> <span class="s">&#39;Task&#39;</span><span class="p">,</span>
+            <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;which task to perform&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">&quot;--force-compile&quot;</span><span class="p">,</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="s">&#39;forcecompile&#39;</span><span class="p">,</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;Force new compilation of LAF XML to binary representation&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">&quot;--menu&quot;</span><span class="p">,</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="s">&#39;menu&#39;</span><span class="p">,</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;Display menu, use other arguments as defaults&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">argsparser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weave</span><span class="p">((</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">]</span>
+
+        <span class="sd">&#39;&#39;&#39;Data used to build a self-explanatory prompt, based on the available options&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Response messages to be displayed after the prompt&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">))]</span>
+        <span class="sd">&#39;&#39;&#39;Holds the current selection: the *source*, the *task* and the *force_compile* option, in that order.&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">forcecompile</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">GrafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Shell.processor"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.processor">[docs]</a>    <span class="k">def</span> <span class="nf">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Does work. Decides to run one task or start the command prompt.</span>
+
+<span class="sd">        The decision is based on the presence of command line arguments.</span>
+<span class="sd">        If all arguments are present to specify a task, the *run once* option will be chosen,</span>
+<span class="sd">        unless the user has explicitly stated ``--menu``.</span>
+<span class="sd">        Otherwise the command prompt is started. If that is the case, the</span>
+<span class="sd">        command line args that did come through, are used as initial values.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">menu</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">forcecompile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_loop</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Shell.command_loop"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.command_loop">[docs]</a>    <span class="k">def</span> <span class="nf">command_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Command prompt for repeated running of tasks.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">()</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_command</span><span class="p">(</span><span class="s">&quot;laf-fabric&quot;</span><span class="p">,</span> <span class="s">&quot;stcrq&quot;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">s=select source</span><span class="se">\n\t</span><span class="s">t=select task</span><span class="se">\n\t</span><span class="s">c=toggle force compile</span><span class="se">\n\t</span><span class="s">r=run selected task on selected source</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">break</span>
+</div>
+<div class="viewcode-block" id="Shell.main_command"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.main_command">[docs]</a>    <span class="k">def</span> <span class="nf">main_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Interprets a top level command.</span>
+
+<span class="sd">        Depending on the command passed, this methods prompts for additional information.</span>
+<span class="sd">        This happens for the commands that modify the source and task selection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command(char): the command character.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            message (str): response text after the command execution.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;s&#39;</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_num</span><span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">source</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;t&#39;</span><span class="p">:</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_num</span><span class="p">(</span><span class="s">&quot;task&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&quot;c&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&quot;r&quot;</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="n">col</span><span class="p">]]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">))],</span> <span class="n">force_compile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_ch</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s">&quot;Press any key to continue ...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">message</span>
+</div>
+<div class="viewcode-block" id="Shell.do_command"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.do_command">[docs]</a>    <span class="k">def</span> <span class="nf">do_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">helpstr</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Prompts the user to enter a command and dispatches it, if correct.</span>
+
+<span class="sd">        This method asks the user for a command consisting of a single letter.</span>
+<span class="sd">        It checks whether the letter is a legal option.</span>
+<span class="sd">        It add options for quitting (Esc) and displaying help (?).</span>
+<span class="sd">        If he user enters ``?``, the helpstring is displayed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prompt (str): the prompt string to be displayed.</span>
+<span class="sd">                This string will be extenden with a description of the allowed keys to press.</span>
+<span class="sd">            choices (str): a string consisting of legal  one letter commands, not separated.</span>
+<span class="sd">            helpstr (str): help string to be displayed if the user presses ``?``</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            command (str): the command entered by the user, or ``None`` if escape has been pressed.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">Cont</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">Cont</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{} [{}/?/Esc] &gt; &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">choices</span><span class="p">)))</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ch</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">:</span>
+                <span class="n">Cont</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;?&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">helpstr</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">? = this help</span><span class="se">\n\t</span><span class="s">Esc = quit</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="k">elif</span> <span class="nb">ord</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span> <span class="c"># Escape</span>
+                <span class="n">Cont</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&quot;Quit</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&quot;{} ERROR</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">command</span>
+</div>
+<div class="viewcode-block" id="Shell.get_num"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.get_num">[docs]</a>    <span class="k">def</span> <span class="nf">get_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Asks for a numeric value, and checks whether teh value is in a legal range.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prompt (str): prompt to be displayed</span>
+<span class="sd">            start (str): minimum legal value</span>
+<span class="sd">            end (str): maximum legal value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            number (int): the number if the user entered something legal,</span>
+<span class="sd">            and ``None`` otherwise.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">number</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&quot;{} [{}-{}] &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+            <span class="n">number</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">number</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="n">start</span> <span class="ow">or</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;NOT IN RANGE [{}-{}]</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">elif</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">27</span><span class="p">)</span> <span class="ow">in</span> <span class="n">number</span> <span class="ow">or</span> <span class="n">number</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;NOT A NUMBER {}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number</span><span class="p">))</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">number</span>
+</div>
+<div class="viewcode-block" id="Shell.get_ch"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.get_ch">[docs]</a>    <span class="k">def</span> <span class="nf">get_ch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Asks for unbuffered single character input, with an optional prompt.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prompt (str): Optional text to be displayed as prompt.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ch (char): character pressed by the user.</span>
+<span class="sd">            If something gets wrong, returns the *Esc* character.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">prompt</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="n">old_settings</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+        <span class="n">tty</span><span class="o">.</span><span class="n">setraw</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">27</span><span class="p">)</span> <span class="c"># Escape</span>
+        <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSADRAIN</span><span class="p">,</span> <span class="n">old_settings</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ch</span>
+</div>
+<div class="viewcode-block" id="Shell.prompt"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.prompt">[docs]</a>    <span class="k">def</span> <span class="nf">prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Writes an self-explanatory prompt text to the terminal.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;clear&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&#39;&#39;&#39; ┌─SOURCE───────────────────────────┬─TASK─────────────────────────────┐</span>
+<span class="s">&#39;&#39;&#39;</span><span class="p">)</span>
+        <span class="n">sepchar</span> <span class="o">=</span> <span class="s">u&#39;│&#39;</span>
+        <span class="n">sepchar_cur</span> <span class="o">=</span> <span class="s">u&#39;█&#39;</span>
+        <span class="n">fillchar</span> <span class="o">=</span> <span class="s">u&#39; &#39;</span>
+        <span class="n">fillchar_cur</span> <span class="o">=</span> <span class="s">u&#39;█&#39;</span>
+
+        <span class="n">n_row</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_data</span><span class="p">:</span>
+            <span class="n">n_row</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">this</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">))]</span>
+            <span class="n">this_n</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">))]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+                <span class="n">this</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+                <span class="n">this_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+            
+            <span class="n">fill</span> <span class="o">=</span> <span class="p">[</span><span class="n">fillchar</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">))]</span>
+            <span class="n">sep</span> <span class="o">=</span> <span class="p">[</span><span class="n">sepchar</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">n_row</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">fill</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fillchar_cur</span>
+                    <span class="n">sep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sepchar_cur</span>
+                    <span class="n">sep</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sepchar_cur</span>
+
+            <span class="n">this_f</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">))]</span>
+            <span class="n">this_nf</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">))]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+                <span class="n">this_f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">this</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">fill</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">30</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">this</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+                <span class="n">this_nf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fill</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">this_n</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span> <span class="o">+</span> <span class="n">this_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="s">u&#39; &#39;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+                <span class="n">line</span> <span class="o">+=</span> <span class="n">sep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">this_nf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">fill</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">this_f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="n">sep</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&#39;&#39;&#39; └──────────────────────────────────┴──────────────────────────────────┘</span>
+<span class="s"> ┌─SETTING──────────────────────────┬─VALUE────────────────────────────┐</span>
+<span class="s"> │ force compile                    │ {:&lt;3}                              │</span>
+<span class="s"> └──────────────────────────────────┴──────────────────────────────────┘</span>
+<span class="s">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;ON&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span> <span class="k">else</span> <span class="s">&#39;OFF&#39;</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Shell.weave"><a class="viewcode-back" href="../../source/graf.html#graf.shell.Shell.weave">[docs]</a>    <span class="k">def</span> <span class="nf">weave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Utility value that prepares data for presenting several columns of options</span>
+<span class="sd">        on a terminal screen.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data(lists of lists): corresponds to a number of lists of options.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            woven(list of lists): correponds to a table where columns are the lists of options</span>
+<span class="sd">            and the options occupy rows. The outermost list are the rows. </span>
+<span class="sd">            index(dict of dict): given column number and then row number as keys yields the </span>
+<span class="sd">            name of the item at that slot</span>
+<span class="sd">            iindex(dict of dict): given column number and then the name of an item as keys yields the </span>
+<span class="sd">            row number of that item</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">n_rows</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+        <span class="n">woven</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">):</span>
+            <span class="n">woven</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">else</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span> 
+        <span class="n">iindex</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span> 
+
+        <span class="n">n_row</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">woven</span><span class="p">:</span>
+            <span class="n">n_row</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">n_col</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                <span class="n">n_col</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">item</span><span class="p">:</span>
+                    <span class="n">index</span><span class="p">[</span><span class="n">n_col</span><span class="p">][</span><span class="n">n_row</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+                    <span class="n">iindex</span><span class="p">[</span><span class="n">n_col</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_row</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">woven</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">iindex</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Dirk Roorda.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

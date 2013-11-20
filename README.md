@@ -1,3 +1,5 @@
+![LAF-Fabric](https://raw.github.com/dirkroorda/laf-fabric/master/docs/LAF-Workbench.png)
+
 LAF-Fabric
 ==========
 

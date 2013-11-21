@@ -1,6 +1,6 @@
 LAF-Fabric documentation
 ========================
-.. image:: LAF-Workbench.png
+.. image:: /files/LAF-Workbench.png
 
 Contents:
 

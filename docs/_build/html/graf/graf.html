@@ -1,56 +1,150 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>graf package &mdash; LAF-Fabric 0.9.1 documentation</title>
-    
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graf package &mdash; LAF Fabric 0.9.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.9.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
+        URL_ROOT:'../',
+        VERSION:'0.9.1',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="LAF-Fabric 0.9.1 documentation" href="../index.html" />
-    <link rel="up" title="graf" href="modules.html" />
-    <link rel="prev" title="graf" href="modules.html" /> 
-  </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="modules.html" title="graf"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
-          <li><a href="modules.html" accesskey="U">graf</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="LAF Fabric 0.9.1 documentation" href="../index.html"/>
+        <link rel="up" title="graf" href="modules.html"/>
+        <link rel="prev" title="graf" href="modules.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="icon icon-home"> LAF Fabric</a>
+        <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#this-workbench">This workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#author">Author</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workbench.html">LAF workbench</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../taskwriting.html">Writing Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#what-is-a-task">What is a task?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#a-leading-example">A leading example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/proper.html">proper module</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">graf</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">graf package</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">LAF Fabric</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="../index.html">Docs</a> &raquo;</li>
+  <li><a href="">graf package</a></li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="../_sources/graf/graf.txt" rel="nofollow"> View page source</a>
+      
+    </li>
+</ul>
+<hr/>
+
+          
   <div class="section" id="graf-package">
 <h1>graf package<a class="headerlink" href="#graf-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
@@ -330,7 +424,7 @@ the chosen task</li>
 <li>source: <em>source</em></li>
 <li>task: <em>task</em></li>
 <li>compile (bool): whether to force (re)compilation</li>
-<li>settings (<a class="reference external" href="http://docs.python.org/library/configparser.html#ConfigParser.ConfigParser" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt></a>): entries corresponding to the main configuration file</li>
+<li>settings (<tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
 <li>additional computed settings adapt to the current source and task</li>
 </ul>
 </dd></dl>
@@ -362,7 +456,7 @@ the chosen task</li>
 <dl class="function">
 <dt id="graf.model.arrayify">
 <tt class="descname">arrayify</tt><big>(</big><em>source_list</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#arrayify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.arrayify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Efficient storage of a list of lists of integers in two Python <a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a>.</p>
+<dd><p>Efficient storage of a list of lists of integers in two Python <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt>.</p>
 <p><em>This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -372,7 +466,7 @@ the chosen task</li>
 a list of lists of integers</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(index_array, items_array)</em> &#8211;
-two <a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> s.
+two <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt> s.
 <em>index_array</em> contains an index for each item in <em>source_list</em>.
 <em>items_array</em> contains all the items in the following way: if an item with <em>n</em> members has to be added,
 then first the number <em>n</em> is added, and then all the members.
@@ -417,7 +511,7 @@ class:<cite>Timestamp &lt;graf.Timestamp&gt;</cite>): object for issuing progres
 <dl class="class">
 <dt id="graf.parse.AnnotationHandler">
 <em class="property">class </em><tt class="descname">AnnotationHandler</tt><big>(</big><em>annotation_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
 <p>Handlers used by SAX parsing the annotation files themselves</p>
 <p>We have to collect all elements <em>region</em>, <em>node</em> and subelement <em>link</em>, <em>edge</em>, <em>a</em> (annotation) and <em>f</em> (feature).
 From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.</p>
@@ -504,7 +598,7 @@ Features for nodes occupy and features for edges occupy separate but similar dat
 <dl class="class">
 <dt id="graf.parse.HeaderHandler">
 <em class="property">class </em><tt class="descname">HeaderHandler</tt><big>(</big><em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
 <p>Handlers used by SAX parsing the GrAF header file.</p>
 <p>We just collect the contents of the <em>loc</em> attributes of the <em>annotation</em> elements.
 These are the annotation files that we have to fetch and compile.</p>
@@ -755,7 +849,7 @@ row number of that item</td>
 <dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
 <p>Task processor.</p>
 <p>A task processor must know how to compile, where the source data is and where the result is going to.
-And it must be able to <a class="reference external" href="http://docs.python.org/reference/simple_stmts.html#import" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">import</span></tt></a>: and <a class="reference external" href="http://docs.python.org/library/functions.html#reload" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">reload()</span></tt></a>: the tasks.
+And it must be able to <em>import</em>: and <tt class="xref py py-func docutils literal"><span class="pre">reload()</span></tt>: the tasks.
 To that end the search path for modules will be adapted according to the <em>task_dir</em> setting
 in the main configuration file.</p>
 <p>Upon creation, the configuration settings are store in the object as is</p>
@@ -996,7 +1090,7 @@ to corresponding integer as used in compiled resource.</p>
 
 <dl class="attribute">
 <dt id="graf.task.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x107da28c0&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x10a91ec80&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of feature data sets that have been loaded, node features and edge features under different keys</p>
 </dd></dl>
 
@@ -1107,7 +1201,7 @@ to corresponding string representation as found in original LAF resource.</p>
 * Load the data
 * (Re)load the task code
 * Initialize the task
-* Run tha task code
+* Run the task code
 * Finalize the task</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1380,7 +1474,7 @@ the chosen task</li>
 <li>source: <em>source</em></li>
 <li>task: <em>task</em></li>
 <li>compile (bool): whether to force (re)compilation</li>
-<li>settings (<a class="reference external" href="http://docs.python.org/library/configparser.html#ConfigParser.ConfigParser" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt></a>): entries corresponding to the main configuration file</li>
+<li>settings (<tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
 <li>additional computed settings adapt to the current source and task</li>
 </ul>
 </dd></dl>
@@ -1496,7 +1590,7 @@ Only store data that is needed for task execution in the object.</p>
 <dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
 <p>Task processor.</p>
 <p>A task processor must know how to compile, where the source data is and where the result is going to.
-And it must be able to <a class="reference external" href="http://docs.python.org/reference/simple_stmts.html#import" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">import</span></tt></a>: and <a class="reference external" href="http://docs.python.org/library/functions.html#reload" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">reload()</span></tt></a>: the tasks.
+And it must be able to <em>import</em>: and <tt class="xref py py-func docutils literal"><span class="pre">reload()</span></tt>: the tasks.
 To that end the search path for modules will be adapted according to the <em>task_dir</em> setting
 in the main configuration file.</p>
 <p>Upon creation, the configuration settings are store in the object as is</p>
@@ -1731,7 +1825,7 @@ to corresponding integer as used in compiled resource.</p>
 
 <dl class="attribute">
 <dt id="graf.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x107da28c0&gt;, {})</em><a class="headerlink" href="#graf.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x10a91ec80&gt;, {})</em><a class="headerlink" href="#graf.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1840,7 +1934,7 @@ to corresponding string representation as found in original LAF resource.</p>
 * Load the data
 * (Re)load the task code
 * Initialize the task
-* Run tha task code
+* Run the task code
 * Finalize the task</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2102,71 +2196,31 @@ row number of that item</td>
 </div>
 
 
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">graf package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-graf.compiler">graf.compiler module</a></li>
-<li><a class="reference internal" href="#module-graf.graf">graf.graf module</a></li>
-<li><a class="reference internal" href="#module-graf.model">graf.model module</a></li>
-<li><a class="reference internal" href="#module-graf.parse">graf.parse module</a></li>
-<li><a class="reference internal" href="#module-graf.shell">graf.shell module</a></li>
-<li><a class="reference internal" href="#module-graf.task">graf.task module</a></li>
-<li><a class="reference internal" href="#module-graf.timestamp">graf.timestamp module</a></li>
-<li><a class="reference internal" href="#module-graf">Module contents</a></li>
-</ul>
-</li>
-</ul>
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="graf"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="modules.html"
-                        title="previous chapter">graf</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/graf/graf.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Dirk Roorda.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="modules.html" title="graf"
-             >previous</a> |</li>
-        <li><a href="../index.html">LAF-Fabric 0.9.1 documentation</a> &raquo;</li>
-          <li><a href="modules.html" >graf</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer">
-        &copy; Copyright 2013, Dirk Roorda.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
-    </div>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+</body>
 </html>

@@ -16,7 +16,7 @@ class GrafTask(Graf):
     '''Task processor.
 
     A task processor must know how to compile, where the source data is and where the result is going to.
-    And it must be able to :py:keyword:`import`: and :py:func:`reload`: the tasks.
+    And it must be able to *import*: and :py:func:`reload`: the tasks.
     To that end the search path for modules will be adapted according to the *task_dir* setting
     in the main configuration file.
     '''
@@ -62,7 +62,7 @@ class GrafTask(Graf):
         * Load the data
         * (Re)load the task code
         * Initialize the task
-        * Run tha task code
+        * Run the task code
         * Finalize the task
 
         Args:

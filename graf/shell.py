@@ -151,8 +151,11 @@ class Shell(object):
             self.cur[len(self.index)] = not self.cur[len(self.index)]
         elif command == "r":
             sys.stderr.write("\n")
-            self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile=self.cur[len(self.cur) - 1])
-            self.cur[len(self.index)] = False
+            try:
+                self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile=self.cur[len(self.cur) - 1])
+                self.cur[len(self.index)] = False
+            except:
+                print traceback.print_exc()
             self.get_ch(prompt="Press any key to continue ...")
         return message
 

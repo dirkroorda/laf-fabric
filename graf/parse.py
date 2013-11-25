@@ -205,7 +205,7 @@ class AnnotationHandler(ContentHandler):
                 self.aref = ref_id
         elif name == "f":
             global faulty_feats
-            self.aempty = True
+            self.aempty = False
             name = attrs["name"]
             if not name:
                 faulty_feats += 1

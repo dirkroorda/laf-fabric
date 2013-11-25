@@ -154,7 +154,7 @@ class GrafCompiler(Graf):
             force (bool): whether to compile even if the binary data looks up to date.
         '''
         if force or self.needs_compiling():
-            self.add_logfile(self.env['bin_dir'], self.COMPILE_TASK)
+            self.add_logfile(location=self.env['bin_dir'], name=self.COMPILE_TASK)
             self.progress("BEGIN COMPILE {}".format(self.env['data_file']))
             self.parse()
             self.model()

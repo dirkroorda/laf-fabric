@@ -122,7 +122,7 @@ class Shell(object):
 
         while True:
             self.prompt()
-            command = self.do_command("laf-fabric", "stcrq", "\ts=select source\n\tt=select task\n\tc=toggle force compile\n\tr=run selected task on selected source\n")
+            command = self.do_command("laf-fabric", "stcxq", "\ts=select source\n\tt=select task\n\tc=toggle force compile\n\tx=execute selected task on selected source\n")
             if command == None:
                 break
 
@@ -149,7 +149,7 @@ class Shell(object):
                 self.cur[1] = task - 1
         elif command == "c":
             self.cur[len(self.index)] = not self.cur[len(self.index)]
-        elif command == "r":
+        elif command == "x":
             sys.stderr.write("\n")
             try:
                 self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile=self.cur[len(self.cur) - 1])

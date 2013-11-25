@@ -206,7 +206,8 @@ class Graf(object):
             location (str): override default directory for log file
             name (str): override default name for log file
         '''
-        log_dir = self.env['result_dir'] if not location and not name else u'{}/{}'.format(location, name)
+        log_dir = self.env['result_dir'] if not location else location
+        log_name = u"{}{}.{}".format(self.LOG_NAME, self.env['task'] if not name else name, self.TEXT_EXT)
 
         try:
             if not os.path.exists(log_dir):
@@ -217,9 +218,7 @@ class Graf(object):
                 self.stamp, os.error
             )
 
-        log_file = "{}/{}{}.{}".format(
-            log_dir, self.LOG_NAME, self.env['task'], self.TEXT_EXT
-        )
+        log_file = "{}/{}".format(log_dir, log_name)
         self.log = codecs.open(log_file, "w", encoding = 'utf-8')
         '''Instance member holding the open log handle'''
 

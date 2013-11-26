@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf package &mdash; LAF Fabric 0.9.1 documentation</title>
+  <title>graf package &mdash; LAF Fabric 0.9.2 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'0.9.1',
+        VERSION:'0.9.2',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 0.9.1 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 0.9.2 documentation" href="../index.html"/>
         <link rel="up" title="graf" href="modules.html"/>
         <link rel="prev" title="graf" href="modules.html"/> 
 
@@ -371,8 +371,22 @@ override default name for log file</li>
 
 <dl class="method">
 <dt id="graf.graf.Graf.init_data">
-<tt class="descname">init_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.init_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets all loaded data to initial values</p>
+<tt class="descname">init_data</tt><big>(</big><em>feature=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.init_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all loaded data to initial values, or just the data of a single feature</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feature</strong> (<em>str, int</em>) &#8211;
+the kind (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>) and qualified name of a feature.</li>
+<li><strong>Optional. If None, all data will be reset, if given, only the data for the</strong></li>
+<li><strong>feature specified.</strong></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>This is needed when the task processor switches from one source to another,
 or when a recompile has been performed.</p>
 </dd></dl>
@@ -920,6 +934,11 @@ name of the output file.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.task.GrafTask.check_feat_loaded">
+<tt class="descname">check_feat_loaded</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.check_feat_loaded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="graf.task.GrafTask.common_loader">
 <tt class="descname">common_loader</tt><big>(</big><em>source</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.common_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.common_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manage the common data to be loaded.</p>
@@ -1089,9 +1108,14 @@ to corresponding integer as used in compiled resource.</p>
 to corresponding integer as used in compiled resource.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="graf.task.GrafTask.load_feat">
+<tt class="descname">load_feat</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.load_feat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="graf.task.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x110ab6c80&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x106685cf8&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of feature data sets that have been loaded, node features and edge features under different keys</p>
 </dd></dl>
 
@@ -1239,6 +1263,11 @@ whether to force (re)compilation of the LAF source</li>
 <tt class="descname">task_changed</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.task_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instance member to tell whether the task name has changed</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="graf.task.GrafTask.unload_feat">
+<tt class="descname">unload_feat</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.unload_feat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1428,8 +1457,22 @@ override default name for log file</li>
 
 <dl class="method">
 <dt id="graf.Graf.init_data">
-<tt class="descname">init_data</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets all loaded data to initial values</p>
+<tt class="descname">init_data</tt><big>(</big><em>feature=None</em><big>)</big><a class="headerlink" href="#graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all loaded data to initial values, or just the data of a single feature</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feature</strong> (<em>str, int</em>) &#8211;
+the kind (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>) and qualified name of a feature.</li>
+<li><strong>Optional. If None, all data will be reset, if given, only the data for the</strong></li>
+<li><strong>feature specified.</strong></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>This is needed when the task processor switches from one source to another,
 or when a recompile has been performed.</p>
 </dd></dl>
@@ -1661,6 +1704,11 @@ name of the output file.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.GrafTask.check_feat_loaded">
+<tt class="descname">check_feat_loaded</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="headerlink" href="#graf.GrafTask.check_feat_loaded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="graf.GrafTask.common_loader">
 <tt class="descname">common_loader</tt><big>(</big><em>source</em><big>)</big><a class="headerlink" href="#graf.GrafTask.common_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manage the common data to be loaded.</p>
@@ -1824,9 +1872,14 @@ to corresponding integer as used in compiled resource.</p>
 to corresponding integer as used in compiled resource.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="graf.GrafTask.load_feat">
+<tt class="descname">load_feat</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="headerlink" href="#graf.GrafTask.load_feat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="graf.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x110ab6c80&gt;, {})</em><a class="headerlink" href="#graf.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x106685cf8&gt;, {})</em><a class="headerlink" href="#graf.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1954,6 +2007,11 @@ whether to force (re)compilation of the LAF source</li>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="method">
+<dt id="graf.GrafTask.unload_feat">
+<tt class="descname">unload_feat</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="headerlink" href="#graf.GrafTask.unload_feat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

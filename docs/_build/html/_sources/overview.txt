@@ -126,5 +126,9 @@ See also a description on the `DANS-lab site <http://demo.datanetworkservice.nl/
 
 Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbench.
 
+Links
+-----
+2013-11-26 `Vitamin Talk to the TLA team Nijmegen <http://www.slideshare.net/dirkroorda/work-28611072>`_.
+
 
 

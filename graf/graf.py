@@ -108,22 +108,32 @@ class Graf(object):
 
         self.init_data()
 
-    def init_data(self):
-        '''Resets all loaded data to initial values
+    def init_data(self, feature=None):
+        '''Resets all loaded data to initial values, or just the data of a single feature
+
+        Args:
+            feature (str, int): the kind (``node`` or ``edge``) and qualified name of a feature.
+            Optional. If None, all data will be reset, if given, only the data for the
+            feature specified.
 
         This is needed when the task processor switches from one source to another,
         or when a recompile has been performed.
         '''
-        self.node_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-        self.edge_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-        for label in self.data_items_def:
-            is_binary = self.data_items_def[label]
-            if not is_binary:
-                self.data_items[label] = {}
-            elif is_binary == 1:
-                self.data_items[label] = array.array('I')
-            elif is_binary == 2:
-                self.data_items[label] = collections.defaultdict(lambda: collections.defaultdict(lambda:array.array('I')))
+        if (feature == None):
+            self.node_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+            self.edge_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+            for label in self.data_items_def:
+                is_binary = self.data_items_def[label]
+                if not is_binary:
+                    self.data_items[label] = {}
+                elif is_binary == 1:
+                    self.data_items[label] = array.array('I')
+                elif is_binary == 2:
+                    self.data_items[label] = collections.defaultdict(lambda: collections.defaultdict(lambda:array.array('I')))
+        else:
+            (kind, fname) = feature
+            for label in self.feat_labels:
+                self.data_items[label][kind][fname] = array.array('I')
 
     def set_environment(self, source, task):
         '''Set the source and result locations for a task execution.

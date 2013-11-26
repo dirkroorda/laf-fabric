@@ -23,7 +23,7 @@ master_doc = 'index'
 project = u'LAF Fabric'
 copyright = u'2013, Dirk Roorda'
 version = '0.9'
-release = '0.9.1'
+release = '0.9.2'
 exclude_patterns = ['_build']
 add_function_parentheses = True
 add_module_names = False
@@ -71,7 +71,7 @@ man_pages = [
 
 texinfo_documents = [
   ('index', 'LAF Fabric', u'LAF Fabric Documentation',
-   u'Dirk Roorda', 'LAF Fabric', 'One line description of project.',
+   u'Dirk Roorda', 'LAF Fabric', 'One line description of project_name.',
    'Miscellaneous'),
 ]
 

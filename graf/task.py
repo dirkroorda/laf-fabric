@@ -21,7 +21,7 @@ class GrafTask(Graf):
     in the main configuration file.
     '''
 
-    loaded = collections.defaultdict(lambda: {})
+    loaded = collections.defaultdict(lambda: collections.defaultdict(lambda: False))
     '''Set of feature data sets that have been loaded, node features and edge features under different keys'''
     result_files = []
     '''List of handles to result files created by the task through the method :meth:`add_result`'''
@@ -207,40 +207,52 @@ class GrafTask(Graf):
                         continue
                     only[fname_rep] = None
 
-            dest = None
-            if kind == 'node':
-                dest = self.node_feat
-            else:
-                dest = self.edge_feat
-
             for fname_rep in only:
                 fname = feature_name_rep[fname_rep]
-                if fname_rep in self.loaded[kind] and not self.source_changed and self.source_changed != None:
+                if self.check_feat_loaded(kind, fname_rep):
                     self.progress("{} feature data for {} already loaded".format(kind, fname_rep))
-                    continue
-                self.progress("{} feature data for {} loading".format(kind, fname_rep))
-                for label in self.feat_labels:
-                    absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname_rep, self.BIN_EXT)
-                    p_handle = open(absolute_feat_path, "rb")
-                    self.data_items[label][kind][fname].fromfile(p_handle, self.stats[u'{}_{}_{}'.format(label, kind, fname)])
-                    self.loaded[kind][fname_rep] = True
-                this_feat_ref = self.data_items['feat_ref'][kind][fname]
-                this_feat_value = self.data_items['feat_value'][kind][fname]
-                i = -1
-                for ref in this_feat_ref:
-                    i += 1
-                    dest[fname][ref] = this_feat_value[i]
+                else:
+                    self.progress("{} feature data for {} loading".format(kind, fname_rep))
+                    self.load_feat(kind, fname_rep)
 
             for fname_rep in self.loaded[kind]:
                 fname = feature_name_rep[fname_rep]
                 if fname_rep not in only:
                     self.progress("{} feature data for {} unloading".format(kind, fname_rep))
-                    for label in self.feat_labels:
-                        self.data_items[label][kind][fname] = array.array('I')
-                    if fname in dest:
-                        del dest[fname]
-                    self.loaded[kind][fname_rep] = False
+                    self.unload_feat(kind, fname_rep)
         self.progress("END   LOADING FEATURE DATA")
+
+    def check_feat_loaded(self, kind, fname_rep):
+        return self.loaded[kind][fname_rep] and (not self.source_changed) and self.source_changed != None
+
+    def load_feat(self, kind, fname_rep):
+        feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
+        fname = feature_name_rep[fname_rep]
+        for label in self.feat_labels:
+            absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname_rep, self.BIN_EXT)
+            p_handle = open(absolute_feat_path, "rb")
+            self.data_items[label][kind][fname].fromfile(p_handle, self.stats[u'{}_{}_{}'.format(label, kind, fname)])
+            self.loaded[kind][fname_rep] = True
+        this_feat_ref = self.data_items['feat_ref'][kind][fname]
+        this_feat_value = self.data_items['feat_value'][kind][fname]
+
+        dest = self.node_feat if kind == 'node' else self.edge_feat
+        i = -1
+        for ref in this_feat_ref:
+            i += 1
+            dest[fname][ref] = this_feat_value[i]
+        for label in self.feat_labels:
+            self.init_data(feature=(kind, fname))
+
+    def unload_feat(self, kind, fname_rep):
+        feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
+        fname = feature_name_rep[fname_rep]
+        dest = self.node_feat if kind == 'node' else self.edge_feat
+        for label in self.feat_labels:
+            self.init_data((kind, fname))
+        if fname in dest:
+            del dest[fname]
+        self.loaded[kind][fname_rep] = False
 
     def add_result(self, file_name):
         '''Opens a file for writing and stores the handle.

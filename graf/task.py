@@ -223,9 +223,24 @@ class GrafTask(Graf):
         self.progress("END   LOADING FEATURE DATA")
 
     def check_feat_loaded(self, kind, fname_rep):
+        '''Checks whether feature data for a specific feature is loaded in memory.
+
+        Args:
+            kind (str): kind (node or edge) of the feature
+            fname_rep: the qualified name of the feature.
+
+        Returns:
+            True if data is in memory, otherwise False.
+        '''
         return self.loaded[kind][fname_rep] and (not self.source_changed) and self.source_changed != None
 
     def load_feat(self, kind, fname_rep):
+        ''' Loads selected feature into memory.
+
+        Args:
+            kind (str): kind (node or edge) of the feature
+            fname_rep: the qualified name of the feature.
+        '''
         feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
         fname = feature_name_rep[fname_rep]
         for label in self.feat_labels:
@@ -245,6 +260,12 @@ class GrafTask(Graf):
             self.init_data(feature=(kind, fname))
 
     def unload_feat(self, kind, fname_rep):
+        ''' Unloads selected feature from memory.
+
+        Args:
+            kind (str): kind (node or edge) of the feature
+            fname_rep: the qualified name of the feature.
+        '''
         feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
         fname = feature_name_rep[fname_rep]
         dest = self.node_feat if kind == 'node' else self.edge_feat

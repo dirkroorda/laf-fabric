@@ -31,7 +31,8 @@ class GrafTask(Graf):
         '''Upon creation, the configuration settings are store in the object as is
 
         Args:
-            settings (:py:class:`ConfigParser.ConfigParser`): entries corresponding to the main configuration file
+            settings (:py:class:`ConfigParser.ConfigParser`):
+                entries corresponding to the main configuration file
         '''
         Graf.__init__(self)
         self.has_compiled = False
@@ -67,9 +68,14 @@ class GrafTask(Graf):
         * Finalize the task
 
         Args:
-            source (str): key for the source
-            task: the chosen task
-            force_compile (bool): whether to force (re)compilation of the LAF source
+            source (str):
+                key for the source
+
+            task:
+                the chosen task
+
+            force_compile (bool):
+                whether to force (re)compilation of the LAF source
         '''
         if self.env == None:
             self.source_changed = None 
@@ -134,8 +140,8 @@ class GrafTask(Graf):
         and the feature manager method :meth:`feature_loader` takes care of that. 
 
         Args:
-            directives (dict): a dictionary of information
-            relevant to :meth:`common_loader` and :meth:`feature_loader`.
+            directives (dict):
+                a dictionary of information relevant to :meth:`common_loader` and :meth:`feature_loader`.
 
         .. note:: directives are only used by :meth:`feature_loader`.
 
@@ -227,8 +233,11 @@ class GrafTask(Graf):
         '''Checks whether feature data for a specific feature is loaded in memory.
 
         Args:
-            kind (str): kind (node or edge) of the feature
-            fname_rep: the qualified name of the feature.
+            kind (str):
+                kind (node or edge) of the feature
+
+            fname_rep:
+                the qualified name of the feature.
 
         Returns:
             True if data is in memory, otherwise False.
@@ -239,8 +248,11 @@ class GrafTask(Graf):
         ''' Loads selected feature into memory.
 
         Args:
-            kind (str): kind (node or edge) of the feature
-            fname_rep: the qualified name of the feature.
+            kind (str):
+                kind (node or edge) of the feature
+
+            fname_rep:
+                the qualified name of the feature.
         '''
         feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
         fname = feature_name_rep[fname_rep]
@@ -264,8 +276,11 @@ class GrafTask(Graf):
         ''' Unloads selected feature from memory.
 
         Args:
-            kind (str): kind (node or edge) of the feature
-            fname_rep: the qualified name of the feature.
+            kind (str):
+                kind (node or edge) of the feature
+
+            fname_rep:
+                the qualified name of the feature.
         '''
         feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
         fname = feature_name_rep[fname_rep]
@@ -283,7 +298,9 @@ class GrafTask(Graf):
         The file will be closed by the workbench when the task terminates.
 
         Args:
-            file_name (str): name of the output file.
+            file_name (str):
+                name of the output file.
+
             Its location is the result directory for this task and this source.
 
         Returns:
@@ -367,8 +384,11 @@ class GrafTask(Graf):
         See also :meth:`next_node`.
 
         Args:
-            name (int): the code of a feature name
-            value (int): the code of a feature value
+            name (int):
+                the code of a feature name
+
+            value (int):
+                the code of a feature value
         '''
         for node in self.data_items["node_sort"]:
             if value == self.FNi(node, name):
@@ -452,9 +472,14 @@ class GrafTask(Graf):
         this is the way to look up the set of related integers for each integer.
 
         Args:
-            data (array): see next
-            data_items (array): together with *data* the arrayified data
-            elem (int): the integer for which we want its related set of integers.
+            data (array):
+                see next
+
+            data_items (array):
+                together with *data* the arrayified data
+
+            elem (int):
+                the integer for which we want its related set of integers.
 
         Returns:
             a list of the related integers.
@@ -471,10 +496,17 @@ class GrafTask(Graf):
         with respect to an arrayified data structure (see also :meth:`getitems`).
 
         Args:
-            data (array): see next
-            data_items (array): together with *data* the arrayified data
-            elem (int): the integer for which we want its related set of integers.
-            item (int): the integer whose presence in the related items set is to be tested.
+            data (array):
+                see next
+
+            data_items (array):
+                together with *data* the arrayified data
+
+            elem (int):
+                the integer for which we want its related set of integers.
+
+            item (int):
+                the integer whose presence in the related items set is to be tested.
 
         Returns:
             bool: whether the integer is in the related set or not.
@@ -486,14 +518,22 @@ class GrafTask(Graf):
         with respect to an arrayified data structure (see also :meth:`getitems`).
 
         Args:
-            data (array): see next
-            data_items (array): together with *data* the arrayified data
-            elem (int): the integer for which we want its related set of integers.
-            items (array or list of integers): the set of integers
-            whose presence in the related items set is to be tested.
+            data (array):
+                see next
+
+            data_items (array):
+                together with *data* the arrayified data
+
+            elem (int):
+                the integer for which we want its related set of integers.
+
+            items (array or list of integers):
+                the set of integers
+                whose presence in the related items set is to be tested.
 
         Returns:
-            bool: whether one of the integers is in the related set or not.
+            bool:
+                whether one of the integers is in the related set or not.
         '''
         these_items = self.getitems(data, data_items, elem) 
         found = None

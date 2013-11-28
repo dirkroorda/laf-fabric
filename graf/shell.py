@@ -133,10 +133,12 @@ class Shell(object):
         This happens for the commands that modify the source and task selection.
 
         Args:
-            command(char): the command character.
+            command(char):
+                the command character.
 
         Returns:
-            message (str): response text after the command execution.
+            message (str):
+                response text after the command execution.
         '''
         message = ''
         if command == 's':
@@ -168,13 +170,18 @@ class Shell(object):
         If he user enters ``?``, the helpstring is displayed.
 
         Args:
-            prompt (str): the prompt string to be displayed.
-                This string will be extenden with a description of the allowed keys to press.
-            choices (str): a string consisting of legal  one letter commands, not separated.
-            helpstr (str): help string to be displayed if the user presses ``?``
+            prompt (str):
+                the prompt string to be displayed. This string will be extended with a description of the allowed keys to press.
+
+            choices (str):
+                a string consisting of legal  one letter commands, not separated.
+
+            helpstr (str):
+                help string to be displayed if the user presses ``?``
 
         Returns:
-            command (str): the command entered by the user, or ``None`` if escape has been pressed.
+            command (str):
+                the command entered by the user, or ``None`` if escape has been pressed.
         '''
         command = None
         self.message = ''
@@ -205,13 +212,18 @@ class Shell(object):
         '''Asks for a numeric value, and checks whether teh value is in a legal range.
 
         Args:
-            prompt (str): prompt to be displayed
-            start (str): minimum legal value
-            end (str): maximum legal value
+            prompt (str):
+                prompt to be displayed
+
+            start (str):
+                minimum legal value
+
+            end (str):
+                maximum legal value
 
         Returns:
-            number (int): the number if the user entered something legal,
-            and ``None`` otherwise.
+            number (int):
+                the number if the user entered something legal, and ``None`` otherwise.
         '''
         number = None
         while True:
@@ -235,11 +247,12 @@ class Shell(object):
         '''Asks for unbuffered single character input, with an optional prompt.
 
         Args:
-            prompt (str): Optional text to be displayed as prompt.
+            prompt (str):
+                Optional text to be displayed as prompt.
 
         Returns:
-            ch (char): character pressed by the user.
-            If something gets wrong, returns the *Esc* character.
+            ch (char):
+                character pressed by the user. If something gets wrong, returns the *Esc* character.
         '''
         if prompt:
             sys.stderr.write(prompt)
@@ -307,17 +320,22 @@ class Shell(object):
         on a terminal screen.
 
         Args:
-            data(lists of lists): corresponds to a number of lists of options.
+            data(lists of lists):
+                corresponds to a number of lists of options.
         
         Returns:
-            woven(list of lists): correponds to a table where columns are the lists of options
-            and the options occupy rows. The outermost list are the rows. 
+            woven(list of lists):
+                correponds to a table where columns are the lists of options
+                and the options occupy rows. The outermost list are the rows. 
+
         Returns:
-            index(dict of dict): given column number and then row number as keys yields the 
-            name of the item at that slot
+            index(dict of dict):
+                given column number and then row number as keys yields the name of the item at that slot
+
         Returns:
-            iindex(dict of dict): given column number and then the name of an item as keys yields the 
-            row number of that item
+            iindex(dict of dict):
+                given column number and then the name of an item as keys yields the 
+                row number of that item
 
         '''
 

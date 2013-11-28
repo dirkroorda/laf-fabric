@@ -282,7 +282,8 @@ def parse(graf_header_file, stamp):
     files mentioned in that header file.
 
     Args:
-        graf_header_file (str): path to the GrAF header file
+        graf_header_file (str):
+            path to the GrAF header file
 
     Returns:
         a tuple of items which comprise the parse results.

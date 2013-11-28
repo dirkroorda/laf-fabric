@@ -17,7 +17,8 @@ class Timestamp():
         '''Upon creation, retrieves the time.
 
         Args:
-            log_file (file): open file handle for writing. Optional. If not ``None`` stores the handle in the object's data.
+            log_file (file):
+                open file handle for writing. Optional. If not ``None`` stores the handle in the object's data.
         '''
         self.timestamp = time.time()
         '''Instance member holding the time the object was created'''
@@ -54,7 +55,8 @@ class Timestamp():
         '''Connects a log file to the object.
 
         Args:
-            log_file (file): open handle for writing.
+            log_file (file):
+                open handle for writing.
         '''
 
         self.log = log_file
@@ -65,8 +67,11 @@ class Timestamp():
         The message is issued to the standard output, and, if a log file has been connected, also to the log file.
 
         Args:
-            msg (str): text of the message
-            newline (bool): whether or not to add a newline. Optional. Make it ``False`` to not add a newline.
+            msg (str):
+                text of the message
+
+            newline (bool):
+                whether or not to add a newline. Optional. Make it ``False`` to not add a newline.
         '''
         timed_msg = "{} {}{}".format(self.elapsed(), msg, "\n" if newline else "")
         sys.stdout.write(timed_msg)

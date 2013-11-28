@@ -9,7 +9,6 @@ sys.path.insert(0, os.path.abspath('../tasks'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
-    'sphinxcontrib.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',

@@ -9,7 +9,6 @@ sys.path.insert(0, os.path.abspath('../tasks'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
-    'sphinxcontrib.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
@@ -23,7 +22,7 @@ master_doc = 'index'
 project = u'LAF Fabric'
 copyright = u'2013, Dirk Roorda'
 version = '0.9'
-release = '0.9.2'
+release = '0.9.3'
 exclude_patterns = ['_build']
 add_function_parentheses = True
 add_module_names = False

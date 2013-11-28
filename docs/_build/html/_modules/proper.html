@@ -167,8 +167,11 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        output.txt (file): the projection of the full text as described above</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        stats_v_raw.txt (file): a table with per verse counts for words, verbs, proper nouns per gender</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        stats_v_compact.txt (file): a table with per verse frequencies for verbs, and proper nouns</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
@@ -198,9 +201,9 @@
         <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">minm</span><span class="p">,</span> <span class="n">maxm</span><span class="p">,</span> <span class="n">monads</span><span class="p">)</span> <span class="o">=</span> <span class="n">obdata</span>
         <span class="k">if</span> <span class="n">ob</span> <span class="o">==</span> <span class="s">&quot;w&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">watch</span><span class="p">:</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;◘&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">monads</span><span class="p">))</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;◘&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">monads</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;─&quot;</span>
+                <span class="n">outchar</span> <span class="o">=</span> <span class="s">&quot;─&quot;</span>
                 <span class="n">stats_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">stats_c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">p_o_s</span> <span class="o">=</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.part_of_speech&quot;</span><span class="p">])</span>
@@ -209,19 +212,19 @@
                         <span class="n">stats_v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="n">stats_c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="k">if</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;masculine&quot;</span><span class="p">]:</span>
-                            <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;♂&quot;</span>
+                            <span class="n">outchar</span> <span class="o">=</span> <span class="s">&quot;♂&quot;</span>
                             <span class="n">stats_v</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="n">stats_c</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="k">elif</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;feminine&quot;</span><span class="p">]:</span>
-                            <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;♀&quot;</span>
+                            <span class="n">outchar</span> <span class="o">=</span> <span class="s">&quot;♀&quot;</span>
                             <span class="n">stats_v</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="n">stats_c</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="k">elif</span> <span class="n">FNi</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.gender&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;unknown&quot;</span><span class="p">]:</span>
-                            <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;⊙&quot;</span>
+                            <span class="n">outchar</span> <span class="o">=</span> <span class="s">&quot;⊙&quot;</span>
                             <span class="n">stats_v</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="n">stats_c</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">elif</span> <span class="n">p_o_s</span> <span class="o">==</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;verb&quot;</span><span class="p">]:</span>
-                    <span class="n">outchar</span> <span class="o">=</span> <span class="s">u&quot;♠&quot;</span>
+                    <span class="n">outchar</span> <span class="o">=</span> <span class="s">&quot;♠&quot;</span>
                     <span class="n">stats_v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="n">stats_c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outchar</span><span class="p">)</span>
@@ -230,12 +233,12 @@
                 <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">otypes</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">tofinish</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;C&#39;</span><span class="p">:</span>
-                            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;┤&quot;</span><span class="p">)</span>
+                            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;┤&quot;</span><span class="p">)</span>
                         <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;P&#39;</span><span class="p">:</span>
                             <span class="k">if</span> <span class="s">&#39;C&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tofinish</span><span class="p">:</span>
-                                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;┼&quot;</span><span class="p">)</span>
+                                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;┼&quot;</span><span class="p">)</span>
                         <span class="k">elif</span> <span class="n">o</span> <span class="o">!=</span> <span class="s">&#39;S&#39;</span><span class="p">:</span>
-                            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;{}»&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+                            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}»&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
                 <span class="k">del</span> <span class="n">watch</span><span class="p">[</span><span class="n">monads</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">ob</span> <span class="o">==</span> <span class="s">&quot;Ch&quot;</span><span class="p">:</span>
             <span class="n">this_chapter_label</span> <span class="o">=</span> <span class="s">&quot;{} {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FNr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.book&quot;</span><span class="p">]),</span> <span class="n">FNr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.chapter&quot;</span><span class="p">]))</span>
@@ -268,12 +271,12 @@
             <span class="n">cur_verse_label</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
             <span class="n">watch</span><span class="p">[</span><span class="n">maxm</span><span class="p">][</span><span class="n">ob</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">elif</span> <span class="n">ob</span> <span class="o">==</span> <span class="s">&quot;C&quot;</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;├&quot;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;├&quot;</span><span class="p">)</span>
             <span class="n">watch</span><span class="p">[</span><span class="n">maxm</span><span class="p">][</span><span class="n">ob</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">elif</span> <span class="n">ob</span> <span class="o">==</span> <span class="s">&quot;P&quot;</span><span class="p">:</span>
             <span class="n">watch</span><span class="p">[</span><span class="n">maxm</span><span class="p">][</span><span class="n">ob</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;«{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ob</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;«{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ob</span><span class="p">))</span>
             <span class="n">watch</span><span class="p">[</span><span class="n">maxm</span><span class="p">][</span><span class="n">ob</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="n">lastmin</span> <span class="o">=</span> <span class="bp">None</span>

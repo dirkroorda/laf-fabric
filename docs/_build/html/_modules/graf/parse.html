@@ -45,7 +45,7 @@
 
   
     <link rel="top" title="LAF Fabric 0.9.3 documentation" href="../../index.html"/>
-        <link rel="up" title="graf" href="../graf.html"/> 
+        <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -267,7 +267,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">annotation_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">stamp</span>
-        <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span> <span class="o">=</span> <span class="bp">None</span>
 
 <div class="viewcode-block" id="AnnotationHandler.startElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -281,7 +281,7 @@
             <span class="n">anchors</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;anchors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchors</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">faulty_regions</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid anchor spec &#39;{}&#39; for region {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&quot;anchors&quot;</span><span class="p">],</span> <span class="n">rid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;ERROR: invalid anchor spec &#39;{}&#39; for region {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&quot;anchors&quot;</span><span class="p">],</span> <span class="n">rid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">region_begin</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -309,9 +309,9 @@
             <span class="n">to_node</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;to&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">from_node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">to_node</span><span class="p">:</span>
                 <span class="n">faulty_edges</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid from/to spec from=&#39;{}&#39; to=&#39;{}&#39; for edge {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">from_node</span><span class="p">,</span> <span class="n">to_node</span><span class="p">,</span> <span class="n">eid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;ERROR: invalid from/to spec from=&#39;{}&#39; to=&#39;{}&#39; for edge {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">from_node</span><span class="p">,</span> <span class="n">to_node</span><span class="p">,</span> <span class="n">eid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="k">print</span> <span class="n">msg</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">good_edges</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">edges_from</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identifiers_n</span><span class="p">[</span><span class="n">from_node</span><span class="p">])</span>
@@ -329,9 +329,9 @@
             <span class="n">node_or_edge</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;ref&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">node_or_edge</span><span class="p">:</span>
                 <span class="n">faulty_annots</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid annotation spec label=&#39;{}&#39; ref=&#39;{}&#39; for annotation {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">node_or_edge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;ERROR: invalid annotation spec label=&#39;{}&#39; ref=&#39;{}&#39; for annotation {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">node_or_edge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="k">print</span> <span class="n">msg</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ref_id</span> <span class="o">=</span> <span class="bp">None</span>
                 <span class="n">ref_type</span> <span class="o">=</span> <span class="bp">None</span>
@@ -342,23 +342,23 @@
                     <span class="n">ref_id</span> <span class="o">=</span> <span class="n">identifiers_e</span><span class="p">[</span><span class="n">node_or_edge</span><span class="p">]</span>
                     <span class="n">ref_type</span> <span class="o">=</span> <span class="bp">False</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid annotation target ref=&#39;{} (no node, no edge)&#39; for annotation {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_or_edge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;ERROR: invalid annotation target ref=&#39;{} (no node, no edge)&#39; for annotation {} in {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_or_edge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                    <span class="k">print</span> <span class="n">msg</span>
+                    <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">good_annots</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span> <span class="o">=</span> <span class="n">label</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ref_type</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">aref</span> <span class="o">=</span> <span class="n">ref_id</span>
         <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;f&quot;</span><span class="p">:</span>
             <span class="k">global</span> <span class="n">faulty_feats</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
                 <span class="n">faulty_feats</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;ERROR: invalid feature spec name=&#39;{}&#39; value=&#39;{}&#39; for feature in annotation in file {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;ERROR: invalid feature spec name=&#39;{}&#39; value=&#39;{}&#39; for feature in annotation in file {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="k">print</span> <span class="n">msg</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s">u&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">])</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">])</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
             <span class="n">add_feature_instance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </div>
@@ -443,14 +443,16 @@
 <span class="sd">    the task-executing object.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
+    <span class="k">global</span> <span class="n">annotation_files</span>
+    <span class="n">annotation_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">saxparse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">HeaderHandler</span><span class="p">(</span><span class="n">stamp</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">annotation_file</span> <span class="ow">in</span> <span class="n">annotation_files</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s">u&quot;parsing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_file</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;parsing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_file</span><span class="p">)</span>
         <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">saxparse</span><span class="p">(</span><span class="n">annotation_file</span><span class="p">,</span> <span class="n">AnnotationHandler</span><span class="p">(</span><span class="n">annotation_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">))</span>
 
-    <span class="n">msg</span> <span class="o">=</span> <span class="s">u&#39;&#39;&#39;END PARSING</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;END PARSING</span>
 <span class="s">{:&gt;10} good   regions  and {:&gt;5} faulty ones</span>
 <span class="s">{:&gt;10} linked nodes    and {:&gt;5} unlinked ones</span>
 <span class="s">{:&gt;10} good   edges    and {:&gt;5} faulty ones</span>

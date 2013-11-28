@@ -45,7 +45,7 @@
 
   
     <link rel="top" title="LAF Fabric 0.9.3 documentation" href="../../index.html"/>
-        <link rel="up" title="graf" href="../graf.html"/> 
+        <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -147,27 +147,28 @@
 <span class="c"># -*- coding: utf8 -*-</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">imp</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">import</span> <span class="nn">array</span>
-<span class="kn">import</span> <span class="nn">cPickle</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 
-<span class="kn">from</span> <span class="nn">compiler</span> <span class="kn">import</span> <span class="n">GrafCompiler</span>
-<span class="kn">from</span> <span class="nn">graf</span> <span class="kn">import</span> <span class="n">Graf</span>
+<span class="kn">from</span> <span class="nn">graf.compiler</span> <span class="kn">import</span> <span class="n">GrafCompiler</span>
+<span class="kn">from</span> <span class="nn">graf.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
 
 <div class="viewcode-block" id="GrafTask"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask">[docs]</a><span class="k">class</span> <span class="nc">GrafTask</span><span class="p">(</span><span class="n">Graf</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Task processor.</span>
 
 <span class="sd">    A task processor must know how to compile, where the source data is and where the result is going to.</span>
-<span class="sd">    And it must be able to :py:keyword:`import`: and :py:func:`reload`: the tasks.</span>
+<span class="sd">    And it must be able to *import*: and :py:func:`imp.reload`: the tasks.</span>
 <span class="sd">    To that end the search path for modules will be adapted according to the *task_dir* setting</span>
 <span class="sd">    in the main configuration file.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="n">loaded</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span>
+    <span class="n">loaded</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">False</span><span class="p">))</span>
     <span class="sd">&#39;&#39;&#39;Set of feature data sets that have been loaded, node features and edge features under different keys&#39;&#39;&#39;</span>
     <span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="sd">&#39;&#39;&#39;List of handles to result files created by the task through the method :meth:`add_result`&#39;&#39;&#39;</span>
@@ -193,14 +194,14 @@
         <span class="n">task_include_dir</span> <span class="o">=</span> <span class="n">task_dir</span> <span class="k">if</span> <span class="n">task_dir</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">,</span> <span class="n">task_dir</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_include_dir</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GrafTask.__del__"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.__del__">[docs]</a>    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Upon destruction, all file handles used by the task will be closed.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
                 <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run a task.</span>
 
@@ -208,7 +209,7 @@
 <span class="sd">        * Load the data</span>
 <span class="sd">        * (Re)load the task code</span>
 <span class="sd">        * Initialize the task</span>
-<span class="sd">        * Run tha task code</span>
+<span class="sd">        * Run the task code</span>
 <span class="sd">        * Finalize the task</span>
 
 <span class="sd">        Args:</span>
@@ -239,7 +240,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
         <span class="k">exec</span><span class="p">(</span><span class="s">&quot;import {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;reload({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;imp.reload({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
 
         <span class="n">features</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.features&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
         <span class="n">taskcommand</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.task&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
@@ -312,8 +313,8 @@
                 <span class="k">if</span> <span class="n">is_binary</span><span class="p">:</span>
                     <span class="n">data</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">b_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span><span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_handle</span><span class="p">))</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s">u&quot;{:&gt;10}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_handle</span><span class="p">))</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;{:&gt;10}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]))</span>
                 <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END   LOADING COMMON DATA&quot;</span><span class="p">)</span>
@@ -346,47 +347,80 @@
                 <span class="p">(</span><span class="n">label_rep</span><span class="p">,</span> <span class="n">namestring</span><span class="p">)</span> <span class="o">=</span> <span class="n">labelitem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;:&quot;</span><span class="p">)</span>
                 <span class="n">names</span> <span class="o">=</span> <span class="n">namestring</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">name_rep</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-                    <span class="n">fname_rep</span> <span class="o">=</span> <span class="s">u&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_rep</span><span class="p">,</span> <span class="n">name_rep</span><span class="p">)</span>
+                    <span class="n">fname_rep</span> <span class="o">=</span> <span class="s">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_rep</span><span class="p">,</span> <span class="n">name_rep</span><span class="p">)</span>
                     <span class="n">fname</span> <span class="o">=</span> <span class="n">feature_name_rep</span><span class="p">[</span><span class="n">fname_rep</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">fname</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;WARNING: {} feature {}.{} not encountered in this source&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">label_rep</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;WARNING: {} feature {} not encountered in this source&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">))</span>
                         <span class="k">continue</span>
                     <span class="n">only</span><span class="p">[</span><span class="n">fname_rep</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 
-            <span class="n">dest</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span><span class="p">:</span>
-                <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feat</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_feat</span>
-
             <span class="k">for</span> <span class="n">fname_rep</span> <span class="ow">in</span> <span class="n">only</span><span class="p">:</span>
                 <span class="n">fname</span> <span class="o">=</span> <span class="n">feature_name_rep</span><span class="p">[</span><span class="n">fname_rep</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">fname_rep</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_feat_loaded</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;{} feature data for {} already loaded&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">))</span>
-                    <span class="k">continue</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;{} feature data for {} loading&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat_labels</span><span class="p">:</span>
-                    <span class="n">absolute_feat_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;feat_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                    <span class="n">p_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">absolute_feat_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">p_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s">u&#39;{}_{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">)])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname_rep</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
-                <span class="n">this_feat_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feat_ref&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span>
-                <span class="n">this_feat_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feat_value&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span>
-                <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">this_feat_ref</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">dest</span><span class="p">[</span><span class="n">fname</span><span class="p">][</span><span class="n">ref</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_feat_value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;{} feature data for {} loading&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">load_feat</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">fname_rep</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">]:</span>
                 <span class="n">fname</span> <span class="o">=</span> <span class="n">feature_name_rep</span><span class="p">[</span><span class="n">fname_rep</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">fname_rep</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">only</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;{} feature data for {} unloading&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat_labels</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">dest</span><span class="p">:</span>
-                        <span class="k">del</span> <span class="n">dest</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname_rep</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">unload_feat</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END   LOADING FEATURE DATA&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="GrafTask.check_feat_loaded"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.check_feat_loaded">[docs]</a>    <span class="k">def</span> <span class="nf">check_feat_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Checks whether feature data for a specific feature is loaded in memory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            kind (str): kind (node or edge) of the feature</span>
+<span class="sd">            fname_rep: the qualified name of the feature.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if data is in memory, otherwise False.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname_rep</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span> <span class="o">!=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="GrafTask.load_feat"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.load_feat">[docs]</a>    <span class="k">def</span> <span class="nf">load_feat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Loads selected feature into memory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            kind (str): kind (node or edge) of the feature</span>
+<span class="sd">            fname_rep: the qualified name of the feature.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">feature_name_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;feat_name_list_{}_rep&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">)]</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">feature_name_rep</span><span class="p">[</span><span class="n">fname_rep</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat_labels</span><span class="p">:</span>
+            <span class="n">absolute_feat_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;feat_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
+            <span class="n">p_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">absolute_feat_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">p_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s">&#39;{}_{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">)])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname_rep</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">this_feat_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feat_ref&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span>
+        <span class="n">this_feat_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feat_value&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span>
+
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feat</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_feat</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">this_feat_ref</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">dest</span><span class="p">[</span><span class="n">fname</span><span class="p">][</span><span class="n">ref</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_feat_value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat_labels</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="GrafTask.unload_feat"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.unload_feat">[docs]</a>    <span class="k">def</span> <span class="nf">unload_feat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Unloads selected feature from memory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            kind (str): kind (node or edge) of the feature</span>
+<span class="sd">            fname_rep: the qualified name of the feature.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">feature_name_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;feat_name_list_{}_rep&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">)]</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">feature_name_rep</span><span class="p">[</span><span class="n">fname_rep</span><span class="p">]</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feat</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_feat</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat_labels</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">((</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">dest</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">dest</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname_rep</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 </div>
 <div class="viewcode-block" id="GrafTask.add_result"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.add_result">[docs]</a>    <span class="k">def</span> <span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Opens a file for writing and stores the handle.</span>
@@ -397,6 +431,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            file_name (str): name of the output file.</span>
 <span class="sd">            Its location is the result directory for this task and this source.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A handle to the opened file.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span>
@@ -415,17 +452,24 @@
 <div class="viewcode-block" id="GrafTask.finish_task"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.finish_task">[docs]</a>    <span class="k">def</span> <span class="nf">finish_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Finalizes the current task.</span>
 
+<span class="sd">        Open result files will be closed.</span>
+
 <span class="sd">        There will be a progress message, and a directory listing of the result directory,</span>
 <span class="sd">        for the convenience of the user.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
+        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END TASK {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">]))</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;ls -lh {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;du -h {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="GrafTask.FNi"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.FNi">[docs]</a>    <span class="k">def</span> <span class="nf">FNi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Node feature value lookup returning the value string representation.</span>
@@ -454,7 +498,7 @@
     <span class="k">def</span> <span class="nf">next_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;API: iterator of all nodes in primary data order.</span>
 
-<span class="sd">        Each call returns the next node. The iterator walks through all nodes.</span>
+<span class="sd">        Each call *yields* the next node. The iterator walks through all nodes.</span>
 <span class="sd">        The order is implied by the attachment of nodes to the primary data,</span>
 <span class="sd">        which is itself linearly ordered.</span>
 <span class="sd">        This order is explained in the :ref:`guidelines for task writing &lt;node-order&gt;`.</span>
@@ -479,7 +523,7 @@
 <div class="viewcode-block" id="GrafTask.next_node"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.next_node">[docs]</a>    <span class="k">def</span> <span class="nf">next_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;API: iterator of all nodes in primary data order.</span>
 
-<span class="sd">        Each call returns the next node. The iterator walks through all nodes.</span>
+<span class="sd">        Each call *yields* the next node. The iterator walks through all nodes.</span>
 <span class="sd">        The order is implied by the attachment of nodes to the primary data,</span>
 <span class="sd">        which is itself linearly ordered.</span>
 <span class="sd">        This order is explained in the :ref:`guidelines for task writing &lt;node-order&gt;`.</span>
@@ -557,6 +601,9 @@
 <span class="sd">            data (array): see next</span>
 <span class="sd">            data_items (array): together with *data* the arrayified data</span>
 <span class="sd">            elem (int): the integer for which we want its related set of integers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of the related integers.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">data_items_index</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">elem</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">n_items</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span><span class="p">]</span>
@@ -574,6 +621,9 @@
 <span class="sd">            data_items (array): together with *data* the arrayified data</span>
 <span class="sd">            elem (int): the integer for which we want its related set of integers.</span>
 <span class="sd">            item (int): the integer whose presence in the related items set is to be tested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: whether the integer is in the related set or not.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
 </div>
@@ -587,6 +637,9 @@
 <span class="sd">            elem (int): the integer for which we want its related set of integers.</span>
 <span class="sd">            items (array or list of integers): the set of integers</span>
 <span class="sd">            whose presence in the related items set is to be tested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: whether one of the integers is in the related set or not.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">these_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
         <span class="n">found</span> <span class="o">=</span> <span class="bp">None</span>

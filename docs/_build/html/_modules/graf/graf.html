@@ -45,7 +45,7 @@
 
   
     <link rel="top" title="LAF Fabric 0.9.3 documentation" href="../../index.html"/>
-        <link rel="up" title="graf" href="../graf.html"/> 
+        <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -153,7 +153,7 @@
 
 <span class="kn">import</span> <span class="nn">array</span>
 
-<span class="kn">from</span> <span class="nn">timestamp</span> <span class="kn">import</span> <span class="n">Timestamp</span>
+<span class="kn">from</span> <span class="nn">graf.timestamp</span> <span class="kn">import</span> <span class="n">Timestamp</span>
 
 <div class="viewcode-block" id="GrafException"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.GrafException">[docs]</a><span class="k">class</span> <span class="nc">GrafException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">Errors</span><span class="p">):</span>
@@ -254,22 +254,32 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Graf.init_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.init_data">[docs]</a>    <span class="k">def</span> <span class="nf">init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Resets all loaded data to initial values</span>
+<div class="viewcode-block" id="Graf.init_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.init_data">[docs]</a>    <span class="k">def</span> <span class="nf">init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Resets all loaded data to initial values, or just the data of a single feature</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            feature (str, int): the kind (``node`` or ``edge``) and qualified name of a feature.</span>
+<span class="sd">            Optional. If None, all data will be reset, if given, only the data for the</span>
+<span class="sd">            feature specified.</span>
 
 <span class="sd">        This is needed when the task processor switches from one source to another,</span>
 <span class="sd">        or when a recompile has been performed.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">node_feat</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">edge_feat</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">:</span>
-            <span class="n">is_binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_binary</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">feature</span> <span class="o">==</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node_feat</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge_feat</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">:</span>
+                <span class="n">is_binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_binary</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="o">=</span> <span class="n">feature</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat_labels</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Graf.set_environment"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.set_environment">[docs]</a>    <span class="k">def</span> <span class="nf">set_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set the source and result locations for a task execution.</span>
@@ -329,7 +339,7 @@
         <span class="p">)</span>
         <span class="sd">&#39;&#39;&#39;Instance member holding name and location of the statistics file that describes the compiled data&#39;&#39;&#39;</span>
 </div>
-<div class="viewcode-block" id="Graf.__del__"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.__del__">[docs]</a>    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Clean up</span>
 
 <span class="sd">        Close all file handles that are still open.</span>
@@ -340,7 +350,7 @@
         <span class="p">):</span>
             <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
                 <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
+
 <div class="viewcode-block" id="Graf.add_logfile"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.add_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">add_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Create and open a log file for a given task.</span>
 
@@ -352,7 +362,8 @@
 <span class="sd">            location (str): override default directory for log file</span>
 <span class="sd">            name (str): override default name for log file</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">log_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">location</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span> <span class="k">else</span> <span class="s">u&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">log_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">location</span> <span class="k">else</span> <span class="n">location</span>
+        <span class="n">log_name</span> <span class="o">=</span> <span class="s">&quot;{}{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="k">else</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEXT_EXT</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">log_dir</span><span class="p">):</span>
@@ -363,9 +374,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span>
             <span class="p">)</span>
 
-        <span class="n">log_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">log_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEXT_EXT</span>
-        <span class="p">)</span>
+        <span class="n">log_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">log_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="sd">&#39;&#39;&#39;Instance member holding the open log handle&#39;&#39;&#39;</span>
 
@@ -387,9 +396,9 @@
             <span class="k">if</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">kind</span><span class="p">]:</span>
-                        <span class="n">stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;{}_{}_{}={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">])))</span>
+                        <span class="n">stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}_{}_{}={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">])))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u&quot;{}={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
 
         <span class="n">stat</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>

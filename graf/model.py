@@ -9,10 +9,13 @@ def arrayify(source_list):
     *This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!*
 
     Args:
-        source_list (iterable): a list of lists of integers
+        source_list (iterable):
+            a list of lists of integers
     
     Returns:
-        (index_array, items_array): two :py:mod:`array` s.
+        (index_array, items_array):
+            two :py:mod:`array` s.
+
         *index_array* contains an index for each item in *source_list*.
         *items_array* contains all the items in the following way: if an item with *n* members has to be added,
         then first the number *n* is added, and then all the members.
@@ -38,9 +41,12 @@ def model(data_items, temp_data_items, stamp):
     '''Remodels various data structures
 
     Args:
-        data_items: data structures coming from :mod:`parse <graf.parse>`, that are here to stay
-        temp_data_items: data structures coming from :mod:`parse <graf.parse>` that may be thrown away
-        stamp (:class:`Timestamp <graf.Timestamp>`): object for issuing progress messages
+        data_items:
+            data structures coming from :mod:`parse <graf.parse>`, that are here to stay
+
+        temp_data_items:
+            data structures coming from :mod:`parse <graf.parse>` that may be thrown away
+            stamp (:class:`Timestamp <graf.Timestamp>`): object for issuing progress messages
 
     Returns:
         The resulting permanent remodelled data structures.
@@ -103,7 +109,8 @@ def model(data_items, temp_data_items, stamp):
         If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.
 
         Args:
-            iv (int, int): interval
+            iv (int, int):
+                interval
 
         Returns:
             a tuple containing the left boundary and the nagative of the right boundary

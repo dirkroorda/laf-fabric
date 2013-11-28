@@ -45,7 +45,7 @@
 
   
     <link rel="top" title="LAF Fabric 0.9.3 documentation" href="../../index.html"/>
-        <link rel="up" title="graf" href="../graf.html"/> 
+        <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -151,12 +151,12 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">codecs</span>
 
-<span class="kn">import</span> <span class="nn">cPickle</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">array</span>
 
-<span class="kn">from</span> <span class="nn">graf</span> <span class="kn">import</span> <span class="n">Graf</span>
-<span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmlparse</span>
-<span class="kn">from</span> <span class="nn">model</span> <span class="kn">import</span> <span class="n">model</span> <span class="k">as</span> <span class="n">remodel</span>
+<span class="kn">from</span> <span class="nn">graf.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
+<span class="kn">from</span> <span class="nn">graf.parse</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmlparse</span>
+<span class="kn">from</span> <span class="nn">graf.model</span> <span class="kn">import</span> <span class="n">model</span> <span class="k">as</span> <span class="n">remodel</span>
 
 <div class="viewcode-block" id="GrafCompiler"><a class="viewcode-back" href="../../graf/graf.html#graf.compiler.GrafCompiler">[docs]</a><span class="k">class</span> <span class="nc">GrafCompiler</span><span class="p">(</span><span class="n">Graf</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Takes care of the compilation of LAF xml data into binary data.</span>
@@ -246,7 +246,7 @@
 <span class="sd">            a dictionary, keyed by a feature name and with arrays as values</span>
 
 <span class="sd">        *2: list of trings*</span>
-<span class="sd">            can be dumped with the :py:meth:`cPickle.dump` method.</span>
+<span class="sd">            can be dumped with the :py:meth:`pickle.dump` method.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;WRITING RESULT FILES&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_stats</span><span class="p">()</span>
@@ -257,7 +257,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_binary</span><span class="p">:</span>
                 <span class="n">absolute_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
                 <span class="n">r_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">absolute_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
-                <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">r_handle</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">r_handle</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="n">r_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">absolute_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
@@ -276,15 +276,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;FINALIZATION&quot;</span><span class="p">)</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;ls -lh {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;du -h {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="GrafCompiler.needs_compiling"><a class="viewcode-back" href="../../graf/graf.html#graf.compiler.GrafCompiler.needs_compiling">[docs]</a>    <span class="k">def</span> <span class="nf">needs_compiling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Checks whether the compiled binary data is still up to date.</span>
 
 <span class="sd">        The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: whether the criterion for compiling holds.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">])</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_file&#39;</span><span class="p">])</span>
 </div>
@@ -297,7 +300,7 @@
 <span class="sd">            force (bool): whether to compile even if the binary data looks up to date.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">force</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_compiling</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPILE_TASK</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">COMPILE_TASK</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;BEGIN COMPILE {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_file&#39;</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>

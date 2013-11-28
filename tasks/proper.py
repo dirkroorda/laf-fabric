@@ -55,9 +55,9 @@ def task(graftask):
         (node, minm, maxm, monads) = obdata
         if ob == "w":
             if not watch:
-                out.write(u"◘".format(monads))
+                out.write("◘".format(monads))
             else:
-                outchar = u"─"
+                outchar = "─"
                 stats_v[0] += 1
                 stats_c[0] += 1
                 p_o_s = FNi(node, NNi["ft.part_of_speech"])
@@ -66,19 +66,19 @@ def task(graftask):
                         stats_v[2] += 1
                         stats_c[2] += 1
                         if FNi(node, NNi["ft.gender"]) == Vi["masculine"]:
-                            outchar = u"♂"
+                            outchar = "♂"
                             stats_v[3] += 1
                             stats_c[3] += 1
                         elif FNi(node, NNi["ft.gender"]) == Vi["feminine"]:
-                            outchar = u"♀"
+                            outchar = "♀"
                             stats_v[4] += 1
                             stats_c[4] += 1
                         elif FNi(node, NNi["ft.gender"]) == Vi["unknown"]:
-                            outchar = u"⊙"
+                            outchar = "⊙"
                             stats_v[5] += 1
                             stats_c[5] += 1
                 elif p_o_s == Vi["verb"]:
-                    outchar = u"♠"
+                    outchar = "♠"
                     stats_v[1] += 1
                     stats_c[1] += 1
                 out.write(outchar)
@@ -87,12 +87,12 @@ def task(graftask):
                 for o in reversed(otypes):
                     if o in tofinish:
                         if o == 'C':
-                            out.write(u"┤")
+                            out.write("┤")
                         elif o == 'P':
                             if 'C' not in tofinish:
-                                out.write(u"┼")
+                                out.write("┼")
                         elif o != 'S':
-                            out.write(u"{}»".format(o))
+                            out.write("{}»".format(o))
                 del watch[monads]
         elif ob == "Ch":
             this_chapter_label = "{} {}".format(FNr(node, NNi["sft.book"]), FNr(node, NNi["sft.chapter"]))
@@ -125,12 +125,12 @@ def task(graftask):
             cur_verse_label[1] = ''
             watch[maxm][ob] = None
         elif ob == "C":
-            out.write(u"├")
+            out.write("├")
             watch[maxm][ob] = None
         elif ob == "P":
             watch[maxm][ob] = None
         else:
-            out.write(u"«{}".format(ob))
+            out.write("«{}".format(ob))
             watch[maxm][ob] = None
 
     lastmin = None

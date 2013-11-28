@@ -5,12 +5,12 @@ import os.path
 import subprocess
 import codecs
 
-import cPickle
+import pickle
 import array
 
-from graf import Graf
-from parse import parse as xmlparse
-from model import model as remodel
+from graf.graf import Graf
+from graf.parse import parse as xmlparse
+from graf.model import model as remodel
 
 class GrafCompiler(Graf):
     '''Takes care of the compilation of LAF xml data into binary data.
@@ -100,7 +100,7 @@ class GrafCompiler(Graf):
             a dictionary, keyed by a feature name and with arrays as values
 
         *2: list of trings*
-            can be dumped with the :py:meth:`cPickle.dump` method.
+            can be dumped with the :py:meth:`pickle.dump` method.
         '''
         self.progress("WRITING RESULT FILES")
         self.write_stats()
@@ -111,7 +111,7 @@ class GrafCompiler(Graf):
             if not is_binary:
                 absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
                 r_handle = open(absolute_path, "wb")
-                cPickle.dump(data, r_handle, 2)
+                pickle.dump(data, r_handle, 2)
                 r_handle.close()
             elif is_binary == 1:
                 absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
@@ -130,10 +130,10 @@ class GrafCompiler(Graf):
         self.progress("FINALIZATION")
 
         msg = subprocess.check_output("ls -lh {}".format(self.env['bin_dir']), shell=True)
-        self.progress("\n" + msg)
+        self.progress("\n" + msg.decode('utf-8'))
 
         msg = subprocess.check_output("du -h {}".format(self.env['bin_dir']), shell=True)
-        self.progress("\n" + msg)
+        self.progress("\n" + msg.decode('utf-8'))
 
     def needs_compiling(self):
         '''Checks whether the compiled binary data is still up to date.

@@ -6,10 +6,10 @@ import sys
 import traceback
 import collections
 import argparse
-import ConfigParser
+import configparser
 import sys, tty, termios
 
-from task import GrafTask
+from graf.task import GrafTask
 
 ### USAGE
 
@@ -46,7 +46,7 @@ class Shell(object):
         command line values are parsed here, and the command prompt will use them as initial values.
         '''
 
-        self.settings = ConfigParser.ConfigParser()
+        self.settings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         self.settings.readfp(codecs.open(MAIN_CFG, encoding = 'utf-8'))
 
         self.source_choices = {}
@@ -155,7 +155,7 @@ class Shell(object):
                 self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile=self.cur[len(self.cur) - 1])
                 self.cur[len(self.index)] = False
             except:
-                print traceback.print_exc()
+                print(traceback.print_exc())
             self.get_ch(prompt="Press any key to continue ...")
         return message
 
@@ -185,6 +185,7 @@ class Shell(object):
                 break
             self.message = ''
             sys.stderr.write("{} [{}/?/Esc] > ".format(prompt, '/'.join(choices)))
+            sys.stderr.flush()
             command = self.get_ch()
             if command in choices:
                 Cont = False
@@ -214,7 +215,7 @@ class Shell(object):
         '''
         number = None
         while True:
-            number = raw_input("{} [{}-{}] >".format(prompt, start, end))
+            number = input("{} [{}-{}] >".format(prompt, start, end))
             number.rstrip("\n")
             if number.isdigit():
                 number = int(number)
@@ -242,6 +243,7 @@ class Shell(object):
         '''
         if prompt:
             sys.stderr.write(prompt)
+            sys.stderr.flush()
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         tty.setraw(sys.stdin.fileno())
@@ -257,12 +259,12 @@ class Shell(object):
         '''Writes an self-explanatory prompt text to the terminal.
         '''
         os.system("clear")
-        sys.stderr.write(u''' ┌─SOURCE───────────────────────────┬─TASK─────────────────────────────┐
+        sys.stderr.write(''' ┌─SOURCE───────────────────────────┬─TASK─────────────────────────────┐
 ''')
-        sepchar = u'│'
-        sepchar_cur = u'█'
-        fillchar = u' '
-        fillchar_cur = u'█'
+        sepchar = '│'
+        sepchar_cur = '█'
+        fillchar = ' '
+        fillchar_cur = '█'
 
         n_row = -1
         for row in self.prompt_data:
@@ -288,12 +290,12 @@ class Shell(object):
                 this_f[i] = this[i] + (fill[i] * (30 - len(this[i])))
                 this_nf[i] = (fill[i] * (3 - len(this_n[i]))) + this_n[i]
 
-            line = u' '
+            line = ' '
             for i in range(len(row)):
                 line += sep[i] + this_nf[i] + fill[i] + this_f[i]
             sys.stderr.write(line + sep[len(row)] + "\n")
 
-        sys.stderr.write(u''' └──────────────────────────────────┴──────────────────────────────────┘
+        sys.stderr.write(''' └──────────────────────────────────┴──────────────────────────────────┘
  ┌─SETTING──────────────────────────┬─VALUE────────────────────────────┐
  │ force compile                    │ {:<3}                              │
  └──────────────────────────────────┴──────────────────────────────────┘

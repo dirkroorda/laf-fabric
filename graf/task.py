@@ -1,22 +1,23 @@
 # -*- coding: utf8 -*-
 
 import os
+import imp
 import sys
 import codecs
 import subprocess
 import collections
 
 import array
-import cPickle
+import pickle
 
-from compiler import GrafCompiler
-from graf import Graf
+from graf.compiler import GrafCompiler
+from graf.graf import Graf
 
 class GrafTask(Graf):
     '''Task processor.
 
     A task processor must know how to compile, where the source data is and where the result is going to.
-    And it must be able to *import*: and :py:func:`reload`: the tasks.
+    And it must be able to *import*: and :py:func:`imp.reload`: the tasks.
     To that end the search path for modules will be adapted according to the *task_dir* setting
     in the main configuration file.
     '''
@@ -93,7 +94,7 @@ class GrafTask(Graf):
         self.stamp.reset()
 
         exec("import {}".format(task))
-        exec("reload({})".format(task))
+        exec("imp.reload({})".format(task))
 
         features = eval("{}.features".format(task))
         taskcommand = eval("{}.task".format(task))
@@ -166,8 +167,8 @@ class GrafTask(Graf):
                 if is_binary:
                     data.fromfile(b_handle, self.stats[label])
                 else:
-                    self.data_items[label] = collections.defaultdict(lambda: None,cPickle.load(b_handle))
-                msg += u"{:>10}".format(len(self.data_items[label]))
+                    self.data_items[label] = collections.defaultdict(lambda: None, pickle.load(b_handle))
+                msg += "{:>10}".format(len(self.data_items[label]))
                 b_handle.close()
                 self.progress(msg)
             self.progress("END   LOADING COMMON DATA")
@@ -200,10 +201,10 @@ class GrafTask(Graf):
                 (label_rep, namestring) = labelitem.split(":")
                 names = namestring.split(",")
                 for name_rep in names:
-                    fname_rep = u'{}.{}'.format(label_rep, name_rep)
+                    fname_rep = '{}.{}'.format(label_rep, name_rep)
                     fname = feature_name_rep[fname_rep]
                     if fname == None:
-                        self.progress("WARNING: {} feature {}.{} not encountered in this source".format(kind, label_rep, fname_rep))
+                        self.progress("WARNING: {} feature {} not encountered in this source".format(kind, fname_rep))
                         continue
                     only[fname_rep] = None
 
@@ -246,7 +247,7 @@ class GrafTask(Graf):
         for label in self.feat_labels:
             absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname_rep, self.BIN_EXT)
             p_handle = open(absolute_feat_path, "rb")
-            self.data_items[label][kind][fname].fromfile(p_handle, self.stats[u'{}_{}_{}'.format(label, kind, fname)])
+            self.data_items[label][kind][fname].fromfile(p_handle, self.stats['{}_{}_{}'.format(label, kind, fname)])
             self.loaded[kind][fname_rep] = True
         this_feat_ref = self.data_items['feat_ref'][kind][fname]
         this_feat_value = self.data_items['feat_value'][kind][fname]
@@ -305,17 +306,24 @@ class GrafTask(Graf):
     def finish_task(self):
         '''Finalizes the current task.
 
+        Open result files will be closed.
+
         There will be a progress message, and a directory listing of the result directory,
         for the convenience of the user.
         '''
 
+        for handle in self.result_files:
+            if handle and not handle.closed:
+                handle.close()
+        self.result_files = []
+
         self.progress("END TASK {}".format(self.env['task']))
 
         msg = subprocess.check_output("ls -lh {}".format(self.env['result_dir']), shell=True)
-        self.progress("\n" + msg)
+        self.progress("\n" + msg.decode('utf-8'))
 
         msg = subprocess.check_output("du -h {}".format(self.env['result_dir']), shell=True)
-        self.progress("\n" + msg)
+        self.progress("\n" + msg.decode('utf-8'))
 
     def FNi(self, node, name):
         '''Node feature value lookup returning the value string representation.

@@ -1,7 +1,6 @@
 # -*- coding: utf8 -*-
 
 import os
-
 import array
 
 def arrayify(source_list):
@@ -27,7 +26,7 @@ def arrayify(source_list):
     dests_array = array.array('I')
     j = 0
 
-    for i in xrange(len(source_list)):
+    for i in range(len(source_list)):
         items = source_list[i]
         dest_array.append(j)
         dests_array.append(len(items))
@@ -61,8 +60,8 @@ def model(data_items, temp_data_items, stamp):
 
     stamp.progress("NODES DETERMINING ANCHOR BOUNDARIES")
 
-    node_anchor_min = array.array('I', [0 for i in xrange(n_node)])
-    node_anchor_max = array.array('I', [0 for i in xrange(n_node)])
+    node_anchor_min = array.array('I', [0 for i in range(n_node)])
+    node_anchor_max = array.array('I', [0 for i in range(n_node)])
     node_linked = array.array('I')
     region_begin = data_items["region_begin"]
     region_end = data_items["region_end"]
@@ -95,8 +94,8 @@ def model(data_items, temp_data_items, stamp):
 
     stamp.progress("NODES SORTING BY REGIONS")
 
-    def sort_by_region(l, r):
-        ''' Comparison function used when sorting objects according to the extreme boundaries of its regions.
+    def interval(ob):
+        ''' Key function used when sorting objects according to embedding and left right
         Object1 comes before Object2 if Object 1 starts before Object 2.
         Object1 comes after Object2 if Object 1 starts after Object 2.
         If Object1 and Object2 start at the same monad, the object that ends last comes first.
@@ -104,21 +103,14 @@ def model(data_items, temp_data_items, stamp):
         If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.
 
         Args:
-            l (obj): first member of comparison
-            r (obj): second member of comparison
+            iv (int, int): interval
 
         Returns:
-            -1 or 0 or 1
+            a tuple containing the left boundary and the nagative of the right boundary
         '''
+        return (node_anchor_min[ob - 1], -node_anchor_max[ob - 1])
 
-        l_min_anchor = node_anchor_min[l - 1]
-        l_max_anchor = node_anchor_max[l - 1]
-        r_min_anchor = node_anchor_min[r - 1]
-        r_max_anchor = node_anchor_max[r - 1]
-        maincmp = cmp(l_min_anchor, r_min_anchor)
-        return maincmp if maincmp else cmp(r_max_anchor, l_max_anchor)
-
-    node_sort = array.array('I', sorted(node_linked, sort_by_region))
+    node_sort = array.array('I', sorted(node_linked, key=interval))
     result_items.append(("node_sort", node_sort))
 
     node_anchor_min = None
@@ -130,10 +122,10 @@ def model(data_items, temp_data_items, stamp):
     edges_to = data_items["edges_to"]
     n_edge = len(edges_from)
 
-    edges_in = [[] for i in xrange(n_node)]
-    edges_out = [[] for i in xrange(n_node)]
+    edges_in = [[] for i in range(n_node)]
+    edges_out = [[] for i in range(n_node)]
 
-    for i in xrange(n_edge):
+    for i in range(n_edge):
         node_from = edges_from[i]
         node_to = edges_to[i]
         edges_out[node_from - 1].append(node_to)

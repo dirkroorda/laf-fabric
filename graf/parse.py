@@ -121,7 +121,7 @@ class AnnotationHandler(ContentHandler):
         self.file_name = annotation_file
         self._tag_stack = []
         self.stamp = stamp
-        pass
+        self.aempty = None
 
     def startElement(self, name, attrs):
         self._tag_stack.append(name)
@@ -135,7 +135,7 @@ class AnnotationHandler(ContentHandler):
             anchors = attrs["anchors"].split(" ")
             if len(anchors) != 2:
                 faulty_regions += 1
-                msg = u"ERROR: invalid anchor spec '{}' for region {} in {}".format(attrs["anchors"], rid, self.file_name)
+                msg = "ERROR: invalid anchor spec '{}' for region {} in {}".format(attrs["anchors"], rid, self.file_name)
                 self.stamp.progress(msg)
                 region_begin.append(0)
                 region_end.append(0)
@@ -163,9 +163,9 @@ class AnnotationHandler(ContentHandler):
             to_node = attrs["to"]
             if not from_node or not to_node:
                 faulty_edges += 1
-                msg = u"ERROR: invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name)
+                msg = "ERROR: invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name)
                 self.stamp.progress(msg)
-                print msg
+                print(msg)
             else:
                 good_edges += 1
                 edges_from.append(identifiers_n[from_node])
@@ -183,9 +183,9 @@ class AnnotationHandler(ContentHandler):
             node_or_edge = attrs["ref"]
             if not label or not node_or_edge:
                 faulty_annots += 1
-                msg = u"ERROR: invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(label, node_or_edge, self.aid, self.file_name)
+                msg = "ERROR: invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(label, node_or_edge, self.aid, self.file_name)
                 self.stamp.progress(msg)
-                print msg
+                print(msg)
             else:
                 ref_id = None
                 ref_type = None
@@ -196,9 +196,9 @@ class AnnotationHandler(ContentHandler):
                     ref_id = identifiers_e[node_or_edge]
                     ref_type = False
                 else:
-                    msg = u"ERROR: invalid annotation target ref='{} (no node, no edge)' for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
+                    msg = "ERROR: invalid annotation target ref='{} (no node, no edge)' for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
                     self.stamp.progress(msg)
-                    print msg
+                    print(msg)
                 good_annots += 1
                 self.alabel = label
                 self.atype = ref_type
@@ -209,10 +209,10 @@ class AnnotationHandler(ContentHandler):
             name = attrs["name"]
             if not name:
                 faulty_feats += 1
-                msg = u"ERROR: invalid feature spec name='{}' value='{}' for feature in annotation in file {}".format(name, value, self.aid, self.file_name)
+                msg = "ERROR: invalid feature spec name='{}' value='{}' for feature in annotation in file {}".format(name, value, self.aid, self.file_name)
                 self.stamp.progress(msg)
-                print msg
-            name = u'{}.{}'.format(self.alabel, attrs["name"])
+                print(msg)
+            name = '{}.{}'.format(self.alabel, attrs["name"])
             value = attrs["value"]
             add_feature_instance(self.atype, name, self.aref, value)
 
@@ -297,14 +297,16 @@ def parse(graf_header_file, stamp):
     the task-executing object.
     '''
 
+    global annotation_files
+    annotation_files = []
     saxparse(graf_header_file, HeaderHandler(stamp))
 
     for annotation_file in annotation_files:
-        msg = u"parsing {}".format(annotation_file)
+        msg = "parsing {}".format(annotation_file)
         stamp.progress(msg)
         saxparse(annotation_file, AnnotationHandler(annotation_file, stamp))
 
-    msg = u'''END PARSING
+    msg = '''END PARSING
 {:>10} good   regions  and {:>5} faulty ones
 {:>10} linked nodes    and {:>5} unlinked ones
 {:>10} good   edges    and {:>5} faulty ones

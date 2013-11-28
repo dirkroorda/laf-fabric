@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-from graf import Shell
+from graf.shell import Shell
 
 # python laf-fabric.py
 

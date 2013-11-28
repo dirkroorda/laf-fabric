@@ -1,5 +1,7 @@
 # -*- coding: utf8 -*-
 
+import sys
+
 features = {
     "node": "db:otype ft:text,suffix sft:book",
     "edge": '',
@@ -17,12 +19,14 @@ def task(graftask):
     out = graftask.add_result("output.txt")
 
     object_type = Vi["word"] if prim else Vi["book"]
+    n_nodes = 0
     for i in NNFV(NNi["db.otype"], object_type):
+        n_nodes += 1
         the_output = ''
         if prim:
             the_text = FNr(i, NNi["ft.text"])
             the_suffix = FNr(i, NNi["ft.suffix"])
-            the_newline = "\n" if u'׃' in the_suffix else ""
+            the_newline = "\n" if '׃' in the_suffix else ""
             the_output = the_text + the_suffix + the_newline
         else:
             the_book = FNr(i, NNi["sft.book"])

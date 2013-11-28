@@ -7,7 +7,7 @@ import collections
 
 import array
 
-from timestamp import Timestamp
+from graf.timestamp import Timestamp
 
 class GrafException(Exception):
     def __init__(self, message, stamp, Errors):
@@ -217,7 +217,7 @@ class Graf(object):
             name (str): override default name for log file
         '''
         log_dir = self.env['result_dir'] if not location else location
-        log_name = u"{}{}.{}".format(self.LOG_NAME, self.env['task'] if not name else name, self.TEXT_EXT)
+        log_name = "{}{}.{}".format(self.LOG_NAME, self.env['task'] if not name else name, self.TEXT_EXT)
 
         try:
             if not os.path.exists(log_dir):
@@ -250,9 +250,9 @@ class Graf(object):
             if is_binary == 2:
                 for kind in data:
                     for fname in data[kind]:
-                        stat.write(u"{}_{}_{}={}\n".format(label, kind, fname, len(data[kind][fname])))
+                        stat.write("{}_{}_{}={}\n".format(label, kind, fname, len(data[kind][fname])))
             else:
-                stat.write(u"{}={}\n".format(label, len(data)))
+                stat.write("{}={}\n".format(label, len(data)))
 
         stat.close()
 

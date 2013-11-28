@@ -71,17 +71,17 @@ def task(graftask):
 
     for book in books:
         lexeme_number = 0
-        out_all.write(u"{}\n".format(book))
+        out_all.write("{}\n".format(book))
         linfo = lexemes[book]
         for lexeme in sorted(linfo.keys()):
             lexeme_number += 1
-            out_all.write(u"\t{}\t{}\t{}\n".format(lexeme_number, lexeme, linfo[lexeme]))
+            out_all.write("\t{}\t{}\t{}\n".format(lexeme_number, lexeme, linfo[lexeme]))
 
     lexeme_number = 0
-    out_esther.write(u"\t{}\n".format("\t".join(books)))
+    out_esther.write("\t{}\n".format("\t".join(books)))
     linfo = lexemes[target_book]
     for lexeme in sorted(linfo.keys()):
         lexeme_number += 1
-        out_esther.write(u"{}\t{}\n".format(lexeme, "\t".join(["{:.3g}".format(1000 * float(lexemes[book][lexeme])/words[book]) for book in books])))
-    print "{} lexemes".format(lexeme_number)
+        out_esther.write("{}\t{}\n".format(lexeme, "\t".join(["{:.3g}".format(1000 * float(lexemes[book][lexeme])/words[book]) for book in books])))
+    sys.stdout.write("{} lexemes\n".format(lexeme_number))
 

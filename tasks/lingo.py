@@ -34,18 +34,18 @@ def task(graftask):
         (node, minm, maxm, monads) = obdata
         if ob == "w":
             if not watch:
-                out.write(u"◘".format(monads))
+                out.write("◘".format(monads))
             else:
-                outchar = u"."
+                outchar = "."
                 if FNi(node, NNi["ft.part_of_speech"]) == Vi["noun"]:
                     if FNi(node, NNi["ft.gender"]) == Vi["masculine"]:
-                        outchar = u"♂"
+                        outchar = "♂"
                     elif FNi(node, NNi["ft.gender"]) == Vi["feminine"]:
-                        outchar = u"♀"
+                        outchar = "♀"
                     elif FNi(node, NNi["ft.gender"]) == Vi["unknown"]:
-                        outchar = u"?"
+                        outchar = "?"
                 if FNi(node, NNi["ft.part_of_speech"]) == Vi["verb"]:
-                    outchar = u"♠"
+                    outchar = "♠"
                 out.write(outchar)
             if monads in watch:
                 tofinish = watch[monads]

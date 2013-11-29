@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf package &mdash; LAF Fabric 1.0.0 documentation</title>
+  <title>graf package &mdash; LAF Fabric 1.0.1 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'1.0.0',
+        VERSION:'1.0.1',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 1.0.0 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 1.0.1 documentation" href="../index.html"/>
         <link rel="up" title="graf" href="modules.html"/>
         <link rel="prev" title="graf" href="modules.html"/> 
 
@@ -1130,16 +1130,21 @@ to corresponding integer as used in compiled resource.</p>
 <dt id="graf.task.GrafTask.loader">
 <tt class="descname">loader</tt><big>(</big><em>source</em>, <em>task</em>, <em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads compiled LAF data.</p>
-<p>There are two kinds of data to be loaded:</p>
+<p>There are several kinds of data to be loaded:</p>
 <dl class="docutils">
 <dt><em>common data</em></dt>
 <dd>Data that is common to all tasks, but dependent on the choice of source.
-It is the data that holds the regions, nodes, edges, but not the features.
-Also the original xml-ids of nodes and edges.</dd>
+It is the data that holds the regions, nodes, edges, but not the features.</dd>
+<dt><em>xml id data</em></dt>
+<dd>The mappngs between original xmlids in the LAF source and the integers identifying nodes
+and edges in the compilation result.
+This data is also common to all tasks, but can be loaded and unloaded on demand.</dd>
 <dt><em>feature data</em></dt>
 <dd>Data that is requested by the task at hand.
 It is the data that holds feature information,
 for those features that are requested by a task&#8217;s <em>load[&#8216;feature&#8217;]</em> declaration.</dd>
+<dt><em>annox data</em></dt>
+<dd>Feature data coming from extra annotation files.</dd>
 </dl>
 <p>The <em>common data</em> can be loaded in bulk fast, but it still takes 5 to 10 seconds,
 and should be avoided if possible.

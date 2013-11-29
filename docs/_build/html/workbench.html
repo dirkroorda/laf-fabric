@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LAF workbench &mdash; LAF Fabric 0.11.0 documentation</title>
+  <title>LAF workbench &mdash; LAF Fabric 1.0.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'0.11.0',
+        VERSION:'1.0.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 0.11.0 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 1.0.0 documentation" href="index.html"/>
         <link rel="next" title="Writing Tasks" href="taskwriting.html"/>
         <link rel="prev" title="LAF/GrAF and data analysis" href="overview.html"/> 
 
@@ -351,12 +351,21 @@ The function <a class="reference internal" href="graf/graf.html#graf.model.array
 </div>
 <div class="section" id="consequences">
 <h3>Consequences<a class="headerlink" href="#consequences" title="Permalink to this headline">¶</a></h3>
-<p>The concrete XML identifiers present in the LAF resource get lost.
-Whoever designs a LAF resource to be worked on by this workbench,
+<p>The concrete XML identifiers present in the LAF resource are moved to the background.
+Only if your tasks ask for them explicitly, they can be loaded.
+In that case you get mappings between the xml-identifiers and the internal integer codes
+for nodes and for edges.
+This requires considerable overhead.</p>
+<p>Whoever designs a LAF resource to be worked on by this workbench,
 should not rely on the values of the XML identifiers to derive implicit meanings from.
 I did that in initial stages, producing identifiers <tt class="docutils literal"><span class="pre">n_1,</span> <span class="pre">n_2,</span> <span class="pre">e_1,</span> <span class="pre">e_2</span></tt> etcetera for node 1, 2 and edge 1, 2.
 There is nothing wrong with such identifiers, but do not expect to determine in your tasks whether
 something is a node or edge by looking at an identifier.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are cases where a task really needs the original identifiers.
+Tasks that create new annotations for existing nodes or edges, need to know the xml-identifiers used in the source.</p>
+</div>
 </div>
 </div>
 <div class="section" id="graf-feature-coverage">

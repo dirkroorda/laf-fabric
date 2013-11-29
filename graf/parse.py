@@ -96,9 +96,8 @@ class AnnotationHandler(ContentHandler):
         Element *i* of this list contains an array with the regions attached to node *i*.
 
     .. note::
-
-    We work with the *qualified* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
-    Features for nodes and features for edges occupy separate name spaces.
+        We work with the *qualified* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
+        Features for nodes and features for edges occupy separate name spaces.
     '''
 
     file_name = None

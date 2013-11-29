@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing Tasks &mdash; LAF Fabric 0.11.0 documentation</title>
+  <title>Writing Tasks &mdash; LAF Fabric 1.0.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'0.11.0',
+        VERSION:'1.0.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 0.11.0 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 1.0.0 documentation" href="index.html"/>
         <link rel="next" title="tasks" href="tasks/modules.html"/>
         <link rel="prev" title="LAF workbench" href="workbench.html"/> 
 
@@ -279,27 +279,14 @@ and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.</p>
 <dl class="docutils">
-<dt><em>FNi()</em> and <em>FNr()</em>, <em>FEi()</em> and <em>FEr()</em></dt>
-<dd><p class="first">The <em>FNx</em> versions need a node, the <em>FEx</em> versions and edge,
-then they need an a qualified feature name.
-They return the value that the feature carries on that node or edge.
-The <em>FXi</em> versions return the value code that the compiler has assigned
-to the real value (read <em>i</em> as <em>internal</em>).
-The <em>FXr</em> versions return the real values as strings, exactly as
-they appear in the original LAF resource (read <em>r</em> as <em>real</em>).</p>
-<p class="last">All arguments must be given as integers,
-the integers to which nodes and labels and names have been mapped during compiling.
-(There are ways to get those numbers).
-Use <em>FXi</em> versions when the value is needed in other parts of your script,
-and the <em>FXr</em> versions when you need to output values.</p>
+<dt><em>FN()</em> and <em>FE</em></dt>
+<dd><dl class="first last docutils">
+<dt>Feature lookup.</dt>
+<dd><em>FN</em> works on nodes, <em>FE</em> on edges.
+Given a node or edge respectively, they need an a qualified feature name
+to return the value that the feature carries on that node or edge.</dd>
+</dl>
 </dd>
-<dt><em>NNi</em>, <em>NEi</em> and <em>NNr</em>, <em>NEr</em></dt>
-<dd>Tables to convert between qualified feature names as real values
-found in the original LAF and the integers they have been mapped to during compilation.
-<em>NXi</em> yields integers from string representations,
-<em>NXr</em> yields representations (strings) from internal integers.
-<em>XNx</em> is for features on nodes,
-<em>XEx</em> is for features on edges.</dd>
 <dt><em>Vi</em> and <em>Vr</em></dt>
 <dd>Same pattern as above, but now for feature values.</dd>
 <dt><em>NN()</em> and <em>NNFV()</em></dt>
@@ -311,6 +298,11 @@ and <em>NNFV()</em> only yields node that have a certain value for a certain fea
 See <a class="reference internal" href="graf/graf.html#module-graf.task" title="graf.task"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>,
 methods <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.next_node" title="graf.task.GrafTask.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a>
 and <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.next_node_with_fval" title="graf.task.GrafTask.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</dd>
+<dt><em>XNi</em>, <em>XEi</em> and <em>XNr</em>, <em>XEr</em></dt>
+<dd>Tables to convert between original xml-ids in the original LAF resource and the
+integers they have been mapped unto by the compilation.
+<em>XNi</em> and <em>XEi</em> yield integers codes from string representations of xml-ids of nodes or edges respectively,
+<em>XNr</em> and <em>XEi</em> yield string representations of xml-ids from integer codes of nodes or edges respectively,</dd>
 </dl>
 </div>
 <div class="section" id="output">

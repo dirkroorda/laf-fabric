@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf package &mdash; LAF Fabric 0.11.0 documentation</title>
+  <title>graf package &mdash; LAF Fabric 1.0.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'0.11.0',
+        VERSION:'1.0.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 0.11.0 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 1.0.0 documentation" href="../index.html"/>
         <link rel="up" title="graf" href="modules.html"/>
         <link rel="prev" title="graf" href="modules.html"/> 
 
@@ -176,7 +176,11 @@
 <p>Detects the need for compiling, responds to the <em>force</em> argument. Then parses, remodels and writes.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd>force (bool): whether to compile even if the binary data looks up to date.</dd>
+<dd><dl class="first last docutils">
+<dt>force (bool):</dt>
+<dd>whether to compile even if the binary data looks up to date.</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -205,7 +209,11 @@
 <p>The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.</p>
 <dl class="docutils">
 <dt>Returns:</dt>
-<dd>bool: whether the criterion for compiling holds.</dd>
+<dd><dl class="first last docutils">
+<dt>bool:</dt>
+<dd>whether the criterion for compiling holds.</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -310,8 +318,13 @@ They may issue errors and warnings. All this information also goes into a log fi
 The log file is placed in the result directory of the task at hand.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd>location (str): override default directory for log file
-name (str): override default name for log file</dd>
+<dd><dl class="first last docutils">
+<dt>location (str):</dt>
+<dd>override default directory for log file</dd>
+<dt>name (str):</dt>
+<dd>override default name for log file</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -346,16 +359,32 @@ name (str): override default name for log file</dd>
 
 <dl class="method">
 <dt id="graf.graf.Graf.init_data">
-<tt class="descname">init_data</tt><big>(</big><em>feature=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.init_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets all loaded data to initial values, or just the data of a single feature</p>
+<tt class="descname">init_data</tt><big>(</big><em>feature=None</em>, <em>xmlids=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.init_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all loaded data to initial values, or just the data of a single feature, or just the xmlids.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd>feature (str, int): the kind (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>) and qualified name of a feature.
-Optional. If None, all data will be reset, if given, only the data for the
-feature specified.</dd>
+<dd><dl class="first last docutils">
+<dt>feature (str, int):</dt>
+<dd>the kind (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>) and qualified name of a feature.
+Optional. If given, only the data for the
+feature specified, will be reset.</dd>
+<dt>xmlids (str):</dt>
+<dd>the kind (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>).
+Optional. If given, only the xmlids data for the
+nodes or edges as specified, will be reset.</dd>
 </dl>
+</dd>
+</dl>
+<p>If none of the optional features is present, all data will be reset.</p>
 <p>This is needed when the task processor switches from one source to another,
 or when a recompile has been performed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.inv_label">
+<tt class="descname">inv_label</tt><big>(</big><em>label</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.inv_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a label ending in <tt class="docutils literal"><span class="pre">_int</span></tt>, returns the label with that <tt class="docutils literal"><span class="pre">_int</span></tt> replaced by <tt class="docutils literal"><span class="pre">_rep</span></tt>.</p>
+<p>This will be the label of the inverse of the dictionary labeled by <em>label</em>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -385,16 +414,24 @@ or when a recompile has been performed.</p>
 
 <dl class="method">
 <dt id="graf.graf.Graf.set_environment">
-<tt class="descname">set_environment</tt><big>(</big><em>source</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.set_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.set_environment" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_environment</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.set_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.set_environment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the source and result locations for a task execution.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd>source (str): key for the source
-task: the chosen task</dd>
+<dd><dl class="first last docutils">
+<dt>source (str):</dt>
+<dd>key for the source</dd>
+<dt>annox (str):</dt>
+<dd>name of the extra annotation package</dd>
+<dt>task:</dt>
+<dd>the chosen task</dd>
+</dl>
+</dd>
 </dl>
 <p>Sets <em>self.env</em>, a dictionary containg:</p>
 <ul class="simple">
 <li>source: <em>source</em></li>
+<li>annox: <em>annox</em></li>
 <li>task: <em>task</em></li>
 <li>compile (bool): whether to force (re)compilation</li>
 <li>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
@@ -495,18 +532,19 @@ From these elements we retrieve identifiers and other attributes. we map all ide
 </dl>
 <p>Here is a description of the dictionaries we create:</p>
 <dl class="docutils">
-<dt><em>feat_name_list_node_rep</em>, <em>feat_name_list_edge_rep</em>, <em>feat_name_list_node_int</em>, <em>feat_name_list_edge_int</em></dt>
-<dd>Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.
-These are the <em>extended</em> feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a <tt class="docutils literal"><span class="pre">.</span></tt>).
-Features for nodes occupy and features for edges occupy separate but similar datastructures.</dd>
-<dt><em>feat_value_list_rep</em>, <em>feat_value_list_int</em></dt>
-<dd>Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.</dd>
+<dt><em>feat_value_list_int</em></dt>
+<dd>Mapping from the string representations to the internal codes for feature values.</dd>
 </dl>
 <p>There is also a list of arrays:</p>
 <dl class="docutils">
 <dt><em>node_region_list</em></dt>
 <dd>Element <em>i</em> of this list contains an array with the regions attached to node <em>i</em>.</dd>
 </dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We work with the <em>qualified</em> feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a <tt class="docutils literal"><span class="pre">.</span></tt>).
+Features for nodes and features for edges occupy separate name spaces.</p>
+</div>
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.aid">
 <tt class="descname">aid</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.aid" title="Permalink to this definition">¶</a></dt>
@@ -595,7 +633,7 @@ These are the annotation files that we have to fetch and compile.</p>
 
 <dl class="function">
 <dt id="graf.parse.add_feature_instance">
-<tt class="descname">add_feature_instance</tt><big>(</big><em>atype</em>, <em>name</em>, <em>aref</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#add_feature_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.add_feature_instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_feature_instance</tt><big>(</big><em>atype</em>, <em>fname</em>, <em>aref</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#add_feature_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.add_feature_instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -646,13 +684,13 @@ to the factual task processor.</p>
 <dl class="attribute">
 <dt id="graf.shell.Shell.cur">
 <tt class="descname">cur</tt><em class="property"> = None</em><a class="headerlink" href="#graf.shell.Shell.cur" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds the current selection: the <em>source</em>, the <em>task</em> and the <em>force_compile</em> option, in that order.</p>
+<dd><p>Holds the current selection: the <em>source</em>, the <em>annox</em>, the <em>task</em> and the <em>force_compile</em> option, in that order.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="graf.shell.Shell.default">
 <tt class="descname">default</tt><em class="property"> = None</em><a class="headerlink" href="#graf.shell.Shell.default" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defaults for the selectable items: <em>source</em> and <em>task</em>.
+<dd><p>Defaults for the selectable items: <em>source</em>, <em>annox</em> and <em>task</em>.
 If the user does not pass values for them both on the command lines, these ones are used.
 If the user does pass some of these values and the command prompt is started, the
 command line values are parsed here, and the command prompt will use them as initial values.</p>
@@ -792,16 +830,8 @@ on a terminal screen.</p>
 <dt>woven(list of lists):</dt>
 <dd>correponds to a table where columns are the lists of options
 and the options occupy rows. The outermost list are the rows.</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd><dl class="first last docutils">
 <dt>index(dict of dict):</dt>
 <dd>given column number and then row number as keys yields the name of the item at that slot</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd><dl class="first last docutils">
 <dt>iindex(dict of dict):</dt>
 <dd>given column number and then the name of an item as keys yields the 
 row number of that item</dd>
@@ -834,32 +864,6 @@ in the main configuration file.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="graf.task.GrafTask.FEi">
-<tt class="descname">FEi</tt><big>(</big><em>edge</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.FEi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.FEi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Edge feature value lookup returning the value string representation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.GrafTask.FEr">
-<tt class="descname">FEr</tt><big>(</big><em>edge</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.FEr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.FEr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Edge feature value lookup returning the value string representation.
-See method <a class="reference internal" href="#graf.task.GrafTask.FEi" title="graf.task.GrafTask.FEi"><tt class="xref py py-meth docutils literal"><span class="pre">FEi()</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.GrafTask.FNi">
-<tt class="descname">FNi</tt><big>(</big><em>node</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.FNi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.FNi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Node feature value lookup returning the value string representation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.GrafTask.FNr">
-<tt class="descname">FNr</tt><big>(</big><em>node</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.FNr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.FNr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Node feature value lookup returning the value string representation.
-See method <a class="reference internal" href="#graf.task.GrafTask.FNi" title="graf.task.GrafTask.FNi"><tt class="xref py py-meth docutils literal"><span class="pre">FNi()</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="graf.task.GrafTask.add_result">
 <tt class="descname">add_result</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.add_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.add_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens a file for writing and stores the handle.</p>
@@ -878,16 +882,22 @@ The file will be closed by the workbench when the task terminates.</p>
 </dl>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="graf.task.GrafTask.annox_changed">
+<tt class="descname">annox_changed</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.annox_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member to tell whether the annox name has changed</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="graf.task.GrafTask.check_feat_loaded">
-<tt class="descname">check_feat_loaded</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.check_feat_loaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.check_feat_loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">check_feat_loaded</tt><big>(</big><em>kind</em>, <em>fname</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.check_feat_loaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.check_feat_loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether feature data for a specific feature is loaded in memory.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
 <dt>kind (str):</dt>
 <dd>kind (node or edge) of the feature</dd>
-<dt>fname_rep:</dt>
+<dt>fname:</dt>
 <dd>the qualified name of the feature.</dd>
 </dl>
 </dd>
@@ -897,10 +907,34 @@ The file will be closed by the workbench when the task terminates.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.task.GrafTask.check_xmlid_loaded">
+<tt class="descname">check_xmlid_loaded</tt><big>(</big><em>kind</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.check_xmlid_loaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether xmlid data for nodes or edges are loaded into memory</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>kind (str):</dt>
+<dd>kind (node or edge)</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>True if data is in memory, otherwise False.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="graf.task.GrafTask.common_loader">
-<tt class="descname">common_loader</tt><big>(</big><em>source</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.common_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.common_loader" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">common_loader</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.common_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.common_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manage the common data to be loaded.</p>
 <p>Common data is data  common to all tasks but specific to a source.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>directives (dict):</dt>
+<dd>Currently not used.</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -913,14 +947,20 @@ The file will be closed by the workbench when the task terminates.</p>
 <tt class="descname">feature_loader</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.feature_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.feature_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manage the feature data to be loaded.</p>
 <p>The specification of which features are selected is still a string.
-Here we compile it into a dictionary <em>only</em>, keyed with the extended feature name.</p>
-<p>The loaded features together form a dictionary, keyed with the extended feature name.
+Here we compile it into a dictionary <em>only</em>, keyed with the qualified feature name.</p>
+<p>The loaded features together form a dictionary, keyed with the qualified feature name.
 The values are dictionaries keyed by the element, with as values the feature values.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>directives (dict): dictionary of strings string specifying the features selected for feature loading. </dt>
-<dd>There are two keys: <em>node</em> and <em>edge</em>, because node features and edge features are handled separately.</dd>
+<dt>directives (dict): dictionary items to load. </dt>
+<dd><p class="first">Relevant is:</p>
+<dl class="last docutils">
+<dt>directives[&#8216;features&#8217;]:</dt>
+<dd>strings specifying the features selected for feature loading. 
+There are two keys: <em>node</em> and <em>edge</em>, because node features and edge features are handled separately.</dd>
+</dl>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -936,12 +976,24 @@ for the convenience of the user.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.task.GrafTask.get_edge_feature_value">
+<tt class="descname">get_edge_feature_value</tt><big>(</big><em>edge</em>, <em>fname</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.get_edge_feature_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge feature value lookup returning the internal integer representation.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="graf.task.GrafTask.get_mappings">
 <tt class="descname">get_mappings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.get_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.get_mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return references to API methods of this class.</p>
 <p>The caller can give convenient, local names to these methods.
 It also saves method lookup,
 at least, I think so.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.task.GrafTask.get_node_feature_value">
+<tt class="descname">get_node_feature_value</tt><big>(</big><em>node</em>, <em>fname</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.get_node_feature_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node feature value lookup returning the internal integer representation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1032,16 +1084,9 @@ whose presence in the related items set is to be tested.</dd>
 </dd></dl>
 
 <dl class="method">
-<dt id="graf.task.GrafTask.int_fname_edge">
-<tt class="descname">int_fname_edge</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.int_fname_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.int_fname_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>API: <em>feature name</em> (on edges) conversion from string representation as found in LAF resource
-to corresponding integer as used in compiled resource.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.GrafTask.int_fname_node">
-<tt class="descname">int_fname_node</tt><big>(</big><em>rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.int_fname_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.int_fname_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>API: <em>feature name</em> (on nodes) conversion from string representation as found in LAF resource
+<dt id="graf.task.GrafTask.int_edge_xid">
+<tt class="descname">int_edge_xid</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.int_edge_xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>API: <em>xml edge id</em> conversion from string representation as found in LAF resource
 to corresponding integer as used in compiled resource.</p>
 </dd></dl>
 
@@ -1053,15 +1098,22 @@ to corresponding integer as used in compiled resource.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.task.GrafTask.int_node_xid">
+<tt class="descname">int_node_xid</tt><big>(</big><em>rep</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.int_node_xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>API: <em>xml node id</em> conversion from string representation as found in LAF resource
+to corresponding integer as used in compiled resource.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="graf.task.GrafTask.load_feat">
-<tt class="descname">load_feat</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.load_feat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.load_feat" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load_feat</tt><big>(</big><em>kind</em>, <em>fname</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.load_feat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.load_feat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads selected feature into memory.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
 <dt>kind (str):</dt>
 <dd>kind (node or edge) of the feature</dd>
-<dt>fname_rep:</dt>
+<dt>fname:</dt>
 <dd>the qualified name of the feature.</dd>
 </dl>
 </dd>
@@ -1070,7 +1122,7 @@ to corresponding integer as used in compiled resource.</p>
 
 <dl class="attribute">
 <dt id="graf.task.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function GrafTask.&lt;lambda&gt; at 0x10475ce60&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">loaded</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of feature data sets that have been loaded, node features and edge features under different keys</p>
 </dd></dl>
 
@@ -1082,11 +1134,12 @@ to corresponding integer as used in compiled resource.</p>
 <dl class="docutils">
 <dt><em>common data</em></dt>
 <dd>Data that is common to all tasks, but dependent on the choice of source.
-It is the data that holds the regions, nodes, edges, but not the features.</dd>
+It is the data that holds the regions, nodes, edges, but not the features.
+Also the original xml-ids of nodes and edges.</dd>
 <dt><em>feature data</em></dt>
 <dd>Data that is requested by the task at hand.
 It is the data that holds feature information,
-for those features that are requested by a task&#8217;s <em>feature</em> declaration.</dd>
+for those features that are requested by a task&#8217;s <em>load[&#8216;feature&#8217;]</em> declaration.</dd>
 </dl>
 <p>The <em>common data</em> can be loaded in bulk fast, but it still takes 5 to 10 seconds,
 and should be avoided if possible.
@@ -1104,8 +1157,24 @@ and the feature manager method <a class="reference internal" href="#graf.task.Gr
 </dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">directives are only used by <a class="reference internal" href="#graf.task.GrafTask.feature_loader" title="graf.task.GrafTask.feature_loader"><tt class="xref py py-meth docutils literal"><span class="pre">feature_loader()</span></tt></a>.</p>
+<p class="last">some directives are used by <a class="reference internal" href="#graf.task.GrafTask.common_loader" title="graf.task.GrafTask.common_loader"><tt class="xref py py-meth docutils literal"><span class="pre">common_loader()</span></tt></a> and some by <a class="reference internal" href="#graf.task.GrafTask.feature_loader" title="graf.task.GrafTask.feature_loader"><tt class="xref py py-meth docutils literal"><span class="pre">feature_loader()</span></tt></a>.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.task.GrafTask.make_inverse">
+<tt class="descname">make_inverse</tt><big>(</big><em>label</em>, <em>inv_label</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.make_inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the inverse lookup table for a data table</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>label (str):</dt>
+<dd>if label ends with <tt class="docutils literal"><span class="pre">_int</span></tt>, a new label will be created with <tt class="docutils literal"><span class="pre">_int</span></tt> replaced by <tt class="docutils literal"><span class="pre">_rep</span></tt>.</dd>
+</dl>
+</dd>
+</dl>
+<p>The data table with name <em>label</em> is a dictionary mapping string representations to integers (one-to-one).
+We create a table with the new label holding the inverse mapping, i.e. from integers back to the representations.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1120,7 +1189,7 @@ This order is explained in the <a class="reference internal" href="../taskwritin
 
 <dl class="method">
 <dt id="graf.task.GrafTask.next_node_with_fval">
-<tt class="descname">next_node_with_fval</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.next_node_with_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.next_node_with_fval" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">next_node_with_fval</tt><big>(</big><em>fname</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.next_node_with_fval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.next_node_with_fval" title="Permalink to this definition">¶</a></dt>
 <dd><p>API: iterator of all nodes in primary data order that have a
 given value for a given feature.</p>
 <p>See also <a class="reference internal" href="#graf.task.GrafTask.next_node" title="graf.task.GrafTask.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</p>
@@ -1137,16 +1206,9 @@ given value for a given feature.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="graf.task.GrafTask.rep_fname_edge">
-<tt class="descname">rep_fname_edge</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.rep_fname_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.rep_fname_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>API: <em>feature name</em> (on edges) conversion from integer code as used in compiled LAF resource
-to corresponding string representation as found in original LAF resource.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.GrafTask.rep_fname_node">
-<tt class="descname">rep_fname_node</tt><big>(</big><em>intl</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.rep_fname_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.rep_fname_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>API: <em>feature name</em> (on nodes) conversion from integer code as used in compiled LAF resource
+<dt id="graf.task.GrafTask.rep_edge_xid">
+<tt class="descname">rep_edge_xid</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.rep_edge_xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>API: <em>xml edge id</em> conversion from integer code as used in compiled LAF resource
 to corresponding string representation as found in original LAF resource.</p>
 </dd></dl>
 
@@ -1157,15 +1219,22 @@ to corresponding string representation as found in original LAF resource.</p>
 to corresponding string representation as found in original LAF resource.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="graf.task.GrafTask.rep_node_xid">
+<tt class="descname">rep_node_xid</tt><big>(</big><em>intl</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.rep_node_xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>API: <em>xml node id</em> conversion from integer code as used in compiled LAF resource
+to corresponding string representation as found in original LAF resource.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="graf.task.GrafTask.result_files">
-<tt class="descname">result_files</tt><em class="property"> = []</em><a class="headerlink" href="#graf.task.GrafTask.result_files" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">result_files</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.result_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of handles to result files created by the task through the method <a class="reference internal" href="#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="graf.task.GrafTask.run">
-<tt class="descname">run</tt><big>(</big><em>source</em>, <em>task</em>, <em>force_compile=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em>, <em>force_compile=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a task.</p>
 <p>That is:
 * Load the data
@@ -1178,6 +1247,8 @@ to corresponding string representation as found in original LAF resource.</p>
 <dd><dl class="first last docutils">
 <dt>source (str):</dt>
 <dd>key for the source</dd>
+<dt>annox (str):</dt>
+<dd>name of the extra annotation package</dd>
 <dt>task:</dt>
 <dd>the chosen task</dd>
 <dt>force_compile (bool):</dt>
@@ -1207,15 +1278,43 @@ to corresponding string representation as found in original LAF resource.</p>
 
 <dl class="method">
 <dt id="graf.task.GrafTask.unload_feat">
-<tt class="descname">unload_feat</tt><big>(</big><em>kind</em>, <em>fname_rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.unload_feat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.unload_feat" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">unload_feat</tt><big>(</big><em>kind</em>, <em>fname</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.unload_feat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.unload_feat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unloads selected feature from memory.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
 <dt>kind (str):</dt>
 <dd>kind (node or edge) of the feature</dd>
-<dt>fname_rep:</dt>
+<dt>fname:</dt>
 <dd>the qualified name of the feature.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.task.GrafTask.xloaded">
+<tt class="descname">xloaded</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.xloaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of xmlid data sets that have been loaded, keys for <tt class="docutils literal"><span class="pre">node</span></tt> and <tt class="docutils literal"><span class="pre">edge</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.task.GrafTask.xmlids_loader">
+<tt class="descname">xmlids_loader</tt><big>(</big><em>directives</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.xmlids_loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manage the common data to be loaded.</p>
+<p>Loading of xml-id information.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>directives (dict):</dt>
+<dd><p class="first">dictionary specifying what to load. 
+Relevant is:</p>
+<dl class="last docutils">
+<dt>directives[&#8216;xmlids&#8217;]:</dt>
+<dd>booleans specifying whether xmlids should be loaded.
+There are two keys: <em>node</em> and <em>edge</em>, because nodes and edges are handled separately.</dd>
+</dl>
+</dd>
 </dl>
 </dd>
 </dl>

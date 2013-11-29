@@ -61,6 +61,16 @@ class Timestamp():
 
         self.log = log_file
 
+    def disconnect_log(self):
+        '''Connects a log file to the object.
+
+        Args:
+            log_file (file):
+                open handle for writing.
+        '''
+
+        self.log = None
+
     def progress(self, msg, newline=True):
         '''API: issues a timed progress message.
 

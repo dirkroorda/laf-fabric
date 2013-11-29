@@ -47,12 +47,9 @@ class Shell(object):
         '''
 
         self.settings = configparser.ConfigParser(inline_comment_prefixes=('#'))
-        self.settings.readfp(codecs.open(MAIN_CFG, encoding = 'utf-8'))
+        self.settings.read_file(codecs.open(MAIN_CFG, encoding = 'utf-8'))
 
-        self.source_choices = {}
-        for (key, value) in self.settings.items('source_choices'):
-            self.source_choices[key] = value
-
+        self.source_choices = self.settings['source_choices']
         self.task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("tasks/*.py")]
 
         argsparser = argparse.ArgumentParser(description = 'Conversion of LAF to Binary')

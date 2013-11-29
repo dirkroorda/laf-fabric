@@ -31,7 +31,7 @@ class GrafTask(Graf):
         '''Upon creation, the configuration settings are store in the object as is
 
         Args:
-            settings (:py:class:`ConfigParser.ConfigParser`):
+            settings (:py:class:`configparser.ConfigParser`):
                 entries corresponding to the main configuration file
         '''
         Graf.__init__(self)
@@ -45,7 +45,7 @@ class GrafTask(Graf):
         '''Instance member to hold configuration settings'''
 
         cur_dir = os.getcwd()
-        task_dir = self.settings.get('locations', 'task_dir')
+        task_dir = self.settings['locations']['task_dir']
         task_include_dir = task_dir if task_dir.startswith('/') else '{}/{}'.format(cur_dir, task_dir)
         sys.path.append(task_include_dir)
 
@@ -92,12 +92,8 @@ class GrafTask(Graf):
 
         self.stamp.reset()
         self.set_environment(source, task)
-        self.add_logfile()
-        self.progress("INITIALIZATION TASK={} SOURCE={}".format(self.env['task'], self.env['source']))
-
         self.compile(force_compile)
 
-        self.stamp.reset()
 
         exec("import {}".format(task))
         exec("imp.reload({})".format(task))
@@ -318,7 +314,9 @@ class GrafTask(Graf):
 
         Very trivial initialization: just issue a progress message.
         '''
-        self.progress("BEGIN TASK {}".format(self.env['task']))
+        self.add_logfile()
+        self.stamp.reset()
+        self.progress("BEGIN TASK={} SOURCE={}".format(self.env['task'], self.env['source']))
 
     def finish_task(self):
         '''Finalizes the current task.
@@ -335,12 +333,14 @@ class GrafTask(Graf):
         self.result_files = []
 
         self.progress("END TASK {}".format(self.env['task']))
+        self.flush_logfile()
 
         msg = subprocess.check_output("ls -lh {}".format(self.env['result_dir']), shell=True)
         self.progress("\n" + msg.decode('utf-8'))
 
         msg = subprocess.check_output("du -h {}".format(self.env['result_dir']), shell=True)
         self.progress("\n" + msg.decode('utf-8'))
+        self.finish_logfile()
 
     def FNi(self, node, name):
         '''Node feature value lookup returning the value string representation.

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf package &mdash; LAF Fabric 0.9.3 documentation</title>
+  <title>graf package &mdash; LAF Fabric 0.10.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'0.9.3',
+        VERSION:'0.10.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 0.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 0.10.0 documentation" href="../index.html"/>
         <link rel="up" title="graf" href="modules.html"/>
         <link rel="prev" title="graf" href="modules.html"/> 
 
@@ -335,6 +335,16 @@ name (str): override default name for log file</dd>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.graf.Graf.finish_logfile">
+<tt class="descname">finish_logfile</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.graf.Graf.finish_logfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.flush_logfile">
+<tt class="descname">flush_logfile</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.graf.Graf.flush_logfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="graf.graf.Graf.init_data">
 <tt class="descname">init_data</tt><big>(</big><em>feature=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.init_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.init_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets all loaded data to initial values, or just the data of a single feature</p>
@@ -387,7 +397,7 @@ task: the chosen task</dd>
 <li>source: <em>source</em></li>
 <li>task: <em>task</em></li>
 <li>compile (bool): whether to force (re)compilation</li>
-<li>settings (<tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
+<li>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
 <li>additional computed settings adapt to the current source and task</li>
 </ul>
 </dd></dl>
@@ -818,7 +828,7 @@ in the main configuration file.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>settings (<tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt>):</dt>
+<dt>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>):</dt>
 <dd>entries corresponding to the main configuration file</dd>
 </dl>
 </dd>
@@ -1060,7 +1070,7 @@ to corresponding integer as used in compiled resource.</p>
 
 <dl class="attribute">
 <dt id="graf.task.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function GrafTask.&lt;lambda&gt; at 0x104773c20&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">loaded</tt><em class="property"> = defaultdict(&lt;function GrafTask.&lt;lambda&gt; at 0x10475de60&gt;, {})</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of feature data sets that have been loaded, node features and edge features under different keys</p>
 </dd></dl>
 
@@ -1237,6 +1247,20 @@ When progress messages are issued, they are also written to the connected log fi
 <dl class="method">
 <dt id="graf.timestamp.Timestamp.connect_log">
 <tt class="descname">connect_log</tt><big>(</big><em>log_file</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.connect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects a log file to the object.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>log_file (file):</dt>
+<dd>open handle for writing.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.timestamp.Timestamp.disconnect_log">
+<tt class="descname">disconnect_log</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.timestamp.Timestamp.disconnect_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects a log file to the object.</p>
 <dl class="docutils">
 <dt>Args:</dt>

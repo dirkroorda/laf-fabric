@@ -147,18 +147,18 @@ class Graf(object):
         * source: *source*
         * task: *task*
         * compile (bool): whether to force (re)compilation
-        * settings (:py:class:`ConfigParser.ConfigParser`): entries corresponding to the main configuration file
+        * settings (:py:class:`configparser.ConfigParser`): entries corresponding to the main configuration file
         * additional computed settings adapt to the current source and task
 
         '''
         settings = self.settings
-        data_file = settings.get('source_choices', source)
-        data_root = settings.get('locations', 'data_root')
-        laf_source = settings.get('locations', 'laf_source')
-        compiled_source = settings.get('locations', 'compiled_source')
-        bin_subdir = settings.get('locations', 'bin_subdir')
-        task_dir = settings.get('locations', 'task_dir')
-        feat_subdir = settings.get('locations', 'feat_subdir')
+        data_file = settings['source_choices'][source]
+        data_root = settings['locations']['data_root']
+        laf_source = settings['locations']['laf_source']
+        compiled_source = settings['locations']['compiled_source']
+        bin_subdir = settings['locations']['bin_subdir']
+        task_dir = settings['locations']['task_dir']
+        feat_subdir = settings['locations']['feat_subdir']
 
         self.env = {
             'source': source,
@@ -234,6 +234,20 @@ class Graf(object):
 
         self.stamp.connect_log(self.log)
         self.stamp.progress("LOGFILE={}".format(log_file))
+
+    def finish_logfile(self):
+        try:
+            self.log.close()
+        except:
+            pass
+        self.stamp.disconnect_log()
+        self.log = None
+
+    def flush_logfile(self):
+        try:
+            self.log.flush()
+        except:
+            pass
 
     def progress(self, msg):
         '''Convenience method to call the progress of the associated stamp directly from the Graf object'''

@@ -161,6 +161,7 @@ class GrafCompiler(Graf):
             self.write_data()
             self.has_compiled = True
             self.progress("END COMPILE")
+            self.finish_logfile()
         else:
             self.progress("COMPILING: UP TO DATE")
 

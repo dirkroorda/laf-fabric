@@ -75,11 +75,8 @@ class Graf(object):
         '''Instance member holding the :class:`Timestamp <graf.timestamp.Timestamp>` object.'''
 
         self.data_items_def = {
-            "feat_name_list_node_rep": 0,
-            "feat_name_list_node_int": 0,
-            "feat_name_list_edge_rep": 0,
-            "feat_name_list_edge_int": 0,
-            "feat_value_list_rep": 0,
+            "node_xid_int": 0,
+            "edge_xid_int": 0,
             "feat_value_list_int": 0,
             "region_begin": 1,
             "region_end": 1,
@@ -108,43 +105,74 @@ class Graf(object):
 
         self.init_data()
 
-    def init_data(self, feature=None):
-        '''Resets all loaded data to initial values, or just the data of a single feature
+    def inv_label(self, label):
+        '''Given a label ending in ``_int``, returns the label with that ``_int`` replaced by ``_rep``.
+
+        This will be the label of the inverse of the dictionary labeled by *label*.
+        ''' 
+        if not label.endswith('_int'):
+            return None
+        return label[0:len(label)-3] + "rep"
+
+    def init_data(self, feature=None, xmlids=None):
+        '''Resets all loaded data to initial values, or just the data of a single feature, or just the xmlids.
 
         Args:
-            feature (str, int): the kind (``node`` or ``edge``) and qualified name of a feature.
-            Optional. If None, all data will be reset, if given, only the data for the
-            feature specified.
+            feature (str, int):
+                the kind (``node`` or ``edge``) and qualified name of a feature.
+                Optional. If given, only the data for the
+                feature specified, will be reset.
+
+            xmlids (str):
+                the kind (``node`` or ``edge``).
+                Optional. If given, only the xmlids data for the
+                nodes or edges as specified, will be reset.
+
+        If none of the optional features is present, all data will be reset.
 
         This is needed when the task processor switches from one source to another,
         or when a recompile has been performed.
         '''
-        if (feature == None):
+        if feature == None and xmlids == None:
             self.node_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
             self.edge_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
             for label in self.data_items_def:
                 is_binary = self.data_items_def[label]
                 if not is_binary:
                     self.data_items[label] = {}
+                    inv_label = self.inv_label(label)
+                    if inv_label:
+                        self.data_items[inv_label] = {}
                 elif is_binary == 1:
                     self.data_items[label] = array.array('I')
                 elif is_binary == 2:
                     self.data_items[label] = collections.defaultdict(lambda: collections.defaultdict(lambda:array.array('I')))
         else:
-            (kind, fname) = feature
-            for label in self.feat_labels:
-                self.data_items[label][kind][fname] = array.array('I')
+            if feature != None:
+                (kind, fname) = feature
+                for label in self.feat_labels:
+                    self.data_items[label][kind][fname] = array.array('I')
+            elif xmlids != None:
+                for dir in ('int', 'rep'):
+                    self.data_items["{}_xid_{}".format(xmlids, dir)] = {}
 
-    def set_environment(self, source, task):
+    def set_environment(self, source, annox, task):
         '''Set the source and result locations for a task execution.
 
         Args:
-            source (str): key for the source
-            task: the chosen task
+            source (str):
+                key for the source
+
+            annox (str):
+                name of the extra annotation package
+
+            task:
+                the chosen task
 
         Sets *self.env*, a dictionary containg:
 
         * source: *source*
+        * annox: *annox*
         * task: *task*
         * compile (bool): whether to force (re)compilation
         * settings (:py:class:`configparser.ConfigParser`): entries corresponding to the main configuration file
@@ -162,6 +190,7 @@ class Graf(object):
 
         self.env = {
             'source': source,
+            'annox': annox,
             'task': task,
             'task_dir': task_dir,
             'data_file': data_file,
@@ -213,8 +242,11 @@ class Graf(object):
         The log file is placed in the result directory of the task at hand.
 
         Args:
-            location (str): override default directory for log file
-            name (str): override default name for log file
+            location (str):
+                override default directory for log file
+
+            name (str):
+                override default name for log file
         '''
         log_dir = self.env['result_dir'] if not location else location
         log_name = "{}{}.{}".format(self.LOG_NAME, self.env['task'] if not name else name, self.TEXT_EXT)

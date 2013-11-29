@@ -27,19 +27,12 @@ identifiers_n = {}
 identifiers_e = {}
 identifiers_a = {}
 
-id_feat_name_node = 0
-id_feat_name_edge = 0
 id_feat_value = 0
 id_region = 0
 id_node = 0
 id_edge = 0
 id_annot = 0
 
-feat_name_list_node_rep = {}
-feat_name_list_edge_rep = {}
-feat_name_list_node_int = {}
-feat_name_list_edge_int = {}
-feat_value_list_rep = {}
 feat_value_list_int = {}
 region_begin = array.array('I')
 region_end = array.array('I')
@@ -94,18 +87,18 @@ class AnnotationHandler(ContentHandler):
 
     Here is a description of the dictionaries we create:
 
-    *feat_name_list_node_rep*, *feat_name_list_edge_rep*, *feat_name_list_node_int*, *feat_name_list_edge_int*
-        Mappings from the string representations to the internal codes and vice versa, respectively, for feature names.
-        These are the *extended* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
-        Features for nodes occupy and features for edges occupy separate but similar datastructures.
-
-    *feat_value_list_rep*, *feat_value_list_int*
-        Mappings from the string representations to the internal codes and vice versa, respectively, for feature values.
+    *feat_value_list_int*
+        Mapping from the string representations to the internal codes for feature values.
 
     There is also a list of arrays:
 
     *node_region_list*
         Element *i* of this list contains an array with the regions attached to node *i*.
+
+    .. note::
+
+    We work with the *qualified* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
+    Features for nodes and features for edges occupy separate name spaces.
     '''
 
     file_name = None
@@ -237,43 +230,23 @@ class AnnotationHandler(ContentHandler):
     def characters(self, ch):
         pass
 
-def add_feature_instance(atype, name, aref, value):
+def add_feature_instance(atype, fname, aref, value):
     global good_feats
-    global id_feat_name_node
-    global id_feat_name_edge
     global id_feat_value
-    this_fn_id = None
-    if atype:
-        if name in feat_name_list_node_rep:
-            this_fn_id = feat_name_list_node_rep[name]
-        else:
-            id_feat_name_node += 1
-            feat_name_list_node_rep[name] = id_feat_name_node
-            feat_name_list_node_int[id_feat_name_node] = name
-            this_fn_id = id_feat_name_node
-    else:
-        if name in feat_name_list_edge_rep:
-            this_fn_id = feat_name_list_edge_rep[name]
-        else:
-            id_feat_name_edge += 1
-            feat_name_list_edge_rep[name] = id_feat_name_edge
-            feat_name_list_edge_int[id_feat_name_edge] = name
-            this_fn_id = id_feat_name_edge
     this_fv_id = None
-    if value in feat_value_list_rep:
-        this_fv_id = feat_value_list_rep[value]
+    if value in feat_value_list_int:
+        this_fv_id = feat_value_list_int[value]
     else:
         id_feat_value += 1
-        feat_value_list_rep[value] = id_feat_value
-        feat_value_list_int[id_feat_value] = value
+        feat_value_list_int[value] = id_feat_value
         this_fv_id = id_feat_value
     good_feats += 1
     if atype:
-        feat_ref_node[this_fn_id].append(aref)
-        feat_value_node[this_fn_id].append(this_fv_id)
+        feat_ref_node[fname].append(aref)
+        feat_value_node[fname].append(this_fv_id)
     else:
-        feat_ref_edge[this_fn_id].append(aref)
-        feat_value_edge[this_fn_id].append(this_fv_id)
+        feat_ref_edge[fname].append(aref)
+        feat_value_edge[fname].append(this_fv_id)
 
 def parse(graf_header_file, stamp):
     '''Parse a GrAF resource.
@@ -323,18 +296,15 @@ def parse(graf_header_file, stamp):
         good_edges, faulty_edges,
         good_annots, faulty_annots,
         good_feats, faulty_feats,  
-        len(feat_name_list_node_rep),
-        len(feat_name_list_edge_rep),
-        len(feat_value_list_rep),
+        len(feat_ref_node),
+        len(feat_ref_edge),
+        len(feat_value_list_int),
         id_region + id_node + id_edge + id_annot
     )
     stamp.progress(msg)
     return (
-        ("feat_name_list_node_rep", feat_name_list_node_rep, True),
-        ("feat_name_list_node_int", feat_name_list_node_int, True),
-        ("feat_name_list_edge_rep", feat_name_list_edge_rep, True),
-        ("feat_name_list_edge_int", feat_name_list_edge_int, True),
-        ("feat_value_list_rep", feat_value_list_rep, True),
+        ("node_xid_int", identifiers_n, True),
+        ("edge_xid_int", identifiers_e, True),
         ("feat_value_list_int", feat_value_list_int, True),
         ("region_begin", region_begin, True),
         ("region_end", region_end, True),

@@ -2,9 +2,15 @@
 import sys
 import collections
 
-features = {
-    "node": "db:otype ft:part_of_speech,noun_type,lexeme_utf8 sft:book",
-    "edge": '',
+load = {
+    "xmlids": {
+        "node": False,
+        "edge": False,
+    },
+    "features": {
+        "node": "db:otype ft:part_of_speech,noun_type,lexeme_utf8 sft:book",
+        "edge": '',
+    },
 }
 
 def task(graftask):
@@ -33,7 +39,7 @@ def task(graftask):
         common nouns in Esther and as columns the books of the bible.
         A cell contain the frequency of that lexeme in that book multiplied by 1000 
     '''
-    (msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    (msg, Vi, Vr, NN, NNFV, FN, FE, XNi, XNr, XEi, XEr) = graftask.get_mappings()
 
     target_book = "Esther"
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
@@ -47,22 +53,22 @@ def task(graftask):
     words = collections.defaultdict(lambda: 0)
 
     for node in NN():
-        this_type = FNi(node, NNi["db.otype"])
+        this_type = FN(node, "db.otype")
         if not this_type:
             continue
         if this_type == Vi["word"]:
-            p_o_s = FNi(node, NNi["ft.part_of_speech"])
+            p_o_s = FN(node, "ft.part_of_speech")
             if p_o_s == Vi["noun"]:
-                noun_type = FNi(node, NNi["ft.noun_type"])
+                noun_type = FN(node, "ft.noun_type")
                 if noun_type == Vi["common"]:
                     words[book_name] += 1
-                    lexeme = FNr(node, NNi["ft.lexeme_utf8"])
+                    lexeme = Vr[FN(node, "ft.lexeme_utf8")]
                     lexemes[book_name][lexeme] += 1
 
         elif this_type == Vi["book"]:
-            book_name = FNr(node, NNi["sft.book"])
+            book_name = Vr[FN(node, "sft.book")]
             books.append(book_name)
-            ontarget = FNi(node, NNi["sft.book"]) == Vi[target_book]
+            ontarget = FN(node, "sft.book") == Vi[target_book]
             if ontarget:
                 sys.stderr.write(book_name)
             else:

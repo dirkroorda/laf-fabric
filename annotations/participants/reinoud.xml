@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl/>
+        <dependencies/>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="true"/>
+        </annotationSpaces>
+    </graphHeader>
+<a xml:id="a1" label="part" ref="n2"><fs>
+	<f name="code" value="A"/>
+	<f name="role" value="intro"/>
+</fs></a>
+
+<a xml:id="a1" label="part" ref="n3"><fs>
+	<f name="code" value="B"/>
+	<f name="role" value="follow-up"/>
+</fs></a>
+
+<a xml:id="a1" label="part" ref="n4"><fs>
+	<f name="code" value="A"/>
+	<f name="role" value="intro"/>
+</fs></a>
+
+<a xml:id="a1" label="part" ref="n5"><fs>
+	<f name="code" value="B"/>
+	<f name="role" value="follow-up"/>
+</fs></a>
+
+</graph>

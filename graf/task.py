@@ -22,11 +22,6 @@ class GrafTask(Graf):
     in the main configuration file.
     '''
 
-    loaded = collections.defaultdict(lambda: collections.defaultdict(lambda: False))
-    '''Set of feature data sets that have been loaded, node features and edge features under different keys'''
-    result_files = []
-    '''List of handles to result files created by the task through the method :meth:`add_result`'''
-
     def __init__(self, settings):
         '''Upon creation, the configuration settings are store in the object as is
 
@@ -39,10 +34,19 @@ class GrafTask(Graf):
         '''Instance member to tell whether compilation has actually taken place'''
         self.source_changed = None
         '''Instance member to tell whether the source name has changed'''
+        self.annox_changed = None
+        '''Instance member to tell whether the annox name has changed'''
         self.task_changed = None
         '''Instance member to tell whether the task name has changed'''
         self.settings = settings
         '''Instance member to hold configuration settings'''
+
+        self.loaded = collections.defaultdict(lambda: collections.defaultdict(lambda: False))
+        '''Set of feature data sets that have been loaded, node features and edge features under different keys'''
+        self.xloaded = collections.defaultdict(lambda: False)
+        '''Set of xmlid data sets that have been loaded, keys for ``node`` and ``edge``.'''
+        self.result_files = []
+        '''List of handles to result files created by the task through the method :meth:`add_result`'''
 
         cur_dir = os.getcwd()
         task_dir = self.settings['locations']['task_dir']
@@ -57,7 +61,7 @@ class GrafTask(Graf):
                 handle.close()
         Graf.__del__(self)
 
-    def run(self, source, task, force_compile=False):
+    def run(self, source, annox, task, force_compile=False):
         '''Run a task.
 
         That is:
@@ -71,6 +75,9 @@ class GrafTask(Graf):
             source (str):
                 key for the source
 
+            annox (str):
+                name of the extra annotation package
+
             task:
                 the chosen task
 
@@ -79,29 +86,25 @@ class GrafTask(Graf):
         '''
         if self.env == None:
             self.source_changed = None 
+            self.annox_changed = None 
             self.task_changed = None 
         else:
-            if self.env['source'] != source:
-                self.source_changed = True 
-            else:
-                self.source_changed = False
-            if self.env['task'] != task:
-                self.task_changed = True 
-            else:
-                self.task_changed = False
+            self.source_changed = self.env['source'] != source
+            self.annox_changed = self.env['annox'] != annox
+            self.task_changed = self.env['task'] != task
 
         self.stamp.reset()
-        self.set_environment(source, task)
+        self.set_environment(source, annox, task)
         self.compile(force_compile)
-
+        self.stamp.reset()
 
         exec("import {}".format(task))
         exec("imp.reload({})".format(task))
 
-        features = eval("{}.features".format(task))
+        load = eval("{}.load".format(task))
         taskcommand = eval("{}.task".format(task))
 
-        self.loader(source, task, features)
+        self.loader(source, task, load)
         self.stamp.reset()
 
         self.init_task()
@@ -122,10 +125,11 @@ class GrafTask(Graf):
         *common data*
             Data that is common to all tasks, but dependent on the choice of source.
             It is the data that holds the regions, nodes, edges, but not the features.
+            Also the original xml-ids of nodes and edges.
         *feature data*
             Data that is requested by the task at hand.
             It is the data that holds feature information,
-            for those features that are requested by a task's *feature* declaration.
+            for those features that are requested by a task's *load['feature']* declaration.
 
         The *common data* can be loaded in bulk fast, but it still takes 5 to 10 seconds,
         and should be avoided if possible.
@@ -139,17 +143,23 @@ class GrafTask(Graf):
             directives (dict):
                 a dictionary of information relevant to :meth:`common_loader` and :meth:`feature_loader`.
 
-        .. note:: directives are only used by :meth:`feature_loader`.
+        .. note:: some directives are used by :meth:`common_loader` and some by :meth:`feature_loader`.
 
         '''
 
-        self.common_loader(source)
+        self.common_loader(directives)
+        self.xmlids_loader(directives)
         self.feature_loader(directives)
 
-    def common_loader(self, source):
+    def common_loader(self, directives):
         '''Manage the common data to be loaded.
 
         Common data is data  common to all tasks but specific to a source.
+
+        Args:
+            directives (dict):
+                Currently not used.
+
         '''
         if self.source_changed:
             self.progress("UNLOAD ALL DATA (source changed)")
@@ -164,38 +174,119 @@ class GrafTask(Graf):
                     continue
                 data = self.data_items[label]
                 b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
-                msg = "loaded {:<30} ... ".format(label)
-                b_handle = open(b_path, "rb")
+                inv_label = ''
                 if is_binary:
+                    b_handle = open(b_path, "rb")
                     data.fromfile(b_handle, self.stats[label])
+                    b_handle.close()
                 else:
+                    if '_xid_' in label:
+                        continue
+
+                    b_handle = open(b_path, "rb")
                     self.data_items[label] = collections.defaultdict(lambda: None, pickle.load(b_handle))
-                msg += "{:>10}".format(len(self.data_items[label]))
-                b_handle.close()
+                    b_handle.close()
+
+                    inv_label = self.inv_label(label)
+                    if inv_label != None:
+                        self.make_inverse(label, inv_label)
+                        inv_label = '/rep'
+                    else:
+                        inv_label = ''
+                msg = "{:<16} {:<30} {:>10}".format('loaded', label + inv_label, len(self.data_items[label]))
                 self.progress(msg)
             self.progress("END   LOADING COMMON DATA")
         else:
             self.progress("COMMON DATA ALREADY LOADED")
 
+    def xmlids_loader(self, directives):
+        '''Manage the common data to be loaded.
+
+        Loading of xml-id information.
+
+        Args:
+            directives (dict):
+                dictionary specifying what to load. 
+                Relevant is:
+                
+                directives['xmlids']:
+                    booleans specifying whether xmlids should be loaded.
+                    There are two keys: *node* and *edge*, because nodes and edges are handled separately.
+
+        '''
+        self.progress("BEGIN LOADING XMLID DATA")
+        for (label, is_binary) in sorted(self.data_items_def.items()):
+            action = 'loaded'
+            if is_binary or "_xid_" not in label: 
+                continue
+            kind = 'node' if label.startswith('node') else 'edge'
+            data = self.data_items[label]
+
+
+            inv_label = ''
+
+            is_present = self.xloaded[label] and (not self.source_changed) and self.source_changed != None
+            is_needed = kind in directives['xmlids'] and directives['xmlids'][kind]
+            if is_present != is_needed:
+                if is_present:
+                    self.init_data(xmlids=kind)
+                    self.xloaded[label] = False
+                    action = 'unloaded'
+                else:
+                    b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
+                    b_handle = open(b_path, "rb")
+                    self.data_items[label] = collections.defaultdict(lambda: None, pickle.load(b_handle))
+                    b_handle.close()
+                    action = 'loaded'
+                    self.xloaded[label] = True
+
+                    inv_label = self.inv_label(label)
+                    if inv_label != None:
+                        self.make_inverse(label, inv_label)
+                        inv_label = '/rep'
+                    else:
+                        inv_label = ''
+            else:
+                action = 'already loaded' if is_present else 'already unloaded'
+
+            msg = "{:<16} {:<30} {:>10}".format(action, label + inv_label, len(self.data_items[label]))
+            self.progress(msg)
+        self.progress("END   LOADING XMLID DATA")
+
+    def make_inverse(self, label, inv_label):
+        '''Creates the inverse lookup table for a data table
+
+        Args:
+            label (str):
+                if label ends with ``_int``, a new label will be created with ``_int`` replaced by ``_rep``.
+
+        The data table with name *label* is a dictionary mapping string representations to integers (one-to-one).
+        We create a table with the new label holding the inverse mapping, i.e. from integers back to the representations.
+        '''
+        self.data_items[inv_label] = dict([(y,x) for (x,y) in self.data_items[label].items()])
+
     def feature_loader(self, directives):
         '''Manage the feature data to be loaded.
 
         The specification of which features are selected is still a string.
-        Here we compile it into a dictionary *only*, keyed with the extended feature name.
+        Here we compile it into a dictionary *only*, keyed with the qualified feature name.
 
-        The loaded features together form a dictionary, keyed with the extended feature name.
+        The loaded features together form a dictionary, keyed with the qualified feature name.
         The values are dictionaries keyed by the element, with as values the feature values.
         
         Args:
-            directives (dict): dictionary of strings string specifying the features selected for feature loading. 
-                There are two keys: *node* and *edge*, because node features and edge features are handled separately.
+            directives (dict): dictionary items to load. 
+                Relevant is:
+                
+                directives['features']:
+                    strings specifying the features selected for feature loading. 
+                    There are two keys: *node* and *edge*, because node features and edge features are handled separately.
         '''
 
         self.progress("BEGIN LOADING FEATURE DATA")
         for kind in ("node", "edge"):
             only = collections.defaultdict(lambda:collections.defaultdict(lambda:None))
-            labelitems = directives[kind].split(" ")
-            feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
+            labelitems = directives['features'][kind].split(" ")
 
             for labelitem in labelitems:
                 if not labelitem:
@@ -203,60 +294,70 @@ class GrafTask(Graf):
                 (label_rep, namestring) = labelitem.split(":")
                 names = namestring.split(",")
                 for name_rep in names:
-                    fname_rep = '{}.{}'.format(label_rep, name_rep)
-                    fname = feature_name_rep[fname_rep]
-                    if fname == None:
-                        self.progress("WARNING: {} feature {} not encountered in this source".format(kind, fname_rep))
-                        continue
-                    only[fname_rep] = None
+                    fname = '{}.{}'.format(label_rep, name_rep)
+                    only[fname] = None
 
-            for fname_rep in only:
-                fname = feature_name_rep[fname_rep]
-                if self.check_feat_loaded(kind, fname_rep):
-                    self.progress("{} feature data for {} already loaded".format(kind, fname_rep))
+            for fname in only:
+                if self.check_feat_loaded(kind, fname):
+                    self.progress("{} feature data for {} already loaded".format(kind, fname))
                 else:
-                    self.progress("{} feature data for {} loading".format(kind, fname_rep))
-                    self.load_feat(kind, fname_rep)
+                    self.progress("{} feature data for {} loading".format(kind, fname))
+                    self.load_feat(kind, fname)
 
-            for fname_rep in self.loaded[kind]:
-                fname = feature_name_rep[fname_rep]
-                if fname_rep not in only:
-                    self.progress("{} feature data for {} unloading".format(kind, fname_rep))
-                    self.unload_feat(kind, fname_rep)
+            for fname in self.loaded[kind]:
+                if fname not in only:
+                    self.progress("{} feature data for {} unloading".format(kind, fname))
+                    self.unload_feat(kind, fname)
         self.progress("END   LOADING FEATURE DATA")
 
-    def check_feat_loaded(self, kind, fname_rep):
+    def check_xmlid_loaded(self, kind):
+        '''Checks whether xmlid data for nodes or edges are loaded into memory
+
+        Args:
+            kind (str):
+                kind (node or edge)
+
+        Returns:
+            True if data is in memory, otherwise False.
+        '''
+        return 
+
+    def check_feat_loaded(self, kind, fname):
         '''Checks whether feature data for a specific feature is loaded in memory.
 
         Args:
             kind (str):
                 kind (node or edge) of the feature
 
-            fname_rep:
+            fname:
                 the qualified name of the feature.
 
         Returns:
             True if data is in memory, otherwise False.
         '''
-        return self.loaded[kind][fname_rep] and (not self.source_changed) and self.source_changed != None
+        return self.loaded[kind][fname] and (not self.source_changed) and self.source_changed != None
 
-    def load_feat(self, kind, fname_rep):
+    def load_feat(self, kind, fname):
         ''' Loads selected feature into memory.
 
         Args:
             kind (str):
                 kind (node or edge) of the feature
 
-            fname_rep:
+            fname:
                 the qualified name of the feature.
         '''
-        feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
-        fname = feature_name_rep[fname_rep]
+        found = True
         for label in self.feat_labels:
-            absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname_rep, self.BIN_EXT)
-            p_handle = open(absolute_feat_path, "rb")
-            self.data_items[label][kind][fname].fromfile(p_handle, self.stats['{}_{}_{}'.format(label, kind, fname)])
-            self.loaded[kind][fname_rep] = True
+            absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname, self.BIN_EXT)
+            try:
+                p_handle = open(absolute_feat_path, "rb")
+                self.data_items[label][kind][fname].fromfile(p_handle, self.stats['{}_{}_{}'.format(label, kind, fname)])
+            except:
+                found = False
+            self.loaded[kind][fname] = True
+        if not found: 
+            self.progress("WARNING: {} feature {} not found in this source".format(kind, fname))
         this_feat_ref = self.data_items['feat_ref'][kind][fname]
         this_feat_value = self.data_items['feat_value'][kind][fname]
 
@@ -268,24 +369,22 @@ class GrafTask(Graf):
         for label in self.feat_labels:
             self.init_data(feature=(kind, fname))
 
-    def unload_feat(self, kind, fname_rep):
+    def unload_feat(self, kind, fname):
         ''' Unloads selected feature from memory.
 
         Args:
             kind (str):
                 kind (node or edge) of the feature
 
-            fname_rep:
+            fname:
                 the qualified name of the feature.
         '''
-        feature_name_rep = self.data_items["feat_name_list_{}_rep".format(kind)]
-        fname = feature_name_rep[fname_rep]
         dest = self.node_feat if kind == 'node' else self.edge_feat
         for label in self.feat_labels:
             self.init_data((kind, fname))
         if fname in dest:
             del dest[fname]
-        self.loaded[kind][fname_rep] = False
+        self.loaded[kind][fname] = False
 
     def add_result(self, file_name):
         '''Opens a file for writing and stores the handle.
@@ -342,29 +441,15 @@ class GrafTask(Graf):
         self.progress("\n" + msg.decode('utf-8'))
         self.finish_logfile()
 
-    def FNi(self, node, name):
-        '''Node feature value lookup returning the value string representation.
+    def get_node_feature_value(self, node, fname):
+        '''Node feature value lookup returning the internal integer representation.
         ''' 
-        return self.node_feat[name][node]
+        return self.node_feat[fname][node]
 
-    def FNr(self, node, name):
-        '''Node feature value lookup returning the value string representation.
-        See method :meth:`FNi()`.
+    def get_edge_feature_value(self, edge, fname):
+        '''Edge feature value lookup returning the internal integer representation.
         ''' 
-        feat_value_list_int = self.data_items["feat_value_list_int"]
-        return feat_value_list_int[self.node_feat[name][node]]
-
-    def FEi(self, edge, name):
-        '''Edge feature value lookup returning the value string representation.
-        ''' 
-        return self.edge_feat[name][edge]
-
-    def FEr(self, edge, name):
-        '''Edge feature value lookup returning the value string representation.
-        See method :meth:`FEi()`.
-        ''' 
-        feat_value_list_int = self.data_items["feat_value_list_int"]
-        return feat_value_list_int[self.edge_feat[name][edge]]
+        return self.edge_feat[fname][edge]
 
     def next_node(self):
         '''API: iterator of all nodes in primary data order.
@@ -377,7 +462,7 @@ class GrafTask(Graf):
         for node in self.data_items["node_sort"]:
             yield node
 
-    def next_node_with_fval(self, name, value):
+    def next_node_with_fval(self, fname, value):
         '''API: iterator of all nodes in primary data order that have a
         given value for a given feature.
 
@@ -391,7 +476,7 @@ class GrafTask(Graf):
                 the code of a feature value
         '''
         for node in self.data_items["node_sort"]:
-            if value == self.FNi(node, name):
+            if value == self.node_feat[fname][node]:
                 yield node
 
     def next_node(self):
@@ -405,41 +490,41 @@ class GrafTask(Graf):
         for node in self.data_items["node_sort"]:
             yield node
 
-    def int_fname_node(self, rep):
-        '''API: *feature name* (on nodes) conversion from string representation as found in LAF resource
+    def int_node_xid(self, rep):
+        '''API: *xml node id* conversion from string representation as found in LAF resource
         to corresponding integer as used in compiled resource.
         '''
-        return self.data_items["feat_name_list_node_rep"][rep]
+        return self.data_items["node_xid_int"][rep]
 
-    def int_fname_edge(self, rep):
-        '''API: *feature name* (on edges) conversion from string representation as found in LAF resource
+    def rep_node_xid(self, intl):
+        '''API: *xml node id* conversion from integer code as used in compiled LAF resource
+        to corresponding string representation as found in original LAF resource.
+        '''
+        return self.data_items["node_xid_rep"][intl]
+
+    def int_edge_xid(self, rep):
+        '''API: *xml edge id* conversion from string representation as found in LAF resource
         to corresponding integer as used in compiled resource.
         '''
-        return self.data_items["feat_name_list_edge_rep"][rep]
+        return self.data_items["edge_xid_int"][rep]
+
+    def rep_edge_xid(self, intl):
+        '''API: *xml edge id* conversion from integer code as used in compiled LAF resource
+        to corresponding string representation as found in original LAF resource.
+        '''
+        return self.data_items["edge_xid_rep"][intl]
 
     def int_fval(self, rep):
         '''API: *feature value* conversion from string representation as found in LAF resource
         to corresponding integer as used in compiled resource.
         '''
-        return self.data_items["feat_value_list_rep"][rep]
-
-    def rep_fname_node(self, intl):
-        '''API: *feature name* (on nodes) conversion from integer code as used in compiled LAF resource
-        to corresponding string representation as found in original LAF resource.
-        '''
-        return self.data_items["feat_name_list_node_int"][intl]
-
-    def rep_fname_edge(self, intl):
-        '''API: *feature name* (on edges) conversion from integer code as used in compiled LAF resource
-        to corresponding string representation as found in original LAF resource.
-        '''
-        return self.data_items["feat_name_list_edge_int"][intl]
+        return self.data_items["feat_value_list_int"][rep]
 
     def rep_fval(self, intl):
         '''API: *feature value* conversion from integer code as used in compiled LAF resource
         to corresponding string representation as found in original LAF resource.
         '''
-        return self.data_items["feat_value_list_int"][intl]
+        return self.data_items["feat_value_list_rep"][intl]
 
     def get_mappings(self):
         '''Return references to API methods of this class.
@@ -450,18 +535,16 @@ class GrafTask(Graf):
         ''' 
         return (
             self.progress,
-            self.data_items["feat_name_list_node_rep"],
-            self.data_items["feat_name_list_node_int"],
-            self.data_items["feat_name_list_edge_rep"],
-            self.data_items["feat_name_list_edge_int"],
-            self.data_items["feat_value_list_rep"],
             self.data_items["feat_value_list_int"],
+            self.data_items["feat_value_list_rep"],
             self.next_node,
             self.next_node_with_fval,
-            self.FNi,
-            self.FNr,
-            self.FEi,
-            self.FEr,
+            self.get_node_feature_value,
+            self.get_edge_feature_value,
+            self.data_items["node_xid_int"],
+            self.data_items["node_xid_rep"],
+            self.data_items["edge_xid_int"],
+            self.data_items["edge_xid_rep"],
         )
 
     def getitems(self, data, data_items, elem):

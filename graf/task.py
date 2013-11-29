@@ -120,16 +120,21 @@ class GrafTask(Graf):
     def loader(self, source, task, directives):
         '''Loads compiled LAF data.
 
-        There are two kinds of data to be loaded:
+        There are several kinds of data to be loaded:
 
         *common data*
             Data that is common to all tasks, but dependent on the choice of source.
             It is the data that holds the regions, nodes, edges, but not the features.
-            Also the original xml-ids of nodes and edges.
+        *xml id data*
+            The mappngs between original xmlids in the LAF source and the integers identifying nodes
+            and edges in the compilation result.
+            This data is also common to all tasks, but can be loaded and unloaded on demand.
         *feature data*
             Data that is requested by the task at hand.
             It is the data that holds feature information,
             for those features that are requested by a task's *load['feature']* declaration.
+        *annox data*
+            Feature data coming from extra annotation files. 
 
         The *common data* can be loaded in bulk fast, but it still takes 5 to 10 seconds,
         and should be avoided if possible.

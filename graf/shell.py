@@ -51,10 +51,7 @@ class Shell(object):
         self.settings.read_file(codecs.open(MAIN_CFG, encoding = 'utf-8'))
 
         self.source_choices = self.settings['source_choices']
-        self.annox_choices = [self.settings['annox_choices']['empty']] + [os.path.splitext(os.path.basename(f))[0]
-            for f in glob.glob("{}/*.py".format(self.settings['locations']['annox_dir']))
-            if os.path.isfile(f)
-        ]
+        self.annox_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("{}/*.xml".format(self.settings['locations']['annox_dir']))]
         self.task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("{}/*.py".format(self.settings['locations']['task_dir']))]
 
         argsparser = argparse.ArgumentParser(description = 'Conversion of LAF to Binary')

@@ -38,9 +38,10 @@ class Shell(object):
 
         self.default = [
             0, # source
+            0, # annox
             0, # task
         ]
-        '''Defaults for the selectable items: *source* and *task*.
+        '''Defaults for the selectable items: *source*, *annox* and *task*.
         If the user does not pass values for them both on the command lines, these ones are used.
         If the user does pass some of these values and the command prompt is started, the
         command line values are parsed here, and the command prompt will use them as initial values.
@@ -50,7 +51,11 @@ class Shell(object):
         self.settings.read_file(codecs.open(MAIN_CFG, encoding = 'utf-8'))
 
         self.source_choices = self.settings['source_choices']
-        self.task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("tasks/*.py")]
+        self.annox_choices = [self.settings['annox_choices']['empty']] + [os.path.splitext(os.path.basename(f))[0]
+            for f in glob.glob("{}/*.py".format(self.settings['locations']['annox_dir']))
+            if os.path.isfile(f)
+        ]
+        self.task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("{}/*.py".format(self.settings['locations']['task_dir']))]
 
         argsparser = argparse.ArgumentParser(description = 'Conversion of LAF to Binary')
         argsparser.add_argument(
@@ -60,6 +65,14 @@ class Shell(object):
             choices = self.source_choices.keys(),
             metavar = 'Source',
             help = "which source to take",
+        )
+        argsparser.add_argument(
+            "--annox",
+            dest = 'annox',
+            type = str,
+            choices = self.annox_choices,
+            metavar = 'Annox',
+            help = "which annox to take",
         )
         argsparser.add_argument(
             "--task",
@@ -83,18 +96,20 @@ class Shell(object):
         )
         self.args = argsparser.parse_args()
 
-        (self.prompt_data, self.index, self.iindex) = self.weave((sorted(self.source_choices.keys()), sorted(self.task_choices)))
+        (self.prompt_data, self.index, self.iindex) = self.weave((sorted(self.source_choices.keys()), sorted(self.annox_choices), sorted(self.task_choices)))
         if self.args.source:
             self.default[0] = self.iindex[0][self.args.source]
+        if self.args.annox:
+            self.default[1] = self.iindex[1][self.args.annox]
         if self.args.task:
-            self.default[1] = self.iindex[1][self.args.task]
+            self.default[2] = self.iindex[2][self.args.task]
 
         '''Data used to build a self-explanatory prompt, based on the available options'''
         self.message = ''
         '''Response messages to be displayed after the prompt'''
 
         self.cur = [self.default[i] for i in range(len(self.index))]
-        '''Holds the current selection: the *source*, the *task* and the *force_compile* option, in that order.'''
+        '''Holds the current selection: the *source*, the *annox*, the *task* and the *force_compile* option, in that order.'''
         self.cur.append(self.args.forcecompile)
 
         self.graftask = GrafTask(self.settings)
@@ -108,8 +123,8 @@ class Shell(object):
         Otherwise the command prompt is started. If that is the case, the
         command line args that did come through, are used as initial values.
         '''
-        if self.args.source and self.args.task and not self.args.menu:
-            self.graftask.run(self.args.source, self.args.task, self.args.forcecompile)
+        if self.args.source and self.args.annox and self.args.task and not self.args.menu:
+            self.graftask.run(self.args.source, self.args.annox, self.args.task, self.args.forcecompile)
         else:
             self.command_loop()
 
@@ -119,7 +134,13 @@ class Shell(object):
 
         while True:
             self.prompt()
-            command = self.do_command("laf-fabric", "stcxq", "\ts=select source\n\tt=select task\n\tc=toggle force compile\n\tx=execute selected task on selected source\n")
+            command = self.do_command("laf-fabric", "satcxq", '''
+    s=select source
+    a=select annox
+    t=select task
+    c=toggle force compile
+    x=execute selected task on selected source
+''')
             if command == None:
                 break
 
@@ -142,10 +163,14 @@ class Shell(object):
             source = self.get_num("source", 1, len(self.source_choices))
             if source:
                 self.cur[0] = source - 1
+        if command == 'a':
+            annox = self.get_num("annox", 1, len(self.annox_choices))
+            if annox:
+                self.cur[1] = annox - 1
         elif command == 't':
             task = self.get_num("task", 1, len(self.task_choices))
             if task:
-                self.cur[1] = task - 1
+                self.cur[2] = task - 1
         elif command == "c":
             self.cur[len(self.index)] = not self.cur[len(self.index)]
         elif command == "x":
@@ -269,7 +294,7 @@ class Shell(object):
         '''Writes an self-explanatory prompt text to the terminal.
         '''
         os.system("clear")
-        sys.stderr.write(''' ┌─SOURCE───────────────────────────┬─TASK─────────────────────────────┐
+        sys.stderr.write(''' ┌─SOURCE───────────────────────────┬─ANNOX────────────────────────────┬─TASK─────────────────────────────┐
 ''')
         sepchar = '│'
         sepchar_cur = '█'
@@ -305,7 +330,7 @@ class Shell(object):
                 line += sep[i] + this_nf[i] + fill[i] + this_f[i]
             sys.stderr.write(line + sep[len(row)] + "\n")
 
-        sys.stderr.write(''' └──────────────────────────────────┴──────────────────────────────────┘
+        sys.stderr.write(''' └──────────────────────────────────┴──────────────────────────────────┴──────────────────────────────────┘
  ┌─SETTING──────────────────────────┬─VALUE────────────────────────────┐
  │ force compile                    │ {:<3}                              │
  └──────────────────────────────────┴──────────────────────────────────┘
@@ -325,11 +350,9 @@ class Shell(object):
                 correponds to a table where columns are the lists of options
                 and the options occupy rows. The outermost list are the rows. 
 
-        Returns:
             index(dict of dict):
                 given column number and then row number as keys yields the name of the item at that slot
 
-        Returns:
             iindex(dict of dict):
                 given column number and then the name of an item as keys yields the 
                 row number of that item

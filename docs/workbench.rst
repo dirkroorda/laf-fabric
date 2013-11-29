@@ -218,12 +218,20 @@ The function :func:`arrayify() <graf.model.arrayify>` takes a list of items and 
 
 Consequences
 ^^^^^^^^^^^^
-The concrete XML identifiers present in the LAF resource get lost.
+The concrete XML identifiers present in the LAF resource are moved to the background. 
+Only if your tasks ask for them explicitly, they can be loaded.
+In that case you get mappings between the xml-identifiers and the internal integer codes
+for nodes and for edges.
+This requires considerable overhead.
+     
 Whoever designs a LAF resource to be worked on by this workbench,
 should not rely on the values of the XML identifiers to derive implicit meanings from.
 I did that in initial stages, producing identifiers ``n_1, n_2, e_1, e_2`` etcetera for node 1, 2 and edge 1, 2.
 There is nothing wrong with such identifiers, but do not expect to determine in your tasks whether
 something is a node or edge by looking at an identifier.
+
+.. note:: There are cases where a task really needs the original identifiers. 
+    Tasks that create new annotations for existing nodes or edges, need to know the xml-identifiers used in the source.
 
 .. _feature coverage:
 

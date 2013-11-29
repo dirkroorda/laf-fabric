@@ -138,28 +138,11 @@ and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.
 
-*FNi()* and *FNr()*, *FEi()* and *FEr()*
-	The *FNx* versions need a node, the *FEx* versions and edge,
-	then they need an a qualified feature name.
-	They return the value that the feature carries on that node or edge.
-	The *FXi* versions return the value code that the compiler has assigned
-	to the real value (read *i* as *internal*).
-	The *FXr* versions return the real values as strings, exactly as
-	they appear in the original LAF resource (read *r* as *real*).
-
-	All arguments must be given as integers,
-	the integers to which nodes and labels and names have been mapped during compiling.
-	(There are ways to get those numbers).
-	Use *FXi* versions when the value is needed in other parts of your script,
-	and the *FXr* versions when you need to output values. 
-
-*NNi*, *NEi* and *NNr*, *NEr*
-    Tables to convert between qualified feature names as real values
-    found in the original LAF and the integers they have been mapped to during compilation.
-    *NXi* yields integers from string representations,
-    *NXr* yields representations (strings) from internal integers.
-    *XNx* is for features on nodes,
-    *XEx* is for features on edges.
+*FN()* and *FE*
+    Feature lookup.
+	*FN* works on nodes, *FE* on edges.
+	Given a node or edge respectively, they need an a qualified feature name
+	to return the value that the feature carries on that node or edge.
 
 *Vi* and *Vr*
     Same pattern as above, but now for feature values.
@@ -173,6 +156,12 @@ Here is a short description of the corresponding methods.
 	See :class:`GrafTask <graf.task>`,
 	methods :meth:`nextnode() <graf.task.GrafTask.next_node>`
 	and :meth:`next_node_with_fval() <graf.task.GrafTask.next_node_with_fval>`.
+
+*XNi*, *XEi* and *XNr*, *XEr*
+    Tables to convert between original xml-ids in the original LAF resource and the
+    integers they have been mapped unto by the compilation.
+    *XNi* and *XEi* yield integers codes from string representations of xml-ids of nodes or edges respectively,
+    *XNr* and *XEi* yield string representations of xml-ids from integer codes of nodes or edges respectively,
 
 Output
 ------

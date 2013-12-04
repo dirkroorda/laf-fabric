@@ -70,7 +70,7 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -81,7 +81,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -146,20 +147,34 @@
   <h1>Source code for objects</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf8 -*-</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:oid,otype,monads&quot;</span><span class="p">,</span>
-    <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+<span class="n">load</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;xmlids&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;shebanq&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;db.oid,otype,monads&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
 <div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/objects.html#objects.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+    <span class="sd">&#39;&#39;&#39;Produces a list of all WIVU objects with their types, ids and</span>
+<span class="sd">    *monads* (words) they contain.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">oid</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.oid&quot;</span><span class="p">])</span>
-        <span class="n">otype</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">])</span>
-        <span class="n">monads</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.monads&quot;</span><span class="p">])</span>
+        <span class="n">oid</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_oid</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">otype</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span></div>
 </pre></div>
 

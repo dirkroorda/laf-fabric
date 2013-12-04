@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LAF/GrAF and data analysis &mdash; LAF Fabric 1.0.1 documentation</title>
+  <title>LAF Fabric &mdash; LAF Fabric 1.0.1 documentation</title>
   
 
   
@@ -71,7 +71,7 @@
         
         
             <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -82,7 +82,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -136,7 +137,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="index.html">Docs</a> &raquo;</li>
-  <li><a href="">LAF/GrAF and data analysis</a></li>
+  <li><a href="">LAF Fabric</a></li>
     <li class="wy-breadcrumbs-aside">
       
         <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
@@ -146,8 +147,17 @@
 <hr/>
 
           
-  <div class="section" id="laf-graf-and-data-analysis">
-<h1>LAF/GrAF and data analysis<a class="headerlink" href="#laf-graf-and-data-analysis" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="laf-fabric">
+<h1>LAF Fabric<a class="headerlink" href="#laf-fabric" title="Permalink to this headline">¶</a></h1>
+<img alt="_images/logo.png" src="_images/logo.png" />
+<p>The word fabric denotes a texture, and a LAF resource can be seen as a texture of annotations to
+a primary data source.</p>
+<p>In other languages than English, and possibly in English as well, fabric also denotes a place were
+stuff is made. The location of industry.</p>
+<p>What if you want to study the data that is in the fabric of a LAF resource?
+You need tools. And what if you want to add your own tapestry to the fabric?</p>
+<p>You need an environment where tools can be developed and data can be combined. A factory.</p>
+<p>This is the LAF Fabric.</p>
 <div class="section" id="what-is-laf-graf">
 <h2>What is LAF/GrAF<a class="headerlink" href="#what-is-laf-graf" title="Permalink to this headline">¶</a></h2>
 <p>LAF/GrAF is a framework for representing linguistic source material plus associated annotations.
@@ -207,22 +217,27 @@ It achieves this goal by efficient storage of data, both on disk and in RAM and 
 <p>While the <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a> module
 mentioned above is capable to read generic resources, the present Graf tool is less generic.
 It does not support the full complexity of the Graf model.
-In particular, it does not support annotation spaces, it does not read dependencies,
-and it cannot handle feature structures in full generality, it only handles key-value pairs.
-Currently, there is very little API support for dealing with <em>edges</em> and their features.</p>
+In particular, it does not read dependencies,
+and it cannot handle feature structures in full generality.
+It only handles features in so far as they consist of key-value pairs, coded as:</p>
+<div class="highlight-python"><pre>&lt;f name=&quot;...&quot; value=&quot;...&quot;/&gt;</pre>
+</div>
+<p>Currently, there is very little API support for dealing with <em>edges</em>.</p>
 </div>
 <div class="section" id="future-work">
 <h3>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h3>
 <p>The current workbench has proven to function well for a small set of tasks.
-This proves that the methodology works and that we can try more challenging tasks.
-The direction of the future work should be determined by the experiences coming out of that.
-That said, it is not difficult to spot immediate areas for improvement:</p>
+This proves that the methodology works and that we can try more challenging things.
+The direction of the future work should be determined by the experiences coming out of that.</p>
+<p>An important desideratum is to add files with new annotations to the existing LAF resource, without
+the need to recompile what has already been compiled.
+We want to offer a researcher a workflow where he can easily create new annotations, combine them
+with existing annotations, and switch between such sets.</p>
+<p>That said, it is not difficult to spot other areas for improvement:</p>
 <ol class="arabic simple">
 <li>gain experience with the tool by adding more example tasks</li>
 <li>improve the API, add extra primitives, especially for edges</li>
-<li>make the workbench more programmer friendly</li>
-<li>look out for even better performance for various tasks</li>
-<li>increase the support for more GrAF features, and to make the workbench fully compatible with GrAF/LAF</li>
+<li>increase the support for features in full generality</li>
 <li>merge the tool with the existing <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a>,
 preferably as a user selectable implementation choice</li>
 </ol>

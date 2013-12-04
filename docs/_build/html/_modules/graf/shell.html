@@ -70,7 +70,7 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -81,7 +81,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -184,22 +185,21 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="p">[</span>
             <span class="mi">0</span><span class="p">,</span> <span class="c"># source</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="c"># annox</span>
             <span class="mi">0</span><span class="p">,</span> <span class="c"># task</span>
         <span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;Defaults for the selectable items: *source* and *task*.</span>
+        <span class="sd">&#39;&#39;&#39;Defaults for the selectable items: *source*, *annox* and *task*.</span>
 <span class="sd">        If the user does not pass values for them both on the command lines, these ones are used.</span>
 <span class="sd">        If the user does pass some of these values and the command prompt is started, the</span>
 <span class="sd">        command line values are parsed here, and the command prompt will use them as initial values.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">inline_comment_prefixes</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">MAIN_CFG</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">MAIN_CFG</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s">&#39;source_choices&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&quot;tasks/*.py&quot;</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;source_choices&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annox_choices</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&quot;{}/*.xml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;annox_dir&#39;</span><span class="p">]))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&quot;{}/*.py&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]))]</span>
 
         <span class="n">argsparser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Conversion of LAF to Binary&#39;</span><span class="p">)</span>
         <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -209,6 +209,14 @@
             <span class="n">choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
             <span class="n">metavar</span> <span class="o">=</span> <span class="s">&#39;Source&#39;</span><span class="p">,</span>
             <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;which source to take&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">&quot;--annox&quot;</span><span class="p">,</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="s">&#39;annox&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annox_choices</span><span class="p">,</span>
+            <span class="n">metavar</span> <span class="o">=</span> <span class="s">&#39;Annox&#39;</span><span class="p">,</span>
+            <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;which annox to take&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s">&quot;--task&quot;</span><span class="p">,</span>
@@ -232,18 +240,20 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">argsparser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
-        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weave</span><span class="p">((</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span><span class="p">)))</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weave</span><span class="p">((</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annox_choices</span><span class="p">),</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span><span class="p">)))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">annox</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">annox</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iindex</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">]</span>
 
         <span class="sd">&#39;&#39;&#39;Data used to build a self-explanatory prompt, based on the available options&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="sd">&#39;&#39;&#39;Response messages to be displayed after the prompt&#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">))]</span>
-        <span class="sd">&#39;&#39;&#39;Holds the current selection: the *source*, the *task* and the *force_compile* option, in that order.&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Holds the current selection: the *source*, the *annox*, the *task* and the *force_compile* option, in that order.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">forcecompile</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">GrafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
@@ -257,8 +267,8 @@
 <span class="sd">        Otherwise the command prompt is started. If that is the case, the</span>
 <span class="sd">        command line args that did come through, are used as initial values.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">menu</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">forcecompile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">annox</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">menu</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">annox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">forcecompile</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_loop</span><span class="p">()</span>
 </div>
@@ -268,7 +278,13 @@
 
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">()</span>
-            <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_command</span><span class="p">(</span><span class="s">&quot;laf-fabric&quot;</span><span class="p">,</span> <span class="s">&quot;stcxq&quot;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">s=select source</span><span class="se">\n\t</span><span class="s">t=select task</span><span class="se">\n\t</span><span class="s">c=toggle force compile</span><span class="se">\n\t</span><span class="s">x=execute selected task on selected source</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_command</span><span class="p">(</span><span class="s">&quot;laf-fabric&quot;</span><span class="p">,</span> <span class="s">&quot;satcx&quot;</span><span class="p">,</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">    s=select source</span>
+<span class="s">    a=select annox</span>
+<span class="s">    t=select task</span>
+<span class="s">    c=toggle force compile</span>
+<span class="s">    x=execute selected task on selected source</span>
+<span class="s">&#39;&#39;&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">break</span>
 </div>
@@ -279,20 +295,26 @@
 <span class="sd">        This happens for the commands that modify the source and task selection.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            command(char): the command character.</span>
+<span class="sd">            command(char):</span>
+<span class="sd">                the command character.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            message (str): response text after the command execution.</span>
+<span class="sd">            message (str):</span>
+<span class="sd">                response text after the command execution.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;s&#39;</span><span class="p">:</span>
             <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_num</span><span class="p">(</span><span class="s">&quot;source&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_choices</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">source</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;a&#39;</span><span class="p">:</span>
+            <span class="n">annox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_num</span><span class="p">(</span><span class="s">&quot;annox&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annox_choices</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">annox</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">annox</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&#39;t&#39;</span><span class="p">:</span>
             <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_num</span><span class="p">(</span><span class="s">&quot;task&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_choices</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&quot;c&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="n">command</span> <span class="o">==</span> <span class="s">&quot;x&quot;</span><span class="p">:</span>
@@ -314,13 +336,18 @@
 <span class="sd">        If he user enters ``?``, the helpstring is displayed.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            prompt (str): the prompt string to be displayed.</span>
-<span class="sd">                This string will be extenden with a description of the allowed keys to press.</span>
-<span class="sd">            choices (str): a string consisting of legal  one letter commands, not separated.</span>
-<span class="sd">            helpstr (str): help string to be displayed if the user presses ``?``</span>
+<span class="sd">            prompt (str):</span>
+<span class="sd">                the prompt string to be displayed. This string will be extended with a description of the allowed keys to press.</span>
+
+<span class="sd">            choices (str):</span>
+<span class="sd">                a string consisting of legal  one letter commands, not separated.</span>
+
+<span class="sd">            helpstr (str):</span>
+<span class="sd">                help string to be displayed if the user presses ``?``</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            command (str): the command entered by the user, or ``None`` if escape has been pressed.</span>
+<span class="sd">            command (str):</span>
+<span class="sd">                the command entered by the user, or ``None`` if escape has been pressed.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">command</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
@@ -351,13 +378,18 @@
         <span class="sd">&#39;&#39;&#39;Asks for a numeric value, and checks whether teh value is in a legal range.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            prompt (str): prompt to be displayed</span>
-<span class="sd">            start (str): minimum legal value</span>
-<span class="sd">            end (str): maximum legal value</span>
+<span class="sd">            prompt (str):</span>
+<span class="sd">                prompt to be displayed</span>
+
+<span class="sd">            start (str):</span>
+<span class="sd">                minimum legal value</span>
+
+<span class="sd">            end (str):</span>
+<span class="sd">                maximum legal value</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            number (int): the number if the user entered something legal,</span>
-<span class="sd">            and ``None`` otherwise.</span>
+<span class="sd">            number (int):</span>
+<span class="sd">                the number if the user entered something legal, and ``None`` otherwise.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">number</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
@@ -381,11 +413,12 @@
         <span class="sd">&#39;&#39;&#39;Asks for unbuffered single character input, with an optional prompt.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            prompt (str): Optional text to be displayed as prompt.</span>
+<span class="sd">            prompt (str):</span>
+<span class="sd">                Optional text to be displayed as prompt.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ch (char): character pressed by the user.</span>
-<span class="sd">            If something gets wrong, returns the *Esc* character.</span>
+<span class="sd">            ch (char):</span>
+<span class="sd">                character pressed by the user. If something gets wrong, returns the *Esc* character.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">prompt</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
@@ -405,7 +438,7 @@
         <span class="sd">&#39;&#39;&#39;Writes an self-explanatory prompt text to the terminal.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;clear&quot;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;&#39; ┌─SOURCE───────────────────────────┬─TASK─────────────────────────────┐</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;&#39; ┌─SOURCE───────────────────────────┬─ANNOX────────────────────────────┬─TASK─────────────────────────────┐</span>
 <span class="s">&#39;&#39;&#39;</span><span class="p">)</span>
         <span class="n">sepchar</span> <span class="o">=</span> <span class="s">&#39;│&#39;</span>
         <span class="n">sepchar_cur</span> <span class="o">=</span> <span class="s">&#39;█&#39;</span>
@@ -441,7 +474,7 @@
                 <span class="n">line</span> <span class="o">+=</span> <span class="n">sep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">this_nf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">fill</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">this_f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="n">sep</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 
-        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;&#39; └──────────────────────────────────┴──────────────────────────────────┘</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;&#39; └──────────────────────────────────┴──────────────────────────────────┴──────────────────────────────────┘</span>
 <span class="s"> ┌─SETTING──────────────────────────┬─VALUE────────────────────────────┐</span>
 <span class="s"> │ force compile                    │ {:&lt;3}                              │</span>
 <span class="s"> └──────────────────────────────────┴──────────────────────────────────┘</span>
@@ -453,17 +486,20 @@
 <span class="sd">        on a terminal screen.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data(lists of lists): corresponds to a number of lists of options.</span>
+<span class="sd">            data(lists of lists):</span>
+<span class="sd">                corresponds to a number of lists of options.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            woven(list of lists): correponds to a table where columns are the lists of options</span>
-<span class="sd">            and the options occupy rows. The outermost list are the rows. </span>
-<span class="sd">        Returns:</span>
-<span class="sd">            index(dict of dict): given column number and then row number as keys yields the </span>
-<span class="sd">            name of the item at that slot</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            iindex(dict of dict): given column number and then the name of an item as keys yields the </span>
-<span class="sd">            row number of that item</span>
+<span class="sd">            woven(list of lists):</span>
+<span class="sd">                correponds to a table where columns are the lists of options</span>
+<span class="sd">                and the options occupy rows. The outermost list are the rows. </span>
+
+<span class="sd">            index(dict of dict):</span>
+<span class="sd">                given column number and then row number as keys yields the name of the item at that slot</span>
+
+<span class="sd">            iindex(dict of dict):</span>
+<span class="sd">                given column number and then the name of an item as keys yields the </span>
+<span class="sd">                row number of that item</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
 

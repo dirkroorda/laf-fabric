@@ -71,7 +71,7 @@
         
         
             <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -82,7 +82,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -158,10 +159,12 @@ In order to be called by the workbench, you have to put into the <em>tasks</em> 
 <p>The workbench passes an object to your task,
 which contains the information needed to peek into the LAF resource.
 Conversely, in your task script you can pass some initialization information to the workbench,
-so that it can build or load the appropriate feature data.</p>
+so that it can build or load the appropriate feature data.
+And you can ask the workbench for convenient names by which you can use the feature
+data that is present in the LAF resource.</p>
 <p>Apart from these things, your script may contain arbitrary Python code,
 it may import arbitrary modules.
-The workbench is agnostic of your code.</p>
+The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.</p>
 </div>
 <div class="section" id="a-leading-example">
 <h2>A leading example<a class="headerlink" href="#a-leading-example" title="Permalink to this headline">¶</a></h2>
@@ -187,23 +190,23 @@ In the original LAF it looks like this:</p>
 <div class="section" id="more-on-features">
 <h2>More on features<a class="headerlink" href="#more-on-features" title="Permalink to this headline">¶</a></h2>
 <p>When the workbench compiles features into binary data, it forgets the annotations in which the features come,
-but the annotation <em>label</em> is retained as a prefix to the feature name.
+but the annotation <em>space</em> and <em>label</em> are retained in a double prefix to the feature name.
 In the example above, you see an annotation with label <tt class="docutils literal"><span class="pre">db</span></tt> and in it a feature structure
 with features named <tt class="docutils literal"><span class="pre">otype</span></tt>, <tt class="docutils literal"><span class="pre">oid</span></tt>, etc.
-The workbench remembers those features by their <em>fully qualified</em> names: <tt class="docutils literal"><span class="pre">db.otype</span></tt>, <tt class="docutils literal"><span class="pre">db.oid</span></tt> etc.
+The annotation is in the default <em>annotation space</em>, which happens to be <tt class="docutils literal"><span class="pre">shebanq</span></tt>.
+The workbench remembers those features by their <em>fully qualified</em> names: <tt class="docutils literal"><span class="pre">shebanq:db.otype</span></tt>, <tt class="docutils literal"><span class="pre">shebanq:db.oid</span></tt> etc.
 There may also be annotations without feature contents. Such annotations will be stored as features with as name the
-annotation label only, without the dot: <tt class="docutils literal"><span class="pre">db</span></tt>.</p>
+annotation label only, without the dot: <tt class="docutils literal"><span class="pre">shebanq:db</span></tt>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Annotations may reference nodes or edges.
 It is possible that nodes and edges have features with the same name.
 However, the workbench maintains a strict distinction between features
 of nodes and features of edges. They have separate name spaces, implicitly.
-The API has different methods to the address the features of nodes and edges.
-And features names that are used for nodes and edges may coexist, but their
-internal representations are separate tables.</p>
+Features names that are used for nodes and edges may coexist, but their
+data are in separate tables.</p>
 </div>
-<p>The example task <em>object.py</em> lists all objects in &#8220;resource order&#8221; with their original ids,
+<p>The example task <a class="reference internal" href="tasks/objects.html#module-objects" title="objects"><tt class="xref py py-mod docutils literal"><span class="pre">objects</span></tt></a> lists all objects in <em>resource order</em> with their original ids,
 object types etc and even their node number in the compiled resource.
 Not very useful, but handy for debugging or linking new annotation files to the existing data.
 Here is a snippet of output:</p>
@@ -223,45 +226,60 @@ Here is a snippet of output:</p>
 </div>
 <p>Note the same clause object <em>28737</em> as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:oid,otype,monads&quot;</span><span class="p">,</span>
-        <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">load</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;xmlids&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;shebanq&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;db.oid,otype,monads&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-        <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
-        <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-                <span class="n">oid</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.oid&quot;</span><span class="p">])</span>
-                <span class="n">otype</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">])</span>
-                <span class="n">monads</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.monads&quot;</span><span class="p">])</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
+        <span class="n">oid</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_oid</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">otype</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="information-flow-from-task-to-workbench">
 <h2>Information flow from task to workbench<a class="headerlink" href="#information-flow-from-task-to-workbench" title="Permalink to this headline">¶</a></h2>
-<p>The main thing the workbench needs to know about the task are directives for its processing.
-The task needs to be told for which features data should be loaded.
-This must be specified separately for features that occur on nodes and that occur on edges.</p>
-<p>The feature specification takes the form of a space separated string of items of the form:</p>
-<div class="highlight-python"><pre>«annotation label»:«unqualified feature names»</pre>
+<p>The main thing the workbench needs to know about your task is a declaration of
+what data the task will use.
+The task needs to tell which feature data should be loaded and whether XML identifier tables
+should be loaded.
+Both must be specified separately for nodes and edges.</p>
+<p>The feature specification takes the form a dictionary, keyed by annotation spaces first
+and then by kind (node or edge). Under those keys the declaration proceeds
+with a list of lines specifying bunches of features as follows:</p>
+<div class="highlight-python"><pre>«annotation label».«feature names»</pre>
 </div>
-<p>where <tt class="docutils literal"><span class="pre">«unqualified</span> <span class="pre">feature</span> <span class="pre">names»</span></tt> is a comma separated list of feature names without annotation labels.
-For all implied features <tt class="docutils literal"><span class="pre">«annotion</span> <span class="pre">label»:«feature</span> <span class="pre">name»</span></tt> data will be loaded.
+<p>where <tt class="docutils literal"><span class="pre">«feature</span> <span class="pre">names»</span></tt> is a comma separated list of feature names without annotation labels.
+For all implied features <tt class="docutils literal"><span class="pre">«annotation</span> <span class="pre">space»:«annotion</span> <span class="pre">label».«feature</span> <span class="pre">name»</span></tt> of the chosen kind (node or edge),
+data will be loaded.
 For all other features data will be unloaded, if still loaded.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p>Missing feature data.</p>
-<dl class="last docutils">
-<dt>If you forget to mention a feature in the directives,</dt>
-<dd>the workbench will deliver the value <tt class="docutils literal"><span class="pre">None</span></tt>,
-even if the compiled LAF has a real value there.</dd>
-<dt>The reason for this behaviour is that it is to costly</dt>
-<dd>to let every feature lookup check whether its data has been loaded.</dd>
-</dl>
+<p class="last">If you forget to mention a feature in the load declaration and you
+do use it in your task,
+the workbench will stop your task and shout error messages at you.
+If you declare features that do not exist in the LAF data, you just get
+a warning. But if you try to use such features, you get also an error
+in that case.</p>
 </div>
 </div>
 <div class="section" id="information-flow-from-workbench-to-task">
@@ -279,37 +297,42 @@ and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.</p>
 <dl class="docutils">
-<dt><em>FN()</em> and <em>FE</em></dt>
-<dd><dl class="first last docutils">
-<dt>Feature lookup.</dt>
-<dd><em>FN</em> works on nodes, <em>FE</em> on edges.
-Given a node or edge respectively, they need an a qualified feature name
-to return the value that the feature carries on that node or edge.</dd>
-</dl>
-</dd>
-<dt><em>Vi</em> and <em>Vr</em></dt>
-<dd>Same pattern as above, but now for feature values.</dd>
-<dt><em>NN()</em> and <em>NNFV()</em></dt>
-<dd><em>iterators</em> that yield a new node everytime they are called.
-They yield the nodes in so-called <em>primary data order</em>, which will be explained below.
-The difference between <em>NN()</em> and <em>NNFV()</em> is
-that <em>NN()</em> iterates over absolutely all nodes,
-and <em>NNFV()</em> only yields node that have a certain value for a certain feature.
-See <a class="reference internal" href="graf/graf.html#module-graf.task" title="graf.task"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>,
-methods <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.next_node" title="graf.task.GrafTask.next_node"><tt class="xref py py-meth docutils literal"><span class="pre">nextnode()</span></tt></a>
-and <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.next_node_with_fval" title="graf.task.GrafTask.next_node_with_fval"><tt class="xref py py-meth docutils literal"><span class="pre">next_node_with_fval()</span></tt></a>.</dd>
-<dt><em>XNi</em>, <em>XEi</em> and <em>XNr</em>, <em>XEr</em></dt>
-<dd>Tables to convert between original xml-ids in the original LAF resource and the
-integers they have been mapped unto by the compilation.
-<em>XNi</em> and <em>XEi</em> yield integers codes from string representations of xml-ids of nodes or edges respectively,
-<em>XNr</em> and <em>XEi</em> yield string representations of xml-ids from integer codes of nodes or edges respectively,</dd>
+<dt><em>F</em></dt>
+<dd>All that you want to know about features and are not afraid to ask.
+It is an object, and for each feature that you have declared, it has a member
+with a handy name. For example, <tt class="docutils literal"><span class="pre">F.shebanq_db_otype</span></tt> is a feature object
+that corresponds with the LAF feature given in an annotation in the annotation space <tt class="docutils literal"><span class="pre">shebanq</span></tt>,
+with label <tt class="docutils literal"><span class="pre">db</span></tt> and name <tt class="docutils literal"><span class="pre">otype</span></tt>. It is a node feature, because otherwise the name had a
+<tt class="docutils literal"><span class="pre">_e</span></tt> appended to it. You can look up a feature value of this feature, say for node <tt class="docutils literal"><span class="pre">n</span></tt>,by saying:
+<tt class="docutils literal"><span class="pre">F.shebanq_db_otype.v(n)</span></tt>. This will give you only a number, the code for the value. If you wanted the real value,
+you had to say <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.vr(n)</span></tt>. If you want to convert between codes and real values for this feature,
+you can do so by <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.i(«real</span> <span class="pre">value»)</span></tt> and <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.r(«number»)</span></tt></dd>
+<dt><em>NN(test=function value=something)</em></dt>
+<dd>If you want to walk through all the nodes, possibly skipping some, then this is your method.
+It is an <em>iterator</em> that yields a new node everytime it is called.
+The order is so-called <em>primary data order</em>, which will be explained below.
+The <tt class="docutils literal"><span class="pre">test</span></tt> and <tt class="docutils literal"><span class="pre">value</span></tt> arguments are optional. If given, <tt class="docutils literal"><span class="pre">test</span></tt> should be a <em>callable</em> with one argument,
+returning a string, and <tt class="docutils literal"><span class="pre">value</span></tt> a string.
+<tt class="docutils literal"><span class="pre">test</span></tt> will be called for each passing node, and if the value returned is not equal to the given value, the node
+will be skipped.
+See <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.get_mappings" title="graf.task.GrafTask.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</dd>
+<dt><em>X</em></dt>
+<dd>If you need to convert the integers that identify nodes and edges in the compiled data back to
+their original XML identifiers, you can do that with the <em>X</em> object.
+It has two members, <tt class="docutils literal"><span class="pre">X.node</span></tt> and <tt class="docutils literal"><span class="pre">X.edge</span></tt>, which contain the separate mapping tables for
+nodes and edges. Both have two methods, corresponding to the direction of the translation:
+with <tt class="docutils literal"><span class="pre">X.node.i(«xml</span> <span class="pre">id»)</span></tt> you get the corresponding number of a node, and with <tt class="docutils literal"><span class="pre">X.node.r(«number»)</span></tt>
+you get the original XML id by which the node was identified in the LAF resource.</dd>
+<dt>msg(text, newline=True, withtime=True)</dt>
+<dd>Use this to write a message with time information to the terminal and log file.
+Normally it appends a newline to the text, but you can suppress it.
+You can also suppress the time indication before the text.</dd>
 </dl>
 </div>
 <div class="section" id="output">
 <h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>You can create an output filehandle, open for writing, by calling the
 method <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a>
-of the <a class="reference internal" href="graf/graf.html#module-graf.task" title="graf.task"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a> class
 and assigning the result to a variable, say <em>out</em>.
 From then on you can write output simply by saying:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>

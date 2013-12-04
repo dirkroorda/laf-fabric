@@ -70,7 +70,7 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -81,7 +81,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -148,13 +149,34 @@
 
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="s">&quot;db:otype ft:text,suffix sft:book&quot;</span><span class="p">,</span>
-    <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+<span class="n">load</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;xmlids&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;shebanq&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;db.otype&quot;</span><span class="p">,</span>
+                <span class="s">&quot;ft.text,suffix&quot;</span><span class="p">,</span>
+                <span class="s">&quot;sft.book&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
 <div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/plain.html#plain.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNi</span><span class="p">,</span> <span class="n">NNr</span><span class="p">,</span> <span class="n">NEi</span><span class="p">,</span> <span class="n">NEr</span><span class="p">,</span> <span class="n">Vi</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">NNFV</span><span class="p">,</span> <span class="n">FNi</span><span class="p">,</span> <span class="n">FNr</span><span class="p">,</span> <span class="n">FEi</span><span class="p">,</span> <span class="n">FEr</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+    <span class="sd">&#39;&#39;&#39;Produces the plain text of the Hebrew Bible, in fact the Biblia Hebraica Stuttgartensia version.</span>
+
+<span class="sd">    No book, chapter, verse marks. Newlines for each verse.</span>
+<span class="sd">    The outcome should be identical to the primary data file in the original LAF resource.</span>
+
+<span class="sd">    This is a handy check on all the data transformations involved. If the output of this task</span>
+<span class="sd">    is not byte for byte equal to the primary data, something seriously wrong with the workbench!</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">prim</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;tiny&#39;</span>
     <span class="k">if</span> <span class="n">prim</span><span class="p">:</span>
@@ -164,19 +186,19 @@
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
-    <span class="n">object_type</span> <span class="o">=</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;word&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">prim</span> <span class="k">else</span> <span class="n">Vi</span><span class="p">[</span><span class="s">&quot;book&quot;</span><span class="p">]</span>
+    <span class="n">object_type</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="s">&#39;word&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">prim</span> <span class="k">else</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="s">&#39;book&#39;</span><span class="p">)</span>
+
     <span class="n">n_nodes</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NNFV</span><span class="p">(</span><span class="n">NNi</span><span class="p">[</span><span class="s">&quot;db.otype&quot;</span><span class="p">],</span> <span class="n">object_type</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">object_type</span><span class="p">):</span>
         <span class="n">n_nodes</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">the_output</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">prim</span><span class="p">:</span>
-            <span class="n">the_text</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.text&quot;</span><span class="p">])</span>
-            <span class="n">the_suffix</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;ft.suffix&quot;</span><span class="p">])</span>
+            <span class="n">the_text</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_text</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">the_suffix</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_suffix</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">the_newline</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="k">if</span> <span class="s">&#39;׃&#39;</span> <span class="ow">in</span> <span class="n">the_suffix</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
             <span class="n">the_output</span> <span class="o">=</span> <span class="n">the_text</span> <span class="o">+</span> <span class="n">the_suffix</span> <span class="o">+</span> <span class="n">the_newline</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">the_book</span> <span class="o">=</span> <span class="n">FNr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">NNi</span><span class="p">[</span><span class="s">&quot;sft.book&quot;</span><span class="p">])</span>
-            <span class="n">the_output</span> <span class="o">=</span> <span class="n">the_book</span> <span class="o">+</span> <span class="s">&quot; &quot;</span>
+            <span class="n">the_output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_output</span><span class="p">)</span></div>
 </pre></div>
 

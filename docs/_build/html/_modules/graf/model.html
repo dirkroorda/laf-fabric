@@ -70,7 +70,7 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -81,7 +81,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -155,10 +156,13 @@
 <span class="sd">    *This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!*</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        source_list (iterable): a list of lists of integers</span>
+<span class="sd">        source_list (iterable):</span>
+<span class="sd">            a list of lists of integers</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
-<span class="sd">        (index_array, items_array): two :py:mod:`array` s.</span>
+<span class="sd">        (index_array, items_array):</span>
+<span class="sd">            two :py:mod:`array` s.</span>
+
 <span class="sd">        *index_array* contains an index for each item in *source_list*.</span>
 <span class="sd">        *items_array* contains all the items in the following way: if an item with *n* members has to be added,</span>
 <span class="sd">        then first the number *n* is added, and then all the members.</span>
@@ -184,14 +188,38 @@
     <span class="sd">&#39;&#39;&#39;Remodels various data structures</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data_items: data structures coming from :mod:`parse &lt;graf.parse&gt;`, that are here to stay</span>
-<span class="sd">        temp_data_items: data structures coming from :mod:`parse &lt;graf.parse&gt;` that may be thrown away</span>
-<span class="sd">        stamp (:class:`Timestamp &lt;graf.Timestamp&gt;`): object for issuing progress messages</span>
+<span class="sd">        data_items:</span>
+<span class="sd">            data structures coming from :mod:`parse &lt;graf.parse&gt;`, that are here to stay</span>
+
+<span class="sd">        temp_data_items:</span>
+<span class="sd">            data structures coming from :mod:`parse &lt;graf.parse&gt;` that may be thrown away</span>
+
+<span class="sd">        stamp (:class:`Timestamp &lt;graf.timestamp.Timestamp&gt;`):</span>
+<span class="sd">            object for issuing progress messages</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The resulting permanent remodelled data structures.</span>
 
-<span class="sd">    Function</span>
+<span class="sd">    The transformations are:</span>
+
+<span class="sd">    Nodes and regions:</span>
+<span class="sd">        The list linking regions to nodes is transformed into a double array.</span>
+
+<span class="sd">    Nodes and anchors:</span>
+<span class="sd">        As a preparation to sorting, the minimal and maximal anchors of each node</span>
+<span class="sd">        are determined. Nodes may be linked to many regions.</span>
+
+<span class="sd">    Node sorting:</span>
+<span class="sd">        Create a list of nodes in a sort order derived from their linking to regions,</span>
+<span class="sd">        and the ordered nature of the primary data. </span>
+
+<span class="sd">        *node1* comes before *node2* if *node1* starts before *node2*.</span>
+<span class="sd">        If *node1* and *node2* start at the same point, the object that ends last comes first.</span>
+<span class="sd">        Otherwise objects count as equal in position.</span>
+<span class="sd">        If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.</span>
+
+<span class="sd">    Nodes and edges:</span>
+<span class="sd">        Collect the outgoing and incoming edges for each node in a pair of double arrays.</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">result_items</span> <span class="o">=</span> <span class="p">[]</span>
@@ -241,15 +269,11 @@
     <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;NODES SORTING BY REGIONS&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">interval</span><span class="p">(</span><span class="n">ob</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; Key function used when sorting objects according to embedding and left right</span>
-<span class="sd">        Object1 comes before Object2 if Object 1 starts before Object 2.</span>
-<span class="sd">        Object1 comes after Object2 if Object 1 starts after Object 2.</span>
-<span class="sd">        If Object1 and Object2 start at the same monad, the object that ends last comes first.</span>
-<span class="sd">        Otherwise objects count as equal.</span>
-<span class="sd">        If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.</span>
+        <span class="sd">&#39;&#39;&#39; Key function used when sorting objects according to embedding and left right.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            iv (int, int): interval</span>
+<span class="sd">            iv (int, int):</span>
+<span class="sd">                interval</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            a tuple containing the left boundary and the nagative of the right boundary</span>

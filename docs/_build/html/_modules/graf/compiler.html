@@ -70,7 +70,7 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -81,7 +81,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -151,9 +152,6 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">codecs</span>
 
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">array</span>
-
 <span class="kn">from</span> <span class="nn">graf.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
 <span class="kn">from</span> <span class="nn">graf.parse</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmlparse</span>
 <span class="kn">from</span> <span class="nn">graf.model</span> <span class="kn">import</span> <span class="n">model</span> <span class="k">as</span> <span class="n">remodel</span>
@@ -169,7 +167,9 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">temp_data_items</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="sd">&#39;&#39;&#39;Holds some data delivered by the parsed that can be thrown away later. The data that we must keep is stored in the object, of course.&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;Holds some data delivered by the parsed that can be thrown away later.</span>
+<span class="sd">    The data that we must keep is stored in the object, of course.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Upon creation, the relevant directories are communicated.</span>
@@ -177,13 +177,18 @@
 <span class="sd">        The initialization of the base class is performed, and we change working directory to the location of the LAF source.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            env (str): path information</span>
+<span class="sd">            env (str):</span>
+<span class="sd">                path information</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">Graf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span>
         <span class="sd">&#39;&#39;&#39;Instance member to hold config settings etc&#39;&#39;&#39;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">has_compiled</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="sd">&#39;&#39;&#39;Instance member to tell whether compilation has actually taken place&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_dir&#39;</span><span class="p">])</span>
@@ -203,7 +208,10 @@
 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        
+
+<div class="viewcode-block" id="GrafCompiler.finish"><a class="viewcode-back" href="../../graf/graf.html#graf.compiler.GrafCompiler.finish">[docs]</a>    <span class="k">def</span> <span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_dir</span><span class="p">)</span>
+        </div>
 <div class="viewcode-block" id="GrafCompiler.parse"><a class="viewcode-back" href="../../graf/graf.html#graf.compiler.GrafCompiler.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Call the XML parser and collect the parse results.</span>
 
@@ -227,9 +235,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;MODELING RESULT FILES&quot;</span><span class="p">)</span>
         <span class="n">data_items</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">is_binary</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-        <span class="n">modeled_data_items</span> <span class="o">=</span> <span class="n">remodel</span><span class="p">(</span><span class="n">data_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_data_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="p">)</span>
+        <span class="n">modeled_data_items</span> <span class="o">=</span> <span class="n">remodel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_data_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">modeled_data_item</span> <span class="ow">in</span> <span class="n">modeled_data_items</span><span class="p">:</span>
             <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="n">modeled_data_item</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
@@ -237,42 +243,10 @@
 <div class="viewcode-block" id="GrafCompiler.write_data"><a class="viewcode-back" href="../../graf/graf.html#graf.compiler.GrafCompiler.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Writes compiled data to disk.</span>
 
-<span class="sd">        Compiled data has three possible types:</span>
-<span class="sd">        </span>
-<span class="sd">        *0: plain array*</span>
-<span class="sd">            can be written fast with the :py:meth:`array.tofile` method</span>
-
-<span class="sd">        *1: array valued dict*</span>
-<span class="sd">            a dictionary, keyed by a feature name and with arrays as values</span>
-
-<span class="sd">        *2: list of trings*</span>
-<span class="sd">            can be dumped with the :py:meth:`pickle.dump` method.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;WRITING RESULT FILES&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_stats</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">is_binary</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;writing {} ... &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_binary</span><span class="p">:</span>
-                <span class="n">absolute_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                <span class="n">r_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">absolute_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
-                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">r_handle</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="n">r_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">absolute_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                <span class="n">r_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">absolute_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="n">r_handle</span><span class="p">)</span>
-                <span class="n">r_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">is_binary</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">kind</span><span class="p">]:</span>
-                        <span class="n">fname_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;feat_name_list_{}_int&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">)][</span><span class="n">fname</span><span class="p">]</span>
-                        <span class="n">absolute_feat_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;feat_dir&#39;</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">fname_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                        <span class="n">r_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">absolute_feat_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
-                        <span class="n">data</span><span class="p">[</span><span class="n">kind</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="n">r_handle</span><span class="p">)</span>
-                        <span class="n">r_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_all</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;FINALIZATION&quot;</span><span class="p">)</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;ls -lh {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -287,7 +261,8 @@
 <span class="sd">        The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: whether the criterion for compiling holds.</span>
+<span class="sd">            bool:</span>
+<span class="sd">                whether the criterion for compiling holds.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">])</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_file&#39;</span><span class="p">])</span>
 </div>
@@ -297,7 +272,8 @@
 <span class="sd">        Detects the need for compiling, responds to the *force* argument. Then parses, remodels and writes.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            force (bool): whether to compile even if the binary data looks up to date.</span>
+<span class="sd">            force (bool):</span>
+<span class="sd">                whether to compile even if the binary data looks up to date.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">force</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_compiling</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">COMPILE_TASK</span><span class="p">)</span>
@@ -307,6 +283,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">write_data</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_compiled</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END COMPILE&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish_logfile</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;COMPILING: UP TO DATE&quot;</span><span class="p">)</span>
 </pre></div></div></div>

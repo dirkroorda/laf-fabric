@@ -1,8 +1,23 @@
-LAF/GrAF and data analysis
-==========================
+LAF Fabric
+##########
+
+.. image:: files/logo.png
+
+The word fabric denotes a texture, and a LAF resource can be seen as a texture of annotations to
+a primary data source. 
+
+In other languages than English, and possibly in English as well, fabric also denotes a place were 
+stuff is made. The location of industry.
+
+What if you want to study the data that is in the fabric of a LAF resource?
+You need tools. And what if you want to add your own tapestry to the fabric?
+
+You need an environment where tools can be developed and data can be combined. A factory.
+
+This is the LAF Fabric.
 
 What is LAF/GrAF
-----------------
+================
 LAF/GrAF is a framework for representing linguistic source material plus associated annotations.
 LAF, Linguistic Annotation Framework is an
 ISO standard (`24612:2012 <http://www.iso.org/iso/catalogue_detail.htm?csnumber=37326>`_)
@@ -28,7 +43,7 @@ Annotations can be labeled and they can be organized in *annotation spaces*.
 .. _data:
 
 Data
-----
+====
 Although this tool is written to deal with LAF resources in general, it has been developed with a particular
 LAF resource in mind:
 the `WIVU text database of the Hebrew Bible <http://www.dans.knaw.nl/en/content/categorieen/projecten/text-database-hebrew-old-testament>`_.
@@ -44,7 +59,7 @@ It is to be deposited into the DANS archive shortly, under an Open Access licenc
 restriction that it may not be used commercially. 
 
 Existing tools for LAF/GrAF resources
--------------------------------------
+=====================================
 There is an interesting Python module (`POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_)
 that can read generic GrAF resources.
 It exposes an API to work with the graph and annotations of such resources.
@@ -54,38 +69,46 @@ Clearly, the tool has been defined for bunches of smaller GrAF documents,
 and not for a single documents of 500 k words and GBs of annotation material.
 
 This workbench
---------------
+==============
 The present workbench seeks to remedy that situation.
 Its aim is to provide a framework on top of which users can write small Python scripts that
 perform analytic tasks on big GrAF resources.
 It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.
 
 Limitations
-^^^^^^^^^^^
+-----------
 While the `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_ module
 mentioned above is capable to read generic resources, the present Graf tool is less generic.
 It does not support the full complexity of the Graf model.
-In particular, it does not support annotation spaces, it does not read dependencies,
-and it cannot handle feature structures in full generality, it only handles key-value pairs.
-Currently, there is very little API support for dealing with *edges* and their features.
+In particular, it does not read dependencies,
+and it cannot handle feature structures in full generality.
+It only handles features in so far as they consist of key-value pairs, coded as::
+
+    <f name="..." value="..."/>
+
+Currently, there is very little API support for dealing with *edges*.
 
 Future work
-^^^^^^^^^^^
+-----------
 The current workbench has proven to function well for a small set of tasks.
-This proves that the methodology works and that we can try more challenging tasks.
+This proves that the methodology works and that we can try more challenging things.
 The direction of the future work should be determined by the experiences coming out of that.
-That said, it is not difficult to spot immediate areas for improvement:
+
+An important desideratum is to add files with new annotations to the existing LAF resource, without 
+the need to recompile what has already been compiled.
+We want to offer a researcher a workflow where he can easily create new annotations, combine them
+with existing annotations, and switch between such sets.
+
+That said, it is not difficult to spot other areas for improvement:
 
 #. gain experience with the tool by adding more example tasks
 #. improve the API, add extra primitives, especially for edges
-#. make the workbench more programmer friendly
-#. look out for even better performance for various tasks
-#. increase the support for more GrAF features, and to make the workbench fully compatible with GrAF/LAF
+#. increase the support for features in full generality
 #. merge the tool with the existing `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_,
    preferably as a user selectable implementation choice 
 
 Rationale
----------
+=========
 The paradigms for biblical research are becoming *data-driven*.
 Researchers need increasingly sophisticated ways to get qualitative and quantitative data out of their resources.
 They are in the best position to define what they need and ... to fulfill those needs.
@@ -112,7 +135,7 @@ the scholarly needs of analysis, review and publication.
 .. _author:
 
 Author
-------
+======
 This work has been undertaken first in November 2013 by Dirk Roorda, working for
 `Data Archiving and Networked Services (DANS) <http://www.dans.knaw.nl/en>`_ and
 `The Language Archive (TLA) <http://tla.mpi.nl>`_.
@@ -127,7 +150,7 @@ See also a description on the `DANS-lab site <http://demo.datanetworkservice.nl/
 Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbench.
 
 Links
------
+=====
 2013-11-26 `Vitamin Talk to the TLA team Nijmegen <http://www.slideshare.net/dirkroorda/work-28611072>`_.
 
 

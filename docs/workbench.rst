@@ -1,25 +1,27 @@
 LAF workbench
-=============
+#############
 
-What is this workbench?
------------------------
+Description
+===========
 This workbench is a pure Python tool for running Python scripts with access to the information in a LAF resource.
 It has two major components:
 
-#. a LAF compiler for transforming a LAF resource into binary data that loads very fast by Python
-#. an execution environment that gives Python scripts access to LAF data and optimalization features
+#. a LAF compiler for transforming a LAF resource into binary data that can be loaded very into Python data structures;
+#. an execution environment that gives Python scripts access to LAF data and is optimized for feature lookup.
 
 The selling point of the workbench is performance, both in terms of speed and memory usage.
 The second goal is to make it really easy for users to write analytic tasks straightforwardly in terms of LAF concepts
 without bothering about performance.
 
+Workflow
+========
 The typical workflow is:
 
 #. install a LAF resource somewhere on the filesystem.
    A LAF resource is a directory with a primary data file, annotation files and header files.
    In testing the workbench, I used a the :ref:`LAF version of the Hebrew Bible <data>`
 #. install the LAF workbench package somewhere on a computing system.
-#. in a configuration file, adapt the locations of the LAF directory and a work/results directory.
+#. in a configuration file, adapt the locations of the LAF directory and provide a work/results directory.
 #. write your own script, and put it in the right directory.
 #. run the workbench by invoking the calling script.
 
@@ -28,25 +30,35 @@ command interpreter that lets you select and run tasks.
 You can also invoke it to run a single task without interaction.
 
 During a prompt session you can make a selection of source and task.
+
 You can run your selection, modify the selection, run it again, ad libitum.
 While this session is alive, loading and unloading of data will be done only when it is really needed.
 Data that is needed for one task, will be reused for the next task.
 
 So I you have to debug a script, you can do so without repeatedly waiting for the loading of the data.
 
+.. note:: 
+    Currently you see also the option to select an *annox*, i.e. an extra annotation package.
+    This option is not yet operational, but I work on functionality to include other packages of annotations
+    with the main resource, and to be able to switch between them.]
+
 The first time a source is used, the LAF resource will be compiled.
 This may take considerable time, say 10 minutes for a 2 GB resource on a Macbook Air (2012).
 The compiled source will be saved to disk across runs of the workbench.
-Loading the compiled data takes, in the same setting with the Hebrew Bible, 5 to 10 seconds.
+Loading the compiled data takes, in the same setting with the Hebrew Bible, 0.1 second, but then the feature
+data is not yet loaded, only the regions, nodes and edges.
+If you need the original XML identifiers for your task, there will be 2 to 5 seconds of extra load time.
+
 And you can even cut out this loading time by running multiple tasks in a single session.
 
 After loading the data, the workbench invokes your task script(s).
 You must declare the LAF-features that you use in your script, and the workbench will load data for them.
+Loading a handful of features typically adds 0.5 seconds to the load time.
 It will also unload the data for features that the script has not declared.
 This is in order not to burden the RAM with data that does not pertain to the task.
 
 License
--------
+=======
 
 The intention is to make this work freely available, without any restrictions.
 It is free for commerical use and non-commercial use.
@@ -54,18 +66,18 @@ The only limitation is that applications that include this work may not in anywa
 of others to use it.
 
 How to use the workbench?
--------------------------
+=========================
 Here are detailed instructions for installing, configuring and using the workbench.
 
 Installation
-^^^^^^^^^^^^
+------------
 In this Github project *LAF-Fabric* there is a Python package called :mod:`graf`.
 It is a package without extension modules, so it will run from anywhere in your system.
 I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation.
 You can just clone it from github and work with it right away::
 
-	cd «directory of your choice»
-	git clone https://github.com/dirkroorda/laf-fabric
+    cd «directory of your choice»
+    git clone https://github.com/dirkroorda/laf-fabric
 
 You get a directory *laf-fabric* with the following inside:
 
@@ -83,57 +95,57 @@ You get a directory *laf-fabric* with the following inside:
 Before running the workbench, the calling script has to be configured.
 
 Configuration
-^^^^^^^^^^^^^
+-------------
 The configuration file script is *laf-fabric.cfg*.
 In it is a configuration section::
 
-	[locations]                                     ; paths in the file system
-	data_root: /Users/dirk/Scratch/shebanq/results  ; working directory
-	laf_source: laf                                 ; subdirectory for the LAF data
-	task_dir: tasks                                 ; absolute or relative path to the directory with the tasks
-	compiled_source: db                             ; subdirectory for task results
-	bin_subdir: bin                                 ; subdirectory of specific tasks
-	feat_subdir: feat                               ; subdirectory within bin_dir for feature data
+    [locations]                                     ; paths in the file system
+    data_root: /Users/dirk/Scratch/shebanq/results  ; working directory
+    laf_source: laf                                 ; subdirectory for the LAF data
+    task_dir: tasks                                 ; absolute or relative path to the directory with the tasks
+    compiled_source: db                             ; subdirectory for task results
+    bin_subdir: bin                                 ; subdirectory of specific tasks
+    feat_subdir: feat                               ; subdirectory within bin_dir for feature data
 
-	[source_choices]                                ; several GrAF header files
-	edge: bhs3.txt-edge.hdr
-	tiny: bhs3.txt-tiny.hdr
-	test: bhs3.txt-bhstext.hdr
-	total: bhs3.txt.hdr
+    [source_choices]                                ; several GrAF header files
+    edge: bhs3.txt-edge.hdr
+    tiny: bhs3.txt-tiny.hdr
+    test: bhs3.txt-bhstext.hdr
+    total: bhs3.txt.hdr
 
 You are likely to want to change the following entries:
 
 *data_root*
-	point to the folder containing your LAF directory.
+    point to the folder containing your LAF directory.
 *laf_source*
-	change into the directory name of your LAF directory.
+    change into the directory name of your LAF directory.
 *source_choices*
-	Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*.
-	The workbench needs to look at a *GrAF header file*.
-	This header file has references to all files that make up the resource.
-	You might want to restrict the workbench to only part of the annotation files in the resource,
-	e.g. if there are big annotation files that do not contain features that are relevant for your analysis.
-	In that case, you can copy the original GrAF header file,
-	and leave out all references to files that you do not want to take into consideration.
-	The *source_choices* dictionary must contain all GrAF header files that you want to choose from.
+    Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*.
+    The workbench needs to look at a *GrAF header file*.
+    This header file has references to all files that make up the resource.
+    You might want to restrict the workbench to only part of the annotation files in the resource,
+    e.g. if there are big annotation files that do not contain features that are relevant for your analysis.
+    In that case, you can copy the original GrAF header file,
+    and leave out all references to files that you do not want to take into consideration.
+    The *source_choices* dictionary must contain all GrAF header files that you want to choose from.
 
 .. _task_dir:
 
 *task_dir*
-	The directory in which your tasks can be found. If you have your own tasks outside this distribution,
-	adapt *task_dir* to point to that. By default, *task_dir* points to the directory with example tasks
-	that come with the distribution of the workbench.
+    The directory in which your tasks can be found. If you have your own tasks outside this distribution,
+    adapt *task_dir* to point to that. By default, *task_dir* points to the directory with example tasks
+    that come with the distribution of the workbench.
 
 You probably do not need to change the following settings, since they are used for generating subdirectories under control of
 the workbench.
 
 *compiled_source*
-	master directory that holds the binary data, compiled from the LAF original,plus the output of tasks,
-	organized by source and then task.
+    master directory that holds the binary data, compiled from the LAF original,plus the output of tasks,
+    organized by source and then task.
 *bin_subdir*
-	subdirectory within *compiled_source* for the binary data only
+    subdirectory within *compiled_source* for the binary data only
 *feat_subdir*
-	subdirectory within *bin_subdir* for the feature data only
+    subdirectory within *bin_subdir* for the feature data only
 
 Now you are set to run your tasks.
 You might want to run an example task from the examples in the *tasks* directory
@@ -141,62 +153,63 @@ but they might fail because they refer to features that might not occur in your 
 You can also write a task yourself and add it to the *tasks* directory. See :doc:`Writing Tasks <taskwriting>`.
 
 Usage
-^^^^^
+-----
 Go to the directory where *laf-fabric.py* resides::
 
-	cd «path_to_dir_of_laf-fabric.py»
+    cd «path_to_dir_of_laf-fabric.py»
 
 *single use mode*::
 
-	python laf-fabric.py --source=«source» --task=«task» [--force-compile]
+    python laf-fabric.py --source=«source» --annox=«annox» --task=«task» [--force-compile]
 
 *to start the command interpreter mode*::
 
-	python laf-fabric.py [--source=«source» ] [--task=«task» ] [--force-compile]
+    python laf-fabric.py [--source=«source» ] [--annox=«annox»] [--task=«task» ] [--force-compile]
 
 The workbench is a Python program that is invoked from the command line.
 
 *interactive use mode*
-	If either or both of the ``«source»`` and ``«task»`` arguments are missing or if the ``--menu`` argument is present
-	it starts in interactive mode prompting you for sources and commands to run tasks.
-	The ``«source»`` and ``«task»`` arguments are given are used for initial values.
-	In interactive mode you can change your ``«source»`` and ``«task»`` selection, and run tasks.
-	the need for it. There is a help command and the prompt is self explanatory.
+    If some of the ``«source»``, ``«annox»`` and ``«task»`` arguments are missing or if the ``--menu`` argument is present
+    it starts in interactive mode prompting you for sources and commands to run tasks.
+    The ``«source»``, ``«annox»`` and ``«task»`` arguments are given are used for initial values.
+    In interactive mode you can change your ``«source»``, ``«annox»`` and ``«task»`` selection, and run tasks.
+    There is a help command and the prompt is self explanatory.
 
 *single use mode*
-	If both the ``«source»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
-	the workbench runs the specified task without asking and quits.
+    If both the ``«source»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
+    the workbench runs the specified task without asking and quits.
 
 Other options
-^^^^^^^^^^^^^
+-------------
 ``--force-compile``
-	If you have changed the LAF resource, the workbench will detect it and recompile it.
-	The detection is based on the modified dates of the GrAF header file and the compiled files.
-	In cases where the workbench did not detect a change, but you need to recompile, use this flag.
-	In interactive mode, there is a command to force recompilation of the current source.
+    If you have changed the LAF resource, the workbench will detect it and recompile it.
+    The detection is based on the modified dates of the GrAF header file and the compiled files.
+    In cases where the workbench did not detect a change, but you need to recompile, use this flag.
+    In interactive mode, there is a command to force recompilation of the current source.
 
 Designed for Performance
-------------------------
+========================
 Since there is a generic LAF tool for smaller resources, this tool has been designed with performance in mind. 
-In fact, performance has been the most important design criterion of all
-In this section the decision and particulars are listed.
+In fact, performance has been the most important design criterion of all.
+In this section the design decisions and particulars are listed.
 There are also a few simplifications involved, see the section of GrAF :ref:`feature coverage` below.
 
 There are several ideas involved in compiling a LAF resource into something that is compact, fast loadable, and amenable to efficient computing.
 
-#. Replace everything by integers (nearly everything)
-#. Store relationships between integers in *arrays*, that is, Python arrays
+#. Replace everything by integers (nearly everything).
+#. Store relationships between integers in *arrays*, that is, Python arrays.
 #. Store relationships between integers and sets of integers also in *arrays*.
+#. Keep individual features separate.
 
 Explanation of these ideas
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 **Everything is integer**
 In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
 Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
-In the compiled version we get rid of all identifiers.
-Everything: regions, nodes, edges, features, feature names, feature values, annotation labels will end up in an array,
-and hence can be identified by its numerical index in that array.
-For the only things that are essentially not integers (feature names, feature values, annotation labels) we will create mapping tables.
+In the compiled version we get rid of all XML identifiers.
+Everything that comes in great quantities will be represented by integers: regions, nodes, edges, feature values.
+But feature names, annotation labels and annotation spaces will be kept as is.
+For feature values we will create mapping tables.
 
 **Relationships between integers as Python arrays**
 In Python, an array is a C-like structure of memory slots of fixed size.
@@ -216,8 +229,39 @@ A data record in the second array consists of a number giving the length of the 
 followed by that number of integers.
 The function :func:`arrayify() <graf.model.arrayify>` takes a list of items and turns it in a double array. 
 
+**Keep individual features separate**
+A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
+they occur in, since these annotations have a *label* and occur in an *annotation space*. 
+We let features inherit the label and the space of their annotations. Within space and label, features are distinguished by name.
+And the part of a feature that addresses edges is kept separate from the part that addresses nodes.
+
+So an individual feature is identified by *annotation space*, *annotation label*, *feature name*, and *kind* (node or edge).
+For example, in the WIVU data, we have the feature::
+
+    shebanq:ft.suffix (node)
+
+with annotation space ``shebanq``, annotation label ``ft``, feature name ``suffix``, and kind ``node``.
+The data of this feature is a mapping of that assigns a string value to each of more than 400,000 nodes. So this individual feature
+represents a significant chunk of data.
+
+In order to reduce this chunk, the string values are kept in a table of unique values, and the mapping from node to value yields
+the number of the value in the list of distinct values of that feature.
+
+So every feature needs as its data a lookup table and a translation table for its values, and when a feature is active, the inverse
+mapping is also needed.
+
+The individual features together take up the bulk of the space. In our example, they take 333 MB on disk, and the rest takes only 152 MB.
+Most tasks require only a limited set of individual features. So when we run tasks and switch between them, we want to swap feature data in
+and out. The design of the workbench is such that feature data is neatly chunked per individual feature.
+
+.. note::
+    Here is the reason that we do not have an overall table for feature values.
+    We miss some compression here, but with a global feature value mapping, we would burden every task with a significant
+    amount of memory. Moreover, when we are going to add the functionality of extra annotation packages, it would become 
+    a nightmare to maintain the values of features.
+
 Consequences
-^^^^^^^^^^^^
+------------
 The concrete XML identifiers present in the LAF resource are moved to the background. 
 Only if your tasks ask for them explicitly, they can be loaded.
 In that case you get mappings between the xml-identifiers and the internal integer codes
@@ -230,55 +274,54 @@ I did that in initial stages, producing identifiers ``n_1, n_2, e_1, e_2`` etcet
 There is nothing wrong with such identifiers, but do not expect to determine in your tasks whether
 something is a node or edge by looking at an identifier.
 
-.. note:: There are cases where a task really needs the original identifiers. 
-    Tasks that create new annotations for existing nodes or edges, need to know the xml-identifiers used in the source.
+.. note::
+    There are cases where a task really needs the original identifiers. 
+    Tasks that create new annotations for existing nodes or edges,
+    need to know the xml-identifiers used in the source.
 
 .. _feature coverage:
 
 GrAF feature coverage
----------------------
+=====================
 This tool cannot deal with LAF resources in their full generality.
 
 In LAF, annotations have labels, and annotations are organized in annotation spaces.
 So an annotation space and a label uniquely define a kind of annotation.
-The content of an annotation can be a feature structure.
-A feature structure is a set of features and sub features, ordered again as a graph.
-These are the main simplifications:
-	
-*annotation spaces*
-	The workbench ignores annotation spaces altogether.
-	So annotations are only grouped by annotation labels.
+In a previous version, this workbench ignored annotation spaces altogether.
+Now annotation spaces are fully functional.
 
 *feature structures*
-	This workbench can deal with feature structures that are merely sets of key-value pairs.
-	The graph-like model of features and subfeatures is not supported.
-
+    The content of an annotation can be a feature structure.
+    A feature structure is a set of features and sub features, ordered again as a graph.
+    This workbench can deal with feature structures that are merely sets of key-value pairs.
+    The graph-like model of features and subfeatures is not supported.
 *annotations*
-	Even annotations get lost. The workbench is primarily interested in features and values.
-	It forgets the annotations in which they have been packaged except for: 
-	* the annotation label,
-	* the target of the annotation (node or edge)
-	So in order to retrieve a feature value, one must specify
-	an annotation label, a feature name, and a node or edge
-	to which the annotation containing the feature had been attached.
-
+    Even annotations get lost. The workbench is primarily interested in features and values.
+    It forgets the annotations in which they have been packaged except for: 
+    * the annotation space,
+    * the annotation label,
+    * the target of the annotation (node or edge)
 *dependencies*
-	In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations.
-	The workbench assumes that all dependent files are present in the resource.
-	Hence the workbench reads all files mentioned in the GrAF header, in no particular order.
+    In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations.
+    The workbench assumes that all dependent files are present in the resource.
+    Hence the workbench reads all files mentioned in the GrAF header, in the order stated in the GrAF header file.
+    This should be an order in which regions appear before the nodes that link to them,
+    nodes before the edges that connect them, and nodes and edges before the annotations that target them.
 
 Development
------------
+===========
 
 API completion
-^^^^^^^^^^^^^^
+--------------
 Many reasonable candidates for an API have not yet been implemented. Basically we have only:
 
 *node iterator*
-	iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered)
-
+    iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered).
 *feature lookup*
-	a function that gives the value of a feature attached by some annotation to some edge or node
+    a class that gives easy access to feature data and has methods for feature value lookup and mapping of
+    feature values.
+*xml identifier mapping*
+    a mapping from orginal xml identifiers to integers.
 
 Now Python does not have strict encapsulation of data structures,
 so by just inspecting the classes and objects you can reach out

@@ -70,7 +70,7 @@
         
         
             <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF/GrAF and data analysis</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF Fabric</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
@@ -81,7 +81,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#what-is-this-workbench">What is this workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../workbench.html#designed-for-performance">Designed for Performance</a></li>
@@ -149,7 +150,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<div class="viewcode-block" id="Timestamp"><a class="viewcode-back" href="../../graf/graf.html#graf.timestamp.Timestamp">[docs]</a><span class="k">class</span> <span class="nc">Timestamp</span><span class="p">():</span>
+<div class="viewcode-block" id="Timestamp"><a class="viewcode-back" href="../../graf/graf.html#graf.timestamp.Timestamp">[docs]</a><span class="k">class</span> <span class="nc">Timestamp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Time management.</span>
 
 <span class="sd">    Objects remember their creation time. So they can issue statements about how much time has been elapsed.</span>
@@ -163,7 +164,8 @@
         <span class="sd">&#39;&#39;&#39;Upon creation, retrieves the time.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            log_file (file): open file handle for writing. Optional. If not ``None`` stores the handle in the object&#39;s data.</span>
+<span class="sd">            log_file (file):</span>
+<span class="sd">                open file handle for writing. Optional. If not ``None`` stores the handle in the object&#39;s data.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="sd">&#39;&#39;&#39;Instance member holding the time the object was created&#39;&#39;&#39;</span>
@@ -200,21 +202,37 @@
         <span class="sd">&#39;&#39;&#39;Connects a log file to the object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            log_file (file): open handle for writing.</span>
+<span class="sd">            log_file (file):</span>
+<span class="sd">                open handle for writing.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log_file</span>
 </div>
-<div class="viewcode-block" id="Timestamp.progress"><a class="viewcode-back" href="../../graf/graf.html#graf.timestamp.Timestamp.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp.disconnect_log"><a class="viewcode-back" href="../../graf/graf.html#graf.timestamp.Timestamp.disconnect_log">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Connects a log file to the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            log_file (file):</span>
+<span class="sd">                open handle for writing.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="Timestamp.progress"><a class="viewcode-back" href="../../graf/graf.html#graf.timestamp.Timestamp.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;API: issues a timed progress message.</span>
 
 <span class="sd">        The message is issued to the standard output, and, if a log file has been connected, also to the log file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            msg (str): text of the message</span>
-<span class="sd">            newline (bool): whether or not to add a newline. Optional. Make it ``False`` to not add a newline.</span>
+<span class="sd">            msg (str):</span>
+<span class="sd">                text of the message</span>
+<span class="sd">            newline (bool):</span>
+<span class="sd">                whether or not to add a newline. Optional. Make it ``False`` to not add a newline.</span>
+<span class="sd">            withtime (bool):</span>
+<span class="sd">                whether to precede the text with timing information (time elapsed since the last reset of the</span>
+<span class="sd">                underlying :class:`graf.timestamp.Stamp` object.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">timed_msg</span> <span class="o">=</span> <span class="s">&quot;{} {}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">(),</span> <span class="n">msg</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="k">if</span> <span class="n">newline</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">timed_msg</span> <span class="o">=</span> <span class="s">&quot;{:&gt;7}{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">()</span><span class="o">+</span><span class="s">&#39; &#39;</span> <span class="k">if</span> <span class="n">withtime</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="k">if</span> <span class="n">newline</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">timed_msg</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>

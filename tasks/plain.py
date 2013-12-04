@@ -8,13 +8,20 @@ load = {
         "edge": False,
     },
     "features": {
-        "node": "db:otype ft:text,suffix sft:book",
-        "edge": '',
-    }
+        "shebanq": {
+            "node": [
+                "db.otype",
+                "ft.text,suffix",
+                "sft.book",
+            ],
+            "edge": [
+            ],
+        },
+    },
 }
 
 def task(graftask):
-    (msg, Vi, Vr, NN, NNFV, FN, FE, XNi, XNr, XEi, XEr) = graftask.get_mappings()
+    (msg, NN, F, X) = graftask.get_mappings()
 
     prim = graftask.env['source'] != 'tiny'
     if prim:
@@ -24,17 +31,17 @@ def task(graftask):
 
     out = graftask.add_result("output.txt")
 
-    object_type = Vi["word"] if prim else Vi["book"]
+    object_type = F.shebanq_db_otype.i('word') if prim else F.shebanq_db_otype.i('book')
+
     n_nodes = 0
-    for i in NNFV("db.otype", object_type):
+    for i in NN(test=F.shebanq_db_otype.v, value=object_type):
         n_nodes += 1
         the_output = ''
         if prim:
-            the_text = Vr[FN(i, "ft.text")]
-            the_suffix = Vr[FN(i, "ft.suffix")]
+            the_text = F.shebanq_ft_text.vr(i)
+            the_suffix = F.shebanq_ft_suffix.vr(i)
             the_newline = "\n" if '׃' in the_suffix else ""
             the_output = the_text + the_suffix + the_newline
         else:
-            the_book = Vr[FN(i, "sft.book")]
-            the_output = the_book + " "
+            the_output = F.shebanq_sft_book.vr(i) + " "
         out.write(the_output)

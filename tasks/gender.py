@@ -8,13 +8,20 @@ load = {
         "edge": False,
     },
     "features": {
-        "node": "db:otype ft:gender sft:verse_label,chapter,book",
-        "edge": '',
-    }
+        "shebanq": {
+            "node": [
+                "db.otype",
+                "ft.gender",
+                "sft.chapter,book",
+            ],
+            "edge": [
+            ],
+        },
+    },
 }
 
 def task(graftask):
-    (msg, Vi, Vr, NN, NNFV, FN, FE, XNi, XNr, XEi, XEr) = graftask.get_mappings()
+    (msg, NN, F, X) = graftask.get_mappings()
 
     stats_file = graftask.add_result("stats.txt")
 
@@ -28,7 +35,7 @@ def task(graftask):
 
     cur_chapter = None
     for node in NN():
-        otype = Vr[FN(node, "db.otype")]
+        otype = F.shebanq_db_otype.vr(node)
         if not otype:
             continue
         ob = type_map[otype]
@@ -36,12 +43,12 @@ def task(graftask):
             continue
         if ob == "w":
             stats[0] += 1
-            if FN(node, "ft.gender") == Vi["masculine"]:
+            if F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("masculine"):
                 stats[1] += 1
-            elif FN(node, "ft.gender") == Vi["feminine"]:
+            elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("feminine"):
                 stats[2] += 1
         elif ob == "Ch":
-            this_chapter = "{} {}".format(Vr[FN(node, "sft.book")], Vr[FN(node, "sft.chapter")])
+            this_chapter = "{} {}".format(F.shebanq_sft_book.vr(node), F.shebanq_sft_chapter.vr(node))
             sys.stderr.write("\r{:<15}".format(this_chapter))
             if stats[0] == None:
                 stats_file.write("\t".join(('chapter', 'masc_f', 'fem_f', 'fem_masc_r')) + "\n")

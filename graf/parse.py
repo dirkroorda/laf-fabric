@@ -8,6 +8,8 @@ from xml.sax.handler import ContentHandler
 import array
 import collections
 
+aspace_not_given = "_original_"
+
 good_regions = 0
 linked_nodes = 0
 good_edges = 0
@@ -27,22 +29,28 @@ identifiers_n = {}
 identifiers_e = {}
 identifiers_a = {}
 
-id_feat_value = 0
 id_region = 0
 id_node = 0
 id_edge = 0
 id_annot = 0
 
-feat_value_list_int = {}
 region_begin = array.array('I')
 region_end = array.array('I')
 node_region_list = []
 edges_from = array.array('I')
 edges_to = array.array('I')
-feat_ref_node = collections.defaultdict(lambda:array.array('I'))
-feat_value_node = collections.defaultdict(lambda:array.array('I'))
-feat_ref_edge = collections.defaultdict(lambda:array.array('I'))
-feat_value_edge = collections.defaultdict(lambda:array.array('I'))
+feature = collections.defaultdict(
+    lambda: collections.defaultdict(
+    lambda: collections.defaultdict(
+    lambda: collections.defaultdict(
+    lambda: {}
+))))
+feature_val_int = collections.defaultdict(
+    lambda: collections.defaultdict(
+    lambda: collections.defaultdict(
+    lambda: collections.defaultdict(
+    lambda: {}
+))))
 
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
@@ -72,9 +80,11 @@ class AnnotationHandler(ContentHandler):
     '''Handlers used by SAX parsing the annotation files themselves
 
     We have to collect all elements *region*, *node* and subelement *link*, *edge*, *a* (annotation) and *f* (feature).
-    From these elements we retrieve identifiers and other attributes. we map all identifiers to integers. When we have to associate one piece of data to other pieces, we create arrays of those integers.
+    From these elements we retrieve identifiers and other attributes. we map all identifiers to integers.
+    When we have to associate one piece of data to other pieces, we create arrays of those integers.
 
-    The parse process is robust, we are not dependent on a particular ordering or distribution of the regions, nodes, edges, annotations and features in/over the annotation files.
+    The parse process is robust, we are not dependent on a particular ordering or distribution of the
+    regions, nodes, edges, annotations and features in/over the annotation files.
 
     Here is a description of the arrays we create:
 
@@ -87,37 +97,53 @@ class AnnotationHandler(ContentHandler):
 
     Here is a description of the dictionaries we create:
 
-    *feat_value_list_int*
-        Mapping from the string representations to the internal codes for feature values.
-
     There is also a list of arrays:
 
     *node_region_list*
         Element *i* of this list contains an array with the regions attached to node *i*.
 
     .. note::
-        We work with the *qualified* feature names, i.e. with the label of the annotation in which the feature occurs prepended to it (separated with a ``.``).
+        We work with annotation spaces and annotation labels and we distinguish between features in
+        annotations that are targeted at nodes or at edges.
         Features for nodes and features for edges occupy separate name spaces.
     '''
 
     file_name = None
     nid = None
     aid = None
-    alabel = None
-    atype = None
-    aref = None
-    node_link = None
     stamp = None
+
+    truth = {
+        'yes': True,
+        '1': True,
+        'on': True,
+        'true': True,
+    }
 
     def __init__(self, annotation_file, stamp):
         self.file_name = annotation_file
         self._tag_stack = []
         self.stamp = stamp
         self.aempty = None
+        self.aspace_default = aspace_not_given
+        self.aspace = None
+        self.alabel = None
+        self.atype = None
+        self.aref = None
+        self.node_link = None
 
     def startElement(self, name, attrs):
         self._tag_stack.append(name)
-        if name == "region":
+        if name == "annotationSpace":
+            if "as.id" in attrs:
+                self.aspace = attrs["as.id"]
+                if "default" in attrs:
+                    default = attrs["default"]
+                    if default.casefold() in self.truth:
+                        self.aspace_default = self.aspace
+            if self.aspace == None:
+                self.aspace = self.aspace_default
+        elif name == "region":
             global faulty_regions
             global good_regions
             global id_region
@@ -171,42 +197,42 @@ class AnnotationHandler(ContentHandler):
             identifiers_a[aid] = id_annot
             self.aid = aid
             self.aempty = True
-            label = attrs["label"]
+            if "as.id" in attrs:
+                self.aspace = attrs["as.id"]
+            else:
+                self.aspace = self.aspace_default
+            self.alabel = attrs["label"]
             node_or_edge = attrs["ref"]
-            if not label or not node_or_edge:
+            if not self.alabel or not node_or_edge:
                 faulty_annots += 1
-                msg = "ERROR: invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(label, node_or_edge, self.aid, self.file_name)
+                msg = "ERROR: invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(self.alabel, node_or_edge, self.aid, self.file_name)
                 self.stamp.progress(msg)
                 print(msg)
             else:
-                ref_id = None
-                ref_type = None
+                self.aref = None
+                self.atype = None
                 if node_or_edge in identifiers_n:
-                    ref_id = identifiers_n[node_or_edge]
-                    ref_type = True
+                    self.aref = identifiers_n[node_or_edge]
+                    self.atype = True
                 elif node_or_edge in identifiers_e:
-                    ref_id = identifiers_e[node_or_edge]
-                    ref_type = False
+                    self.aref = identifiers_e[node_or_edge]
+                    self.atype = False
                 else:
                     msg = "ERROR: invalid annotation target ref='{} (no node, no edge)' for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
                     self.stamp.progress(msg)
                     print(msg)
                 good_annots += 1
-                self.alabel = label
-                self.atype = ref_type
-                self.aref = ref_id
         elif name == "f":
             global faulty_feats
             self.aempty = False
-            name = attrs["name"]
-            if not name:
+            fname = attrs["name"]
+            if not fname:
                 faulty_feats += 1
-                msg = "ERROR: invalid feature spec name='{}' value='{}' for feature in annotation in file {}".format(name, value, self.aid, self.file_name)
+                msg = "ERROR: invalid feature spec name='{}' value='{}' for feature in annotation in file {}".format(fname, value, self.aid, self.file_name)
                 self.stamp.progress(msg)
                 print(msg)
-            name = '{}.{}'.format(self.alabel, attrs["name"])
             value = attrs["value"]
-            add_feature_instance(self.atype, name, self.aref, value)
+            self.add_feature_instance(fname, value)
 
     def endElement(self, name):
         if name == "node":
@@ -220,32 +246,25 @@ class AnnotationHandler(ContentHandler):
                 node_region_list.append(array.array('I',[identifiers_r[r] for r in self.node_link]))
         elif name == "a":
             if self.aempty:
-                name = self.alabel
+                fname = ''
                 value = 1
-                add_feature_instance(self.atype, name, self.aref, value)
+                self.add_feature_instance(fname, value)
 
         self._tag_stack.pop()
 
     def characters(self, ch):
         pass
 
-def add_feature_instance(atype, fname, aref, value):
-    global good_feats
-    global id_feat_value
-    this_fv_id = None
-    if value in feat_value_list_int:
-        this_fv_id = feat_value_list_int[value]
-    else:
-        id_feat_value += 1
-        feat_value_list_int[value] = id_feat_value
-        this_fv_id = id_feat_value
-    good_feats += 1
-    if atype:
-        feat_ref_node[fname].append(aref)
-        feat_value_node[fname].append(this_fv_id)
-    else:
-        feat_ref_edge[fname].append(aref)
-        feat_value_edge[fname].append(this_fv_id)
+    def add_feature_instance(self, fname, value):
+        global good_feats
+        this_fv_id = None
+        if value in feature_val_int[self.aspace][self.alabel][fname][self.atype]:
+            this_fv_id = feature_val_int[self.aspace][self.alabel][fname][self.atype][value]
+        else:
+            this_fv_id = len(feature_val_int[self.aspace][self.alabel][fname][self.atype])
+            feature_val_int[self.aspace][self.alabel][fname][self.atype][value] = this_fv_id
+        good_feats += 1
+        feature[self.aspace][self.alabel][fname][self.atype][self.aref] = this_fv_id
 
 def parse(graf_header_file, stamp):
     '''Parse a GrAF resource.
@@ -285,9 +304,6 @@ def parse(graf_header_file, stamp):
 {:>10} good   edges    and {:>5} faulty ones
 {:>10} good   annots   and {:>5} faulty ones
 {:>10} good   features and {:>5} faulty ones
-{:>10} distinct feature names for nodes
-{:>10} distinct feature names for edges
-{:>10} distinct feature values
 {:>10} distinct xml identifiers
 '''.format(
         good_regions, faulty_regions,
@@ -295,23 +311,18 @@ def parse(graf_header_file, stamp):
         good_edges, faulty_edges,
         good_annots, faulty_annots,
         good_feats, faulty_feats,  
-        len(feat_ref_node),
-        len(feat_ref_edge),
-        len(feat_value_list_int),
         id_region + id_node + id_edge + id_annot
     )
     stamp.progress(msg)
     return (
-        ("node_xid_int", identifiers_n, True),
-        ("edge_xid_int", identifiers_e, True),
-        ("feat_value_list_int", feat_value_list_int, True),
+        ("xid_int", {True: identifiers_n, False: identifiers_e}, True),
         ("region_begin", region_begin, True),
         ("region_end", region_end, True),
         ("node_region_list", node_region_list, False),
         ("edges_from", edges_from, True),
         ("edges_to", edges_to, True),
-        ("feat_ref", {'node': feat_ref_node, 'edge': feat_ref_edge}, True),
-        ("feat_value", {'node': feat_value_node, 'edge': feat_value_edge}, True),
+        ("feature", feature, True),
+        ("feature_val_int", feature_val_int, True),
     )
 
 

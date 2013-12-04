@@ -7,13 +7,20 @@ load = {
         "edge": False,
     },
     "features": {
-        "node": "db:otype,monads ft:text,suffix sft:book,chapter,verse",
-        "edge": '',
-    }
+        "shebanq": {
+            "node": [
+                "db.otype,monads",
+                "ft.text,suffix",
+                "sft.book,chapter,verse",
+            ],
+            "edge": [
+            ],
+        },
+    },
 }
 
 def task(graftask):
-    (msg, Vi, Vr, NN, NNFV, FN, FE, XNi, XNr, XEi, XEr) = graftask.get_mappings()
+    (msg, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 
@@ -23,30 +30,28 @@ def task(graftask):
     the_verse = None
     ontarget = True
     for i in NN():
-        this_type = FN(i, "db.otype")
-        if not this_type:
-            continue
-        if this_type == Vi["word"]:
+        this_type = F.shebanq_db_otype.v(i)
+        if this_type == F.shebanq_db_otype.i("word"):
             if ontarget:
-                the_monads = Vr[FN(i, "db.monads")]
-                the_text = Vr[FN(i, "ft.text")]
-                the_suffix = Vr[FN(i, "ft.suffix")]
+                the_monads = F.shebanq_db_monads.vr(i)
+                the_text = F.shebanq_ft_text.vr(i)
+                the_suffix = F.shebanq_ft_suffix.vr(i)
                 out.write(the_monads + "_" + the_text + the_suffix)
-        elif this_type == Vi["book"]:
-            the_book_id = FN(i, "sft.book")
-            ontarget = the_book_id == Vi["Isaiah"]
+        elif this_type == F.shebanq_db_otype.i("book"):
+            the_book_id = F.shebanq_sft_book.v(i)
+            ontarget = the_book_id == F.shebanq_sft_book.i("Isaiah")
             if ontarget:
-                the_book = Vr[FN(i, "sft.book")]
+                the_book = F.shebanq_sft_book.vr(i)
                 sys.stderr.write(the_book)
                 out.write("\n{}".format(the_book))
             else:
                 sys.stderr.write("*")
-        elif this_type == Vi["chapter"]:
+        elif this_type == F.shebanq_db_otype.i("chapter"):
             if ontarget:
-                the_chapter = Vr[FN(i, "sft.chapter")]
+                the_chapter = F.shebanq_sft_chapter.vr(i)
                 out.write("\n{} {}".format(the_book, the_chapter))
-        elif this_type == Vi["verse"]:
+        elif this_type == F.shebanq_db_otype.i("verse"):
             if ontarget:
-                the_verse = Vr[FN(i, "sft.verse")]
+                the_verse = F.shebanq_sft_verse.vr(i)
                 out.write("\n{}:{} ".format(the_chapter, the_verse))
     sys.stderr.write("\n")

@@ -131,7 +131,7 @@ class Shell(object):
 
         while True:
             self.prompt()
-            command = self.do_command("laf-fabric", "satcxq", '''
+            command = self.do_command("laf-fabric", "satcx", '''
     s=select source
     a=select annox
     t=select task

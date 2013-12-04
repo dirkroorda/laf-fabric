@@ -6,6 +6,8 @@ import codecs
 import collections
 
 import array
+import pickle
+
 
 from graf.timestamp import Timestamp
 
@@ -74,49 +76,121 @@ class Graf(object):
         self.stamp = Timestamp()
         '''Instance member holding the :class:`Timestamp <graf.timestamp.Timestamp>` object.'''
 
-        self.data_items_def = {
-            "node_xid_int": 0,
-            "edge_xid_int": 0,
-            "feat_value_list_int": 0,
-            "region_begin": 1,
-            "region_end": 1,
-            "node_region": 1,
-            "node_region_items": 1,
-            "node_sort": 1,
-            "node_out": 1,
-            "node_out_items": 1,
-            "node_in": 1,
-            "node_in_items": 1,
-            "edges_from": 1,
-            "edges_to": 1,
-            "feat_ref": 2,
-            "feat_value": 2,
-        }
+        self.data_items_def = collections.OrderedDict([
+            ("xid", ('x_mapping', 'xmlids')),
+            ("region_begin", ('array', 'common')),
+            ("region_end", ('array', 'common')),
+            ("node_region", ('double_array', 'common')),
+            ("node_sort", ('array', 'common')),
+            ("node_out", ('double_array', 'common')),
+            ("node_in", ('double_array', 'common')),
+            ("edges_from", ('array', 'common')),
+            ("edges_to", ('array', 'common')),
+            ("feature", ('feature_mapping', 'feature')),
+        ])
 
         self.data_items = {}
         '''Instance member holding the compiled data in the form of a dictionary of arrays and lists.
 
         See the :mod:`compiler <graf.compiler>` and :mod:`model <graf.model>` modules for the way the compiled data is organised.
         '''
-        self.node_feat = None
-        '''Feature data (for features on nodes) stored in dictionary for fast access'''
-        self.edge_feat = None
-        '''Feature data (for features on edges) stored in dictionary for fast access'''
+        self.given_features = {}
+        ''' Instance member holding the information about needed features, provided by the task at hand.
+        '''
+        self.clear_all()
 
-        self.init_data()
+    def adjust_all(self, directives):
+        self.read_stats()
+        for label in self.data_items_def:
+            self.adjust_data(label, directives)
 
-    def inv_label(self, label):
-        '''Given a label ending in ``_int``, returns the label with that ``_int`` replaced by ``_rep``.
+    def adjust_data(self, label, directives):
+        code = self.check_data(label)
+        if not code:
+            return
 
-        This will be the label of the inverse of the dictionary labeled by *label*.
-        ''' 
-        if not label.endswith('_int'):
-            return None
-        return label[0:len(label)-3] + "rep"
+        data_group = self.data_items_def[label][1]
+        if data_group == 'common':
+            self.clear_data(label)
+            self.load_data(label)
+            return
+        if data_group == 'xmlids':
+            self.given_xmlids = {}
+            for kind_rep in [k for k in directives['xmlids'] if directives['xmlids'][k]]:
+                kind = kind_rep == 'node'
+                self.given_xmlids[kind] = None
+            if code == 1:
+                self.clear_data(label)
+                self.load_data(label, xmlids=self.given_xmlids) 
+                return
+            if code == 2:
+                unload = []
+                load = []
+                for kind in (True, False):
+                    kind_rep = 'node' if kind else 'edge'
+                    if kind in self.given_xmlids:
+                        if self.is_loaded(label, xmlids=[kind]):
+                            self.progress("keeping {}: ({}) ...".format(label, kind_rep))
+                        else:
+                            load.append(kind)
+                    else:
+                        unload.append(kind)
+                self.clear_data(label, xmlids=unload)
+                self.load_data(label, xmlids=load) 
+                return
+        if data_group == 'feature':
+            self.given_features = {}
+            for aspace in directives['features']:
+                for kind_rep in directives['features'][aspace]:
+                    kind = kind_rep == 'node'
+                    for line in directives['features'][aspace][kind_rep]:
+                        (alabel, fnamestring) = line.split('.')
+                        fnames = fnamestring.split(',')
+                        for fname in fnames:
+                            self.given_features[(aspace, alabel, fname, kind)] = None
+            if code == 1:
+                self.clear_data(label)
+                self.load_data(label, features=self.given_features)
+                return
+            if code == 2:
+                unload = []
+                load = []
+                for aspace in self.data_items['feature']:
+                    for alabel in self.data_items['feature'][aspace]:
+                        for fname in self.data_items['feature'][aspace][alabel]:
+                            for kind in self.data_items['feature'][aspace][alabel][fname]:
+                                kind_rep = 'node' if kind else 'edge'
+                                if (aspace, alabel, fname, kind) not in self.given_features:
+                                    unload.append((aspace, alabel, fname, kind))
+                                else:
+                                    self.progress("keeping {}: {}:{}.{} ({}) ...".format(label, aspace, alabel, fname, kind_rep))
+                for feature in self.given_features:
+                    if not self.is_loaded(label, features=[feature]):
+                        load.append(feature)
+                self.clear_data(label, features=unload)
+                self.load_data(label, features=load) 
 
-    def init_data(self, feature=None, xmlids=None):
-        '''Resets all loaded data to initial values, or just the data of a single feature, or just the xmlids.
+    def check_data(self, label):
+        data_group = self.data_items_def[label][1]
+        if data_group == 'common':
+            if self.source_changed or self.source_changed == None:
+                return 1
+        if data_group == 'xmlids':
+            if self.source_changed or self.source_changed == None:
+                return 1
+            if self.task_changed or self.task_changed == None:
+                return 2
+        if data_group == 'feature':
+            if self.source_changed or self.source_changed == None:
+                return 1
+            if self.annox_changed or self.annox_changed == None:
+                return 1
+            if self.task_changed or self.task_changed == None:
+                return 2
+        return False
 
+    def is_loaded(self, label, xmlids=None, features=None):
+        '''
         Args:
             feature (str, int):
                 the kind (``node`` or ``edge``) and qualified name of a feature.
@@ -128,33 +202,273 @@ class Graf(object):
                 Optional. If given, only the xmlids data for the
                 nodes or edges as specified, will be reset.
 
-        If none of the optional features is present, all data will be reset.
-
-        This is needed when the task processor switches from one source to another,
-        or when a recompile has been performed.
+        If none of the optional features is present, all data for the specified label will be reset.
         '''
-        if feature == None and xmlids == None:
-            self.node_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-            self.edge_feat = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-            for label in self.data_items_def:
-                is_binary = self.data_items_def[label]
-                if not is_binary:
-                    self.data_items[label] = {}
-                    inv_label = self.inv_label(label)
-                    if inv_label:
-                        self.data_items[inv_label] = {}
-                elif is_binary == 1:
-                    self.data_items[label] = array.array('I')
-                elif is_binary == 2:
-                    self.data_items[label] = collections.defaultdict(lambda: collections.defaultdict(lambda:array.array('I')))
-        else:
-            if feature != None:
-                (kind, fname) = feature
-                for label in self.feat_labels:
-                    self.data_items[label][kind][fname] = array.array('I')
-            elif xmlids != None:
-                for dir in ('int', 'rep'):
-                    self.data_items["{}_xid_{}".format(xmlids, dir)] = {}
+        data_type = self.data_items_def[label][0]
+        result = True
+        if data_type == 'array' or data_type == 'double_array':
+            subs = ('',)
+            if data_type == 'double_array':
+                subs = ('', '_items')
+            for sub in subs:
+                lab = label + sub
+                result = result and lab in self.data_items
+        elif data_type =='x_mapping':
+            if xmlids != None:
+                subs = ('_int', '_rep')
+                for kind in xmlids:
+                    for sub in subs:
+                        lab = label + sub
+                        result = result and kind in self.data_items[lab]
+        elif data_type == 'feature_mapping':
+            if features != None:
+                subs = ('', '_val_int', '_val_rep')
+                for (aspace, alabel, fname, kind) in features:
+                    for sub in subs:
+                        lab = label + sub
+                        result = result and kind in self.data_items[lab][aspace][alabel][fname]
+        return result
+
+    def clear_all(self):
+        for label in self.data_items_def:
+            self.clear_data(label)
+
+    def clear_data(self, label, features=None, xmlids=None):
+        '''
+        Args:
+            feature (str, int):
+                the kind (``node`` or ``edge``) and qualified name of a feature.
+                Optional. If given, only the data for the
+                feature specified, will be reset.
+
+            xmlids (str):
+                the kind (``node`` or ``edge``).
+                Optional. If given, only the xmlids data for the
+                nodes or edges as specified, will be reset.
+
+        If none of the optional features is present, all data for the specified label will be reset.
+        '''
+        data_type = self.data_items_def[label][0]
+        if data_type == 'array' or data_type == 'double_array':
+            subs = ('',)
+            if data_type == 'double_array':
+                subs = ('', '_items')
+            if label in self.data_items:
+                self.progress("clearing {} ...".format(label))
+                for sub in subs:
+                    lab = label + sub
+                    del self.data_items[lab]
+
+        elif data_type =='x_mapping':
+            subs = ('_int', '_rep')
+            if xmlids != None:
+                for kind in xmlids:
+                    if kind in self.data_items[label+'_int']:
+                        kind_rep = 'node' if kind else 'edge'
+                        self.progress("clearing {}: ({}) ...".format(label, kind_rep))
+                        for sub in subs:
+                            lab = label + sub
+                            del self.data_items[lab][kind]
+            else:
+                if label+'_int' in self.data_items:
+                    self.progress("clearing all {} data ...".format(label))
+                    for sub in subs:
+                        lab = label + sub
+                        del self.data_items[lab]
+                for sub in ('_int', '_rep'):
+                    lab = label + sub
+                    self.data_items[lab] = collections.defaultdict(lambda: None)
+
+        elif data_type == 'feature_mapping':
+            subs = ('', '_val_int', '_val_rep')
+            if features != None:
+                for (aspace, alabel, fname, kind) in features:
+                    if kind in self.data_items[label][aspace][alabel][fname]:
+                        kind_rep = 'node' if kind else 'edge'
+                        self.progress("clearing {}: {}:{}.{} ({}) ...".format(label, aspace, alabel, fname, kind_rep))
+                        for sub in subs:
+                            lab = label + sub
+                            del self.data_items[lab][aspace][alabel][fname][kind]
+            else:
+                if label in self.data_items:
+                    self.progress("clearing all {} data ...".format(label))
+                    for sub in subs:
+                        lab = label + sub
+                        del self.data_items[lab]
+                for sub in subs:
+                    lab = label + sub
+                    self.data_items[lab] = collections.defaultdict(
+                        lambda: collections.defaultdict(
+                        lambda: collections.defaultdict(
+                        lambda: collections.defaultdict(
+                        lambda: None
+                    ))))
+
+    def load_data(self, label, features=None, xmlids=None):
+        '''
+        Args:
+            feature (str, int):
+                the kind (``node`` or ``edge``) and qualified name of a feature.
+                Optional. If given, only the data for the
+                feature specified, will be loaded.
+
+            xmlids (str):
+                the kind (``node`` or ``edge``).
+                Optional. If given, only the xmlids data for the
+                nodes or edges as specified, will be loaded.
+
+        If none of the optional features is present, all data for the specified label will be loaded.
+        '''
+        data_type = self.data_items_def[label][0]
+        if data_type == 'array' or data_type == 'double_array':
+            self.progress("loading {:<40}: ... ".format(label), newline=False)
+            subs = ('',)
+            if data_type == 'double_array':
+                subs = ('', '_items')
+            for sub in subs:
+                lab = label + sub
+                self.data_items[lab] = array.array('I')
+                b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+                b_handle = open(b_path, "rb")
+                self.data_items[lab].fromfile(b_handle, self.stats[lab])
+                b_handle.close()
+            if data_type == 'double_array':
+                self.progress("{:>10} records   with {:>10} items".format(len(self.data_items[label]), len(self.data_items[label+'_items'])), withtime=False)
+            else:
+                self.progress("{:>10} items".format(len(self.data_items[label])), withtime=False)
+        if data_type =='x_mapping':
+            if xmlids != None and len(xmlids):
+                for kind in xmlids:
+                    kind_rep = 'node' if kind else 'edge'
+                    self.progress("loading {:<40}: ... ".format("{} ({})".format(label, kind_rep)), newline=False)
+                    lab_int = label + '_int'
+                    lab_rep = label + '_rep'
+                    b_path = "{}/{}_{}.{}".format(self.env['bin_dir'], lab_int, kind_rep, self.BIN_EXT)
+                    b_handle = open(b_path, "rb")
+                    self.data_items[lab_int][kind] = collections.defaultdict(lambda: None, pickle.load(b_handle))
+                    b_handle.close()
+                    self.data_items[lab_rep][kind] = self.make_inverse(self.data_items[lab_int][kind])
+                    self.progress("{:>10} identifiers".format(len(self.data_items[lab_int][kind])), withtime=False)
+        elif data_type == 'feature_mapping':
+            if features != None and len(features):
+                for feature in features:
+                    (aspace, alabel, fname, kind) = feature
+                    kind_rep = 'node' if kind else 'edge'
+                    found = True
+                    self.progress("loading {:<40}: ... ".format("{} {}:{}.{} ({})".format(label, aspace, alabel, fname, kind_rep)), newline=False)
+                    absolute_feat_path = "{}/{}_{}_{}_{}_{}.{}".format(self.env['feat_dir'], label, aspace, alabel, fname, kind_rep, self.BIN_EXT)
+                    try:
+                        b_handle = open(absolute_feat_path, "rb")
+                        self.data_items[label][aspace][alabel][fname][kind] = pickle.load(b_handle)
+                        b_handle.close()
+                    except:
+                        found = False
+
+                    absolute_feat_path = "{}/{}_{}_{}_{}_{}.{}".format(self.env['feat_dir'], 'values', aspace, alabel, fname, kind_rep, self.BIN_EXT)
+                    lab_int = label + '_val_int'
+                    lab_rep = label + '_val_rep'
+                    try:
+                        b_handle = open(absolute_feat_path, "rb")
+                        self.data_items[lab_int][aspace][alabel][fname][kind] = pickle.load(b_handle)
+                        b_handle.close()
+                        self.data_items[lab_rep][aspace][alabel][fname][kind] = self.make_inverse(self.data_items[lab_int][aspace][alabel][fname][kind])
+                    except:
+                        found = False
+
+                    if not found: 
+                        self.progress("WARNING: feature {}:{}.{} ({}) not found in this source".format(aspace, alabel, fname, kind_rep))
+                    else:
+                        self.progress("{:>10} instances with {:>10} distinct values".format(len(self.data_items[label][aspace][alabel][fname][kind]), len(self.data_items[lab_int][aspace][alabel][fname][kind])), withtime=False)
+
+    def store_all(self):
+        for label in self.data_items_def:
+            self.store_data(label)
+
+    def store_data(self, label):
+        '''
+        '''
+        data_type = self.data_items_def[label][0]
+        if data_type == 'array' or data_type == 'double_array':
+            subs = ('',)
+            if data_type == 'double_array':
+                subs = ('', '_items')
+            for sub in subs:
+                lab = label + sub
+                b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+                b_handle = open(b_path, "wb")
+                self.data_items[lab].tofile(b_handle)
+                b_handle.close()
+        elif data_type =='x_mapping':
+            lab_int = label + '_int'
+            for kind in self.data_items[lab_int]:
+                kind_rep = 'node' if kind else 'edge'
+                b_path = "{}/{}_{}.{}".format(self.env['bin_dir'], lab_int, kind_rep, self.BIN_EXT)
+                b_handle = open(b_path, "wb")
+                pickle.dump(self.data_items[lab_int][kind], b_handle)
+                b_handle.close()
+        elif data_type == 'feature_mapping':
+            for aspace in self.data_items[label]:
+                for alabel in self.data_items[label][aspace]:
+                    for fname in self.data_items[label][aspace][alabel]:
+                        for kind in self.data_items[label][aspace][alabel][fname]:
+                            kind_rep = 'node' if kind else 'edge'
+                            absolute_feat_path = "{}/{}_{}_{}_{}_{}.{}".format(self.env['feat_dir'], label, aspace, alabel, fname, kind_rep, self.BIN_EXT)
+                            b_handle = open(absolute_feat_path, "wb")
+                            pickle.dump(self.data_items[label][aspace][alabel][fname][kind], b_handle)
+                            b_handle.close()
+
+                            lab_int = label + '_val_int'
+                            absolute_feat_path = "{}/{}_{}_{}_{}_{}.{}".format(self.env['feat_dir'], 'values', aspace, alabel, fname, kind_rep, self.BIN_EXT)
+                            b_handle = open(absolute_feat_path, "wb")
+                            pickle.dump(self.data_items[lab_int][aspace][alabel][fname][kind], b_handle)
+                            b_handle.close()
+
+    def make_inverse(self, mapping):
+        '''Creates the inverse lookup table for a data table
+
+        '''
+        return dict([(y,x) for (x,y) in mapping.items()])
+
+    def write_stats(self):
+        '''Write compilation statistics to file
+
+        The compile process generates some statistics that must be read by the task that loads the compiled data.
+        '''
+        handle = codecs.open(self.env['stat_file'], "w", encoding = 'utf-8')
+        for label in self.data_items_def:
+            data_type = self.data_items_def[label][0]
+            if data_type == 'array' or data_type == 'double_array':
+                subs = ('',)
+                if data_type == 'double_array':
+                    subs = ('', '_items')
+                for sub in subs:
+                    lab = label + sub
+                    handle.write("{}={}\n".format(lab, len(self.data_items[lab])))
+            if data_type =='x_mapping':
+                lab_int = label + '_int'
+                for kind in self.data_items[lab_int]:
+                    kind_rep = 'node' if kind else 'edge'
+                    handle.write("{}.{}={}\n".format(label, kind_rep, len(self.data_items[lab_int])))
+            elif data_type == 'feature_mapping':
+                for aspace in self.data_items[label]:
+                    for alabel in self.data_items[label][aspace]:
+                        for fname in self.data_items[label][aspace][alabel]:
+                            for kind in self.data_items[label][aspace][alabel][fname]:
+                                kind_rep = 'node' if kind else 'edge'
+                                handle.write("{}.{}.{}.{}.{}={}\n".format(label, aspace, alabel, fname, kind_rep, len(self.data_items[label][aspace][alabel][fname][kind])))
+        handle.close()
+
+    def read_stats(self):
+        '''Read compilation statistics from file
+
+        The compile process generates some statistics that must be read by the task that loads the compiled data.
+        '''
+        handle = codecs.open(self.env['stat_file'], "r", encoding = 'utf-8')
+        self.stats = {}
+        for line in handle:
+            (label, count) = line.rstrip("\n").split("=")
+            self.stats[label] = int(count)
+        handle.close()
 
     def set_environment(self, source, annox, task):
         '''Set the source and result locations for a task execution.
@@ -281,36 +595,7 @@ class Graf(object):
         except:
             pass
 
-    def progress(self, msg):
+    def progress(self, msg, newline=True, withtime=True):
         '''Convenience method to call the progress of the associated stamp directly from the Graf object'''
-        self.stamp.progress(msg)
-
-    def write_stats(self):
-        '''Write compilation statistics to file
-
-        The compile process generates some statistics that must be read by the task that loads the compiled data.
-        '''
-        stat = codecs.open(self.env['stat_file'], "w", encoding = 'utf-8')
-        for (label, is_binary) in self.data_items_def.items():
-            data = self.data_items[label]
-            if is_binary == 2:
-                for kind in data:
-                    for fname in data[kind]:
-                        stat.write("{}_{}_{}={}\n".format(label, kind, fname, len(data[kind][fname])))
-            else:
-                stat.write("{}={}\n".format(label, len(data)))
-
-        stat.close()
-
-    def read_stats(self):
-        '''Read compilation statistics from file
-
-        The compile process generates some statistics that must be read by the task that loads the compiled data.
-        '''
-        stat = codecs.open(self.env['stat_file'], "r", encoding = 'utf-8')
-        self.stats = {}
-        for line in stat:
-            (label, count) = line.rstrip("\n").split("=")
-            self.stats[label] = int(count)
-        stat.close()
+        self.stamp.progress(msg, newline, withtime)
 

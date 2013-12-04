@@ -71,7 +71,7 @@ class Timestamp():
 
         self.log = None
 
-    def progress(self, msg, newline=True):
+    def progress(self, msg, newline=True, withtime=True):
         '''API: issues a timed progress message.
 
         The message is issued to the standard output, and, if a log file has been connected, also to the log file.
@@ -83,7 +83,7 @@ class Timestamp():
             newline (bool):
                 whether or not to add a newline. Optional. Make it ``False`` to not add a newline.
         '''
-        timed_msg = "{} {}{}".format(self.elapsed(), msg, "\n" if newline else "")
+        timed_msg = "{:>7}{}{}".format(self.elapsed()+' ' if withtime else '', msg, "\n" if newline else "")
         sys.stdout.write(timed_msg)
         sys.stdout.flush()
         if self.log:

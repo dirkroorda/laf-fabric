@@ -3,7 +3,7 @@
 import sys
 import time
 
-class Timestamp():
+class Timestamp(object):
     '''Time management.
 
     Objects remember their creation time. So they can issue statements about how much time has been elapsed.
@@ -79,9 +79,11 @@ class Timestamp():
         Args:
             msg (str):
                 text of the message
-
             newline (bool):
                 whether or not to add a newline. Optional. Make it ``False`` to not add a newline.
+            withtime (bool):
+                whether to precede the text with timing information (time elapsed since the last reset of the
+                underlying :class:`graf.timestamp.Stamp` object.
         '''
         timed_msg = "{:>7}{}{}".format(self.elapsed()+' ' if withtime else '', msg, "\n" if newline else "")
         sys.stdout.write(timed_msg)

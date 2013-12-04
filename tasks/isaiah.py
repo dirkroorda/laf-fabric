@@ -20,6 +20,17 @@ load = {
 }
 
 def task(graftask):
+    '''Produces the text of thev book Isaiah, interspersed with word numbers
+    (*monad* numbers in WIVU speak).
+
+    This is a first, clumsy attempt to pave the way for ading new features.
+    In order to add new features, you have to indicate unambiguously to which
+    nodes the features apply. 
+    Here you can at least see the word numbers.
+
+    A better way is coming, where you can add features to all nodes, not just words nodes,
+    but also phrase, clause and sentence nodes.
+    '''
     (msg, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")

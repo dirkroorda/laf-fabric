@@ -20,7 +20,9 @@ class GrafCompiler(Graf):
     '''
 
     temp_data_items = {}
-    '''Holds some data delivered by the parsed that can be thrown away later. The data that we must keep is stored in the object, of course.'''
+    '''Holds some data delivered by the parsed that can be thrown away later.
+    The data that we must keep is stored in the object, of course.
+    '''
 
     def __init__(self, env):
         '''Upon creation, the relevant directories are communicated.
@@ -28,11 +30,14 @@ class GrafCompiler(Graf):
         The initialization of the base class is performed, and we change working directory to the location of the LAF source.
 
         Args:
-            env (str): path information
+            env (str):
+                path information
         '''
         Graf.__init__(self)
+
         self.env = env
         '''Instance member to hold config settings etc'''
+
         self.has_compiled = False
         '''Instance member to tell whether compilation has actually taken place'''
 
@@ -91,21 +96,10 @@ class GrafCompiler(Graf):
     def write_data(self):
         '''Writes compiled data to disk.
 
-        Compiled data has three possible types:
-        
-        *0: plain array*
-            can be written fast with the :py:meth:`array.tofile` method
-
-        *1: array valued dict*
-            a dictionary, keyed by a feature name and with arrays as values
-
-        *2: list of trings*
-            can be dumped with the :py:meth:`pickle.dump` method.
         '''
         self.progress("WRITING RESULT FILES")
         self.write_stats()
         self.store_all()
-
         self.progress("FINALIZATION")
 
         msg = subprocess.check_output("ls -lh {}".format(self.env['bin_dir']), shell=True)

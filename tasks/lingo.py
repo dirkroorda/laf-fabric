@@ -22,6 +22,21 @@ load = {
 }
 
 def task(graftask):
+    '''Crude visualization of the syntactic structure of the text.
+
+    Shows the linguistic objects in their actual embedding.
+    Replaces each word by a dot.
+
+    Verbs are represented with a spade sign (♠), nouns by (♂), (♀), (?) depending on their gender.
+
+    Words that happen to be outside any syntactic container are marked as (◘).
+
+    .. note::
+        The WIVU data does not have an explicit hierarchy, there is no defined tree structure.
+        Linguistic objects such as sentences, clauses and phrases may lay embedded in each other, but if a
+        sentence is co-extensial with a clause (having exactly the same *monads* or words), there is
+        nothing in the data that specifies that the clause is contained in the sentence.
+    '''
     (msg, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")

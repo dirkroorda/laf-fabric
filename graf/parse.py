@@ -79,12 +79,16 @@ class HeaderHandler(ContentHandler):
 class AnnotationHandler(ContentHandler):
     '''Handlers used by SAX parsing the annotation files themselves
 
-    We have to collect all elements *region*, *node* and subelement *link*, *edge*, *a* (annotation) and *f* (feature).
-    From these elements we retrieve identifiers and other attributes. we map all identifiers to integers.
+    We have to collect all elements *region*, *node* and subelement *link*, *edge*, *annotationSpace*, *a* (annotation) and *f* (feature).
+    From these elements we retrieve identifiers and other attributes.
+    We map all identifiers to integers.
     When we have to associate one piece of data to other pieces, we create arrays of those integers.
 
-    The parse process is robust, we are not dependent on a particular ordering or distribution of the
-    regions, nodes, edges, annotations and features in/over the annotation files.
+    .. note::
+        The parse process is presupposes that regions are encountered before nodes that link to them,
+        nodes before edges that connect them, nodes and edges before annotations that target them.
+        The creator of the LAF resource can organize the files that way. The parser reads the annotation file in the
+        order specified in the Graf header file.
 
     Here is a description of the arrays we create:
 
@@ -95,12 +99,21 @@ class AnnotationHandler(ContentHandler):
     *edges_from*, *edges_to*
         Every edge goes from one node to an other. *edges_from* contains the from node of edge *i* for each *i*, and *edges_end* the to node.
 
-    Here is a description of the dictionaries we create:
-
     There is also a list of arrays:
 
     *node_region_list*
         Element *i* of this list contains an array with the regions attached to node *i*.
+
+    And finally, two dictionaries:
+
+    *feature*
+        All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),
+        and finally reference (id of target node or edge).
+        The values are stored as integer. The mapping to the real value is stored separately.
+
+    *feature_val_int*
+        Mapping from real feature values to integer codes. Same values go to same codes, hence space is conserved.
+        These mappings are set up per individual feature.
 
     .. note::
         We work with annotation spaces and annotation labels and we distinguish between features in

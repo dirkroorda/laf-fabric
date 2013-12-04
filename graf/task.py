@@ -16,14 +16,19 @@ from graf.graf import Graf
 class GrafTask(Graf):
     '''Task processor.
 
-    A task processor must know how to compile, where the source data is and where the result is going to.
+    This class is responsible for running user tasks.
+    It will import a user task, read directives for data pre-loading, and it will generate an
+    API for the task, in the form of data structures for nodes and edges and 
+    objects that can do feature lookups.
+
+    A task processor must know where the source data is and where the result is going to.
     And it must be able to *import*: and :py:func:`imp.reload`: the tasks.
     To that end the search path for modules will be adapted according to the *task_dir* setting
     in the main configuration file.
     '''
 
     def __init__(self, settings):
-        '''Upon creation, the configuration settings are store in the object as is
+        '''Upon creation, the configuration settings are stored in the object as is.
 
         Args:
             settings (:py:class:`configparser.ConfigParser`):
@@ -124,11 +129,13 @@ class GrafTask(Graf):
         taskcommand(self) 
         self.finish_task()
 
-    def get_task_mtime(self, task):
-        task_dir = self.settings['locations']['task_dir']
-        return os.path.getmtime('{}/{}.py'.format(task_dir, task))
-
     def compile(self, force_compile):
+        '''Compile the LAF resource if needed or if forced.
+
+        Args:
+            force_compile (bool):
+                whether to force compiling even if the need for it has not been detected.
+        '''
         grafcompiler = GrafCompiler(self.env)
         grafcompiler.compiler(force=force_compile)
         grafcompiler.finish()
@@ -144,8 +151,7 @@ class GrafTask(Graf):
         Args:
             file_name (str):
                 name of the output file.
-
-            Its location is the result directory for this task and this source.
+                Its location is the result directory for this task and this source.
 
         Returns:
             A handle to the opened file.
@@ -160,7 +166,7 @@ class GrafTask(Graf):
     def init_task(self):
         '''Initializes the current task.
 
-        Very trivial initialization: just issue a progress message.
+        Provide a log file, reset the timer, and issue a progress message.
         '''
         self.add_logfile()
         self.stamp.reset()
@@ -191,11 +197,36 @@ class GrafTask(Graf):
         self.finish_logfile()
 
     def get_mappings(self):
-        '''Return references to API methods of this class.
+        '''Return references to API data structures and methods of this class.
 
-        The caller can give convenient, local names to these methods.
-        It also saves method lookup,
-        at least, I think so.
+        
+        This is what is returned (the names given are not necessarily the names by which they are used
+        in end user tasks. You can give convenient, local names to these methods, e.g::
+
+            (msg, NN, F, X) = graftask.get_mappings()
+
+        Using these names, here is the API specification:
+
+        msg(text, newline=True, withtime=True):
+            For delivering console output, such as progress messages.
+            See :meth:`progress <graf.timestamp.Timestamp.progress>`.
+
+        NN(test=function, value=something):
+            An iterator that delivers nodes in the canonical order described in :func:`model <graf.model.model>`.
+
+            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*
+            are passed through, all others are skipped.
+
+        F(:class:`Features`):
+            Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is
+            accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.
+            These feature objects in turn have methods to look features up and to translate between internal codes for the values
+            and the real values as encountered in the source. See :class:`Feature`.
+
+        X(:class:`XMLids`):
+            Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
+            has specified. ``X.node`` contains mappings for nodes, ``X.edge`` for edges. These objects in turn have methods to 
+            perform the mappings in individual cases. See :class:`XMLid`.
         ''' 
 
         def next_node(test=None, value=None):
@@ -315,8 +346,42 @@ class GrafTask(Graf):
                 break
         return found
 
+    def get_task_mtime(self, task):
+        '''Get the last modification date of the file that contains the task code
+        '''
+        task_dir = self.settings['locations']['task_dir']
+        return os.path.getmtime('{}/{}.py'.format(task_dir, task))
+
+
 class Feature(object):
+    '''This class is responsible for making the information in a single feature accessible to 
+    tasks.
+
+    It has a reference to the underlying information of the feature, it stores its *kind*
+    (node or edge) in two ways, as strings (``node`` or ``edge``) or as booleans (``True``, ``False``).
+
+    It also gives a feature a fully qualified name that can act as an identifier.
+    In fact, these names will be used as member names of the :class:`Features` class, when its objects
+    store sets of features. 
+
+    Feature lookups deliver integer codes for values. There are methods to get the real values back.
+
+    .. note::
+        There is no global mapping of all feature values to integers and back.
+        Mappings are strictly per individual feature.
+        In this way we miss some data compression, but we keep the feature information better separable,
+        which is relevant because we only want to load features when a task asks for it.
+    '''
     def __init__(self, graftask, aspace, alabel, fname, kind):
+        '''Upon creation, makes references to the feature data corresponding to the feature specified.
+
+        Args:
+            graftask(:class:`GrafTask <graf.task.GrafTask>`):
+                The task executing object that has all the data.
+            aspace, alabel, fname, kind:
+                The annotation space, annotation label, feature name, feature kind (node or edge)
+                that together identify a single feature.
+        '''
         kind_rep = 'node' if kind else 'edge'
         self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind_rep)
         self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind else '_e')
@@ -326,38 +391,127 @@ class Feature(object):
         self.rep = graftask.data_items['feature_val_rep'][aspace][alabel][fname][kind]
 
     def v(self, ne):
+        '''Look the feature value up for a node or edge.
+
+        Args:
+            ne (int):
+                node or edge, identified by an integer.
+
+        Returns:
+            the value of this feature for that node or edge, represented as integer.
+        '''
         return self.lookup[ne]
 
     def vr(self, ne):
+        '''Look the feature *real* value up for a node or edge.
+
+        Args:
+            ne (int):
+                node or edge, identified by an integer.
+
+        Returns:
+            the value of this feature for that node or edge, represented as its real value in the LAF source.
+        '''
         return self.rep[self.lookup[ne]]
 
-    def r(self, ne):
-        return self.rep[ne]
+    def r(self, value_int):
+        '''Get the real value corresponding to an integer.
 
-    def i(self, ne):
-        return self.code[ne]
+        Args:
+            value_int (int):
+                an integer code for a value of this feature
+
+        Returns:
+            the real value that the integer stands for according to the
+            table of values of this individual feature.
+        '''
+        return self.rep[value_int]
+
+    def i(self, value_rep):
+        '''Get the integer code corresponding to an real feature value.
+
+        Args:
+            value_rep (str):
+                an value string for this feature
+
+        Returns:
+            the integer code that assigned to it according to the
+            table of values of this individual feature.
+        '''
+        return self.code[value_rep]
 
 class Features(object):
+    '''This class is responsible for holding a bunch of features and makes them 
+    accessible by member names.
+    '''
     def __init__(self, feature_objects):
+        '''Upon creation, a set of features is taken in,
+        their *local_name* members are used to create
+        member names in this class.
+
+        Args:
+            feature_objects (iterable of :class:`Feature`)
+        '''
         for fo in feature_objects:
             exec("self.{} = fo".format(fo.local_name))
 
 class XMLid(object):
+    '''This class is responsible for making the original XML identifiers available
+    to tasks.
+
+    It has a reference to the relevant tables organized by *kind*
+    (node or edge). There are methods to map and inverse map.
+    '''
     def __init__(self, graftask, kind):
+        '''Upon creation, makes a reference to the XMLid data corresponding to the kind specified.
+
+        Args:
+            graftask(:class:`GrafTask <graf.task.GrafTask>`):
+                The task executing object that has all the data.
+            kind:
+                The kind (node or edge)
+                for which to make available the identifiers.
+        '''
         kind_rep = 'node' if kind else 'edge'
         self.local_name = kind_rep
         self.kind = kind
         self.code = graftask.data_items['xid_int'][kind]
         self.rep = graftask.data_items['xid_rep'][kind]
 
-    def r(self, ne):
-        return self.rep[ne]
+    def r(self, int_code):
+        '''Get the XML identifier corresponding to an integer.
 
-    def i(self, ne):
-        return self.code[ne]
+        Args:
+            int_code (int):
+                an integer code for an XML identifier in the LAF source
+
+        Returns:
+            the XML identifier that the integer stands for
+        '''
+        return self.rep[int_code]
+
+    def i(self, xml_id):
+        '''Get the integer code of an XML identifier.
+
+        Args:
+            xml_id (int):
+                an XML identifier in the LAF source
+
+        Returns:
+            the integer code of the XML identifier
+        '''
+        return self.code[xml_id]
 
 class XMLids(object):
+    '''This class is responsible for holding a bunch of XML mappings (node and or edge) and makes them 
+    accessible by member names.
+    '''
     def __init__(self, xmlid_objects):
+        '''Upon creation, a set of xmlid objects (node and or edge) is taken in,
+
+        Args:
+            xmlid_objects (iterable of :class:`XMLid`)
+        '''
         for xo in xmlid_objects:
             exec("self.{} = xo".format(xo.local_name))
 

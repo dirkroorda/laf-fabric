@@ -46,12 +46,33 @@ def model(data_items, temp_data_items, stamp):
 
         temp_data_items:
             data structures coming from :mod:`parse <graf.parse>` that may be thrown away
-            stamp (:class:`Timestamp <graf.Timestamp>`): object for issuing progress messages
+
+        stamp (:class:`Timestamp <graf.timestamp.Timestamp>`):
+            object for issuing progress messages
 
     Returns:
         The resulting permanent remodelled data structures.
 
-    Function
+    The transformations are:
+
+    Nodes and regions:
+        The list linking regions to nodes is transformed into a double array.
+
+    Nodes and anchors:
+        As a preparation to sorting, the minimal and maximal anchors of each node
+        are determined. Nodes may be linked to many regions.
+
+    Node sorting:
+        Create a list of nodes in a sort order derived from their linking to regions,
+        and the ordered nature of the primary data. 
+
+        *node1* comes before *node2* if *node1* starts before *node2*.
+        If *node1* and *node2* start at the same point, the object that ends last comes first.
+        Otherwise objects count as equal in position.
+        If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.
+
+    Nodes and edges:
+        Collect the outgoing and incoming edges for each node in a pair of double arrays.
 
     '''
     result_items = []
@@ -101,12 +122,7 @@ def model(data_items, temp_data_items, stamp):
     stamp.progress("NODES SORTING BY REGIONS")
 
     def interval(ob):
-        ''' Key function used when sorting objects according to embedding and left right
-        Object1 comes before Object2 if Object 1 starts before Object 2.
-        Object1 comes after Object2 if Object 1 starts after Object 2.
-        If Object1 and Object2 start at the same monad, the object that ends last comes first.
-        Otherwise objects count as equal.
-        If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.
+        ''' Key function used when sorting objects according to embedding and left right.
 
         Args:
             iv (int, int):

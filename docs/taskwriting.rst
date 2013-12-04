@@ -1,8 +1,8 @@
 Writing Tasks
-=============
+#############
 
 What is a task?
----------------
+===============
 
 A task is an ordinary Python script with some magical capabilities
 for looking into a LAF resource (a *compiled* LAF resource to be precise).
@@ -15,13 +15,15 @@ The workbench passes an object to your task,
 which contains the information needed to peek into the LAF resource.
 Conversely, in your task script you can pass some initialization information to the workbench,
 so that it can build or load the appropriate feature data. 
+And you can ask the workbench for convenient names by which you can use the feature
+data that is present in the LAF resource.
 
 Apart from these things, your script may contain arbitrary Python code,
 it may import arbitrary modules.
-The workbench is agnostic of your code.
+The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.
 
 A leading example
------------------
+=================
 Our target LAF resource is the Hebrew text data base (see :ref:`data`).
 In the text database there are objects carrying features.
 The conversion to LAF has translated objects in to nodes, and relationships between objects into edges.
@@ -42,25 +44,25 @@ In the original LAF it looks like this::
     </fs></a>
 
 More on features
-----------------
+================
 When the workbench compiles features into binary data, it forgets the annotations in which the features come,
-but the annotation *label* is retained as a prefix to the feature name.
+but the annotation *space* and *label* are retained in a double prefix to the feature name.
 In the example above, you see an annotation with label ``db`` and in it a feature structure
 with features named ``otype``, ``oid``, etc.
-The workbench remembers those features by their *fully qualified* names: ``db.otype``, ``db.oid`` etc.
+The annotation is in the default *annotation space*, which happens to be ``shebanq``.
+The workbench remembers those features by their *fully qualified* names: ``shebanq:db.otype``, ``shebanq:db.oid`` etc.
 There may also be annotations without feature contents. Such annotations will be stored as features with as name the 
-annotation label only, without the dot: ``db``.
+annotation label only, without the dot: ``shebanq:db``.
 
 .. note::
-	Annotations may reference nodes or edges.
-	It is possible that nodes and edges have features with the same name. 
-	However, the workbench maintains a strict distinction between features
-	of nodes and features of edges. They have separate name spaces, implicitly.
-	The API has different methods to the address the features of nodes and edges.
-	And features names that are used for nodes and edges may coexist, but their
-	internal representations are separate tables.
+    Annotations may reference nodes or edges.
+    It is possible that nodes and edges have features with the same name. 
+    However, the workbench maintains a strict distinction between features
+    of nodes and features of edges. They have separate name spaces, implicitly.
+    Features names that are used for nodes and edges may coexist, but their
+    data are in separate tables.
 
-The example task *object.py* lists all objects in "resource order" with their original ids,
+The example task :mod:`objects` lists all objects in *resource order* with their original ids,
 object types etc and even their node number in the compiled resource.
 Not very useful, but handy for debugging or linking new annotation files to the existing data.
 Here is a snippet of output::
@@ -82,47 +84,63 @@ Here is a snippet of output::
 Note the same clause object *28737* as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output::
 
-	features = {
-		"node": "db:oid,otype,monads",
-		"edge": '',
-	}
+    load = {
+        "xmlids": {
+            "node": False,
+            "edge": False,
+        },
+        "features": {
+            "shebanq": {
+                "node": [
+                    "db.oid,otype,monads",
+                ],
+                "edge": [
+                ],
+            },
+        },
+    }
 
-	def task(graftask):
-		(msg, NNi, NNr, NEi, NEr, Vi, Vr, NN, NNFV, FNi, FNr, FEi, FEr) = graftask.get_mappings()
+    def task(graftask):
+        (msg, NN, F, X) = graftask.get_mappings()
 
-		out = graftask.add_result("output.txt")
+        out = graftask.add_result("output.txt")
 
-		for i in NN():
-			oid = FNr(i, NNi["db.oid"])
-			otype = FNr(i, NNi["db.otype"])
-			monads = FNr(i, NNi["db.monads"])
-			out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))
-
+        for i in NN():
+            oid = F.shebanq_db_oid.vr(i)
+            otype = F.shebanq_db_otype.vr(i)
+            monads = F.shebanq_db_monads.vr(i)
+            out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))
 
 Information flow from task to workbench
----------------------------------------
-The main thing the workbench needs to know about the task are directives for its processing.
-The task needs to be told for which features data should be loaded.
-This must be specified separately for features that occur on nodes and that occur on edges.
+=======================================
+The main thing the workbench needs to know about your task is a declaration of
+what data the task will use.
+The task needs to tell which feature data should be loaded and whether XML identifier tables
+should be loaded.
+Both must be specified separately for nodes and edges.
 
-The feature specification takes the form of a space separated string of items of the form::
+The feature specification takes the form a dictionary, keyed by annotation spaces first
+and then by kind (node or edge). Under those keys the declaration proceeds
+with a list of lines specifying bunches of features as follows::
 
-    «annotation label»:«unqualified feature names»
+    «annotation label».«feature names»
 
-where ``«unqualified feature names»`` is a comma separated list of feature names without annotation labels.
-For all implied features ``«annotion label»:«feature name»`` data will be loaded.
+where ``«feature names»`` is a comma separated list of feature names without annotation labels.
+For all implied features ``«annotation space»:«annotion label».«feature name»`` of the chosen kind (node or edge),
+data will be loaded.
 For all other features data will be unloaded, if still loaded.
 
 .. caution:: Missing feature data.
 
-    If you forget to mention a feature in the directives,
-	the workbench will deliver the value ``None``,
-	even if the compiled LAF has a real value there.
-    The reason for this behaviour is that it is to costly
-	to let every feature lookup check whether its data has been loaded.
+    If you forget to mention a feature in the load declaration and you
+    do use it in your task,
+    the workbench will stop your task and shout error messages at you.
+    If you declare features that do not exist in the LAF data, you just get
+    a warning. But if you try to use such features, you get also an error
+    in that case.
 
 Information flow from workbench to task
----------------------------------------
+=======================================
 The workbench will call the function *task(object)* in your task script,
 and the thing that is passed to it as *object* is an object of
 class :class:`GrafTask <graf.task.GrafTask>`.
@@ -138,36 +156,44 @@ and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.
 
-*FN()* and *FE*
-    Feature lookup.
-	*FN* works on nodes, *FE* on edges.
-	Given a node or edge respectively, they need an a qualified feature name
-	to return the value that the feature carries on that node or edge.
+*F*
+    All that you want to know about features and are not afraid to ask.
+    It is an object, and for each feature that you have declared, it has a member
+    with a handy name. For example, ``F.shebanq_db_otype`` is a feature object
+    that corresponds with the LAF feature given in an annotation in the annotation space ``shebanq``,
+    with label ``db`` and name ``otype``. It is a node feature, because otherwise the name had a 
+    ``_e`` appended to it. You can look up a feature value of this feature, say for node ``n``,by saying:
+    ``F.shebanq_db_otype.v(n)``. This will give you only a number, the code for the value. If you wanted the real value,
+    you had to say ``F.shebanq_db_otype.vr(n)``. If you want to convert between codes and real values for this feature,
+    you can do so by ``F.shebanq_db_otype.i(«real value»)`` and ``F.shebanq_db_otype.r(«number»)``
 
-*Vi* and *Vr*
-    Same pattern as above, but now for feature values.
+*NN(test=function value=something)*
+    If you want to walk through all the nodes, possibly skipping some, then this is your method.
+    It is an *iterator* that yields a new node everytime it is called.
+    The order is so-called *primary data order*, which will be explained below.
+    The ``test`` and ``value`` arguments are optional. If given, ``test`` should be a *callable* with one argument,
+    returning a string, and ``value`` a string.
+    ``test`` will be called for each passing node, and if the value returned is not equal to the given value, the node
+    will be skipped.
+    See :meth:`next_node() <graf.task.GrafTask.get_mappings>`.
 
-*NN()* and *NNFV()*
-	*iterators* that yield a new node everytime they are called.
-	They yield the nodes in so-called *primary data order*, which will be explained below.
-	The difference between *NN()* and *NNFV()* is
-	that *NN()* iterates over absolutely all nodes,
-	and *NNFV()* only yields node that have a certain value for a certain feature.
-	See :class:`GrafTask <graf.task>`,
-	methods :meth:`nextnode() <graf.task.GrafTask.next_node>`
-	and :meth:`next_node_with_fval() <graf.task.GrafTask.next_node_with_fval>`.
+*X*
+    If you need to convert the integers that identify nodes and edges in the compiled data back to
+    their original XML identifiers, you can do that with the *X* object.
+    It has two members, ``X.node`` and ``X.edge``, which contain the separate mapping tables for
+    nodes and edges. Both have two methods, corresponding to the direction of the translation:
+    with ``X.node.i(«xml id»)`` you get the corresponding number of a node, and with ``X.node.r(«number»)``
+    you get the original XML id by which the node was identified in the LAF resource.
 
-*XNi*, *XEi* and *XNr*, *XEr*
-    Tables to convert between original xml-ids in the original LAF resource and the
-    integers they have been mapped unto by the compilation.
-    *XNi* and *XEi* yield integers codes from string representations of xml-ids of nodes or edges respectively,
-    *XNr* and *XEi* yield string representations of xml-ids from integer codes of nodes or edges respectively,
+msg(text, newline=True, withtime=True)
+    Use this to write a message with time information to the terminal and log file.
+    Normally it appends a newline to the text, but you can suppress it.
+    You can also suppress the time indication before the text.
 
 Output
-------
+======
 You can create an output filehandle, open for writing, by calling the
 method :meth:`add_result() <graf.task.GrafTask.add_result>`
-of the :class:`GrafTask <graf.task>` class
 and assigning the result to a variable, say *out*.
 From then on you can write output simply by saying::
 
@@ -179,7 +205,7 @@ Once your task has finished, the workbench will close them all.
 .. _node-order:
 
 Node order
-----------
+==========
 There is an implicit partial order on nodes, derived from their attachment to *regions*
 which are stretches of primary data, and the primary data is totally ordered.
 The order we use in the workbench is defined as follows.

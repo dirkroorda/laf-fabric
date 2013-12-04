@@ -14,8 +14,12 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
 ]
 
+intersphinx_mapping = {'python': ('http://docs.python.org/3.3', None)}
+
+nitpicky = True
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'

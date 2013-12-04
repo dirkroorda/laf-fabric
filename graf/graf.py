@@ -216,7 +216,7 @@ class Graf(object):
             directives (dict):
                 passed directly from :meth:`adjust_all`.
 
-        It calls :meth:`check_data`` to see whether there is a change affecting the data under this ``label``.
+        It calls :meth:`check_data` to see whether there is a change affecting the data under this ``label``.
         The answer might be: no (0), or yes absolutely (1) or partly (2), depending on the *directives*.
 
         Clearance of data is deferred to :meth:`clear_data`, loading to :meth:`load_data`.
@@ -598,7 +598,7 @@ class Graf(object):
         '''Read compilation statistics from file
 
         The compile process generates some statistics that must be read by the task that loads the compiled data.
-        In order to read an ``array`` by means of its :py:meth:`fromfile <array.array.fromfile>` method,
+        In order to read an :py:mod:`array` by means of its :py:meth:`array.array.fromfile` method,
         we need to know the length of it on beforehand.
         
         And later, when we want to load new feature data on top of the existing data, we need to know
@@ -719,7 +719,7 @@ class Graf(object):
     def finish_logfile(self):
         '''Explicitly close log file.
 
-        Do not rely on the :meth:`__del__` and hence on garbage collection.
+        Do not rely on the ``__del__`` method and hence on garbage collection.
         The program might terminate without writing the last bits to file.
         '''
         try:

@@ -19,14 +19,13 @@ extensions = [
 
 intersphinx_mapping = {'python': ('http://docs.python.org/3.3', None)}
 
-nitpicky = True
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 project = u'LAF Fabric'
 copyright = u'2013, Dirk Roorda'
-version = '1.0'
-release = '1.0.1'
+version = '1.1'
+release = '1.1.0'
 exclude_patterns = ['_build']
 add_function_parentheses = True
 add_module_names = False

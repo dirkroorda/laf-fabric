@@ -5,9 +5,6 @@ import os.path
 import subprocess
 import codecs
 
-import pickle
-import array
-
 from graf.graf import Graf
 from graf.parse import parse as xmlparse
 from graf.model import model as remodel
@@ -39,6 +36,8 @@ class GrafCompiler(Graf):
         self.has_compiled = False
         '''Instance member to tell whether compilation has actually taken place'''
 
+        self.cur_dir = os.getcwd()
+
         try:
             os.chdir(self.env['data_dir'])
         except os.error:
@@ -57,6 +56,9 @@ class GrafCompiler(Graf):
 
     def __del__(self):
         Graf.__del__(self)
+
+    def finish(self):
+        os.chdir(self.cur_dir)
         
     def parse(self):
         '''Call the XML parser and collect the parse results.
@@ -81,9 +83,7 @@ class GrafCompiler(Graf):
         '''
         self.progress("MODELING RESULT FILES")
         data_items = {}
-        for (label, is_binary) in self.data_items_def.items():
-            data_items[label] = self.data_items[label]
-        modeled_data_items = remodel(data_items, self.temp_data_items, self.stamp)
+        modeled_data_items = remodel(self.data_items, self.temp_data_items, self.stamp)
         for modeled_data_item in modeled_data_items:
             (label, data) = modeled_data_item
             self.data_items[label] = data
@@ -104,27 +104,7 @@ class GrafCompiler(Graf):
         '''
         self.progress("WRITING RESULT FILES")
         self.write_stats()
-
-        for (label, is_binary) in sorted(self.data_items_def.items()):
-            data = self.data_items[label]
-            self.progress("writing {} ... ".format(label))
-            if not is_binary:
-                absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
-                r_handle = open(absolute_path, "wb")
-                pickle.dump(data, r_handle, 2)
-                r_handle.close()
-            elif is_binary == 1:
-                absolute_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
-                r_handle = open(absolute_path, "wb")
-                data.tofile(r_handle)
-                r_handle.close()
-            elif is_binary == 2:
-                for kind in data:
-                    for fname in data[kind]:
-                        absolute_feat_path = "{}/{}_{}_{}.{}".format(self.env['feat_dir'], label, kind, fname, self.BIN_EXT)
-                        r_handle = open(absolute_feat_path, "wb")
-                        data[kind][fname].tofile(r_handle)
-                        r_handle.close()
+        self.store_all()
 
         self.progress("FINALIZATION")
 

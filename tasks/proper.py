@@ -8,9 +8,16 @@ load = {
         "edge": False,
     },
     "features": {
-        "node": "db:otype,monads,maxmonad,minmonad ft:noun_type,gender,part_of_speech sft:verse_label,chapter,book",
-        "edge": '',
-    }
+        "shebanq": {
+            "node": [
+                "db.otype,monads,maxmonad,minmonad",
+                "ft.noun_type,gender,part_of_speech",
+                "sft.verse_label,chapter,book",
+            ],
+            "edge": [
+            ],
+        },
+    },
 }
 
 def task(graftask):
@@ -34,7 +41,7 @@ def task(graftask):
     Returns:
         stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns
     '''
-    (msg, Vi, Vr, NN, NNFV, FN, FE, XNi, XNr, XEi, XEr) = graftask.get_mappings()
+    (msg, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
     stats_v_raw = graftask.add_result("stats_v_raw.txt")
@@ -66,24 +73,24 @@ def task(graftask):
                 outchar = "─"
                 stats_v[0] += 1
                 stats_c[0] += 1
-                p_o_s = FN(node, "ft.part_of_speech")
-                if p_o_s == Vi["noun"]:
-                    if FN(node, "ft.noun_type") == Vi["proper"]:
+                p_o_s = F.shebanq_ft_part_of_speech.v(node)
+                if p_o_s == F.shebanq_ft_part_of_speech.i("noun"):
+                    if F.shebanq_ft_noun_type.v(node) == F.shebanq_ft_noun_type.i("proper"):
                         stats_v[2] += 1
                         stats_c[2] += 1
-                        if FN(node, "ft.gender") == Vi["masculine"]:
+                        if F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("masculine"):
                             outchar = "♂"
                             stats_v[3] += 1
                             stats_c[3] += 1
-                        elif FN(node, "ft.gender") == Vi["feminine"]:
+                        elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("feminine"):
                             outchar = "♀"
                             stats_v[4] += 1
                             stats_c[4] += 1
-                        elif FN(node, "ft.gender") == Vi["unknown"]:
+                        elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("unknown"):
                             outchar = "⊙"
                             stats_v[5] += 1
                             stats_c[5] += 1
-                elif p_o_s == Vi["verb"]:
+                elif p_o_s == F.shebanq_ft_part_of_speech.i("verb"):
                     outchar = "♠"
                     stats_v[1] += 1
                     stats_c[1] += 1
@@ -101,7 +108,7 @@ def task(graftask):
                             out.write("{}»".format(o))
                 del watch[monads]
         elif ob == "Ch":
-            this_chapter_label = "{} {}".format(Vr[FN(node, "sft.book")], Vr[FN(node, "sft.chapter")])
+            this_chapter_label = "{} {}".format(F.shebanq_sft_book.vr(node), F.shebanq_sft_chapter.vr(node))
             if stats_c[0] == None:
                 stats_c_compact.write("\t".join(('chapter', 'word', 'verb_f', 'proper_f')) + "\n")
             else:
@@ -111,7 +118,7 @@ def task(graftask):
                 stats_c[i] = 0
             stats_c_compact.write(this_chapter_label + "\t")
         elif ob == "V":
-            this_verse_label = Vr[FN(node, "sft.verse_label")].strip(" ")
+            this_verse_label = F.shebanq_sft_verse_label.vr(node).strip(" ")
             sys.stderr.write("\r{:<11}".format(this_verse_label))
             if stats_v[0] == None:
                 stats_v_raw.write("\t".join(('verse', 'word', 'verb', 'proper', 'masc', 'fem', 'unknown')) + "\n")
@@ -143,16 +150,14 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = Vr[FN(i, "db.otype")]
-        if not otype:
-            continue
+        otype = F.shebanq_db_otype.vr(i)
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = Vr[FN(i, "db.monads")]
-        minm = Vr[FN(i, "db.minmonad")]
-        maxm = Vr[FN(i, "db.maxmonad")]
+        monads = F.shebanq_db_monads.vr(i)
+        minm = F.shebanq_db_minmonad.vr(i)
+        maxm = F.shebanq_db_maxmonad.vr(i)
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

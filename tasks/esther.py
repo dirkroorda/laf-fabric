@@ -8,8 +8,15 @@ load = {
         "edge": False,
     },
     "features": {
-        "node": "db:otype ft:part_of_speech,noun_type,lexeme_utf8 sft:book",
-        "edge": '',
+        "shebanq": {
+            "node": [
+                "db.otype",
+                "ft.part_of_speech,noun_type,lexeme_utf8",
+                "sft.book",
+            ],
+            "edge": [
+            ],
+        },
     },
 }
 
@@ -39,7 +46,7 @@ def task(graftask):
         common nouns in Esther and as columns the books of the bible.
         A cell contain the frequency of that lexeme in that book multiplied by 1000 
     '''
-    (msg, Vi, Vr, NN, NNFV, FN, FE, XNi, XNr, XEi, XEr) = graftask.get_mappings()
+    (msg, NN, F, X) = graftask.get_mappings()
 
     target_book = "Esther"
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
@@ -53,22 +60,20 @@ def task(graftask):
     words = collections.defaultdict(lambda: 0)
 
     for node in NN():
-        this_type = FN(node, "db.otype")
-        if not this_type:
-            continue
-        if this_type == Vi["word"]:
-            p_o_s = FN(node, "ft.part_of_speech")
-            if p_o_s == Vi["noun"]:
-                noun_type = FN(node, "ft.noun_type")
-                if noun_type == Vi["common"]:
+        this_type = F.shebanq_db_otype.v(node)
+        if this_type == F.shebanq_db_otype.i("word"):
+            p_o_s = F.shebanq_ft_part_of_speech.v(node)
+            if p_o_s == F.shebanq_ft_part_of_speech.i("noun"):
+                noun_type = F.shebanq_ft_noun_type.v(node)
+                if noun_type == F.shebanq_ft_noun_type.i("common"):
                     words[book_name] += 1
-                    lexeme = Vr[FN(node, "ft.lexeme_utf8")]
+                    lexeme = F.shebanq_ft_lexeme_utf8.vr(node)
                     lexemes[book_name][lexeme] += 1
 
-        elif this_type == Vi["book"]:
-            book_name = Vr[FN(node, "sft.book")]
+        elif this_type == F.shebanq_db_otype.i("book"):
+            book_name = F.shebanq_sft_book.vr(node)
             books.append(book_name)
-            ontarget = FN(node, "sft.book") == Vi[target_book]
+            ontarget = F.shebanq_sft_book.v(node) == F.shebanq_sft_book.i(target_book)
             if ontarget:
                 sys.stderr.write(book_name)
             else:

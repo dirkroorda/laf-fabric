@@ -9,7 +9,7 @@ import argparse
 import configparser
 import sys, tty, termios
 
-from graf.task import GrafTask
+from .task import GrafTask
 
 ### USAGE
 

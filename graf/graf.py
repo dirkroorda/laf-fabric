@@ -8,8 +8,7 @@ import collections
 import array
 import pickle
 
-
-from graf.timestamp import Timestamp
+from .timestamp import Timestamp
 
 class GrafException(Exception):
     def __init__(self, message, stamp, Errors):

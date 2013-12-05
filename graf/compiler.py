@@ -5,9 +5,9 @@ import os.path
 import subprocess
 import codecs
 
-from graf.graf import Graf
-from graf.parse import parse as xmlparse
-from graf.model import model as remodel
+from .graf import Graf
+from .parse import parse as xmlparse
+from .model import model as remodel
 
 class GrafCompiler(Graf):
     '''Takes care of the compilation of LAF xml data into binary data.

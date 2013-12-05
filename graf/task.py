@@ -10,8 +10,8 @@ import collections
 import array
 import pickle
 
-from graf.compiler import GrafCompiler
-from graf.graf import Graf
+from .compiler import GrafCompiler
+from .graf import Graf
 
 class GrafTask(Graf):
     '''Task processor.

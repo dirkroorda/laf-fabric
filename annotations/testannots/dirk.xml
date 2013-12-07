@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl/>
+        <dependencies/>
+        <annotationSpaces>
+            <annotationSpace   as.id="dirk" default="true"/>
+        </annotationSpaces>
+    </graphHeader>
+<a xml:id="a1" label="part" ref="n1"><fs>
+	<f name="this_is" value="book Genesis"/>
+</fs></a>
+
+<a xml:id="a2" label="part" ref="n98054"><fs>
+	<f name="this_is" value="book Exodus"/>
+</fs></a>
+
+<a xml:id="a3" label="part" ref="es1"><fs>
+	<f name="this_is" value="edge es1"/>
+</fs></a>
+
+</graph>

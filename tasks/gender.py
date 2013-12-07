@@ -39,7 +39,7 @@ def task(graftask):
 
     cur_chapter = None
     for node in NN():
-        otype = F.shebanq_db_otype.vr(node)
+        otype = F.shebanq_db_otype.v(node)
         if not otype:
             continue
         ob = type_map[otype]
@@ -47,12 +47,12 @@ def task(graftask):
             continue
         if ob == "w":
             stats[0] += 1
-            if F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("masculine"):
+            if F.shebanq_ft_gender.v(node) == "masculine":
                 stats[1] += 1
-            elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("feminine"):
+            elif F.shebanq_ft_gender.v(node) == "feminine":
                 stats[2] += 1
         elif ob == "Ch":
-            this_chapter = "{} {}".format(F.shebanq_sft_book.vr(node), F.shebanq_sft_chapter.vr(node))
+            this_chapter = "{} {}".format(F.shebanq_sft_book.v(node), F.shebanq_sft_chapter.v(node))
             sys.stderr.write("\r{:<15}".format(this_chapter))
             if stats[0] == None:
                 stats_file.write("\t".join(('chapter', 'masc_f', 'fem_f', 'fem_masc_r')) + "\n")

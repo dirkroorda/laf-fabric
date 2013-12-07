@@ -10,7 +10,6 @@ import collections
 import array
 import pickle
 
-from .compiler import GrafCompiler
 from .graf import Graf
 
 class GrafTask(Graf):
@@ -34,27 +33,10 @@ class GrafTask(Graf):
             settings (:py:class:`configparser.ConfigParser`):
                 entries corresponding to the main configuration file
         '''
-        Graf.__init__(self)
-        self.has_compiled = False
-        '''Instance member to tell whether compilation has actually taken place'''
-        self.source_changed = None
-        '''Instance member to tell whether the source name has changed'''
-        self.annox_changed = None
-        '''Instance member to tell whether the annox name has changed'''
-        self.task_changed = None
-        '''Instance member to tell whether the task name has changed'''
-        self.settings = settings
-        '''Instance member to hold configuration settings'''
+        Graf.__init__(self, settings)
 
-        self.loaded = collections.defaultdict(lambda: collections.defaultdict(lambda: False))
-        '''Set of feature data sets that have been loaded, node features and edge features under different keys'''
-        self.xloaded = collections.defaultdict(lambda: False)
-        '''Set of xmlid data sets that have been loaded, keys for ``node`` and ``edge``.'''
         self.result_files = []
         '''List of handles to result files created by the task through the method :meth:`add_result`'''
-        self.prev_tasks = {}
-        '''List of tasks executed in this run of the workbench, with the modification time of the task program file
-        at the time it was last run'''
 
         cur_dir = os.getcwd()
         task_dir = self.settings['locations']['task_dir']
@@ -69,7 +51,7 @@ class GrafTask(Graf):
                 handle.close()
         Graf.__del__(self)
 
-    def run(self, source, annox, task, force_compile=False):
+    def run(self, source, annox, task, force_compile={}):
         '''Run a task.
 
         That is:
@@ -89,30 +71,12 @@ class GrafTask(Graf):
             task:
                 the chosen task
 
-            force_compile (bool):
-                whether to force (re)compilation of the LAF source
+            force_compile (dict):
+                whether to force (re)compilation of the LAF source for either 'source' or 'annox'.
         '''
-        if self.env == None:
-            self.source_changed = None 
-            self.annox_changed = None 
-            self.task_changed = None 
-        else:
-            self.source_changed = self.env['source'] != source
-            self.annox_changed = self.env['annox'] != annox
-            self.task_changed = self.env['task'] != task
-
-        this_mtime = self.get_task_mtime(task)
-        if task in self.prev_tasks:
-            prev_mtime = self.prev_tasks[task]
-            if prev_mtime < this_mtime:
-                self.prev_tasks[task] = this_mtime
-                self.task_changed = True
-        else:
-            self.prev_tasks[task] = this_mtime
-
+        self.check_status(source, annox, task)
         self.stamp.reset()
-        self.set_environment(source, annox, task)
-        self.compile(force_compile)
+        self.compile_all(force_compile)
         self.stamp.reset()
 
         exec("import {}".format(task))
@@ -128,19 +92,6 @@ class GrafTask(Graf):
         self.init_task()
         taskcommand(self) 
         self.finish_task()
-
-    def compile(self, force_compile):
-        '''Compile the LAF resource if needed or if forced.
-
-        Args:
-            force_compile (bool):
-                whether to force compiling even if the need for it has not been detected.
-        '''
-        grafcompiler = GrafCompiler(self.env)
-        grafcompiler.compiler(force=force_compile)
-        grafcompiler.finish()
-        self.has_compiled = grafcompiler.has_compiled
-        grafcompiler = None
 
     def add_result(self, file_name):
         '''Opens a file for writing and stores the handle.
@@ -220,8 +171,7 @@ class GrafTask(Graf):
         F(:class:`Features`):
             Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is
             accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.
-            These feature objects in turn have methods to look features up and to translate between internal codes for the values
-            and the real values as encountered in the source. See :class:`Feature`.
+            These feature objects in turn have a method to look features up. See :class:`Feature`.
 
         X(:class:`XMLids`):
             Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
@@ -250,14 +200,21 @@ class GrafTask(Graf):
                 for node in self.data_items["node_sort"]:
                     yield node
 
-        feature_objects = []
+        feature_objects = {}
 
-        for (aspace, alabel, fname, kind) in self.given_features:
-            feature_objects.append(Feature(self, aspace, alabel, fname, kind))
+        for feature in self.loaded['feature']:
+            feature_rep = self.format_item('feature', feature)
+            feature_objects[feature_rep] = Feature(self, *feature)
+        for feature in self.loaded['annox']:
+            feature_rep = self.format_item('feature', feature)
+            if feature_rep in feature_objects:
+                feature_objects[feature_rep].add_data(*feature)
+            else:
+                feature_objects[feature_rep] = Feature(self, *feature, extra=True)
 
         xmlid_objects = []
 
-        for kind in self.given_xmlids:
+        for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
         return (
@@ -364,15 +321,36 @@ class Feature(object):
     In fact, these names will be used as member names of the :class:`Features` class, when its objects
     store sets of features. 
 
-    Feature lookups deliver integer codes for values. There are methods to get the real values back.
+    A feature's data may come from the source or the annox or both. They get merged here, and from 
+    then on it is impossible to see where a feature value comes from.
 
-    .. note::
-        There is no global mapping of all feature values to integers and back.
-        Mappings are strictly per individual feature.
-        In this way we miss some data compression, but we keep the feature information better separable,
-        which is relevant because we only want to load features when a task asks for it.
+    If you want to separate features from annox and source, give features in the annox other names,
+    or give their containing annotations other labels, or put them in other
+    annotation spaces.
+
     '''
-    def __init__(self, graftask, aspace, alabel, fname, kind):
+    def __init__(self, graftask, aspace, alabel, fname, kind, extra=False):
+        '''Upon creation, makes references to the feature data corresponding to the feature specified.
+
+        Args:
+            graftask(:class:`GrafTask <graf.task.GrafTask>`):
+                The task executing object that has all the data.
+            aspace, alabel, fname, kind:
+                The annotation space, annotation label, feature name, feature kind (node or edge)
+                that together identify a single feature.
+            extra (bool):
+                indication of where to look for the feature data, because up till now annox feature data
+                sits in another dictionary than source feature data.
+        '''
+        self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind)
+        self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
+        self.kind = kind
+        ref_label = 'xfeature' if extra else 'feature'
+        lookup = graftask.data_items[ref_label][(aspace, alabel, fname, kind)]
+        valrep = graftask.data_items[ref_label + '_val_rep'][(aspace, alabel, fname, kind)]
+        self.lookup = collections.defaultdict(lambda: None, [(ne, valrep[lookup[ne]]) for ne in lookup])
+
+    def add_data(self, graftask, aspace, alabel, fname, kind):
         '''Upon creation, makes references to the feature data corresponding to the feature specified.
 
         Args:
@@ -382,13 +360,10 @@ class Feature(object):
                 The annotation space, annotation label, feature name, feature kind (node or edge)
                 that together identify a single feature.
         '''
-        kind_rep = 'node' if kind else 'edge'
-        self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind_rep)
-        self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind else '_e')
-        self.kind = kind
-        self.lookup = graftask.data_items['feature'][aspace][alabel][fname][kind]
-        self.code = graftask.data_items['feature_val_int'][aspace][alabel][fname][kind]
-        self.rep = graftask.data_items['feature_val_rep'][aspace][alabel][fname][kind]
+        lookup = graftask.data_items['xfeature'][(aspace, alabel, fname, kind)]
+        valrep = graftask.data_items['xfeature_val_rep'][(aspace, alabel, fname, kind)]
+        for ne in lookup:
+            self.lookup[ne] = valrep[lookup[ne]]
 
     def v(self, ne):
         '''Look the feature value up for a node or edge.
@@ -402,44 +377,6 @@ class Feature(object):
         '''
         return self.lookup[ne]
 
-    def vr(self, ne):
-        '''Look the feature *real* value up for a node or edge.
-
-        Args:
-            ne (int):
-                node or edge, identified by an integer.
-
-        Returns:
-            the value of this feature for that node or edge, represented as its real value in the LAF source.
-        '''
-        return self.rep[self.lookup[ne]]
-
-    def r(self, value_int):
-        '''Get the real value corresponding to an integer.
-
-        Args:
-            value_int (int):
-                an integer code for a value of this feature
-
-        Returns:
-            the real value that the integer stands for according to the
-            table of values of this individual feature.
-        '''
-        return self.rep[value_int]
-
-    def i(self, value_rep):
-        '''Get the integer code corresponding to an real feature value.
-
-        Args:
-            value_rep (str):
-                an value string for this feature
-
-        Returns:
-            the integer code that assigned to it according to the
-            table of values of this individual feature.
-        '''
-        return self.code[value_rep]
-
 class Features(object):
     '''This class is responsible for holding a bunch of features and makes them 
     accessible by member names.
@@ -452,8 +389,10 @@ class Features(object):
         Args:
             feature_objects (iterable of :class:`Feature`)
         '''
-        for fo in feature_objects:
+        self.F = {}
+        for (fn, fo) in feature_objects.items():
             exec("self.{} = fo".format(fo.local_name))
+            self.F[fo.local_name] = fo.lookup
 
 class XMLid(object):
     '''This class is responsible for making the original XML identifiers available
@@ -472,8 +411,7 @@ class XMLid(object):
                 The kind (node or edge)
                 for which to make available the identifiers.
         '''
-        kind_rep = 'node' if kind else 'edge'
-        self.local_name = kind_rep
+        self.local_name = kind
         self.kind = kind
         self.code = graftask.data_items['xid_int'][kind]
         self.rep = graftask.data_items['xid_rep'][kind]

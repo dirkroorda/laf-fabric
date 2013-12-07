@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; LAF Fabric 1.1.0 documentation</title>
+  <title>Index &mdash; LAF Fabric 1.1.1 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'1.1.0',
+        VERSION:'1.1.1',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,7 +45,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 1.1.0 documentation" href="index.html"/> 
+    <link rel="top" title="LAF Fabric 1.1.1 documentation" href="index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -174,6 +174,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
+  <dt><a href="graf/graf.html#graf.task.Feature.add_data">add_data() (Feature method)</a>
+  </dt>
+
+      
   <dt><a href="graf/graf.html#graf.parse.AnnotationHandler.add_feature_instance">add_feature_instance() (AnnotationHandler method)</a>
   </dt>
 
@@ -189,22 +193,18 @@
   <dt><a href="graf/graf.html#graf.graf.Graf.adjust_all">adjust_all() (Graf method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.graf.Graf.adjust_data">adjust_data() (Graf method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.parse.AnnotationHandler.aid">aid (AnnotationHandler attribute)</a>
   </dt>
 
       
   <dt><a href="graf/graf.html#graf.parse.AnnotationHandler">AnnotationHandler (class in graf.parse)</a>
-  </dt>
-
-      
-  <dt><a href="graf/graf.html#graf.task.GrafTask.annox_changed">annox_changed (GrafTask attribute)</a>
   </dt>
 
       
@@ -238,7 +238,11 @@
 
       </dl></dd>
       
-  <dt><a href="graf/graf.html#graf.graf.Graf.check_data">check_data() (Graf method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.check_load_status">check_load_status() (Graf method)</a>
+  </dt>
+
+      
+  <dt><a href="graf/graf.html#graf.graf.Graf.check_status">check_status() (Graf method)</a>
   </dt>
 
       
@@ -256,15 +260,15 @@
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.task.GrafTask.compile">compile() (GrafTask method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.compile_all">compile_all() (Graf method)</a>
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.graf.Graf.COMPILE_TASK">COMPILE_TASK (Graf attribute)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.compile_data">compile_data() (Graf method)</a>
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.compiler">compiler() (GrafCompiler method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.COMPILE_NAME">COMPILE_NAME (Graf attribute)</a>
   </dt>
 
       
@@ -283,10 +287,6 @@
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.graf.Graf.data_items">data_items (Graf attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/graf.html#graf.graf.Graf.data_items_def">data_items_def (Graf attribute)</a>
   </dt>
 
       
@@ -329,12 +329,6 @@
   <dt><a href="graf/graf.html#graf.graf.Graf.env">env (Graf attribute)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.env">(GrafCompiler attribute)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="tasks/esther.html#module-esther">esther (module)</a>
   </dt>
@@ -358,21 +352,21 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.finish">finish() (GrafCompiler method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.finish_logfile">finish_logfile() (Graf method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/graf.html#graf.graf.Graf.finish_logfile">finish_logfile() (Graf method)</a>
-  </dt>
-
       
   <dt><a href="graf/graf.html#graf.task.GrafTask.finish_task">finish_task() (GrafTask method)</a>
   </dt>
 
       
   <dt><a href="graf/graf.html#graf.graf.Graf.flush_logfile">flush_logfile() (Graf method)</a>
+  </dt>
+
+      
+  <dt><a href="graf/graf.html#graf.graf.Graf.format_item">format_item() (Graf method)</a>
   </dt>
 
   </dl></td>
@@ -406,7 +400,7 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.graf.Graf.given_features">given_features (Graf attribute)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.given">given (Graf attribute)</a>
   </dt>
 
       
@@ -415,10 +409,6 @@
 
       
   <dt><a href="graf/graf.html#module-graf">graf (module)</a>
-  </dt>
-
-      
-  <dt><a href="graf/graf.html#module-graf.compiler">graf.compiler (module)</a>
   </dt>
 
   </dl></td>
@@ -448,10 +438,6 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler">GrafCompiler (class in graf.compiler)</a>
-  </dt>
-
-      
   <dt><a href="graf/graf.html#graf.graf.GrafException">GrafException</a>
   </dt>
 
@@ -466,25 +452,15 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.has_compiled">has_compiled (GrafCompiler attribute)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/graf.html#graf.task.GrafTask.has_compiled">(GrafTask attribute)</a>
-  </dt>
-
-      </dl></dd>
-      
   <dt><a href="graf/graf.html#graf.task.GrafTask.hasitem">hasitem() (GrafTask method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.task.GrafTask.hasitems">hasitems() (GrafTask method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.parse.HeaderHandler">HeaderHandler (class in graf.parse)</a>
   </dt>
@@ -496,27 +472,21 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.task.Feature.i">i() (Feature method)</a>
+  <dt><a href="graf/graf.html#graf.task.XMLid.i">i() (XMLid method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="graf/graf.html#graf.task.XMLid.i">(XMLid method)</a>
-  </dt>
-
-      </dl></dd>
       
-  <dt><a href="graf/graf.html#graf.task.GrafTask.init_task">init_task() (GrafTask method)</a>
+  <dt><a href="graf/graf.html#graf.parse.init">init() (in module graf.parse)</a>
   </dt>
 
       
-  <dt><a href="tasks/involved.html#module-involved">involved (module)</a>
+  <dt><a href="graf/graf.html#graf.task.GrafTask.init_task">init_task() (GrafTask method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.graf.Graf.is_loaded">is_loaded() (Graf method)</a>
+  <dt><a href="tasks/involved.html#module-involved">involved (module)</a>
   </dt>
 
       
@@ -538,7 +508,7 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.task.GrafTask.loaded">loaded (GrafTask attribute)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.loaded">loaded (Graf attribute)</a>
   </dt>
 
   </dl></td>
@@ -578,7 +548,7 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.model">model() (GrafCompiler method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.model">model() (Graf method)</a>
   </dt>
 
       <dd><dl>
@@ -592,12 +562,6 @@
 
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.needs_compiling">needs_compiling() (GrafCompiler method)</a>
-  </dt>
-
-  </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.parse.AnnotationHandler.nid">nid (AnnotationHandler attribute)</a>
@@ -620,7 +584,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.parse">parse() (GrafCompiler method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.parse">parse() (Graf method)</a>
   </dt>
 
       <dd><dl>
@@ -634,7 +598,7 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.task.GrafTask.prev_tasks">prev_tasks (GrafTask attribute)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.prev_tasks">prev_tasks (Graf attribute)</a>
   </dt>
 
       
@@ -668,15 +632,9 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.task.Feature.r">r() (Feature method)</a>
+  <dt><a href="graf/graf.html#graf.task.XMLid.r">r() (XMLid method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="graf/graf.html#graf.task.XMLid.r">(XMLid method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="graf/graf.html#graf.graf.Graf.read_stats">read_stats() (Graf method)</a>
   </dt>
@@ -706,15 +664,11 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.task.GrafTask.settings">settings (GrafTask attribute)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.settings">settings (Graf attribute)</a>
   </dt>
 
       
   <dt><a href="graf/graf.html#graf.shell.Shell">Shell (class in graf.shell)</a>
-  </dt>
-
-      
-  <dt><a href="graf/graf.html#graf.task.GrafTask.source_changed">source_changed (GrafTask attribute)</a>
   </dt>
 
       
@@ -731,8 +685,6 @@
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.parse.AnnotationHandler.startElement">startElement() (AnnotationHandler method)</a>
   </dt>
@@ -743,8 +695,14 @@
   </dt>
 
       </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/graf.html#graf.graf.Graf.STAT_NAME">STAT_NAME (Graf attribute)</a>
+  </dt>
+
+      
+  <dt><a href="graf/graf.html#graf.graf.Graf.status">status (Graf attribute)</a>
   </dt>
 
       
@@ -796,11 +754,7 @@
 
       </dl></dd>
       
-  <dt><a href="graf/graf.html#graf.task.GrafTask.task_changed">task_changed (GrafTask attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.temp_data_items">temp_data_items (GrafCompiler attribute)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.temp_data_items">temp_data_items (Graf attribute)</a>
   </dt>
 
       
@@ -834,7 +788,7 @@
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/graf.html#graf.task.Feature.vr">vr() (Feature method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.verify_all">verify_all() (Graf method)</a>
   </dt>
 
   </dl></td>
@@ -848,7 +802,7 @@
   </dt>
 
       
-  <dt><a href="graf/graf.html#graf.compiler.GrafCompiler.write_data">write_data() (GrafCompiler method)</a>
+  <dt><a href="graf/graf.html#graf.graf.Graf.write_data">write_data() (Graf method)</a>
   </dt>
 
   </dl></td>
@@ -863,10 +817,6 @@
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/graf.html#graf.task.GrafTask.xloaded">xloaded (GrafTask attribute)</a>
-  </dt>
-
       
   <dt><a href="graf/graf.html#graf.task.XMLid">XMLid (class in graf.task)</a>
   </dt>

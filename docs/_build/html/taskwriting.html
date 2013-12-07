@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing Tasks &mdash; LAF Fabric 1.1.0 documentation</title>
+  <title>Writing Tasks &mdash; LAF Fabric 1.1.1 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'1.1.0',
+        VERSION:'1.1.1',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 1.1.0 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 1.1.1 documentation" href="index.html"/>
         <link rel="next" title="tasks" href="tasks/modules.html"/>
         <link rel="prev" title="LAF workbench" href="workbench.html"/> 
 
@@ -243,14 +243,17 @@ Finally, here is the complete Python code of the task that produced this output:
 <span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Produces a list of all WIVU objects with their types, ids and</span>
+<span class="sd">    *monads* (words) they contain.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">oid</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_oid</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">otype</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">oid</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_oid</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">otype</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -302,11 +305,11 @@ Here is a short description of the corresponding methods.</p>
 It is an object, and for each feature that you have declared, it has a member
 with a handy name. For example, <tt class="docutils literal"><span class="pre">F.shebanq_db_otype</span></tt> is a feature object
 that corresponds with the LAF feature given in an annotation in the annotation space <tt class="docutils literal"><span class="pre">shebanq</span></tt>,
-with label <tt class="docutils literal"><span class="pre">db</span></tt> and name <tt class="docutils literal"><span class="pre">otype</span></tt>. It is a node feature, because otherwise the name had a
-<tt class="docutils literal"><span class="pre">_e</span></tt> appended to it. You can look up a feature value of this feature, say for node <tt class="docutils literal"><span class="pre">n</span></tt>,by saying:
-<tt class="docutils literal"><span class="pre">F.shebanq_db_otype.v(n)</span></tt>. This will give you only a number, the code for the value. If you wanted the real value,
-you had to say <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.vr(n)</span></tt>. If you want to convert between codes and real values for this feature,
-you can do so by <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.i(«real</span> <span class="pre">value»)</span></tt> and <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.r(«number»)</span></tt></dd>
+with label <tt class="docutils literal"><span class="pre">db</span></tt> and name <tt class="docutils literal"><span class="pre">otype</span></tt>.
+It is a node feature, because otherwise the name had a
+<tt class="docutils literal"><span class="pre">_e</span></tt> appended to it.
+You can look up a feature value of this feature, say for node <tt class="docutils literal"><span class="pre">n</span></tt>,by saying:
+<tt class="docutils literal"><span class="pre">F.shebanq_db_otype.v(n)</span></tt>.</dd>
 <dt><em>NN(test=function value=something)</em></dt>
 <dd>If you want to walk through all the nodes, possibly skipping some, then this is your method.
 It is an <em>iterator</em> that yields a new node everytime it is called.

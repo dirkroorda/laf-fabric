@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf package &mdash; LAF Fabric 1.1.0 documentation</title>
+  <title>graf package &mdash; LAF Fabric 1.1.1 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'1.1.0',
+        VERSION:'1.1.1',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 1.1.0 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 1.1.1 documentation" href="../index.html"/>
         <link rel="up" title="graf" href="modules.html"/>
         <link rel="prev" title="graf" href="modules.html"/> 
 
@@ -152,118 +152,96 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-graf.compiler">
-<span id="graf-compiler-module"></span><h2>graf.compiler module<a class="headerlink" href="#module-graf.compiler" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="graf.compiler.GrafCompiler">
-<em class="property">class </em><tt class="descname">GrafCompiler</tt><big>(</big><em>env</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">graf.graf.Graf</span></tt></a></p>
-<p>Takes care of the compilation of LAF xml data into binary data.</p>
-<p>There are two stages in compilation:</p>
-<ul class="simple">
-<li>parsing the XML data by means of a SAX parser (a lengthy process)</li>
-<li>remodeling the parse results in really tight data structures</li>
-</ul>
-<p>Upon creation, the relevant directories are communicated.</p>
-<p>The initialization of the base class is performed, and we change working directory to the location of the LAF source.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>env (str):</dt>
-<dd>path information</dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
-<dt id="graf.compiler.GrafCompiler.compiler">
-<tt class="descname">compiler</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.compiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.compiler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Manages the complete compilation process.</p>
-<p>Detects the need for compiling, responds to the <em>force</em> argument. Then parses, remodels and writes.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>force (bool):</dt>
-<dd>whether to compile even if the binary data looks up to date.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.compiler.GrafCompiler.env">
-<tt class="descname">env</tt><em class="property"> = None</em><a class="headerlink" href="#graf.compiler.GrafCompiler.env" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to hold config settings etc</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.compiler.GrafCompiler.finish">
-<tt class="descname">finish</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.finish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.finish" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="graf.compiler.GrafCompiler.has_compiled">
-<tt class="descname">has_compiled</tt><em class="property"> = None</em><a class="headerlink" href="#graf.compiler.GrafCompiler.has_compiled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to tell whether compilation has actually taken place</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.compiler.GrafCompiler.model">
-<tt class="descname">model</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call the remodeler and store the remodeled data in the object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.compiler.GrafCompiler.needs_compiling">
-<tt class="descname">needs_compiling</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.needs_compiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.needs_compiling" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks whether the compiled binary data is still up to date.</p>
-<p>The criterion is whether the generated statistics file at the binary side is newer than the chosen GrAF header file.</p>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd><dl class="first last docutils">
-<dt>bool:</dt>
-<dd>whether the criterion for compiling holds.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.compiler.GrafCompiler.parse">
-<tt class="descname">parse</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call the XML parser and collect the parse results.</p>
-<p>Some parse results must be remodelled afterwards.
-After remodelling some parse data can be thrown away.
-Only store data that is needed for task execution in the object.</p>
-<p>The actual parsing is done in the module <a class="reference internal" href="#module-graf.parse" title="graf.parse"><tt class="xref py py-mod docutils literal"><span class="pre">parse</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.compiler.GrafCompiler.temp_data_items">
-<tt class="descname">temp_data_items</tt><em class="property"> = {}</em><a class="headerlink" href="#graf.compiler.GrafCompiler.temp_data_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds some data delivered by the parsed that can be thrown away later.
-The data that we must keep is stored in the object, of course.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.compiler.GrafCompiler.write_data">
-<tt class="descname">write_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/compiler.html#GrafCompiler.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.compiler.GrafCompiler.write_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes compiled data to disk.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-graf.graf">
 <span id="graf-graf-module"></span><h2>graf.graf module<a class="headerlink" href="#module-graf.graf" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="graf.graf.Graf">
-<em class="property">class </em><tt class="descname">Graf</tt><a class="reference internal" href="../_modules/graf/graf.html#Graf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Graf</tt><big>(</big><em>settings</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>Base class for compiling LAF resources and running analytic tasks on them.</p>
 <p>The data of this class represents the compiled data on the basis of which tasks can run.
-This data is created by a <a class="reference internal" href="#graf.compiler.GrafCompiler" title="graf.compiler.GrafCompiler"><tt class="xref py py-class docutils literal"><span class="pre">GrafCompiler</span></tt></a> that derives from this class.</p>
+This data is created by the method <a class="reference internal" href="#graf.graf.Graf.compile_all" title="graf.graf.Graf.compile_all"><tt class="xref py py-meth docutils literal"><span class="pre">compile_all()</span></tt></a> in this class.</p>
 <p>The <a class="reference internal" href="#graf.graf.Graf" title="graf.graf.Graf"><tt class="xref py py-class docutils literal"><span class="pre">Graf</span></tt></a> knows the structure of the data, and how to load it into memory.
 It can also see what it loaded and what not, and it can compute conditions that require compiling and (re)loading.</p>
+<p>There are various kinds of data, by their shape and by their function.
+The instance member <em>data_items_def</em> contains their declarations in the
+form of an ordered dictionary, keyed by data_group.</p>
+<p>The instance member <em>data_items</em> contains the data itself.</p>
+<p>The types of data are</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">x_mapping</span></tt>, group <tt class="docutils literal"><span class="pre">xmlids</span></tt>:</dt>
+<dd>mappings between xml identifiers as they occur in the original LAF source
+and the node/edge numbers in the compiled data.
+There are two dictionaries: <tt class="docutils literal"><span class="pre">xid_int</span></tt> (going from xml to integer) and
+<tt class="docutils literal"><span class="pre">xid_rep</span></tt> (going from integer to xml).
+Both contain two dictionaries, one for nodes and one for edges separately.</dd>
+<dt><tt class="docutils literal"><span class="pre">array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
+<dd><p class="first">Simply tables of integer values. 
+Most of the data common to all tasks is in <tt class="docutils literal"><span class="pre">array</span></tt> s and <tt class="docutils literal"><span class="pre">double_array</span></tt> s (see below).</p>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">region_begin</span></tt> and <tt class="docutils literal"><span class="pre">region_end</span></tt>:</dt>
+<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the start and end anchors for region <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">node_sort</span></tt>:</dt>
+<dd>All nodes ordered as induced by the region anchors.
+Nodes that start before others, come before them, 
+nodes that have equal start points are ordered such that the one with the later end point
+comes first. If both have equal end points, the order is arbitrary.
+If the nodes correspond to objects in a hierarchy without gaps, then embedding objects come before
+embedded objects.</dd>
+<dt><tt class="docutils literal"><span class="pre">edges_from</span></tt> and <tt class="docutils literal"><span class="pre">edges_to</span></tt>:</dt>
+<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the source and the target of edge <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
+</dl>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">double_array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>: </dt>
+<dd><p class="first">Twin arrays representing a list of records where records may have variable length.
+The primary array is has the name given, and contains at position <tt class="docutils literal"><span class="pre">i</span></tt> the starting
+point for record <tt class="docutils literal"><span class="pre">i</span></tt> in the secondary array.
+The record in the second array starts with a cell containing the length of the record,
+and then so many cells of information.
+This array has as its name the name of the primary array plus <tt class="docutils literal"><span class="pre">_items</span></tt>.</p>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">node_region</span></tt> and <tt class="docutils literal"><span class="pre">node_region_items</span></tt>:</dt>
+<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all regions that this node is linked to.</dd>
+<dt><tt class="docutils literal"><span class="pre">node_out</span></tt> and <tt class="docutils literal"><span class="pre">node_out_items</span></tt>:</dt>
+<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all outgoing edges from this node.</dd>
+<dt><tt class="docutils literal"><span class="pre">node_in</span></tt> and <tt class="docutils literal"><span class="pre">node_in_items</span></tt>:</dt>
+<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all incoming edges into this node.</dd>
+</dl>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">feature_mapping</span></tt>, group <tt class="docutils literal"><span class="pre">feature</span></tt> resp group <tt class="docutils literal"><span class="pre">annox</span></tt>:</dt>
+<dd><p class="first">Contains all the feature data of source resp annox. There are in fact three related dictionaries that do the job.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">feature</span></tt>:</dt>
+<dd>Keyed by <em>annotation space</em>, then by <em>annotation label</em> (both referring to the annotation that 
+contains the feature at hand), then by <em>feature name</em>, then by <em>kind</em> (<tt class="docutils literal"><span class="pre">node</span></tt> or 
+<tt class="docutils literal"><span class="pre">edge</span></tt>). At this level we have a dictionary, keyed by either the nodes or the edges
+(both as integers), and the value for each key is the value of the feature, again coded as
+integer.</dd>
+<dt><tt class="docutils literal"><span class="pre">feature_val_int</span></tt> and <tt class="docutils literal"><span class="pre">feature_val_rep</span></tt>:</dt>
+<dd>Raw values are not entered in the <tt class="docutils literal"><span class="pre">feature</span></tt> dictionary. Instead, every distinct value is uniquely
+identified by an integer. It is this integer that is stored in the <tt class="docutils literal"><span class="pre">feature</span></tt> dictionary.
+<tt class="docutils literal"><span class="pre">feature_val_int</span></tt> maps from raw values to integers, and <tt class="docutils literal"><span class="pre">feature_val_raw</span></tt> maps from integers to
+raw values.
+The mapping of values is per individual feature.</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a feature occurs on both nodes and edges, the feature is split into two features with the same name,
+the one acting on nodes and the other acting on edges. In the compiled version, every feature has a kind,
+and in order to obtain a feature value, you have to specify the feature name and the feature kind (and of course
+the annotation space and annotation label).</p>
+</div>
+<p>So the complete road to a value is:</p>
+<div class="highlight-python"><pre>val = self.data_items[&#x27;feature``][annotation_space][annotation_label][feature_name][kind][node_or_edge_id]</pre>
+</div>
+<p>and if you want to get the raw value back you can do so by:</p>
+<div class="highlight-python"><pre>raw_val = self.data_items[&#x27;feature_val_rep``][annotation_space][annotation_label][feature_name][kind][val]</pre>
+</div>
+<p class="last">The API will help you to lookup feature values and hides raw values completely.
+See <a class="reference internal" href="#module-graf.task" title="graf.task"><tt class="xref py py-mod docutils literal"><span class="pre">task</span></tt></a> for a description of the API, especially
+<a class="reference internal" href="#graf.task.GrafTask.get_mappings" title="graf.task.GrafTask.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings</span></tt></a></p>
+</dd>
+</dl>
 <p>Upon creation, empty datastructures are initialized to hold the binary,
 compiled LAF data and create a directory for their serializations on disk.</p>
 <p>The Graf object holds information that Graf tasks need to perform their operations.
@@ -288,8 +266,8 @@ the LAF resource has to be (re)compiled.</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="graf.graf.Graf.COMPILE_TASK">
-<tt class="descname">COMPILE_TASK</tt><em class="property"> = 'compile'</em><a class="headerlink" href="#graf.graf.Graf.COMPILE_TASK" title="Permalink to this definition">¶</a></dt>
+<dt id="graf.graf.Graf.COMPILE_NAME">
+<tt class="descname">COMPILE_NAME</tt><em class="property"> = 'compile__'</em><a class="headerlink" href="#graf.graf.Graf.COMPILE_NAME" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of the compile task</p>
 </dd></dl>
 
@@ -348,41 +326,46 @@ which features it uses and whether there is need for the orginal XML ids.</dd>
 
 <dl class="method">
 <dt id="graf.graf.Graf.adjust_data">
-<tt class="descname">adjust_data</tt><big>(</big><em>label</em>, <em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.adjust_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.adjust_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">adjust_data</tt><big>(</big><em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.adjust_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.adjust_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function for adjusting data.
 Now per key in the <tt class="docutils literal"><span class="pre">data_items_def</span></tt> dictionary.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>label (str):</dt>
+<dt>key (str):</dt>
 <dd>key in <tt class="docutils literal"><span class="pre">data_items_def</span></tt>, indicating the portion of data that has to be adjusted.</dd>
-<dt>directives (dict):</dt>
-<dd>passed directly from <a class="reference internal" href="#graf.graf.Graf.adjust_all" title="graf.graf.Graf.adjust_all"><tt class="xref py py-meth docutils literal"><span class="pre">adjust_all()</span></tt></a>.</dd>
+<dt>items (dict):</dt>
+<dd>If given, will ensure that these items are loaded and the rest unloaded.
+If not given, looks at <tt class="docutils literal"><span class="pre">self.given[data_group]</span></tt>.</dd>
 </dl>
 </dd>
 </dl>
-<p>It calls <a class="reference internal" href="#graf.graf.Graf.check_data" title="graf.graf.Graf.check_data"><tt class="xref py py-meth docutils literal"><span class="pre">check_data()</span></tt></a> to see whether there is a change affecting the data under this <tt class="docutils literal"><span class="pre">label</span></tt>.
-The answer might be: no (0), or yes absolutely (1) or partly (2), depending on the <em>directives</em>.</p>
+<p>It calls <a class="reference internal" href="#graf.graf.Graf.check_load_status" title="graf.graf.Graf.check_load_status"><tt class="xref py py-meth docutils literal"><span class="pre">check_load_status()</span></tt></a> to see whether there is a change affecting the data under this <tt class="docutils literal"><span class="pre">label</span></tt>.</p>
 <p>Clearance of data is deferred to <a class="reference internal" href="#graf.graf.Graf.clear_data" title="graf.graf.Graf.clear_data"><tt class="xref py py-meth docutils literal"><span class="pre">clear_data()</span></tt></a>, loading to <a class="reference internal" href="#graf.graf.Graf.load_data" title="graf.graf.Graf.load_data"><tt class="xref py py-meth docutils literal"><span class="pre">load_data()</span></tt></a>.</p>
-<p>The interesting part is what happens if the answer was <em>partly (2)</em>. 
-It then happens on the <em>directives</em> argument. The difference between what is needed and what is already
-loaded, is computed, and selective clearing and loading takes place, avoiding clearing
-and loading of the same items.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="graf.graf.Graf.check_data">
-<tt class="descname">check_data</tt><big>(</big><em>label</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.check_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.check_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Medium level datamanagement function to check how conditions have changed since
-last task execution and what it implies for the data at hand.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>label (str):</dt>
-<dd>key in <tt class="docutils literal"><span class="pre">data_items_def</span></tt>, indicating the portion of data that has to be adjusted.</dd>
-</dl>
-</dd>
-</dl>
+<dt id="graf.graf.Graf.check_load_status">
+<tt class="descname">check_load_status</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.graf.Graf.check_load_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the <tt class="docutils literal"><span class="pre">load</span></tt> part of the status from the other parts.</p>
+<p>The rules for the status are not easy to state and it is easy to miss out cases.
+So I have spelled out all cases in a switchboard.
+Given the <tt class="docutils literal"><span class="pre">env</span></tt> and <tt class="docutils literal"><span class="pre">compile</span></tt> values, the switchboard gives the <tt class="docutils literal"><span class="pre">load</span></tt> values.</p>
+<p>To be called just before compiling and loading.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.check_status">
+<tt class="descname">check_status</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.check_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the complete status information by inspecting the environment and
+detecting the compile status.</p>
+<p>This function is called at the start of each task execution, before any compiling or loading
+has taken place.</p>
+<p>It first detects changes in the selected source, annox and task (env), then it detects whether
+compiled data is outdated with respect to the source.
+data is up to the task.</p>
+<p>The methods for compiling and loading are responsible for updating the
+<tt class="docutils literal"><span class="pre">env</span></tt> and <tt class="docutils literal"><span class="pre">compile</span></tt> parts of the status accordingly.</p>
 </dd></dl>
 
 <dl class="method">
@@ -393,23 +376,44 @@ last task execution and what it implies for the data at hand.</p>
 
 <dl class="method">
 <dt id="graf.graf.Graf.clear_data">
-<tt class="descname">clear_data</tt><big>(</big><em>label</em>, <em>features=None</em>, <em>kinds=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.clear_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.clear_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">clear_data</tt><big>(</big><em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.clear_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.clear_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level data management function to clear all data.
 Now per key in the <tt class="docutils literal"><span class="pre">data_items_def</span></tt> dictionary.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>features (iterable):</dt>
-<dd>A list of (aspace, alabel, fname, kind) tuples that each specify a feature.
-Optional. If given, only the data for the features specified, will be reset.</dd>
-<dt>kinds (iterable):</dt>
-<dd>A list of kinds (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>).
-Optional. If given, only the xmlids data for the
-nodes or edges as specified, will be reset.</dd>
+<dt>data_group:</dt>
+<dd>the group of data items to be cleared</dd>
+<dt>items (iterable):</dt>
+<dd>A list of subitems.
+Optional. If given, only the data for the subitems specified, will be cleared.
+Otherwise all subitems will be cleared.</dd>
 </dl>
 </dd>
 </dl>
-<p>If none of the optional features is present, all data for the specified label will be reset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.compile_all">
+<tt class="descname">compile_all</tt><big>(</big><em>force</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.compile_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manages the complete compilation process.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.compile_data">
+<tt class="descname">compile_data</tt><big>(</big><em>data_group</em>, <em>force</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.compile_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manages the compilation process for either the source data or extra annotation files.</p>
+<p>Detects the need for compiling, responds to the <em>force</em> argument. Then parses, remodels and writes.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>data_group (str):</dt>
+<dd>whether to parse source data (<tt class="docutils literal"><span class="pre">source</span></tt>) or an extra annotation package (<tt class="docutils literal"><span class="pre">annox</span></tt>)</dd>
+<dt>force (bool):</dt>
+<dd>whether to compile even if the binary data looks up to date.</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
@@ -418,101 +422,13 @@ nodes or edges as specified, will be reset.</dd>
 <dd><p>Instance member holding the compiled data in the form of a dictionary of arrays and lists.</p>
 <p>This dictionary is keyed by the same keys as <tt class="docutils literal"><span class="pre">data_items_def</span></tt> plus a few additional ones,
 dependent on tnd predictable from he data type and data group.</p>
-<p>See the <a class="reference internal" href="#module-graf.compiler" title="graf.compiler"><tt class="xref py py-mod docutils literal"><span class="pre">compiler</span></tt></a> and <a class="reference internal" href="#module-graf.model" title="graf.model"><tt class="xref py py-mod docutils literal"><span class="pre">model</span></tt></a> modules for the way the compiled data is created.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.graf.Graf.data_items_def">
-<tt class="descname">data_items_def</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.data_items_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>There are various kinds of data, by their shape and by their function.
-The instance member <em>data_items_def</em> contains their declarations in the
-form of an ordered dictionary, keyed by labels and with a tuple of data type and data group
-as values.</p>
-<p>The instance member <em>data_items</em> contains the data itself.</p>
-<p>The types of data are</p>
-<dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">x_mapping</span></tt>, group <tt class="docutils literal"><span class="pre">xmlids</span></tt>:</dt>
-<dd>mappings between xml identifiers as they occur in the original LAF source
-and the node/edge numbers in the compiled data.
-There are two dictionaries: <tt class="docutils literal"><span class="pre">xid_int</span></tt> (going from xml to integer) and
-<tt class="docutils literal"><span class="pre">xid_rep</span></tt> (going from integer to xml).
-Both contain two dictionaries, one for nodes and one for edges separately.</dd>
-<dt><tt class="docutils literal"><span class="pre">array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
-<dd><p class="first">Simply tables of integer values.
-Most of the data common to all tasks is in <tt class="docutils literal"><span class="pre">array</span></tt> s and <tt class="docutils literal"><span class="pre">double_array</span></tt> s (see below).</p>
-<dl class="last docutils">
-<dt><tt class="docutils literal"><span class="pre">region_begin</span></tt> and <tt class="docutils literal"><span class="pre">region_end</span></tt>:</dt>
-<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the start and end anchors for region <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
-<dt><tt class="docutils literal"><span class="pre">node_sort</span></tt>:</dt>
-<dd>All nodes ordered as induced by the region anchors.
-Nodes that start before others, come before them,
-nodes that have equal start points are ordered such that the one with the later end point
-comes first. If both have equal end points, the order is arbitrary.
-If the nodes correspond to objects in a hierarchy without gaps, then embedding objects come before
-embedded objects.</dd>
-<dt><tt class="docutils literal"><span class="pre">edges_from</span></tt> and <tt class="docutils literal"><span class="pre">edges_to</span></tt>:</dt>
-<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the source and the target of edge <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
-</dl>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">double_array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
-<dd><p class="first">Twin arrays representing a list of records where records may have variable length.
-The primary array is has the name given, and contains at position <tt class="docutils literal"><span class="pre">i</span></tt> the starting
-point for record <tt class="docutils literal"><span class="pre">i</span></tt> in the secondary array.
-The record in the second array starts with a cell containing the length of the record,
-and then so many cells of information.
-This array has as its name the name of the primary array plus <tt class="docutils literal"><span class="pre">_items</span></tt>.</p>
-<dl class="last docutils">
-<dt><tt class="docutils literal"><span class="pre">node_region</span></tt> and <tt class="docutils literal"><span class="pre">node_region_items</span></tt>:</dt>
-<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all regions that this node is linked to.</dd>
-<dt><tt class="docutils literal"><span class="pre">node_out</span></tt> and <tt class="docutils literal"><span class="pre">node_out_items</span></tt>:</dt>
-<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all outgoing edges from this node.</dd>
-<dt><tt class="docutils literal"><span class="pre">node_in</span></tt> and <tt class="docutils literal"><span class="pre">node_in_items</span></tt>:</dt>
-<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all incoming edges into this node.</dd>
-</dl>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">feature_mapping</span></tt>, group <tt class="docutils literal"><span class="pre">feature</span></tt>:</dt>
-<dd><p class="first">Contains all the feature data. There are in fact three related dictionaries that do the job.</p>
-<dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">feature</span></tt>:</dt>
-<dd>Keyed by <em>annotation space</em>, then by <em>annotation label</em> (both referring to the annotation that
-contains the feature at hand), then by <em>feature name</em>, then by <em>kind</em> (<tt class="docutils literal"><span class="pre">True</span></tt> for nodes,
-<tt class="docutils literal"><span class="pre">False</span></tt> for edges). At this level we have a dictionary, keyed by either the nodes or the edges
-(both as integers), and the value for each key is the value of the feature, again coded as
-integer.</dd>
-<dt><tt class="docutils literal"><span class="pre">feature_val_int</span></tt> and <tt class="docutils literal"><span class="pre">feature_val_rep</span></tt>:</dt>
-<dd>Raw values are not entered in the <tt class="docutils literal"><span class="pre">feature</span></tt> dictionary. Instead, every distinct value is uniquely
-identified by an integer. It is this integer that is stored in the <tt class="docutils literal"><span class="pre">feature</span></tt> dictionary.
-<tt class="docutils literal"><span class="pre">feature_val_int</span></tt> maps from raw values to integers, and <tt class="docutils literal"><span class="pre">feature_val_raw</span></tt> maps from integers to
-raw values.
-The mapping of values is per individual feature.</dd>
-</dl>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If a feature occurs on both nodes and edges, the feature is split into two features with the same name,
-the one acting on nodes and the other acting on edges. In the compiled version, every feature has a kind,
-and in order to obtain a feature value, you have to specify the feature name and the feature kind (and of course
-the annotation space and annotation label).</p>
-</div>
-<p>So the complete road to a value is:</p>
-<div class="highlight-python"><pre>val = self.data_items[&#x27;feature``][annotation_space][annotation_label][feature_name][kind][node_or_edge_id]</pre>
-</div>
-<p>and if you want to get the raw value back you can do so by:</p>
-<div class="highlight-python"><pre>raw_val = self.data_items[&#x27;feature_val_rep``][annotation_space][annotation_label][feature_name][kind][val]</pre>
-</div>
-<p>Of course, when you do this for various features inside a loop that runs over hundred thousands of nodes,
-you want to give these dictionaries local names outside the loop, so that most dictionary lookup calculations
-only need to be done a few times.</p>
-<p class="last">The API will help you to lookup feature values and raw values efficiently, and with clean looking code.
-See <a class="reference internal" href="#module-graf.task" title="graf.task"><tt class="xref py py-mod docutils literal"><span class="pre">task</span></tt></a> for a description of the API, especially
-<a class="reference internal" href="#graf.task.GrafTask.get_mappings" title="graf.task.GrafTask.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings</span></tt></a></p>
-</dd>
-</dl>
+<p>See the <a class="reference internal" href="#module-graf.model" title="graf.model"><tt class="xref py py-mod docutils literal"><span class="pre">model</span></tt></a> modules for the way the compiled data is created.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="graf.graf.Graf.env">
 <tt class="descname">env</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.env" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds the context information for the current task, such as chosen source and task.</p>
+<dd><p>Holds the context information for the current task, such as chosen source, annox and task.</p>
 </dd></dl>
 
 <dl class="method">
@@ -528,51 +444,38 @@ The program might terminate without writing the last bits to file.</p>
 <tt class="descname">flush_logfile</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.flush_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.flush_logfile" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="graf.graf.Graf.given_features">
-<tt class="descname">given_features</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.given_features" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member holding the information about needed features, provided by the task at hand.</p>
-</dd></dl>
-
 <dl class="method">
-<dt id="graf.graf.Graf.is_loaded">
-<tt class="descname">is_loaded</tt><big>(</big><em>label</em>, <em>kind=None</em>, <em>feature=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.is_loaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.is_loaded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Medium level datamanagement function to check what data is actually loaded.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>label (str):</dt>
-<dd>key in <tt class="docutils literal"><span class="pre">data_items_def</span></tt>, indicating the portion of data that has to be adjusted.</dd>
-<dt>feature (tuple):</dt>
-<dd>Specification of the feature of interest.
-Only the load status of this feature will be returned.</dd>
-<dt>kind (str):</dt>
-<dd>The kind (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>).
-Only the xmlids data status for the given kind will be returned.
-nodes or edges as specified, will be reset.</dd>
-</dl>
-</dd>
-</dl>
+<dt id="graf.graf.Graf.format_item">
+<tt class="descname">format_item</tt><big>(</big><em>data_group</em>, <em>item</em>, <em>asFile=False</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.format_item" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.given">
+<tt class="descname">given</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.given" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of items given in the load directives of a task, per data group</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="graf.graf.Graf.load_data">
-<tt class="descname">load_data</tt><big>(</big><em>label</em>, <em>features=None</em>, <em>kinds=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.load_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load_data</tt><big>(</big><em>data_group</em>, <em>items={}</em>, <em>keep={}</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level data management function to load data from disk into memory.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>features (iterable):</dt>
-<dd>A list of (aspace, alabel, fname, kind) tuples that each specify a feature.
-Optional. If given, only the data for the features specified, will be loaded.</dd>
-<dt>kinds (iterable):</dt>
-<dd>A list of kinds (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>).
-Optional. If given, only the xmlids data for the
-nodes or edges as specified, will be loaded.</dd>
+<dt>data_group:</dt>
+<dd>the kind of data to load</dd>
+<dt>items (iterable):</dt>
+<dd>A list of subitems in the data group to be loaded.
+Only relevant if <tt class="docutils literal"><span class="pre">data_group</span> <span class="pre">!=</span> <span class="pre">common</span></tt></dd>
 </dl>
 </dd>
 </dl>
-<p>If none of the optional features is present, all data for the specified label will be loaded.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.loaded">
+<tt class="descname">loaded</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.loaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of items currently loaded in memory, per data group</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -589,6 +492,45 @@ and of the task executions.</p>
 <p>This is a low level function for creating inverse mappings.
 When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.
 Upon loading, the inverse mapping is generated by means of this function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.model">
+<tt class="descname">model</tt><big>(</big><em>data_group</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the remodeler and store the remodeled data in the object.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>data_group (str):</dt>
+<dd>whether to parse source data (<tt class="docutils literal"><span class="pre">source</span></tt>) or an extra annotation package (<tt class="docutils literal"><span class="pre">annox</span></tt>)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.parse">
+<tt class="descname">parse</tt><big>(</big><em>data_group</em>, <em>xmlitems</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the XML parser and collect the parse results.</p>
+<p>Some parse results must be remodelled afterwards.
+After remodelling some parse data can be thrown away.
+Only store data that is needed for task execution in the object.</p>
+<p>The actual parsing is done in the module <a class="reference internal" href="#module-graf.parse" title="graf.parse"><tt class="xref py py-mod docutils literal"><span class="pre">parse</span></tt></a>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>data_group (str):</dt>
+<dd>whether to parse source data (<tt class="docutils literal"><span class="pre">source</span></tt>) or an extra annotation package (<tt class="docutils literal"><span class="pre">annox</span></tt>)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.prev_tasks">
+<tt class="descname">prev_tasks</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.prev_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of tasks executed in this run of the workbench, with the modification time of the task program file
+at the time it was last run</p>
 </dd></dl>
 
 <dl class="method">
@@ -636,15 +578,106 @@ how many distinct values features have.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="graf.graf.Graf.settings">
+<tt class="descname">settings</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member to hold config settings etc</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="graf.graf.Graf.stamp">
 <tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.stamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instance member holding the <a class="reference internal" href="#graf.timestamp.Timestamp" title="graf.timestamp.Timestamp"><tt class="xref py py-class docutils literal"><span class="pre">Timestamp</span></tt></a> object.
 Useful to deliver progress messages with timing information.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="graf.graf.Graf.status">
+<tt class="descname">status</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance member to keep track of the status of the loaded data: does it match the task at hand?
+Three categories:</p>
+<dl class="docutils">
+<dt><strong>env</strong>:</dt>
+<dd>The environment is the selected source, annox and task.
+Relevant to maintain is whether these have changed since last task execution.</dd>
+<dt><em>keys</em>:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">source</span></tt>:</dt>
+<dd>the chosen source</dd>
+<dt><tt class="docutils literal"><span class="pre">annox</span></tt>:</dt>
+<dd>the chosen annox, i.e. the selected extra annotation package</dd>
+<dt><tt class="docutils literal"><span class="pre">task</span></tt>:</dt>
+<dd>the chosen task</dd>
+</dl>
+</dd>
+<dt><em>values</em>:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">None</span></tt>:</dt>
+<dd>there was no previous choice</dd>
+<dt><tt class="docutils literal"><span class="pre">False</span></tt>:</dt>
+<dd>changed since last time</dd>
+<dt><tt class="docutils literal"><span class="pre">True</span></tt>:</dt>
+<dd>no change since last time</dd>
+</dl>
+</dd>
+<dt><strong>compile</strong>:</dt>
+<dd>The source must be compiled before it can be used.
+In addition to the source there is the additional package of annotation, annox.
+This also has to be compiled.
+Relevant is to maintain whether the compiled data is outdated, up to data, or just compiled.
+In the latter case, the data is still in memory and does not have to be loaded.</dd>
+<dt><em>keys</em>:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">source</span></tt>:</dt>
+<dd>all data originating from the chosen source, including its feature data</dd>
+<dt><tt class="docutils literal"><span class="pre">annox</span></tt>:</dt>
+<dd>all data originating from the chosen annox, which is <em>only</em> feature data</dd>
+</dl>
+</dd>
+<dt><em>values</em>:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">False</span></tt>:</dt>
+<dd>compiled data is outdated.</dd>
+<dt><tt class="docutils literal"><span class="pre">True</span></tt>:</dt>
+<dd>compiled data is up to date, but has not recently be compiled.</dd>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt>:</dt>
+<dd>compiled data is freshly compiled.</dd>
+</dl>
+</dd>
+<dt><strong>load</strong>:</dt>
+<dd>Compiled data can only be used if it is loaded.
+Because data gets selectively loaded and unloaded between tasks,
+and because compiling may load data that is not needed for tasks,
+we need to keep track which data has been loaded, and whether
+the loaded data is still actual.</dd>
+<dt><em>keys</em>:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
+<dd>data originating from the chosen source, but not its feature data and not its xml-id data.</dd>
+<dt><tt class="docutils literal"><span class="pre">xmlids</span></tt>:</dt>
+<dd>the xml-ids originating from the chosen source.</dd>
+<dt><tt class="docutils literal"><span class="pre">feature</span></tt>:</dt>
+<dd>the feature data originating from the chosen source.</dd>
+<dt><tt class="docutils literal"><span class="pre">annox</span></tt>:</dt>
+<dd>the feature data from the chosen annox.</dd>
+</dl>
+</dd>
+<dt><em>values</em>:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">False</span></tt>:</dt>
+<dd>Data is no longer correct and must be loaded from scratch.
+All data that is present must be cleared.</dd>
+<dt><tt class="docutils literal"><span class="pre">True</span></tt>:</dt>
+<dd>All data that is present is correct. No data needs to be unloaded or loaded.</dd>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt>:</dt>
+<dd>All data that is present is correct. Some data may need to be unloaded or loaded.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="graf.graf.Graf.store_all">
-<tt class="descname">store_all</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_all" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">store_all</tt><big>(</big><em>compile_data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function: write data from memory to disk.</p>
 <p>This function is typically invoked at the end of compilation. 
 When in the business of running user tasks, there is no need for this function, 
@@ -653,14 +686,43 @@ since tasks do not modify the data.</p>
 
 <dl class="method">
 <dt id="graf.graf.Graf.store_data">
-<tt class="descname">store_data</tt><big>(</big><em>label</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">store_data</tt><big>(</big><em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function for writing data to disk.
 Now per key in the <tt class="docutils literal"><span class="pre">data_items_def</span></tt> dictionary.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>label (str):</dt>
+<dt>data_group (str):</dt>
 <dd>key in <tt class="docutils literal"><span class="pre">data_items_def</span></tt>, indicating the portion of data that has to be adjusted.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="graf.graf.Graf.temp_data_items">
+<tt class="descname">temp_data_items</tt><em class="property"> = None</em><a class="headerlink" href="#graf.graf.Graf.temp_data_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds some data delivered by the parsed that can be thrown away later.
+The data that we must keep is stored in the object, of course.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.verify_all">
+<tt class="descname">verify_all</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.graf.Graf.verify_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>After loading, verify whether everything is as desired.</p>
+<p>Loading of features may have failed if the task has declared non-existent features!
+This will be spotted here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.graf.Graf.write_data">
+<tt class="descname">write_data</tt><big>(</big><em>data_group</em><big>)</big><a class="headerlink" href="#graf.graf.Graf.write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes compiled data to disk.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>data_group (str):</dt>
+<dd>what to parse: source data (<tt class="docutils literal"><span class="pre">source</span></tt>) or an extra annotation package (<tt class="docutils literal"><span class="pre">annox</span></tt>)</dd>
 </dl>
 </dd>
 </dl>
@@ -840,7 +902,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.truth">
-<tt class="descname">truth</tt><em class="property"> = {'on': True, '1': True, 'true': True, 'yes': True}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">truth</tt><em class="property"> = {'false': False, 'true': True, 'yes': True, '0': False, 'no': False, 'off': False, 'on': True, '1': True}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -875,8 +937,13 @@ These are the annotation files that we have to fetch and compile.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="graf.parse.init">
+<tt class="descname">init</tt><big>(</big><big>)</big><a class="headerlink" href="#graf.parse.init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="graf.parse.parse">
-<tt class="descname">parse</tt><big>(</big><em>graf_header_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.parse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parse</tt><big>(</big><em>graf_header_file</em>, <em>stamp</em>, <em>xmlitems</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a GrAF resource.</p>
 <p>Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
 files mentioned in that header file.</p>
@@ -885,6 +952,9 @@ files mentioned in that header file.</p>
 <dd><dl class="first last docutils">
 <dt>graf_header_file (str):</dt>
 <dd>path to the GrAF header file</dd>
+<dt>xmlitems (dict):</dt>
+<dd>dictionary mapping the xml identifiers of nodes and edges of the common data to integers.
+Needed when compiling additional annotations on top of an already compiled source.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -922,7 +992,7 @@ to the factual task processor.</p>
 <dl class="attribute">
 <dt id="graf.shell.Shell.cur">
 <tt class="descname">cur</tt><em class="property"> = None</em><a class="headerlink" href="#graf.shell.Shell.cur" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds the current selection: the <em>source</em>, the <em>annox</em>, the <em>task</em> and the <em>force_compile</em> option, in that order.</p>
+<dd><p>Holds the current selection: the <em>source</em>, the <em>annox</em>, the <em>task</em> and the <em>force_compile_source</em>, <em>force_compile_annox</em> options, in that order.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1085,7 +1155,7 @@ row number of that item</dd>
 <span id="graf-task-module"></span><h2>graf.task module<a class="headerlink" href="#module-graf.task" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="graf.task.Feature">
-<em class="property">class </em><tt class="descname">Feature</tt><big>(</big><em>graftask</em>, <em>aspace</em>, <em>alabel</em>, <em>fname</em>, <em>kind</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Feature</tt><big>(</big><em>graftask</em>, <em>aspace</em>, <em>alabel</em>, <em>fname</em>, <em>kind</em>, <em>extra=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>This class is responsible for making the information in a single feature accessible to 
 tasks.</p>
@@ -1094,15 +1164,30 @@ tasks.</p>
 <p>It also gives a feature a fully qualified name that can act as an identifier.
 In fact, these names will be used as member names of the <a class="reference internal" href="#graf.task.Features" title="graf.task.Features"><tt class="xref py py-class docutils literal"><span class="pre">Features</span></tt></a> class, when its objects
 store sets of features.</p>
-<p>Feature lookups deliver integer codes for values. There are methods to get the real values back.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">There is no global mapping of all feature values to integers and back.
-Mappings are strictly per individual feature.
-In this way we miss some data compression, but we keep the feature information better separable,
-which is relevant because we only want to load features when a task asks for it.</p>
-</div>
+<p>A feature&#8217;s data may come from the source or the annox or both. They get merged here, and from 
+then on it is impossible to see where a feature value comes from.</p>
+<p>If you want to separate features from annox and source, give features in the annox other names,
+or give their containing annotations other labels, or put them in other
+annotation spaces.</p>
 <p>Upon creation, makes references to the feature data corresponding to the feature specified.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>graftask(<a class="reference internal" href="#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>):</dt>
+<dd>The task executing object that has all the data.</dd>
+<dt>aspace, alabel, fname, kind:</dt>
+<dd>The annotation space, annotation label, feature name, feature kind (node or edge)
+that together identify a single feature.</dd>
+<dt>extra (bool):</dt>
+<dd>indication of where to look for the feature data, because up till now annox feature data
+sits in another dictionary than source feature data.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="graf.task.Feature.add_data">
+<tt class="descname">add_data</tt><big>(</big><em>graftask</em>, <em>aspace</em>, <em>alabel</em>, <em>fname</em>, <em>kind</em><big>)</big><a class="headerlink" href="#graf.task.Feature.add_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upon creation, makes references to the feature data corresponding to the feature specified.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
@@ -1113,38 +1198,6 @@ which is relevant because we only want to load features when a task asks for it.
 that together identify a single feature.</dd>
 </dl>
 </dd>
-</dl>
-<dl class="method">
-<dt id="graf.task.Feature.i">
-<tt class="descname">i</tt><big>(</big><em>value_rep</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.i"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.i" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the integer code corresponding to an real feature value.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>value_rep (str):</dt>
-<dd>an value string for this feature</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>the integer code that assigned to it according to the
-table of values of this individual feature.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.Feature.r">
-<tt class="descname">r</tt><big>(</big><em>value_int</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.r" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the real value corresponding to an integer.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>value_int (int):</dt>
-<dd>an integer code for a value of this feature</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>the real value that the integer stands for according to the
-table of values of this individual feature.</dd>
 </dl>
 </dd></dl>
 
@@ -1161,22 +1214,6 @@ table of values of this individual feature.</dd>
 </dd>
 <dt>Returns:</dt>
 <dd>the value of this feature for that node or edge, represented as integer.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.Feature.vr">
-<tt class="descname">vr</tt><big>(</big><em>ne</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.vr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.vr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Look the feature <em>real</em> value up for a node or edge.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>ne (int):</dt>
-<dd>node or edge, identified by an integer.</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>the value of this feature for that node or edge, represented as its real value in the LAF source.</dd>
 </dl>
 </dd></dl>
 
@@ -1238,26 +1275,6 @@ Its location is the result directory for this task and this source.</dd>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="graf.task.GrafTask.annox_changed">
-<tt class="descname">annox_changed</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.annox_changed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to tell whether the annox name has changed</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graf.task.GrafTask.compile">
-<tt class="descname">compile</tt><big>(</big><em>force_compile</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.compile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compile the LAF resource if needed or if forced.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>force_compile (bool):</dt>
-<dd>whether to force compiling even if the need for it has not been detected.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="graf.task.GrafTask.finish_task">
 <tt class="descname">finish_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.finish_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.finish_task" title="Permalink to this definition">¶</a></dt>
@@ -1289,8 +1306,7 @@ are passed through, all others are skipped.</p>
 <dt>F(<a class="reference internal" href="#graf.task.Features" title="graf.task.Features"><tt class="xref py py-class docutils literal"><span class="pre">Features</span></tt></a>):</dt>
 <dd>Object containing all features declared in the task as a member. For example, the feature <tt class="docutils literal"><span class="pre">shebanq:ft.suffix</span></tt> is
 accessible as <tt class="docutils literal"><span class="pre">F.shebanq_ft_suffix</span></tt> if it isa node feature, or <tt class="docutils literal"><span class="pre">F.shebanq_ft_suffix_e</span></tt> if it is an edge feature.
-These feature objects in turn have methods to look features up and to translate between internal codes for the values
-and the real values as encountered in the source. See <a class="reference internal" href="#graf.task.Feature" title="graf.task.Feature"><tt class="xref py py-class docutils literal"><span class="pre">Feature</span></tt></a>.</dd>
+These feature objects in turn have a method to look features up. See <a class="reference internal" href="#graf.task.Feature" title="graf.task.Feature"><tt class="xref py py-class docutils literal"><span class="pre">Feature</span></tt></a>.</dd>
 <dt>X(<a class="reference internal" href="#graf.task.XMLids" title="graf.task.XMLids"><tt class="xref py py-class docutils literal"><span class="pre">XMLids</span></tt></a>):</dt>
 <dd>Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
 has specified. <tt class="docutils literal"><span class="pre">X.node</span></tt> contains mappings for nodes, <tt class="docutils literal"><span class="pre">X.edge</span></tt> for edges. These objects in turn have methods to 
@@ -1325,12 +1341,6 @@ this is the way to look up the set of related integers for each integer.</p>
 <dt>Returns:</dt>
 <dd>a list of the related integers.</dd>
 </dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task.GrafTask.has_compiled">
-<tt class="descname">has_compiled</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.has_compiled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to tell whether compilation has actually taken place</p>
 </dd></dl>
 
 <dl class="method">
@@ -1392,19 +1402,6 @@ whose presence in the related items set is to be tested.</dd>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="graf.task.GrafTask.loaded">
-<tt class="descname">loaded</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.loaded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set of feature data sets that have been loaded, node features and edge features under different keys</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task.GrafTask.prev_tasks">
-<tt class="descname">prev_tasks</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.prev_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of tasks executed in this run of the workbench, with the modification time of the task program file
-at the time it was last run</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="graf.task.GrafTask.result_files">
 <tt class="descname">result_files</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.result_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of handles to result files created by the task through the method <a class="reference internal" href="#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a></p>
@@ -1412,7 +1409,7 @@ at the time it was last run</p>
 
 <dl class="method">
 <dt id="graf.task.GrafTask.run">
-<tt class="descname">run</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em>, <em>force_compile=False</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em>, <em>force_compile={}</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a task.</p>
 <p>That is:
 * Load the data
@@ -1429,35 +1426,11 @@ at the time it was last run</p>
 <dd>name of the extra annotation package</dd>
 <dt>task:</dt>
 <dd>the chosen task</dd>
-<dt>force_compile (bool):</dt>
-<dd>whether to force (re)compilation of the LAF source</dd>
+<dt>force_compile (dict):</dt>
+<dd>whether to force (re)compilation of the LAF source for either &#8216;source&#8217; or &#8216;annox&#8217;.</dd>
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task.GrafTask.settings">
-<tt class="descname">settings</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to hold configuration settings</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task.GrafTask.source_changed">
-<tt class="descname">source_changed</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.source_changed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to tell whether the source name has changed</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task.GrafTask.task_changed">
-<tt class="descname">task_changed</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.task_changed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance member to tell whether the task name has changed</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="graf.task.GrafTask.xloaded">
-<tt class="descname">xloaded</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.GrafTask.xloaded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set of xmlid data sets that have been loaded, keys for <tt class="docutils literal"><span class="pre">node</span></tt> and <tt class="docutils literal"><span class="pre">edge</span></tt>.</p>
 </dd></dl>
 
 </dd></dl>

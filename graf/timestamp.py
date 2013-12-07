@@ -85,7 +85,10 @@ class Timestamp(object):
                 whether to precede the text with timing information (time elapsed since the last reset of the
                 underlying :class:`graf.timestamp.Stamp` object.
         '''
-        timed_msg = "{:>7}{}{}".format(self.elapsed()+' ' if withtime else '', msg, "\n" if newline else "")
+        timed_msg = "{:>7} ".format(self.elapsed()) if withtime else ''
+        timed_msg += msg
+        if newline:
+            timed_msg += "\n"
         sys.stdout.write(timed_msg)
         sys.stdout.flush()
         if self.log:

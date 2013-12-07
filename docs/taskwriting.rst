@@ -101,14 +101,17 @@ Finally, here is the complete Python code of the task that produced this output:
     }
 
     def task(graftask):
+        '''Produces a list of all WIVU objects with their types, ids and
+        *monads* (words) they contain.
+        '''
         (msg, NN, F, X) = graftask.get_mappings()
 
         out = graftask.add_result("output.txt")
 
         for i in NN():
-            oid = F.shebanq_db_oid.vr(i)
-            otype = F.shebanq_db_otype.vr(i)
-            monads = F.shebanq_db_monads.vr(i)
+            oid = F.shebanq_db_oid.v(i)
+            otype = F.shebanq_db_otype.v(i)
+            monads = F.shebanq_db_monads.v(i)
             out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))
 
 Information flow from task to workbench
@@ -161,11 +164,11 @@ Here is a short description of the corresponding methods.
     It is an object, and for each feature that you have declared, it has a member
     with a handy name. For example, ``F.shebanq_db_otype`` is a feature object
     that corresponds with the LAF feature given in an annotation in the annotation space ``shebanq``,
-    with label ``db`` and name ``otype``. It is a node feature, because otherwise the name had a 
-    ``_e`` appended to it. You can look up a feature value of this feature, say for node ``n``,by saying:
-    ``F.shebanq_db_otype.v(n)``. This will give you only a number, the code for the value. If you wanted the real value,
-    you had to say ``F.shebanq_db_otype.vr(n)``. If you want to convert between codes and real values for this feature,
-    you can do so by ``F.shebanq_db_otype.i(«real value»)`` and ``F.shebanq_db_otype.r(«number»)``
+    with label ``db`` and name ``otype``.
+    It is a node feature, because otherwise the name had a 
+    ``_e`` appended to it.
+    You can look up a feature value of this feature, say for node ``n``,by saying:
+    ``F.shebanq_db_otype.v(n)``. 
 
 *NN(test=function value=something)*
     If you want to walk through all the nodes, possibly skipping some, then this is your method.

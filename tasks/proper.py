@@ -74,23 +74,23 @@ def task(graftask):
                 stats_v[0] += 1
                 stats_c[0] += 1
                 p_o_s = F.shebanq_ft_part_of_speech.v(node)
-                if p_o_s == F.shebanq_ft_part_of_speech.i("noun"):
-                    if F.shebanq_ft_noun_type.v(node) == F.shebanq_ft_noun_type.i("proper"):
+                if p_o_s == "noun":
+                    if F.shebanq_ft_noun_type.v(node) == "proper":
                         stats_v[2] += 1
                         stats_c[2] += 1
-                        if F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("masculine"):
+                        if F.shebanq_ft_gender.v(node) == "masculine":
                             outchar = "♂"
                             stats_v[3] += 1
                             stats_c[3] += 1
-                        elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("feminine"):
+                        elif F.shebanq_ft_gender.v(node) == "feminine":
                             outchar = "♀"
                             stats_v[4] += 1
                             stats_c[4] += 1
-                        elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("unknown"):
+                        elif F.shebanq_ft_gender.v(node) == "unknown":
                             outchar = "⊙"
                             stats_v[5] += 1
                             stats_c[5] += 1
-                elif p_o_s == F.shebanq_ft_part_of_speech.i("verb"):
+                elif p_o_s == "verb":
                     outchar = "♠"
                     stats_v[1] += 1
                     stats_c[1] += 1
@@ -108,7 +108,7 @@ def task(graftask):
                             out.write("{}»".format(o))
                 del watch[monads]
         elif ob == "Ch":
-            this_chapter_label = "{} {}".format(F.shebanq_sft_book.vr(node), F.shebanq_sft_chapter.vr(node))
+            this_chapter_label = "{} {}".format(F.shebanq_sft_book.v(node), F.shebanq_sft_chapter.v(node))
             if stats_c[0] == None:
                 stats_c_compact.write("\t".join(('chapter', 'word', 'verb_f', 'proper_f')) + "\n")
             else:
@@ -118,7 +118,7 @@ def task(graftask):
                 stats_c[i] = 0
             stats_c_compact.write(this_chapter_label + "\t")
         elif ob == "V":
-            this_verse_label = F.shebanq_sft_verse_label.vr(node).strip(" ")
+            this_verse_label = F.shebanq_sft_verse_label.v(node).strip(" ")
             sys.stderr.write("\r{:<11}".format(this_verse_label))
             if stats_v[0] == None:
                 stats_v_raw.write("\t".join(('verse', 'word', 'verb', 'proper', 'masc', 'fem', 'unknown')) + "\n")
@@ -150,14 +150,14 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = F.shebanq_db_otype.vr(i)
+        otype = F.shebanq_db_otype.v(i)
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = F.shebanq_db_monads.vr(i)
-        minm = F.shebanq_db_minmonad.vr(i)
-        maxm = F.shebanq_db_maxmonad.vr(i)
+        monads = F.shebanq_db_monads.v(i)
+        minm = F.shebanq_db_minmonad.v(i)
+        maxm = F.shebanq_db_maxmonad.v(i)
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

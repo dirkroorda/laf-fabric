@@ -4,14 +4,6 @@ graf package
 Submodules
 ----------
 
-graf.compiler module
---------------------
-
-.. automodule:: graf.compiler
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 graf.graf module
 ----------------
 

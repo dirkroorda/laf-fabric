@@ -65,14 +65,14 @@ def task(graftask):
                 out.write("◘".format(monads))
             else:
                 outchar = "."
-                if F.shebanq_ft_part_of_speech.v(node) == F.shebanq_ft_part_of_speech.i("noun"):
-                    if F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("masculine"):
+                if F.shebanq_ft_part_of_speech.v(node) == "noun":
+                    if F.shebanq_ft_gender.v(node) == "masculine":
                         outchar = "♂"
-                    elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("feminine"):
+                    elif F.shebanq_ft_gender.v(node) == "feminine":
                         outchar = "♀"
-                    elif F.shebanq_ft_gender.v(node) == F.shebanq_ft_gender.i("unknown"):
+                    elif F.shebanq_ft_gender.v(node) == "unknown":
                         outchar = "?"
-                if F.shebanq_ft_part_of_speech.v(node) == F.shebanq_ft_part_of_speech.i("verb"):
+                if F.shebanq_ft_part_of_speech.v(node) == "verb":
                     outchar = "♠"
                 out.write(outchar)
             if monads in watch:
@@ -82,7 +82,7 @@ def task(graftask):
                         out.write("{})".format(o))
                 del watch[monads]
         elif ob == "V":
-            this_verse_label = F.shebanq_sft_verse_label.vr(node)
+            this_verse_label = F.shebanq_sft_verse_label.v(node)
             cur_verse_label[0] = this_verse_label
             cur_verse_label[1] = this_verse_label
         elif ob == "S":
@@ -99,14 +99,14 @@ def task(graftask):
     lastmax = None
 
     for i in NN():
-        otype = F.shebanq_db_otype.vr(i)
+        otype = F.shebanq_db_otype.v(i)
 
         ob = type_map[otype]
         if ob == None:
             continue
-        monads = F.shebanq_db_monads.vr(i)
-        minm = F.shebanq_db_minmonad.vr(i)
-        maxm = F.shebanq_db_maxmonad.vr(i)
+        monads = F.shebanq_db_monads.v(i)
+        minm = F.shebanq_db_minmonad.v(i)
+        maxm = F.shebanq_db_maxmonad.v(i)
         if lastmin == minm and lastmax == maxm:
             start[ob] = (i, minm, maxm, monads)
         else:

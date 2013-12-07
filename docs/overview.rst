@@ -75,6 +75,17 @@ Its aim is to provide a framework on top of which users can write small Python s
 perform analytic tasks on big GrAF resources.
 It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.
 
+With this workbench the user can include an add additional annotation package to the basic resource.
+He can also switch easily between additional packages without any need for recompiling the basic resource.
+The annotations in the extra package may come in new annotation spaces, but also in the ones
+that exist in the basic source.
+Features in the extra annotation package that coincide with existent features, override the existent ones,
+but only for the targets that the new ones annotate.
+
+With this device it becomes possible to include a set of corrections on the original features.
+Or alternatively, the user can include the results of his own work, whether manual or algorithmic or both,
+with the original data and do research on the combination.
+
 Limitations
 -----------
 While the `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_ module
@@ -94,15 +105,18 @@ The current workbench has proven to function well for a small set of tasks.
 This proves that the methodology works and that we can try more challenging things.
 The direction of the future work should be determined by the experiences coming out of that.
 
-An important desideratum is to add files with new annotations to the existing LAF resource, without 
-the need to recompile what has already been compiled.
-We want to offer a researcher a workflow where he can easily create new annotations, combine them
-with existing annotations, and switch between such sets.
+An important desideratum is to add files with new annotations to the existing LAF resource.
+The workbench makes that possible, but does not contain a ready made workflow to create such packages.
+All ingredients are available though. The workbench API exposes the original XML identifiers to 
+tasks. So it is possible to write a workbench task that emits a spreadsheet with text,
+where a user can put new annotations in an interlinear way.
+An other workbench task could read that spreadsheet and compute the right XML identifiers and transform
+it into a new annotation file which correctly targets the nodes and edges in the original source.
 
 That said, it is not difficult to spot other areas for improvement:
 
 #. gain experience with the tool by adding more example tasks
-#. improve the API, add extra primitives, especially for edges
+#. improve the API, add extra primitives, especially for nodesets and edges
 #. increase the support for features in full generality
 #. merge the tool with the existing `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_,
    preferably as a user selectable implementation choice 

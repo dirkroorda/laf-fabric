@@ -51,7 +51,11 @@ class Shell(object):
         self.settings.read_file(codecs.open(MAIN_CFG, encoding = 'utf-8'))
 
         self.source_choices = self.settings['source_choices']
-        self.annox_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("{}/*.xml".format(self.settings['locations']['annox_dir']))]
+        self.annox_choices = [self.settings['annox']['empty']] + [
+            os.path.splitext(os.path.basename(f))[0]
+            for f in glob.glob("{}/*".format(self.settings['locations']['annox_dir']))
+            if os.path.exists("{}/{}".format(f, self.settings['annox']['header']))
+        ]
         self.task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("{}/*.py".format(self.settings['locations']['task_dir']))]
 
         argsparser = argparse.ArgumentParser(description = 'Conversion of LAF to Binary')
@@ -80,10 +84,16 @@ class Shell(object):
             help = "which task to perform",
         )
         argsparser.add_argument(
-            "--force-compile",
-            dest = 'forcecompile',
+            "--force-compile-source",
+            dest = 'forcecompilesource',
             action = "store_true",
-            help = "Force new compilation of LAF XML to binary representation",
+            help = "Force new compilation of source to binary representation",
+        )
+        argsparser.add_argument(
+            "--force-compile-annox",
+            dest = 'forcecompileannox',
+            action = "store_true",
+            help = "Force new compilation of annox to binary representation",
         )
         argsparser.add_argument(
             "--menu",
@@ -106,8 +116,9 @@ class Shell(object):
         '''Response messages to be displayed after the prompt'''
 
         self.cur = [self.default[i] for i in range(len(self.index))]
-        '''Holds the current selection: the *source*, the *annox*, the *task* and the *force_compile* option, in that order.'''
-        self.cur.append(self.args.forcecompile)
+        '''Holds the current selection: the *source*, the *annox*, the *task* and the *force_compile_source*, *force_compile_annox* options, in that order.'''
+        self.cur.append(self.args.forcecompilesource)
+        self.cur.append(self.args.forcecompileannox)
 
         self.graftask = GrafTask(self.settings)
 
@@ -121,7 +132,7 @@ class Shell(object):
         command line args that did come through, are used as initial values.
         '''
         if self.args.source and self.args.annox and self.args.task and not self.args.menu:
-            self.graftask.run(self.args.source, self.args.annox, self.args.task, self.args.forcecompile)
+            self.graftask.run(self.args.source, self.args.annox, self.args.task, force_compile={'source': self.args.forcecompilesource, 'annox': self.args.forcecompileannox})
         else:
             self.command_loop()
 
@@ -131,11 +142,12 @@ class Shell(object):
 
         while True:
             self.prompt()
-            command = self.do_command("laf-fabric", "satcx", '''
+            command = self.do_command("laf-fabric", "satCcx", '''
     s=select source
     a=select annox
     t=select task
-    c=toggle force compile
+    C=toggle force compile source
+    c=toggle force compile annox
     x=execute selected task on selected source
 ''')
             if command == None:
@@ -168,13 +180,16 @@ class Shell(object):
             task = self.get_num("task", 1, len(self.task_choices))
             if task:
                 self.cur[2] = task - 1
-        elif command == "c":
+        elif command == "C":
             self.cur[len(self.index)] = not self.cur[len(self.index)]
+        elif command == "c":
+            self.cur[len(self.index)+1] = not self.cur[len(self.index)+1]
         elif command == "x":
             sys.stderr.write("\n")
             try:
-                self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile=self.cur[len(self.cur) - 1])
+                self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile={"source": self.cur[len(self.cur) - 2], "annox": self.cur[len(self.cur) - 1]})
                 self.cur[len(self.index)] = False
+                self.cur[len(self.index)+1] = False
             except:
                 print(traceback.print_exc())
             self.get_ch(prompt="Press any key to continue ...")
@@ -329,9 +344,10 @@ class Shell(object):
 
         sys.stderr.write(''' └──────────────────────────────────┴──────────────────────────────────┴──────────────────────────────────┘
  ┌─SETTING──────────────────────────┬─VALUE────────────────────────────┐
- │ force compile                    │ {:<3}                              │
+ │ force compile source             │ {:<3}                              │
+ │ force compile annox              │ {:<3}                              │
  └──────────────────────────────────┴──────────────────────────────────┘
-'''.format('ON' if self.cur[len(self.index)] else 'OFF'))
+'''.format('ON' if self.cur[len(self.index)] else 'OFF', 'ON' if self.cur[len(self.index)+1] else 'OFF'))
         sys.stderr.write(self.message)
 
     def weave(self, data):

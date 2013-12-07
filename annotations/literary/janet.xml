@@ -4,27 +4,27 @@
         <labelsDecl/>
         <dependencies/>
         <annotationSpaces>
-            <annotationSpace   as.id="shebanq" default="true"/>
+            <annotationSpace   as.id="janet" default="true"/>
         </annotationSpaces>
     </graphHeader>
-<a xml:id="a1" label="part" ref="n2"><fs>
-	<f name="code" value="A"/>
-	<f name="role" value="intro"/>
+<a xml:id="a1" label="style" ref="n2"><fs>
+	<f name="code" value="S"/>
+	<f name="role" value="figure1"/>
 </fs></a>
 
 <a xml:id="a1" label="part" ref="n3"><fs>
-	<f name="code" value="A"/>
-	<f name="role" value="follow-up"/>
+	<f name="code" value="S"/>
+	<f name="role" value="construct2"/>
 </fs></a>
 
 <a xml:id="a1" label="part" ref="n4"><fs>
-	<f name="code" value="B"/>
-	<f name="role" value="intro"/>
+	<f name="code" value="T"/>
+	<f name="role" value="figure1"/>
 </fs></a>
 
 <a xml:id="a1" label="part" ref="n5"><fs>
-	<f name="code" value="A"/>
-	<f name="role" value="follow-up"/>
+	<f name="code" value="S"/>
+	<f name="role" value="construct2"/>
 </fs></a>
 
 </graph>

@@ -10,47 +10,64 @@ import collections
 
 aspace_not_given = "_original_"
 
-good_regions = 0
-linked_nodes = 0
-good_edges = 0
-good_annots = 0
-good_feats = 0
+def init():
+    global good_regions
+    good_regions = 0
+    global linked_nodes
+    linked_nodes = 0
+    global good_edges
+    good_edges = 0
+    global good_annots
+    good_annots = 0
+    global good_feats
+    good_feats = 0
 
-faulty_regions = 0
-unlinked_nodes = 0
-faulty_edges = 0
-faulty_annots = 0
-faulty_feats = 0
+    global faulty_regions
+    faulty_regions = 0
+    global unlinked_nodes
+    unlinked_nodes = 0
+    global faulty_edges
+    faulty_edges = 0
+    global faulty_annots
+    faulty_annots = 0
+    global faulty_feats
+    faulty_feats = 0
 
-annotation_files = []
+    global annotation_files
+    annotation_files = []
 
-identifiers_r = {}
-identifiers_n = {}
-identifiers_e = {}
-identifiers_a = {}
+    global identifiers_r
+    identifiers_r = {}
+    global identifiers_n
+    identifiers_n = {}
+    global identifiers_e
+    identifiers_e = {}
+    global identifiers_a
+    identifiers_a = {}
 
-id_region = 0
-id_node = 0
-id_edge = 0
-id_annot = 0
+    global id_region
+    id_region = 0
+    global id_node
+    id_node = 0
+    global id_edge
+    id_edge = 0
+    global id_annot
+    id_annot = 0
 
-region_begin = array.array('I')
-region_end = array.array('I')
-node_region_list = []
-edges_from = array.array('I')
-edges_to = array.array('I')
-feature = collections.defaultdict(
-    lambda: collections.defaultdict(
-    lambda: collections.defaultdict(
-    lambda: collections.defaultdict(
-    lambda: {}
-))))
-feature_val_int = collections.defaultdict(
-    lambda: collections.defaultdict(
-    lambda: collections.defaultdict(
-    lambda: collections.defaultdict(
-    lambda: {}
-))))
+    global region_begin
+    region_begin = array.array('I')
+    global region_end
+    region_end = array.array('I')
+    global node_region_list
+    node_region_list = []
+    global edges_from
+    edges_from = array.array('I')
+    global edges_to
+    edges_to = array.array('I')
+    global feature
+    feature = collections.defaultdict(lambda:{})
+    global feature_val_int
+    feature_val_int = collections.defaultdict(lambda:{})
 
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
@@ -131,6 +148,10 @@ class AnnotationHandler(ContentHandler):
         '1': True,
         'on': True,
         'true': True,
+        'no': False,
+        '0': False,
+        'off': False,
+        'false': False,
     }
 
     def __init__(self, annotation_file, stamp):
@@ -151,8 +172,8 @@ class AnnotationHandler(ContentHandler):
             if "as.id" in attrs:
                 self.aspace = attrs["as.id"]
                 if "default" in attrs:
-                    default = attrs["default"]
-                    if default.casefold() in self.truth:
+                    is_default = attrs["default"].casefold()
+                    if is_default in self.truth and self.truth[is_default]:
                         self.aspace_default = self.aspace
             if self.aspace == None:
                 self.aspace = self.aspace_default
@@ -196,7 +217,6 @@ class AnnotationHandler(ContentHandler):
                 faulty_edges += 1
                 msg = "ERROR: invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name)
                 self.stamp.progress(msg)
-                print(msg)
             else:
                 good_edges += 1
                 edges_from.append(identifiers_n[from_node])
@@ -220,32 +240,37 @@ class AnnotationHandler(ContentHandler):
                 faulty_annots += 1
                 msg = "ERROR: invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(self.alabel, node_or_edge, self.aid, self.file_name)
                 self.stamp.progress(msg)
-                print(msg)
             else:
                 self.aref = None
                 self.atype = None
                 if node_or_edge in identifiers_n:
                     self.aref = identifiers_n[node_or_edge]
-                    self.atype = True
+                    self.atype = 'node'
+                    good_annots += 1
                 elif node_or_edge in identifiers_e:
                     self.aref = identifiers_e[node_or_edge]
-                    self.atype = False
+                    self.atype = 'edge'
+                    good_annots += 1
                 else:
-                    msg = "ERROR: invalid annotation target ref='{} (no node, no edge)' for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
+                    faulty_annots += 1
+                    msg = "ERROR: invalid annotation target ref='{}' (no node, no edge) for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
                     self.stamp.progress(msg)
-                    print(msg)
-                good_annots += 1
         elif name == "f":
             global faulty_feats
+            global good_feats
             self.aempty = False
             fname = attrs["name"]
             if not fname:
                 faulty_feats += 1
-                msg = "ERROR: invalid feature spec name='{}' value='{}' for feature in annotation in file {}".format(fname, value, self.aid, self.file_name)
+                msg = "ERROR: invalid feature spec name='{}' value='{}' for feature in annotation {} in file {}".format(fname, value, self.aid, self.file_name)
                 self.stamp.progress(msg)
-                print(msg)
-            value = attrs["value"]
-            self.add_feature_instance(fname, value)
+            elif self.aref == None:
+                faulty_feats += 1
+                msg = "ERROR: undetermined feature kind (node/edge) for feature {} in annotation {} in {}".format(fname, self.aid, self.file_name)
+            else:
+                good_feats += 1
+                value = attrs["value"]
+                self.add_feature_instance(fname, value)
 
     def endElement(self, name):
         if name == "node":
@@ -269,17 +294,16 @@ class AnnotationHandler(ContentHandler):
         pass
 
     def add_feature_instance(self, fname, value):
-        global good_feats
         this_fv_id = None
-        if value in feature_val_int[self.aspace][self.alabel][fname][self.atype]:
-            this_fv_id = feature_val_int[self.aspace][self.alabel][fname][self.atype][value]
+        feature_key = (self.aspace, self.alabel, fname, self.atype)
+        if value in feature_val_int[feature_key]:
+            this_fv_id = feature_val_int[feature_key][value]
         else:
-            this_fv_id = len(feature_val_int[self.aspace][self.alabel][fname][self.atype])
-            feature_val_int[self.aspace][self.alabel][fname][self.atype][value] = this_fv_id
-        good_feats += 1
-        feature[self.aspace][self.alabel][fname][self.atype][self.aref] = this_fv_id
+            this_fv_id = len(feature_val_int[feature_key])
+            feature_val_int[feature_key][value] = this_fv_id
+        feature[feature_key][self.aref] = this_fv_id
 
-def parse(graf_header_file, stamp):
+def parse(graf_header_file, stamp, xmlitems):
     '''Parse a GrAF resource.
     
     Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
@@ -288,6 +312,9 @@ def parse(graf_header_file, stamp):
     Args:
         graf_header_file (str):
             path to the GrAF header file
+        xmlitems (dict):
+            dictionary mapping the xml identifiers of nodes and edges of the common data to integers.
+            Needed when compiling additional annotations on top of an already compiled source.
 
     Returns:
         a tuple of items which comprise the parse results.
@@ -302,9 +329,14 @@ def parse(graf_header_file, stamp):
     the task-executing object.
     '''
 
-    global annotation_files
-    annotation_files = []
+    init()
     saxparse(graf_header_file, HeaderHandler(stamp))
+
+    if xmlitems != None:
+        global identifiers_n
+        global identifiers_e
+        identifiers_n = xmlitems['node']
+        identifiers_e = xmlitems['edge']
 
     for annotation_file in annotation_files:
         msg = "parsing {}".format(annotation_file)
@@ -328,7 +360,7 @@ def parse(graf_header_file, stamp):
     )
     stamp.progress(msg)
     return (
-        ("xid_int", {True: identifiers_n, False: identifiers_e}, True),
+        ("xid_int", collections.defaultdict(lambda:{}, (('node', identifiers_n), ('edge', identifiers_e))), True),
         ("region_begin", region_begin, True),
         ("region_end", region_end, True),
         ("node_region_list", node_region_list, False),

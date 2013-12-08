@@ -5,7 +5,6 @@ import os
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../tasks'))
-sys.path.insert(0, os.path.abspath('../graf'))
 
 extensions = [
     'sphinx.ext.autodoc',

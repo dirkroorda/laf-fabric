@@ -10,8 +10,12 @@ It has two major components:
 #. an execution environment that gives Python scripts access to LAF data and is optimized for feature lookup.
 
 The selling point of the workbench is performance, both in terms of speed and memory usage.
-The second goal is to make it really easy for users to write analytic tasks straightforwardly in terms of LAF concepts
+The second goal is to make it really easy for you to write analytic tasks straightforwardly in terms of LAF concepts
 without bothering about performance.
+
+Both points go hand in hand, because if the workbench needs to much time to execute your tasks,
+it becomes very tedious to experiment with them.
+I wrote this workbench to make the cycle of trial and error with your tasks as smooth as possible.
 
 Workflow
 ========
@@ -19,7 +23,8 @@ The typical workflow is:
 
 #. install a LAF resource somewhere on the filesystem.
    A LAF resource is a directory with a primary data file, annotation files and header files.
-   In testing the workbench, I used a the :ref:`LAF version of the Hebrew Bible <data>`
+   In testing the workbench, I used a the :ref:`LAF version of the Hebrew Bible <data>`.
+   But see also [#nolaf]_ for working without the original resource.
 #. install the LAF workbench package somewhere on a computing system.
 #. in a configuration file, adapt the locations of the LAF directory and provide a work/results directory.
 #. write your own script, and put it in the right directory.
@@ -49,7 +54,7 @@ And you can even cut out this loading time by running multiple tasks in a single
 
 After loading the data, the workbench invokes your task script(s).
 You must declare the LAF-features that you use in your script, and the workbench will load data for them.
-Loading a handful of features typically adds 0.5 seconds to the load time.
+Loading a feature typically adds 0.1 to 1 second to the load time.
 It will also unload the data for features that the script has not declared.
 This is in order not to burden the RAM with data that does not pertain to the task.
 
@@ -81,10 +86,12 @@ You get a directory *laf-fabric* with the following inside:
 * *laf-fabric.py*: a script to call the workbench
 * *docs*: this documentation
 * *tasks*: a directory with example tasks.
+* *annotations*: a directory with example annotations (toy)
 
 .. caution::
 
-   If you develop your own tasks, put them in a separate directory, otherwise you
+   If you develop your own tasks and annotations,
+   put them in a separate directory, otherwise you
    may loose your work in them when you pull updates from Github.
    See *Configuration* below.
 
@@ -178,7 +185,7 @@ The workbench is a Python program that is invoked from the command line.
     There is a help command and the prompt is self explanatory.
 
 *single use mode*
-    If both the ``«source»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
+    If all of the ``«source»``, ``«annox»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
     the workbench runs the specified task without asking and quits.
 
 Other options
@@ -209,9 +216,9 @@ Explanation of these ideas
 In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
 Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
 In the compiled version we get rid of all XML identifiers.
-Everything that comes in great quantities will be represented by integers: regions, nodes, edges, feature values.
+We will represent everything that comes in great quantities by integers: regions, nodes, edges, feature values.
 But feature names, annotation labels and annotation spaces will be kept as is.
-For feature values we will create mapping tables and the end user will not see the codes but only the original values.
+For feature values we will create mapping tables and you will not see their integer codes but only the original values.
 
 **Relationships between integers as Python arrays**
 In Python, an array is a C-like structure of memory slots of fixed size.
@@ -267,19 +274,18 @@ The design of the workbench is such that feature data is neatly chunked per indi
 
 .. note::
     Features coming from the source and features coming from the extra annotation package will be merged
-    before the user can touch them in his tasks.
+    before the you can touch them in tasks.
     This merging occurs late in the process, even after the loading of features by the workbench.
-    Only when the tasks calls the API mappings, the features will be assembled into objects, where the source features
-    and annox features finally get merged.
+    Only when a tasks calls the API mappings, the features will be assembled into objects,
+    where the source features and annox features finally get merged.
     When the task exits, the merged features get lost. 
 
 Consequences
 ------------
 The concrete XML identifiers present in the LAF resource are moved to the background. 
-Only if your tasks ask for them explicitly, they can be loaded.
+Only if your task asks for them explicitly, they can be loaded.
 In that case you get mappings between the xml-identifiers and the internal integer codes
-for nodes and for edges.
-This requires considerable overhead.
+for nodes and for edges. This requires considerable overhead.
      
 Whoever designs a LAF resource to be worked on by this workbench,
 should not rely on the values of the XML identifiers to derive implicit meanings from.
@@ -341,3 +347,13 @@ so by just inspecting the classes and objects you can reach out
 for all aspects of the LAF data that went into the compiled data.
 See the GrAF :ref:`feature coverage` for a specification of what data ends up in the compilation.
 
+.. rubric:: Footnotes
+
+.. [#nolaf] It is perfectly possible to run the workflow without the original LAF resource.
+   If somebody has compiled a LAF resource for you, he only need to give you the compiled data,
+   and let the LAF source in the configuration point to something non-existent.
+   In that case the workbench will not complain, and never attempt to recompile the original resource.
+   You can still add extra annotation packages, which still can be compiled against the original LAF source,
+   since the original XML identifiers are part of the compiled data.
+   In case of the WIVU LAF resource: the original resource is over 2 GB on disk,
+   while the compiled binary data is less than 500 MB.

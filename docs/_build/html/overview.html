@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LAF Fabric &mdash; LAF Fabric 1.1.1 documentation</title>
+  <title>LAF Fabric &mdash; LAF Fabric 2.0.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'1.1.1',
+        VERSION:'2.0.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 1.1.1 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 2.0.0 documentation" href="index.html"/>
         <link rel="next" title="LAF workbench" href="workbench.html"/>
         <link rel="prev" title="LAF-Fabric documentation" href="index.html"/> 
 
@@ -150,13 +150,16 @@
   <div class="section" id="laf-fabric">
 <h1>LAF Fabric<a class="headerlink" href="#laf-fabric" title="Permalink to this headline">¶</a></h1>
 <img alt="_images/logo.png" src="_images/logo.png" />
-<p>The word fabric denotes a texture, and a LAF resource can be seen as a texture of annotations to
+<p>(for provenance of this image, see <a class="footnote-reference" href="#laffabric" id="id1">[1]</a>)</p>
+<p>The word <strong>fabric</strong> denotes a texture, and a LAF resource can be seen as a texture of annotations to
 a primary data source.</p>
 <p>In other languages than English, and possibly in English as well, fabric also denotes a place were
-stuff is made. The location of industry.</p>
+stuff is made. For etymology, see <a class="reference external" href="http://en.wiktionary.org/wiki/faber">faber</a>.
+The location of industry, a factory (but that word derives from the slightly different
+<a class="reference external" href="http://en.wiktionary.org/wiki/facio">facere</a>).</p>
 <p>What if you want to study the data that is in the fabric of a LAF resource?
 You need tools. And what if you want to add your own tapestry to the fabric?</p>
-<p>You need an environment where tools can be developed and data can be combined. A factory.</p>
+<p>You need an environment where tools can be developed and data can be combined.</p>
 <p>This is the LAF Fabric.</p>
 <div class="section" id="what-is-laf-graf">
 <h2>What is LAF/GrAF<a class="headerlink" href="#what-is-laf-graf" title="Permalink to this headline">¶</a></h2>
@@ -170,9 +173,9 @@ GrAF, Graph Annotation Framework, is a set of
 LAF describes data that comes as a linearly ordered <em>primary data</em> stream
 (audio, video, text, or anything that has a one dimensional order), in which <em>regions</em> can be defined.
 <em>Annotations</em> are key=value pairs or <em>feature structures</em> in general,
-which conform to the joint definition with the Text Encoding Initiative
-(<a class="reference external" href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/FS.html">TEI Feature Structures</a>
-and <a class="reference external" href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=37324">ISO version</a>).
+which conform to the joint definition of
+<a class="reference external" href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/FS.html">TEI Feature Structures</a>
+and <a class="reference external" href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=37324">ISO 24610</a>).
 Between the primary data and the annotations is a <em>graph</em> of <em>nodes</em> and <em>edges</em>.
 Some nodes are linked to regions of primary data.
 Some nodes are linked to other nodes by means of edges.
@@ -181,7 +184,7 @@ An annotation may refer to a node or to an edge, but not both.</p>
 Annotations can be labeled and they can be organized in <em>annotation spaces</em>.</p>
 </div>
 <div class="section" id="data">
-<span id="id2"></span><h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <p>Although this tool is written to deal with LAF resources in general, it has been developed with a particular
 LAF resource in mind:
 the <a class="reference external" href="http://www.dans.knaw.nl/en/content/categorieen/projecten/text-database-hebrew-old-testament">WIVU text database of the Hebrew Bible</a>.
@@ -203,24 +206,28 @@ that can read generic GrAF resources.
 It exposes an API to work with the graph and annotations of such resources.
 However, when feeding it a resource with 430 k words and 2 GB of annotation material,
 the performance is such that the graph does not fit into memory of a laptop.
-Clearly, the tool has been defined for bunches of smaller GrAF documents,
-and not for a single documents of 500 k words and GBs of annotation material.</p>
+Clearly, the tool has been developed for bunches of smaller GrAF documents,
+and not for single documents with a half million words words and gigabytes of annotation material.</p>
 </div>
 <div class="section" id="this-workbench">
 <h2>This workbench<a class="headerlink" href="#this-workbench" title="Permalink to this headline">¶</a></h2>
 <p>The present workbench seeks to remedy that situation.
-Its aim is to provide a framework on top of which users can write small Python scripts that
+Its aim is to provide a framework on top of which you can write small Python scripts that
 perform analytic tasks on big GrAF resources.
-It achieves this goal by efficient storage of data, both on disk and in RAM and by precomputing indices.</p>
-<p>With this workbench the user can include an add additional annotation package to the basic resource.
-He can also switch easily between additional packages without any need for recompiling the basic resource.
-The annotations in the extra package may come in new annotation spaces, but also in the ones
-that exist in the basic source.
+It achieves this goal by compiling xml into compact binary data, both on disk and in RAM and by
+selective loading of features. The binary data loads very fast. Only selected features will be loaded,
+and after loading they will be blown up into data structures that facilitate fast lookup of values.</p>
+<p>With this workbench you can add an additional annotation package to the basic resource.
+You can also switch easily between additional packages without any need for recompiling the basic resource.
+The annotations in the extra package may define new annotation spaces, but they can
+also declare themselves in the spaces that exist in the basic source.
 Features in the extra annotation package that coincide with existent features, override the existent ones,
-but only for the targets that the new ones annotate.</p>
-<p>With this device it becomes possible to include a set of corrections on the original features.
-Or alternatively, the user can include the results of his own work, whether manual or algorithmic or both,
-with the original data and do research on the combination.</p>
+in the sense that for targets where they define a different value,
+the one of the added annotation package is taken. Where the additional package does not provide values,
+the original values are used.</p>
+<p>With this device it becomes possible for you to include a set of corrections to the original features.
+Or alternatively, you can include the results of your own work, whether manual or algorithmic or both,
+with the original data. You can then do <em>what-if</em> research on the combination.</p>
 <div class="section" id="limitations">
 <h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
 <p>While the <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a> module
@@ -237,47 +244,50 @@ It only handles features in so far as they consist of key-value pairs, coded as:
 <h3>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h3>
 <p>The current workbench has proven to function well for a small set of tasks.
 This proves that the methodology works and that we can try more challenging things.
-The direction of the future work should be determined by the experiences coming out of that.</p>
-<p>An important desideratum is to add files with new annotations to the existing LAF resource.
-The workbench makes that possible, but does not contain a ready made workflow to create such packages.
+The direction of the future work should be determined by your research needs.</p>
+<p>While the workbench supports adding an extra annotation package to the existing LAF resource,
+it does not contain a ready made workflow to create such packages.
 All ingredients are available though. The workbench API exposes the original XML identifiers to
-tasks. So it is possible to write a workbench task that emits a spreadsheet with text,
-where a user can put new annotations in an interlinear way.
+your tasks. So you can write a workbench task that emits a spreadsheet with text plus
+node and edge identifiers, where you can put new annotations in an interlinear way.
 An other workbench task could read that spreadsheet and compute the right XML identifiers and transform
-it into a new annotation file which correctly targets the nodes and edges in the original source.</p>
+it into a new annotation file that can be properly combined with the original resource.</p>
+<p>I hope to find time to provide example tasks that exemplify this workflow.</p>
 <p>That said, it is not difficult to spot other areas for improvement:</p>
 <ol class="arabic simple">
 <li>gain experience with the tool by adding more example tasks</li>
-<li>improve the API, add extra primitives, especially for nodesets and edges</li>
-<li>increase the support for features in full generality</li>
+<li>improve the API, add extra primitives, especially for (ordered) node sets and edges</li>
 <li>merge the tool with the existing <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a>,
-preferably as a user selectable implementation choice</li>
+preferably as a user-selectable implementation choice</li>
 </ol>
 </div>
 </div>
 <div class="section" id="rationale">
 <h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
 <p>The paradigms for biblical research are becoming <em>data-driven</em>.
-Researchers need increasingly sophisticated ways to get qualitative and quantitative data out of their resources.
-They are in the best position to define what they need and ... to fulfill those needs.
-To that end they need the freedom to access the data and tools relevant to them and to adapt them to their needs.</p>
-<p>This workbench is a stepping stone for humanities researchers with limited time for programming
-to the wonderful world of computing. With it they can extract data from their resources of interest and
-feed it into other tools.</p>
-<p>See for example the task <a class="reference internal" href="tasks/esther.html#module-esther" title="esther"><tt class="xref py py-mod docutils literal"><span class="pre">esther</span></tt></a>, which codes in less than a page an extraction of <strong>data tables</strong> relevant to the
-study of linguistic variation in the Hebrew Bible. These tables are suitable for subsequent data analysis
+If you work in that field, you need increasingly sophisticated ways
+to get qualitative and quantitative data out of your texts.
+You are in the best position to define what you need and ... to fulfill those needs,
+provided you have some people in your group that have basic programming experience.</p>
+<p>This workbench is a stepping stone for teams in digital humanities to the wonderful world of computing.
+With it they you extract data from your resources of interest and feed it into your other tools.</p>
+<p>See for example the task <a class="reference internal" href="tasks/esther.html#module-esther" title="esther"><tt class="xref py py-mod docutils literal"><span class="pre">esther</span></tt></a>,
+which codes in less than a page an extraction of <strong>data tables</strong> relevant to the
+study of linguistic variation in the Hebrew Bible.
+These tables are suitable for subsequent data analysis
 by means of the open source <a class="reference external" href="http://www.r-project.org">statistics toolkit R</a>.</p>
-<p>An other example is the task <a class="reference internal" href="tasks/proper.html#module-proper" title="proper"><tt class="xref py py-mod docutils literal"><span class="pre">proper</span></tt></a>, which outputs a <strong>vizualization</strong> of the text of the Hebrew Bible in which
-the syntactic structure is visible and the proper nouns and their gender.
+<p>An other example is the task <a class="reference internal" href="tasks/proper.html#module-proper" title="proper"><tt class="xref py py-mod docutils literal"><span class="pre">proper</span></tt></a>, which outputs a <strong>visualization</strong> of the text of the Hebrew Bible
+in which the syntactic structure of the text is visible plus the the genders of all the proper nouns.
 With this visualization it becomes possible to discern genealogies from other genres with the unaided eye,
 even without being able to read a letter of Hebrew.</p>
-<p>All this code is on Github, workbench and example tasks.
-Researchers are invited to develop their own tasks and share them, either through data archives or directly through
-Github. In doing so, they will create a truly state of the art research tool, adapted to
-the scholarly needs of analysis, review and publication.</p>
+<p>The code of this LAF workbench is on Github, including example tasks and a example extra annotation packages.
+You are invited to develop your own tasks and share them,
+either through data archives or directly through Github.
+In doing so, you (together) will create a truly state of the art research tool,
+adapted to your scholarly needs of analysis, review and publication.</p>
 </div>
 <div class="section" id="author">
-<span id="id5"></span><h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
 <p>This work has been undertaken first in November 2013 by Dirk Roorda, working for
 <a class="reference external" href="http://www.dans.knaw.nl/en">Data Archiving and Networked Services (DANS)</a> and
 <a class="reference external" href="http://tla.mpi.nl">The Language Archive (TLA)</a>.
@@ -291,6 +301,15 @@ together with the researchers at the
 <div class="section" id="links">
 <h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
 <p>2013-11-26 <a class="reference external" href="http://www.slideshare.net/dirkroorda/work-28611072">Vitamin Talk to the TLA team Nijmegen</a>.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="laffabric" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Image found by an internet search on fabric and some other term that I forgot.
+By a google search on the image itself, I managed to find the
+<a class="reference external" href="http://www.hobbycraft.co.uk/hobbycraft-textured-fabric-reel-cream-2-metre/584337-1000">original context</a>.</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 

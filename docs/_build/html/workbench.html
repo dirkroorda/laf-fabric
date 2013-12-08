@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LAF workbench &mdash; LAF Fabric 1.1.1 documentation</title>
+  <title>LAF workbench &mdash; LAF Fabric 2.0.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'1.1.1',
+        VERSION:'2.0.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 1.1.1 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 2.0.0 documentation" href="index.html"/>
         <link rel="next" title="Writing Tasks" href="taskwriting.html"/>
         <link rel="prev" title="LAF Fabric" href="overview.html"/> 
 
@@ -158,8 +158,11 @@ It has two major components:</p>
 <li>an execution environment that gives Python scripts access to LAF data and is optimized for feature lookup.</li>
 </ol>
 <p>The selling point of the workbench is performance, both in terms of speed and memory usage.
-The second goal is to make it really easy for users to write analytic tasks straightforwardly in terms of LAF concepts
+The second goal is to make it really easy for you to write analytic tasks straightforwardly in terms of LAF concepts
 without bothering about performance.</p>
+<p>Both points go hand in hand, because if the workbench needs to much time to execute your tasks,
+it becomes very tedious to experiment with them.
+I wrote this workbench to make the cycle of trial and error with your tasks as smooth as possible.</p>
 </div>
 <div class="section" id="workflow">
 <h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
@@ -167,7 +170,8 @@ without bothering about performance.</p>
 <ol class="arabic simple">
 <li>install a LAF resource somewhere on the filesystem.
 A LAF resource is a directory with a primary data file, annotation files and header files.
-In testing the workbench, I used a the <a class="reference internal" href="overview.html#data"><em>LAF version of the Hebrew Bible</em></a></li>
+In testing the workbench, I used a the <a class="reference internal" href="overview.html#data"><em>LAF version of the Hebrew Bible</em></a>.
+But see also <a class="footnote-reference" href="#nolaf" id="id1">[1]</a> for working without the original resource.</li>
 <li>install the LAF workbench package somewhere on a computing system.</li>
 <li>in a configuration file, adapt the locations of the LAF directory and provide a work/results directory.</li>
 <li>write your own script, and put it in the right directory.</li>
@@ -191,7 +195,7 @@ If you need the original XML identifiers for your task, there will be 2 to 5 sec
 <p>And you can even cut out this loading time by running multiple tasks in a single session.</p>
 <p>After loading the data, the workbench invokes your task script(s).
 You must declare the LAF-features that you use in your script, and the workbench will load data for them.
-Loading a handful of features typically adds 0.5 seconds to the load time.
+Loading a feature typically adds 0.1 to 1 second to the load time.
 It will also unload the data for features that the script has not declared.
 This is in order not to burden the RAM with data that does not pertain to the task.</p>
 </div>
@@ -220,10 +224,12 @@ git clone https://github.com/dirkroorda/laf-fabric</pre>
 <li><em>laf-fabric.py</em>: a script to call the workbench</li>
 <li><em>docs</em>: this documentation</li>
 <li><em>tasks</em>: a directory with example tasks.</li>
+<li><em>annotations</em>: a directory with example annotations (toy)</li>
 </ul>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
-<p class="last">If you develop your own tasks, put them in a separate directory, otherwise you
+<p class="last">If you develop your own tasks and annotations,
+put them in a separate directory, otherwise you
 may loose your work in them when you pull updates from Github.
 See <em>Configuration</em> below.</p>
 </div>
@@ -309,7 +315,7 @@ The <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt c
 In interactive mode you can change your <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> selection, and run tasks.
 There is a help command and the prompt is self explanatory.</dd>
 <dt><em>single use mode</em></dt>
-<dd>If both the <tt class="docutils literal"><span class="pre">«source»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are present and if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is absent
+<dd>If all of the <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are present and if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is absent
 the workbench runs the specified task without asking and quits.</dd>
 </dl>
 </div>
@@ -343,9 +349,9 @@ There are also a few simplifications involved, see the section of GrAF <a class=
 In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
 Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
 In the compiled version we get rid of all XML identifiers.
-Everything that comes in great quantities will be represented by integers: regions, nodes, edges, feature values.
+We will represent everything that comes in great quantities by integers: regions, nodes, edges, feature values.
 But feature names, annotation labels and annotation spaces will be kept as is.
-For feature values we will create mapping tables and the end user will not see the codes but only the original values.</p>
+For feature values we will create mapping tables and you will not see their integer codes but only the original values.</p>
 <p><strong>Relationships between integers as Python arrays</strong>
 In Python, an array is a C-like structure of memory slots of fixed size.
 You do not have arrays of arrays, nor arrays with mixed types.
@@ -393,20 +399,19 @@ a nightmare to maintain the values of features.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Features coming from the source and features coming from the extra annotation package will be merged
-before the user can touch them in his tasks.
+before the you can touch them in tasks.
 This merging occurs late in the process, even after the loading of features by the workbench.
-Only when the tasks calls the API mappings, the features will be assembled into objects, where the source features
-and annox features finally get merged.
+Only when a tasks calls the API mappings, the features will be assembled into objects,
+where the source features and annox features finally get merged.
 When the task exits, the merged features get lost.</p>
 </div>
 </div>
 <div class="section" id="consequences">
 <h3>Consequences<a class="headerlink" href="#consequences" title="Permalink to this headline">¶</a></h3>
 <p>The concrete XML identifiers present in the LAF resource are moved to the background.
-Only if your tasks ask for them explicitly, they can be loaded.
+Only if your task asks for them explicitly, they can be loaded.
 In that case you get mappings between the xml-identifiers and the internal integer codes
-for nodes and for edges.
-This requires considerable overhead.</p>
+for nodes and for edges. This requires considerable overhead.</p>
 <p>Whoever designs a LAF resource to be worked on by this workbench,
 should not rely on the values of the XML identifiers to derive implicit meanings from.
 I did that in initial stages, producing identifiers <tt class="docutils literal"><span class="pre">n_1,</span> <span class="pre">n_2,</span> <span class="pre">e_1,</span> <span class="pre">e_2</span></tt> etcetera for node 1, 2 and edge 1, 2.
@@ -465,6 +470,20 @@ feature values.</dd>
 so by just inspecting the classes and objects you can reach out
 for all aspects of the LAF data that went into the compiled data.
 See the GrAF <a class="reference internal" href="#feature-coverage"><em>GrAF feature coverage</em></a> for a specification of what data ends up in the compilation.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="nolaf" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>It is perfectly possible to run the workflow without the original LAF resource.
+If somebody has compiled a LAF resource for you, he only need to give you the compiled data,
+and let the LAF source in the configuration point to something non-existent.
+In that case the workbench will not complain, and never attempt to recompile the original resource.
+You can still add extra annotation packages, which still can be compiled against the original LAF source,
+since the original XML identifiers are part of the compiled data.
+In case of the WIVU LAF resource: the original resource is over 2 GB on disk,
+while the compiled binary data is less than 500 MB.</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

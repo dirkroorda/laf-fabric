@@ -139,13 +139,12 @@ For all other features data will be unloaded, if still loaded.
     do use it in your task,
     the workbench will stop your task and shout error messages at you.
     If you declare features that do not exist in the LAF data, you just get
-    a warning. But if you try to use such features, you get also an error
-    in that case.
+    a warning. But if you try to use such features, you get also a loud error.
 
 Information flow from workbench to task
 =======================================
 The workbench will call the function *task(object)* in your task script,
-and the thing that is passed to it as *object* is an object of
+and the thing it hands over to it as *object* is an object of
 class :class:`GrafTask <graf.task.GrafTask>`.
 By using this object, you have to access all of its methods. 
 
@@ -174,10 +173,12 @@ Here is a short description of the corresponding methods.
     If you want to walk through all the nodes, possibly skipping some, then this is your method.
     It is an *iterator* that yields a new node everytime it is called.
     The order is so-called *primary data order*, which will be explained below.
-    The ``test`` and ``value`` arguments are optional. If given, ``test`` should be a *callable* with one argument,
-    returning a string, and ``value`` a string.
-    ``test`` will be called for each passing node, and if the value returned is not equal to the given value, the node
-    will be skipped.
+    The ``test`` and ``value`` arguments are optional.
+    If given, ``test`` should be a *callable* with one argument, returning a string;
+    ``value`` should be a string.
+    ``test`` will be called for each passing node,
+    and if the value returned is not equal to the given ``value``,
+    the node will be skipped.
     See :meth:`next_node() <graf.task.GrafTask.get_mappings>`.
 
 *X*

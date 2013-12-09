@@ -65,14 +65,14 @@ latex_documents = [
 # -- Options for manual page output ---------------------------------------
 
 man_pages = [
-    ('index', 'LAF Fabric', u'LAF Fabric Documentation',
+    ('index', 'LAF_Fabric', u'LAF Fabric Documentation',
      [u'Dirk Roorda'], 1)
 ]
 
 # -- Options for Texinfo output -------------------------------------------
 
 texinfo_documents = [
-  ('index', 'LAF Fabric', u'LAF Fabric Documentation',
+  ('index', 'LAF_Fabric', u'LAF Fabric Documentation',
    u'Dirk Roorda', 'LAF Fabric', 'One line description of project_name.',
    'Miscellaneous'),
 ]
@@ -83,7 +83,7 @@ epub_title = u'LAF Fabric'
 epub_author = u'Dirk Roorda'
 epub_publisher = u'Dirk Roorda'
 epub_copyright = u'2013, Dirk Roorda'
-epub_basename = u'LAF Fabric'
+epub_basename = u'LAF_Fabric'
 epub_theme = 'epub'
 epub_show_urls = 'footnote'
 epub_use_index = True

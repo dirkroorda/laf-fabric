@@ -128,7 +128,9 @@ That said, it is not difficult to spot other areas for improvement:
 #. gain experience with the tool by adding more example tasks
 #. improve the API, add extra primitives, especially for (ordered) node sets and edges
 #. merge the tool with the existing `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_,
-   preferably as a user-selectable implementation choice 
+   preferably as a user-selectable implementation choice.
+#. Investigate whether NEO4J could serve as a tool to implement feature structures in 
+   full generality. 
 
 Rationale
 =========
@@ -177,7 +179,12 @@ Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbe
 
 Links
 =====
-2013-11-26 `Vitamin Talk to the TLA team Nijmegen <http://www.slideshare.net/dirkroorda/work-28611072>`_.
+**2013-12-09**
+Abstract sent to `CLIN <http://clin24.inl.nl>`_ (Computational Linguistics In the Netherlands) accepted.
+To be deliverd 2014-01-17. 
+
+**2013-11-26**
+`Vitamin Talk to the TLA team Nijmegen <http://www.slideshare.net/dirkroorda/work-28611072>`_.
 
 .. rubric:: Footnotes
 

@@ -232,7 +232,10 @@
 <span class="sd">                whether to precede the text with timing information (time elapsed since the last reset of the</span>
 <span class="sd">                underlying :class:`graf.timestamp.Stamp` object.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">timed_msg</span> <span class="o">=</span> <span class="s">&quot;{:&gt;7}{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">()</span><span class="o">+</span><span class="s">&#39; &#39;</span> <span class="k">if</span> <span class="n">withtime</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="k">if</span> <span class="n">newline</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">timed_msg</span> <span class="o">=</span> <span class="s">&quot;{:&gt;7} &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">())</span> <span class="k">if</span> <span class="n">withtime</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+        <span class="n">timed_msg</span> <span class="o">+=</span> <span class="n">msg</span>
+        <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
+            <span class="n">timed_msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">timed_msg</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>

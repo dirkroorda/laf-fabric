@@ -157,8 +157,7 @@
 <span class="kn">import</span> <span class="nn">array</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 
-<span class="kn">from</span> <span class="nn">graf.compiler</span> <span class="kn">import</span> <span class="n">GrafCompiler</span>
-<span class="kn">from</span> <span class="nn">graf.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
+<span class="kn">from</span> <span class="nn">.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
 
 <div class="viewcode-block" id="GrafTask"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask">[docs]</a><span class="k">class</span> <span class="nc">GrafTask</span><span class="p">(</span><span class="n">Graf</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Task processor.</span>
@@ -181,27 +180,10 @@
 <span class="sd">            settings (:py:class:`configparser.ConfigParser`):</span>
 <span class="sd">                entries corresponding to the main configuration file</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">Graf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_compiled</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="sd">&#39;&#39;&#39;Instance member to tell whether compilation has actually taken place&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="sd">&#39;&#39;&#39;Instance member to tell whether the source name has changed&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">annox_changed</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="sd">&#39;&#39;&#39;Instance member to tell whether the annox name has changed&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task_changed</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="sd">&#39;&#39;&#39;Instance member to tell whether the task name has changed&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span>
-        <span class="sd">&#39;&#39;&#39;Instance member to hold configuration settings&#39;&#39;&#39;</span>
+        <span class="n">Graf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">False</span><span class="p">))</span>
-        <span class="sd">&#39;&#39;&#39;Set of feature data sets that have been loaded, node features and edge features under different keys&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xloaded</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">False</span><span class="p">)</span>
-        <span class="sd">&#39;&#39;&#39;Set of xmlid data sets that have been loaded, keys for ``node`` and ``edge``.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="sd">&#39;&#39;&#39;List of handles to result files created by the task through the method :meth:`add_result`&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prev_tasks</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="sd">&#39;&#39;&#39;List of tasks executed in this run of the workbench, with the modification time of the task program file</span>
-<span class="sd">        at the time it was last run&#39;&#39;&#39;</span>
 
         <span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]</span>
@@ -216,7 +198,7 @@
                 <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&#39;&#39;&#39;Run a task.</span>
 
 <span class="sd">        That is:</span>
@@ -236,30 +218,12 @@
 <span class="sd">            task:</span>
 <span class="sd">                the chosen task</span>
 
-<span class="sd">            force_compile (bool):</span>
-<span class="sd">                whether to force (re)compilation of the LAF source</span>
+<span class="sd">            force_compile (dict):</span>
+<span class="sd">                whether to force (re)compilation of the LAF source for either &#39;source&#39; or &#39;annox&#39;.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span> <span class="o">=</span> <span class="bp">None</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">annox_changed</span> <span class="o">=</span> <span class="bp">None</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">task_changed</span> <span class="o">=</span> <span class="bp">None</span> 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">source_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">source</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">annox_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">annox</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">task_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">task</span>
-
-        <span class="n">this_mtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_mtime</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_tasks</span><span class="p">:</span>
-            <span class="n">prev_mtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_tasks</span><span class="p">[</span><span class="n">task</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">prev_mtime</span> <span class="o">&lt;</span> <span class="n">this_mtime</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">prev_tasks</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_mtime</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">task_changed</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">prev_tasks</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_mtime</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_environment</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">force_compile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">force_compile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
         <span class="k">exec</span><span class="p">(</span><span class="s">&quot;import {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
@@ -275,19 +239,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">init_task</span><span class="p">()</span>
         <span class="n">taskcommand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">finish_task</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="GrafTask.compile"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.compile">[docs]</a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_compile</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Compile the LAF resource if needed or if forced.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            force_compile (bool):</span>
-<span class="sd">                whether to force compiling even if the need for it has not been detected.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">grafcompiler</span> <span class="o">=</span> <span class="n">GrafCompiler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">)</span>
-        <span class="n">grafcompiler</span><span class="o">.</span><span class="n">compiler</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force_compile</span><span class="p">)</span>
-        <span class="n">grafcompiler</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_compiled</span> <span class="o">=</span> <span class="n">grafcompiler</span><span class="o">.</span><span class="n">has_compiled</span>
-        <span class="n">grafcompiler</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
 <div class="viewcode-block" id="GrafTask.add_result"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.add_result">[docs]</a>    <span class="k">def</span> <span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Opens a file for writing and stores the handle.</span>
@@ -367,8 +318,7 @@
 <span class="sd">        F(:class:`Features`):</span>
 <span class="sd">            Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is</span>
 <span class="sd">            accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.</span>
-<span class="sd">            These feature objects in turn have methods to look features up and to translate between internal codes for the values</span>
-<span class="sd">            and the real values as encountered in the source. See :class:`Feature`.</span>
+<span class="sd">            These feature objects in turn have a method to look features up. See :class:`Feature`.</span>
 
 <span class="sd">        X(:class:`XMLids`):</span>
 <span class="sd">            Object containg members for XML identifier mappings for nodes and or edges, depending on what the task</span>
@@ -397,14 +347,21 @@
                 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;node_sort&quot;</span><span class="p">]:</span>
                     <span class="k">yield</span> <span class="n">node</span>
 
-        <span class="n">feature_objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">feature_objects</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">given_features</span><span class="p">:</span>
-            <span class="n">feature_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;feature&#39;</span><span class="p">]:</span>
+            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+            <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">]:</span>
+            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">feature_rep</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="p">:</span>
+                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="o">*</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="n">xmlid_objects</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">given_xmlids</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;xmlids&#39;</span><span class="p">]:</span>
             <span class="n">xmlid_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">XMLid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="p">(</span>
@@ -511,15 +468,36 @@
 <span class="sd">    In fact, these names will be used as member names of the :class:`Features` class, when its objects</span>
 <span class="sd">    store sets of features. </span>
 
-<span class="sd">    Feature lookups deliver integer codes for values. There are methods to get the real values back.</span>
+<span class="sd">    A feature&#39;s data may come from the source or the annox or both. They get merged here, and from </span>
+<span class="sd">    then on it is impossible to see where a feature value comes from.</span>
 
-<span class="sd">    .. note::</span>
-<span class="sd">        There is no global mapping of all feature values to integers and back.</span>
-<span class="sd">        Mappings are strictly per individual feature.</span>
-<span class="sd">        In this way we miss some data compression, but we keep the feature information better separable,</span>
-<span class="sd">        which is relevant because we only want to load features when a task asks for it.</span>
+<span class="sd">    If you want to separate features from annox and source, give features in the annox other names,</span>
+<span class="sd">    or give their containing annotations other labels, or put them in other</span>
+<span class="sd">    annotation spaces.</span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, makes references to the feature data corresponding to the feature specified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            graftask(:class:`GrafTask &lt;graf.task.GrafTask&gt;`):</span>
+<span class="sd">                The task executing object that has all the data.</span>
+<span class="sd">            aspace, alabel, fname, kind:</span>
+<span class="sd">                The annotation space, annotation label, feature name, feature kind (node or edge)</span>
+<span class="sd">                that together identify a single feature.</span>
+<span class="sd">            extra (bool):</span>
+<span class="sd">                indication of where to look for the feature data, because up till now annox feature data</span>
+<span class="sd">                sits in another dictionary than source feature data.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fspec</span> <span class="o">=</span> <span class="s">&quot;{}:{}.{} ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="s">&quot;{}_{}_{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="s">&#39;&#39;</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span> <span class="k">else</span> <span class="s">&#39;_e&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
+        <span class="n">ref_label</span> <span class="o">=</span> <span class="s">&#39;xfeature&#39;</span> <span class="k">if</span> <span class="n">extra</span> <span class="k">else</span> <span class="s">&#39;feature&#39;</span>
+        <span class="n">lookup</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">ref_label</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)]</span>
+        <span class="n">valrep</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">ref_label</span> <span class="o">+</span> <span class="s">&#39;_val_rep&#39;</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="p">[(</span><span class="n">ne</span><span class="p">,</span> <span class="n">valrep</span><span class="p">[</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]])</span> <span class="k">for</span> <span class="n">ne</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">])</span>
+
+<div class="viewcode-block" id="Feature.add_data"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Feature.add_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Upon creation, makes references to the feature data corresponding to the feature specified.</span>
 
 <span class="sd">        Args:</span>
@@ -529,14 +507,11 @@
 <span class="sd">                The annotation space, annotation label, feature name, feature kind (node or edge)</span>
 <span class="sd">                that together identify a single feature.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">kind_rep</span> <span class="o">=</span> <span class="s">&#39;node&#39;</span> <span class="k">if</span> <span class="n">kind</span> <span class="k">else</span> <span class="s">&#39;edge&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fspec</span> <span class="o">=</span> <span class="s">&quot;{}:{}.{} ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind_rep</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="s">&quot;{}_{}_{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="s">&#39;&#39;</span> <span class="k">if</span> <span class="n">kind</span> <span class="k">else</span> <span class="s">&#39;_e&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feature&#39;</span><span class="p">][</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">][</span><span class="n">fname</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feature_val_int&#39;</span><span class="p">][</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">][</span><span class="n">fname</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rep</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;feature_val_rep&#39;</span><span class="p">][</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">][</span><span class="n">fname</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
-
+        <span class="n">lookup</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xfeature&#39;</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)]</span>
+        <span class="n">valrep</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xfeature_val_rep&#39;</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">ne</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]</span> <span class="o">=</span> <span class="n">valrep</span><span class="p">[</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]]</span>
+</div>
 <div class="viewcode-block" id="Feature.v"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Feature.v">[docs]</a>    <span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Look the feature value up for a node or edge.</span>
 
@@ -548,44 +523,6 @@
 <span class="sd">            the value of this feature for that node or edge, represented as integer.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="Feature.vr"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Feature.vr">[docs]</a>    <span class="k">def</span> <span class="nf">vr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Look the feature *real* value up for a node or edge.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            ne (int):</span>
-<span class="sd">                node or edge, identified by an integer.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the value of this feature for that node or edge, represented as its real value in the LAF source.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]]</span>
-</div>
-<div class="viewcode-block" id="Feature.r"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Feature.r">[docs]</a>    <span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get the real value corresponding to an integer.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            value_int (int):</span>
-<span class="sd">                an integer code for a value of this feature</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the real value that the integer stands for according to the</span>
-<span class="sd">            table of values of this individual feature.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep</span><span class="p">[</span><span class="n">value_int</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="Feature.i"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Feature.i">[docs]</a>    <span class="k">def</span> <span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_rep</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get the integer code corresponding to an real feature value.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            value_rep (str):</span>
-<span class="sd">                an value string for this feature</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the integer code that assigned to it according to the</span>
-<span class="sd">            table of values of this individual feature.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">[</span><span class="n">value_rep</span><span class="p">]</span>
 </div></div>
 <div class="viewcode-block" id="Features"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Features">[docs]</a><span class="k">class</span> <span class="nc">Features</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for holding a bunch of features and makes them </span>
@@ -599,8 +536,10 @@
 <span class="sd">        Args:</span>
 <span class="sd">            feature_objects (iterable of :class:`Feature`)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">fo</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">fo</span><span class="p">)</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">exec</span><span class="p">(</span><span class="s">&quot;self.{} = fo&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fo</span><span class="o">.</span><span class="n">local_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">[</span><span class="n">fo</span><span class="o">.</span><span class="n">local_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fo</span><span class="o">.</span><span class="n">lookup</span>
 </div>
 <div class="viewcode-block" id="XMLid"><a class="viewcode-back" href="../../graf/graf.html#graf.task.XMLid">[docs]</a><span class="k">class</span> <span class="nc">XMLid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for making the original XML identifiers available</span>
@@ -619,8 +558,7 @@
 <span class="sd">                The kind (node or edge)</span>
 <span class="sd">                for which to make available the identifiers.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">kind_rep</span> <span class="o">=</span> <span class="s">&#39;node&#39;</span> <span class="k">if</span> <span class="n">kind</span> <span class="k">else</span> <span class="s">&#39;edge&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="n">kind_rep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xid_int&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rep</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xid_rep&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>

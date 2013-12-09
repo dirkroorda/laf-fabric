@@ -172,9 +172,9 @@
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">oid</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_oid</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">otype</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">vr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">oid</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_oid</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">otype</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{:&gt;7} {:&gt;7} {:&lt;20} {{{:&lt;13}}}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oid</span><span class="p">,</span> <span class="n">otype</span><span class="p">,</span> <span class="n">monads</span><span class="p">))</span></div>
 </pre></div>
 

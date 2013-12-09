@@ -58,7 +58,7 @@ latex_elements = {
 }
 
 latex_documents = [
-  ('index', 'LAF Fabric.tex', u'LAF Fabric Documentation',
+  ('index', 'LAF_Fabric.tex', u'LAF Fabric Documentation',
    u'Dirk Roorda', 'manual'),
 ]
 

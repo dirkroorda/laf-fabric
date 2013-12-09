@@ -342,6 +342,7 @@ class Feature(object):
                 indication of where to look for the feature data, because up till now annox feature data
                 sits in another dictionary than source feature data.
         '''
+        self.source = graftask
         self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind)
         self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
         self.kind = kind
@@ -373,9 +374,32 @@ class Feature(object):
                 node or edge, identified by an integer.
 
         Returns:
-            the value of this feature for that node or edge, represented as integer.
+            the value of this feature for that node or edge.
         '''
         return self.lookup[ne]
+
+    def s(self, value=None):
+        '''Iterator that yields the node set that has a defined value for this feature.
+
+        The node set is given in the canonical node set order.
+
+        Args:
+            value (str):
+                if given, yields only nodes whose feature value for this feature
+                is equal to it.
+
+        Returns:
+            the next node that has a defined value for this feature.
+        '''
+        order = self.source.data_items['node_sort_inv']
+        domain = sorted(self.lookup, key=lambda x:order[x])
+        if value == None:
+            for n in domain:
+                yield n
+        else:
+            for n in domain:
+                if self.lookup[n] == value:
+                    yield n
 
 class Features(object):
     '''This class is responsible for holding a bunch of features and makes them 

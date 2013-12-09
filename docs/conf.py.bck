@@ -24,8 +24,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'LAF Fabric'
 copyright = u'2013, Dirk Roorda'
-version = '1.1'
-release = '1.1.1'
+version = '2.0'
+release = '2.0.0'
 exclude_patterns = ['_build']
 add_function_parentheses = True
 add_module_names = False
@@ -58,21 +58,21 @@ latex_elements = {
 }
 
 latex_documents = [
-  ('index', 'LAF Fabric.tex', u'LAF Fabric Documentation',
+  ('index', 'LAF_Fabric.tex', u'LAF Fabric Documentation',
    u'Dirk Roorda', 'manual'),
 ]
 
 # -- Options for manual page output ---------------------------------------
 
 man_pages = [
-    ('index', 'LAF Fabric', u'LAF Fabric Documentation',
+    ('index', 'LAF_Fabric', u'LAF Fabric Documentation',
      [u'Dirk Roorda'], 1)
 ]
 
 # -- Options for Texinfo output -------------------------------------------
 
 texinfo_documents = [
-  ('index', 'LAF Fabric', u'LAF Fabric Documentation',
+  ('index', 'LAF_Fabric', u'LAF Fabric Documentation',
    u'Dirk Roorda', 'LAF Fabric', 'One line description of project_name.',
    'Miscellaneous'),
 ]
@@ -83,7 +83,7 @@ epub_title = u'LAF Fabric'
 epub_author = u'Dirk Roorda'
 epub_publisher = u'Dirk Roorda'
 epub_copyright = u'2013, Dirk Roorda'
-epub_basename = u'LAF Fabric'
+epub_basename = u'LAF_Fabric'
 epub_theme = 'epub'
 epub_show_urls = 'footnote'
 epub_use_index = True

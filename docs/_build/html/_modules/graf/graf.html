@@ -401,7 +401,7 @@
                     <span class="p">(</span><span class="s">&quot;region_begin&quot;</span><span class="p">,</span> <span class="s">&#39;array&#39;</span><span class="p">),</span>
                     <span class="p">(</span><span class="s">&quot;region_end&quot;</span><span class="p">,</span> <span class="s">&#39;array&#39;</span><span class="p">),</span>
                     <span class="p">(</span><span class="s">&quot;node_region&quot;</span><span class="p">,</span> <span class="s">&#39;double_array&#39;</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s">&quot;node_sort&quot;</span><span class="p">,</span> <span class="s">&#39;array&#39;</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s">&quot;node_sort&quot;</span><span class="p">,</span> <span class="s">&#39;i_array&#39;</span><span class="p">),</span>
                     <span class="p">(</span><span class="s">&quot;node_out&quot;</span><span class="p">,</span> <span class="s">&#39;double_array&#39;</span><span class="p">),</span>
                     <span class="p">(</span><span class="s">&quot;node_in&quot;</span><span class="p">,</span> <span class="s">&#39;double_array&#39;</span><span class="p">),</span>
                     <span class="p">(</span><span class="s">&quot;edges_from&quot;</span><span class="p">,</span> <span class="s">&#39;array&#39;</span><span class="p">),</span>
@@ -642,6 +642,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">check_load_status</span><span class="p">()</span>
         <span class="n">passed</span> <span class="o">=</span> <span class="bp">True</span>
 
+        <span class="n">data_group</span> <span class="o">=</span> <span class="s">&#39;common&#39;</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">data_group</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">data_group</span><span class="p">][</span><span class="n">label</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;i_array&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="s">&#39;_inv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_array_inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
+
         <span class="n">data_group</span> <span class="o">=</span> <span class="s">&#39;xmlids&#39;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="n">data_group</span><span class="p">]:</span>
             <span class="n">item_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
@@ -791,6 +796,8 @@
                 <span class="n">subs</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,)</span>
                 <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;double_array&#39;</span><span class="p">:</span>
                     <span class="n">subs</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;_items&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;i_array&#39;</span><span class="p">:</span>
+                    <span class="n">subs</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;_inv&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;clearing {}: {} ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
                     <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">subs</span><span class="p">:</span>
@@ -1220,13 +1227,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="n">withtime</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Graf.make_inverse"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.make_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">make_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Creates the inverse lookup table for a data table</span>
+        <span class="sd">&#39;&#39;&#39;Creates the inverse lookup table for a data table given as a dictionary.</span>
 
 <span class="sd">        This is a low level function for creating inverse mappings.</span>
 <span class="sd">        When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.</span>
 <span class="sd">        Upon loading, the inverse mapping is generated by means of this function.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+</div>
+<div class="viewcode-block" id="Graf.make_array_inverse"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.make_array_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">make_array_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arraylist</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Creates the inverse lookup table for a data table given as a Python array.</span>
+
+<span class="sd">        This is a low level function for creating inverse mappings.</span>
+<span class="sd">        When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.</span>
+<span class="sd">        Upon loading, the inverse mapping is generated by means of this function.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arraylist</span><span class="p">)])</span>
 </div>
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Clean up</span>

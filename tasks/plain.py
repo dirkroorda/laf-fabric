@@ -39,11 +39,7 @@ def task(graftask):
 
     out = graftask.add_result("output.txt")
 
-    object_type = 'word' if prim else 'book'
-
-    n_nodes = 0
-    for i in NN(test=F.shebanq_db_otype.v, value=object_type):
-        n_nodes += 1
+    for i in F.shebanq_db_otype.s('word' if prim else 'book'):
         the_output = ''
         if prim:
             the_text = F.shebanq_ft_text.v(i)

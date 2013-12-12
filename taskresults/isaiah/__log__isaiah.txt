@@ -1,0 +1,11 @@
+  0.00s LOGFILE=/Users/dirk/Scratch/shebanq/results/db/total/isaiah/__log__isaiah.txt
+  0.00s BEGIN TASK=isaiah SOURCE=total
+  3.10s END TASK isaiah
+  3.12s 
+total 920
+-rw-r--r--  1 dirk  staff   149B  8 dec 11:37 __log__isaiah.txt
+-rw-r--r--  1 dirk  staff   456K  8 dec 11:37 output.txt
+
+  3.12s 
+460K	/Users/dirk/Scratch/shebanq/results/db/total/isaiah
+

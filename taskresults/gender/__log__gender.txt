@@ -1,0 +1,11 @@
+  0.00s LOGFILE=/Users/dirk/Scratch/shebanq/results/db/total/gender/__log__gender.txt
+  0.00s BEGIN TASK=gender SOURCE=total
+  2.23s END TASK gender
+  2.25s 
+total 64
+-rw-r--r--  1 dirk  staff   149B  8 dec 11:37 __log__gender.txt
+-rw-r--r--  1 dirk  staff    24K  8 dec 11:37 stats.txt
+
+  2.25s 
+ 32K	/Users/dirk/Scratch/shebanq/results/db/total/gender
+

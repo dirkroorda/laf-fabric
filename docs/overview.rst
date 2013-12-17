@@ -179,12 +179,17 @@ Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbe
 
 Links
 =====
+**2013-12-12**
+Demonstration for the `ETCBC <http://www.godgeleerdheid.vu.nl/etcbc>`_ team Amsterdam. Updated the 
+`slides <http://www.slideshare.net/dirkroorda/work-28611072>`_.
+
 **2013-12-09**
 Abstract sent to `CLIN <http://clin24.inl.nl>`_ (Computational Linguistics In the Netherlands) accepted.
 To be deliverd 2014-01-17. 
 
 **2013-11-26**
-`Vitamin Talk to the TLA team Nijmegen <http://www.slideshare.net/dirkroorda/work-28611072>`_.
+Vitamin Talk to the `TLA team Nijmegen <http://tla.mpi.nl>`_. Here are the
+`slides <http://www.slideshare.net/dirkroorda/work-28611072>`_.
 
 .. rubric:: Footnotes
 

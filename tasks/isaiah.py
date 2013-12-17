@@ -35,7 +35,6 @@ def task(graftask):
 
     out = graftask.add_result("output.txt")
 
-    the_book_id = None
     the_book = None
     the_chapter = None
     the_verse = None
@@ -49,10 +48,9 @@ def task(graftask):
                 the_suffix = F.shebanq_ft_suffix.v(i)
                 out.write(the_monads + "_" + the_text + the_suffix)
         elif this_type == "book":
-            the_book_id = F.shebanq_sft_book.v(i)
-            ontarget = the_book_id == "Isaiah"
+            the_book = F.shebanq_sft_book.v(i)
+            ontarget = the_book == "Isaiah"
             if ontarget:
-                the_book = F.shebanq_sft_book.v(i)
                 sys.stderr.write(the_book)
                 out.write("\n{}".format(the_book))
             else:

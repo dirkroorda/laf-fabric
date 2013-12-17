@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-
 import os
 
 from xml.sax import parse as saxparse, SAXException
@@ -237,8 +235,8 @@ class AnnotationHandler(ContentHandler):
             identifiers_a[aid] = id_annot
             self.aid = aid
             self.aempty = True
-            if "as.id" in attrs:
-                self.aspace = attrs["as.id"]
+            if "as" in attrs:
+                self.aspace = attrs["as"]
             else:
                 self.aspace = self.aspace_default
             self.alabel = attrs["label"]

@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-
 load = {
     "xmlids": {
         "node": False,

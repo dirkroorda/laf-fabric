@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-
 import os
 import os.path
 import shutil
@@ -359,7 +357,7 @@ class Graf(object):
 
         up_to_date = True
         for file in glob.glob('{}/*.xml'.format(self.env['annox_dir'])):
-            this_up_to_date = self.env['annox'] == self.settings['annox']['empty'] or not os.path.exists(file) or (
+            this_up_to_date = self.env['annox'] == self.settings['annox']['empty'] or (
                 os.path.exists(self.env['annox_check_path']) and
                 os.path.getmtime(self.env['annox_check_path']) >= os.path.getmtime(file)
             )

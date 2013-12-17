@@ -20,7 +20,8 @@
 		<language iso639="arc"/> <!-- aramaic http://www-01.sil.org/iso639-3/documentation.asp?id=arc -->
 	</langUsage>
     <annotations>
-		<annotation f.id="f_janet" loc="dirk.xml"/>
+		<annotation f.id="f_dirk1" loc="dirk.xml"/>
+		<annotation f.id="f_dirk2" loc="word_phrase=intro_role.xml"/>
     </annotations>
   </profileDesc>
 </documentHeader>

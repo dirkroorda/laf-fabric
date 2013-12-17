@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.task &mdash; LAF Fabric 2.0.1 documentation</title>
+  <title>graf.task &mdash; LAF Fabric 2.1.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../../',
-        VERSION:'2.0.1',
+        VERSION:'2.1.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.0.1 documentation" href="../../index.html"/>
+    <link rel="top" title="LAF Fabric 2.1.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -101,6 +101,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/annox_use.html">annox_use module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/esther.html">esther module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/gender.html">gender module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/involved.html">involved module</a></li>
@@ -145,8 +147,6 @@
 
           
   <h1>Source code for graf.task</h1><div class="highlight"><pre>
-<span class="c"># -*- coding: utf8 -*-</span>
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">imp</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -159,338 +159,6 @@
 
 <span class="kn">from</span> <span class="nn">.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
 
-<div class="viewcode-block" id="GrafTask"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask">[docs]</a><span class="k">class</span> <span class="nc">GrafTask</span><span class="p">(</span><span class="n">Graf</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Task processor.</span>
-
-<span class="sd">    This class is responsible for running user tasks.</span>
-<span class="sd">    It will import a user task, read directives for data pre-loading, and it will generate an</span>
-<span class="sd">    API for the task, in the form of data structures for nodes and edges and </span>
-<span class="sd">    objects that can do feature lookups.</span>
-
-<span class="sd">    A task processor must know where the source data is and where the result is going to.</span>
-<span class="sd">    And it must be able to *import*: and :py:func:`imp.reload`: the tasks.</span>
-<span class="sd">    To that end the search path for modules will be adapted according to the *task_dir* setting</span>
-<span class="sd">    in the main configuration file.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Upon creation, the configuration settings are stored in the object as is.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            settings (:py:class:`configparser.ConfigParser`):</span>
-<span class="sd">                entries corresponding to the main configuration file</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">Graf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="sd">&#39;&#39;&#39;List of handles to result files created by the task through the method :meth:`add_result`&#39;&#39;&#39;</span>
-
-        <span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]</span>
-        <span class="n">task_include_dir</span> <span class="o">=</span> <span class="n">task_dir</span> <span class="k">if</span> <span class="n">task_dir</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">,</span> <span class="n">task_dir</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_include_dir</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Upon destruction, all file handles used by the task will be closed.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&#39;&#39;&#39;Run a task.</span>
-
-<span class="sd">        That is:</span>
-<span class="sd">        * Load the data</span>
-<span class="sd">        * (Re)load the task code</span>
-<span class="sd">        * Initialize the task</span>
-<span class="sd">        * Run the task code</span>
-<span class="sd">        * Finalize the task</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            source (str):</span>
-<span class="sd">                key for the source</span>
-
-<span class="sd">            annox (str):</span>
-<span class="sd">                name of the extra annotation package</span>
-
-<span class="sd">            task:</span>
-<span class="sd">                the chosen task</span>
-
-<span class="sd">            force_compile (dict):</span>
-<span class="sd">                whether to force (re)compilation of the LAF source for either &#39;source&#39; or &#39;annox&#39;.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">force_compile</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-
-        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;import {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;imp.reload({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-
-        <span class="n">load</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.load&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_all</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
-
-        <span class="n">taskcommand</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.task&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_task</span><span class="p">()</span>
-        <span class="n">taskcommand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">finish_task</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="GrafTask.add_result"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.add_result">[docs]</a>    <span class="k">def</span> <span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Opens a file for writing and stores the handle.</span>
-
-<span class="sd">        Every task is advised to use this method for opening files for its output.</span>
-<span class="sd">        The file will be closed by the workbench when the task terminates.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            file_name (str):</span>
-<span class="sd">                name of the output file.</span>
-<span class="sd">                Its location is the result directory for this task and this source.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A handle to the opened file.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span>
-        <span class="p">)</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">handle</span>
-</div>
-<div class="viewcode-block" id="GrafTask.init_task"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.init_task">[docs]</a>    <span class="k">def</span> <span class="nf">init_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Initializes the current task.</span>
-
-<span class="sd">        Provide a log file, reset the timer, and issue a progress message.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;BEGIN TASK={} SOURCE={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]))</span>
-</div>
-<div class="viewcode-block" id="GrafTask.finish_task"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.finish_task">[docs]</a>    <span class="k">def</span> <span class="nf">finish_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Finalizes the current task.</span>
-
-<span class="sd">        Open result files will be closed.</span>
-
-<span class="sd">        There will be a progress message, and a directory listing of the result directory,</span>
-<span class="sd">        for the convenience of the user.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END TASK {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flush_logfile</span><span class="p">()</span>
-
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;ls -lh {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
-
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;du -h {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">finish_logfile</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="GrafTask.get_mappings"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.get_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">get_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Return references to API data structures and methods of this class.</span>
-
-<span class="sd">        </span>
-<span class="sd">        This is what is returned (the names given are not necessarily the names by which they are used</span>
-<span class="sd">        in end user tasks. You can give convenient, local names to these methods, e.g::</span>
-
-<span class="sd">            (msg, P, NN, F, X) = graftask.get_mappings()</span>
-
-<span class="sd">        Using these names, here is the API specification:</span>
-
-<span class="sd">        msg(text, newline=True, withtime=True):</span>
-<span class="sd">            For delivering console output, such as progress messages.</span>
-<span class="sd">            See :meth:`progress &lt;graf.timestamp.Timestamp.progress&gt;`.</span>
-
-<span class="sd">        P(:class:`PrimaryData`):</span>
-<span class="sd">            Object containing the primary data and the information to which portions of it nodes are linked.</span>
-<span class="sd">            ``P.all_data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.</span>
-<span class="sd">            In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from</span>
-<span class="sd">            the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the</span>
-<span class="sd">            primary data and the fragments are maximal. They do not overlap, and there are no duplicates.</span>
-<span class="sd">            A fragment can be empty.</span>
-<span class="sd">            This happens when a region is merely a pointer and not an interval.</span>
-
-<span class="sd">        NN(test=function, value=something):</span>
-<span class="sd">            An iterator that delivers nodes in the canonical order described in :func:`model &lt;graf.model.model&gt;`.</span>
-
-<span class="sd">            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*</span>
-<span class="sd">            are passed through, all others are skipped.</span>
-
-<span class="sd">        F(:class:`Features`):</span>
-<span class="sd">            Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is</span>
-<span class="sd">            accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.</span>
-<span class="sd">            These feature objects in turn have a method to look features up. See :class:`Feature`.</span>
-
-<span class="sd">        X(:class:`XMLids`):</span>
-<span class="sd">            Object containg members for XML identifier mappings for nodes and or edges, depending on what the task</span>
-<span class="sd">            has specified. ``X.node`` contains mappings for nodes, ``X.edge`` for edges. These objects in turn have methods to </span>
-<span class="sd">            perform the mappings in individual cases. See :class:`XMLid`.</span>
-<span class="sd">        &#39;&#39;&#39;</span> 
-
-        <span class="k">def</span> <span class="nf">next_node</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-            <span class="sd">&#39;&#39;&#39;API: iterator of all nodes in primary data order that have a</span>
-<span class="sd">            given value for a given feature.</span>
-
-<span class="sd">            See also :meth:`next_node`.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                name (int):</span>
-<span class="sd">                    the code of a feature name</span>
-
-<span class="sd">                value (int):</span>
-<span class="sd">                    the code of a feature value</span>
-<span class="sd">            &#39;&#39;&#39;</span>
-            <span class="k">if</span> <span class="n">test</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;node_sort&quot;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="n">test</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
-                        <span class="k">yield</span> <span class="n">node</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;node_sort&quot;</span><span class="p">]:</span>
-                    <span class="k">yield</span> <span class="n">node</span>
-
-        <span class="n">feature_objects</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;feature&#39;</span><span class="p">]:</span>
-            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-            <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">]:</span>
-            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">feature_rep</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="p">:</span>
-                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="o">*</span><span class="n">feature</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-        <span class="n">xmlid_objects</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;xmlids&#39;</span><span class="p">]:</span>
-            <span class="n">xmlid_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">XMLid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
-            <span class="n">PrimaryData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;primary&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="n">next_node</span><span class="p">,</span>
-            <span class="n">Features</span><span class="p">(</span><span class="n">feature_objects</span><span class="p">),</span>
-            <span class="n">XMLids</span><span class="p">(</span><span class="n">xmlid_objects</span><span class="p">)</span>
-        <span class="p">)</span>
-</div>
-<div class="viewcode-block" id="GrafTask.getitems_dict"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.getitems_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getitems_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get related items from an arrayified data structure.</span>
-
-<span class="sd">        If a relation between integers and sets of integers has been stored as a double array</span>
-<span class="sd">        by the :func:`arrayify() &lt;graf.model.arrayify&gt;` function,</span>
-<span class="sd">        this is the way to look up the set of related integers for each integer.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (array):</span>
-<span class="sd">                see next</span>
-
-<span class="sd">            data_items (array):</span>
-<span class="sd">                together with *data* the arrayified data</span>
-
-<span class="sd">            elem (int):</span>
-<span class="sd">                the integer for which we want its related set of integers.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a dict of the related integers, with values none.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">data_items_index</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">elem</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">n_items</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span><span class="p">]</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">):</span>
-            <span class="n">items</span><span class="p">[</span><span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">return</span> <span class="n">items</span>
-</div>
-<div class="viewcode-block" id="GrafTask.getitems"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.getitems">[docs]</a>    <span class="k">def</span> <span class="nf">getitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get related items from an arrayified data structure.</span>
-
-<span class="sd">        If a relation between integers and sets of integers has been stored as a double array</span>
-<span class="sd">        by the :func:`arrayify() &lt;graf.model.arrayify&gt;` function,</span>
-<span class="sd">        this is the way to look up the set of related integers for each integer.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (array):</span>
-<span class="sd">                see next</span>
-
-<span class="sd">            data_items (array):</span>
-<span class="sd">                together with *data* the arrayified data</span>
-
-<span class="sd">            elem (int):</span>
-<span class="sd">                the integer for which we want its related set of integers.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            a list of the related integers.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">data_items_index</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">elem</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">n_items</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">n_items</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="GrafTask.hasitem"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.hasitem">[docs]</a>    <span class="k">def</span> <span class="nf">hasitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Check whether an integer is in the set of related items</span>
-<span class="sd">        with respect to an arrayified data structure (see also :meth:`getitems_dict`).</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (array):</span>
-<span class="sd">                see next</span>
-
-<span class="sd">            data_items (array):</span>
-<span class="sd">                together with *data* the arrayified data</span>
-
-<span class="sd">            elem (int):</span>
-<span class="sd">                the integer for which we want its related set of integers.</span>
-
-<span class="sd">            item (int):</span>
-<span class="sd">                the integer whose presence in the related items set is to be tested.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: whether the integer is in the related set or not.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
-</div>
-<div class="viewcode-block" id="GrafTask.hasitems"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.hasitems">[docs]</a>    <span class="k">def</span> <span class="nf">hasitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Check whether a set of integers intersects with the set of related items</span>
-<span class="sd">        with respect to an arrayified data structure (see also :meth:`getitems_dict`).</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (array):</span>
-<span class="sd">                see next</span>
-
-<span class="sd">            data_items (array):</span>
-<span class="sd">                together with *data* the arrayified data</span>
-
-<span class="sd">            elem (int):</span>
-<span class="sd">                the integer for which we want its related set of integers.</span>
-
-<span class="sd">            items (array or list of integers):</span>
-<span class="sd">                the set of integers</span>
-<span class="sd">                whose presence in the related items set is to be tested.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool:</span>
-<span class="sd">                whether one of the integers is in the related set or not.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">these_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
-        <span class="n">found</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">these_items</span><span class="p">:</span>
-                <span class="n">found</span> <span class="o">=</span> <span class="n">item</span>
-                <span class="k">break</span>
-        <span class="k">return</span> <span class="n">found</span>
-</div>
-<div class="viewcode-block" id="GrafTask.get_task_mtime"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.get_task_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get the last modification date of the file that contains the task code</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="s">&#39;{}/{}.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_dir</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span>
-
-</div></div>
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../graf/graf.html#graf.task.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for making the information in a single feature accessible to </span>
 <span class="sd">    tasks.</span>
@@ -693,7 +361,366 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">regions</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">],</span> <span class="n">all_text</span><span class="p">[</span><span class="n">regions</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">]:</span><span class="n">regions</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]]))</span> 
         <span class="k">return</span> <span class="n">result</span>
-</pre></div></div></div>
+</div></div>
+<div class="viewcode-block" id="GrafTask"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask">[docs]</a><span class="k">class</span> <span class="nc">GrafTask</span><span class="p">(</span><span class="n">Graf</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Task processor.</span>
+
+<span class="sd">    This class is responsible for running user tasks.</span>
+<span class="sd">    It will import a user task, read directives for data pre-loading, and it will generate an</span>
+<span class="sd">    API for the task, in the form of data structures for nodes and edges and </span>
+<span class="sd">    objects that can do feature lookups.</span>
+
+<span class="sd">    A task processor must know where the source data is and where the result is going to.</span>
+<span class="sd">    And it must be able to *import*: and :py:func:`imp.reload`: the tasks.</span>
+<span class="sd">    To that end the search path for modules will be adapted according to the *task_dir* setting</span>
+<span class="sd">    in the main configuration file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, the configuration settings are stored in the object as is.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            settings (:py:class:`configparser.ConfigParser`):</span>
+<span class="sd">                entries corresponding to the main configuration file</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">Graf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&#39;&#39;&#39;List of handles to result files created by the task through the method :meth:`add_result`&#39;&#39;&#39;</span>
+
+        <span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]</span>
+        <span class="n">task_include_dir</span> <span class="o">=</span> <span class="n">task_dir</span> <span class="k">if</span> <span class="n">task_dir</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cur_dir</span><span class="p">,</span> <span class="n">task_dir</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_include_dir</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GrafTask.get_mappings"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.get_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">get_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return references to API data structures and methods of this class.</span>
+
+<span class="sd">        </span>
+<span class="sd">        This is what is returned (the names given are not necessarily the names by which they are used</span>
+<span class="sd">        in end user tasks. You can give convenient, local names to these methods, e.g::</span>
+
+<span class="sd">            (msg, P, NN, F, X) = graftask.get_mappings()</span>
+
+<span class="sd">        Using these names, here is the API specification:</span>
+
+<span class="sd">        msg(text, newline=True, withtime=True):</span>
+<span class="sd">            For delivering console output, such as progress messages.</span>
+<span class="sd">            See :meth:`progress &lt;graf.timestamp.Timestamp.progress&gt;`.</span>
+
+<span class="sd">        P(:class:`PrimaryData`):</span>
+<span class="sd">            Object containing the primary data and the information to which portions of it nodes are linked.</span>
+<span class="sd">            ``P.all_data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.</span>
+<span class="sd">            In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from</span>
+<span class="sd">            the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the</span>
+<span class="sd">            primary data and the fragments are maximal. They do not overlap, and there are no duplicates.</span>
+<span class="sd">            A fragment can be empty.</span>
+<span class="sd">            This happens when a region is merely a pointer and not an interval.</span>
+
+<span class="sd">        NN(test=function, value=something):</span>
+<span class="sd">            An iterator that delivers nodes in the canonical order described in :func:`model &lt;graf.model.model&gt;`.</span>
+
+<span class="sd">            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*</span>
+<span class="sd">            are passed through, all others are skipped.</span>
+
+<span class="sd">        F(:class:`Features`):</span>
+<span class="sd">            Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is</span>
+<span class="sd">            accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.</span>
+<span class="sd">            These feature objects in turn have a method to look features up. See :class:`Feature`.</span>
+
+<span class="sd">        X(:class:`XMLids`):</span>
+<span class="sd">            Object containg members for XML identifier mappings for nodes and or edges, depending on what the task</span>
+<span class="sd">            has specified. ``X.node`` contains mappings for nodes, ``X.edge`` for edges. These objects in turn have methods to </span>
+<span class="sd">            perform the mappings in individual cases. See :class:`XMLid`.</span>
+<span class="sd">        &#39;&#39;&#39;</span> 
+
+        <span class="k">def</span> <span class="nf">next_node</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;API: iterator of all nodes in primary data order that have a</span>
+<span class="sd">            given value for a given feature.</span>
+
+<span class="sd">            See also :meth:`next_node`.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                name (int):</span>
+<span class="sd">                    the code of a feature name</span>
+
+<span class="sd">                value (int):</span>
+<span class="sd">                    the code of a feature value</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="n">test</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">test_values</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">test_values</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">if</span> <span class="n">values</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                        <span class="n">test_values</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;node_sort&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">test</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="n">test_values</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">node</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;node_sort&quot;</span><span class="p">]:</span>
+                    <span class="k">yield</span> <span class="n">node</span>
+
+        <span class="n">feature_objects</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;feature&#39;</span><span class="p">]:</span>
+            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+            <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">]:</span>
+            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">feature_rep</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="p">:</span>
+                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="o">*</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="n">xmlid_objects</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;xmlids&#39;</span><span class="p">]:</span>
+            <span class="n">xmlid_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">XMLid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
+            <span class="n">PrimaryData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;primary&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="n">next_node</span><span class="p">,</span>
+            <span class="n">Features</span><span class="p">(</span><span class="n">feature_objects</span><span class="p">),</span>
+            <span class="n">XMLids</span><span class="p">(</span><span class="n">xmlid_objects</span><span class="p">)</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&#39;&#39;&#39;Run a task.</span>
+
+<span class="sd">        That is:</span>
+<span class="sd">        * Load the data</span>
+<span class="sd">        * (Re)load the task code</span>
+<span class="sd">        * Initialize the task</span>
+<span class="sd">        * Run the task code</span>
+<span class="sd">        * Finalize the task</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source (str):</span>
+<span class="sd">                key for the source</span>
+
+<span class="sd">            annox (str):</span>
+<span class="sd">                name of the extra annotation package</span>
+
+<span class="sd">            task:</span>
+<span class="sd">                the chosen task</span>
+
+<span class="sd">            force_compile (dict):</span>
+<span class="sd">                whether to force (re)compilation of the LAF source for either &#39;source&#39; or &#39;annox&#39;.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">force_compile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;import {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;imp.reload({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+
+        <span class="n">load</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.load&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_all</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
+
+        <span class="n">taskcommand</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.task&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_task</span><span class="p">()</span>
+        <span class="n">taskcommand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">finish_task</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="GrafTask.add_result"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.add_result">[docs]</a>    <span class="k">def</span> <span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Opens a file for writing and stores the handle.</span>
+
+<span class="sd">        Every task is advised to use this method for opening files for its output.</span>
+<span class="sd">        The file will be closed by the workbench when the task terminates.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str):</span>
+<span class="sd">                name of the output file.</span>
+<span class="sd">                Its location is the result directory for this task and this source.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A handle to the opened file.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span>
+        <span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">handle</span>
+</div>
+<div class="viewcode-block" id="GrafTask.add_input"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.add_input">[docs]</a>    <span class="k">def</span> <span class="nf">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Opens a file for reading and stores the handle.</span>
+
+<span class="sd">        Every task is advised to use this method for opening files for its input.</span>
+<span class="sd">        The file will be closed by the workbench when the task terminates.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str):</span>
+<span class="sd">                name of the input file.</span>
+<span class="sd">                Its location is the result directory for this task and this source.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A handle to the opened file.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span>
+        <span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">handle</span>
+</div>
+<div class="viewcode-block" id="GrafTask.init_task"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.init_task">[docs]</a>    <span class="k">def</span> <span class="nf">init_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initializes the current task.</span>
+
+<span class="sd">        Provide a log file, reset the timer, and issue a progress message.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;BEGIN TASK={} SOURCE={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]))</span>
+</div>
+<div class="viewcode-block" id="GrafTask.finish_task"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.finish_task">[docs]</a>    <span class="k">def</span> <span class="nf">finish_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Finalizes the current task.</span>
+
+<span class="sd">        Open result files will be closed.</span>
+
+<span class="sd">        There will be a progress message, and a directory listing of the result directory,</span>
+<span class="sd">        for the convenience of the user.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END TASK {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush_logfile</span><span class="p">()</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;ls -lh {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;du -h {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finish_logfile</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="GrafTask.getitems_dict"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.getitems_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getitems_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get related items from an arrayified data structure.</span>
+
+<span class="sd">        If a relation between integers and sets of integers has been stored as a double array</span>
+<span class="sd">        by the :func:`arrayify() &lt;graf.model.arrayify&gt;` function,</span>
+<span class="sd">        this is the way to look up the set of related integers for each integer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (array):</span>
+<span class="sd">                see next</span>
+
+<span class="sd">            data_items (array):</span>
+<span class="sd">                together with *data* the arrayified data</span>
+
+<span class="sd">            elem (int):</span>
+<span class="sd">                the integer for which we want its related set of integers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a dict of the related integers, with values none.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">data_items_index</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">elem</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">n_items</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span><span class="p">]</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_items</span><span class="p">):</span>
+            <span class="n">items</span><span class="p">[</span><span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">items</span>
+</div>
+<div class="viewcode-block" id="GrafTask.getitems"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.getitems">[docs]</a>    <span class="k">def</span> <span class="nf">getitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get related items from an arrayified data structure.</span>
+
+<span class="sd">        If a relation between integers and sets of integers has been stored as a double array</span>
+<span class="sd">        by the :func:`arrayify() &lt;graf.model.arrayify&gt;` function,</span>
+<span class="sd">        this is the way to look up the set of related integers for each integer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (array):</span>
+<span class="sd">                see next</span>
+
+<span class="sd">            data_items (array):</span>
+<span class="sd">                together with *data* the arrayified data</span>
+
+<span class="sd">            elem (int):</span>
+<span class="sd">                the integer for which we want its related set of integers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of the related integers.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">data_items_index</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">elem</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">n_items</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">n_items</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="GrafTask.hasitem"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.hasitem">[docs]</a>    <span class="k">def</span> <span class="nf">hasitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check whether an integer is in the set of related items</span>
+<span class="sd">        with respect to an arrayified data structure (see also :meth:`getitems_dict`).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (array):</span>
+<span class="sd">                see next</span>
+
+<span class="sd">            data_items (array):</span>
+<span class="sd">                together with *data* the arrayified data</span>
+
+<span class="sd">            elem (int):</span>
+<span class="sd">                the integer for which we want its related set of integers.</span>
+
+<span class="sd">            item (int):</span>
+<span class="sd">                the integer whose presence in the related items set is to be tested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: whether the integer is in the related set or not.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
+</div>
+<div class="viewcode-block" id="GrafTask.hasitems"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.hasitems">[docs]</a>    <span class="k">def</span> <span class="nf">hasitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check whether a set of integers intersects with the set of related items</span>
+<span class="sd">        with respect to an arrayified data structure (see also :meth:`getitems_dict`).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (array):</span>
+<span class="sd">                see next</span>
+
+<span class="sd">            data_items (array):</span>
+<span class="sd">                together with *data* the arrayified data</span>
+
+<span class="sd">            elem (int):</span>
+<span class="sd">                the integer for which we want its related set of integers.</span>
+
+<span class="sd">            items (array or list of integers):</span>
+<span class="sd">                the set of integers</span>
+<span class="sd">                whose presence in the related items set is to be tested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:</span>
+<span class="sd">                whether one of the integers is in the related set or not.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">these_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">these_items</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">found</span>
+</div>
+<div class="viewcode-block" id="GrafTask.get_task_mtime"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.get_task_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the last modification date of the file that contains the task code</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="s">&#39;{}/{}.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_dir</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span>
+</div>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon destruction, all file handles used by the task will be closed.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div></div>
 
           <footer>
   

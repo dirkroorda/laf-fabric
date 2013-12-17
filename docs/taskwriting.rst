@@ -85,6 +85,7 @@ Note the same clause object *28737* as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output::
 
     load = {
+        "primary": False,
         "xmlids": {
             "node": False,
             "edge": False,
@@ -118,9 +119,10 @@ Information flow from task to workbench
 =======================================
 The main thing the workbench needs to know about your task is a declaration of
 what data the task will use.
-The task needs to tell which feature data should be loaded and whether XML identifier tables
+The task needs to tell whether to load the primary data (with the region information),
+which feature data should be loaded and whether XML identifier tables
 should be loaded.
-Both must be specified separately for nodes and edges.
+Some of these must be specified separately for nodes and edges.
 
 The feature specification takes the form a dictionary, keyed by annotation spaces first
 and then by kind (node or edge). Under those keys the declaration proceeds
@@ -170,12 +172,16 @@ Here is a short description of the corresponding methods.
     ``F.shebanq_db_otype.v(n)``. 
 
 *P(node)*
-    Your gateway to the primary data. For nodes *n* that are linked to the primary data by 1 or more regions,
+    Your gateway to the primary data. For nodes *n* that are linked to the primary data by one or more regions,
     P(*n*) yields a set of chunks of primary data, corresponding with those regions.
     The chunks are maximal, non-overlapping, ordered according to the primary data.
     Every chunk is given as a tuple (*pos*, *text*), where *pos* is the position in the primary data where
     the start of *text* can be found, and *text* is the chunk of actual text that is specified by the region.
-    Note that *text* may be empty. This happens in cases where the region is not a true interval but merely
+    The primary data is only available if you have specified in the *load* directives: 
+    ``'primary: True``
+
+.. note:: Note that *text* may be empty.
+    This happens in cases where the region is not a true interval but merely
     a point between two characters.
 
 *NN(test=function value=something)*

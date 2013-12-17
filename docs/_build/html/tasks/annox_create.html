@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gender module &mdash; LAF Fabric 2.1.0 documentation</title>
+  <title>annox_create module &mdash; LAF Fabric 2.1.0 documentation</title>
   
 
   
@@ -46,8 +46,8 @@
   
     <link rel="top" title="LAF Fabric 2.1.0 documentation" href="../index.html"/>
         <link rel="up" title="tasks" href="modules.html"/>
-        <link rel="next" title="involved module" href="involved.html"/>
-        <link rel="prev" title="esther module" href="esther.html"/> 
+        <link rel="next" title="annox_use module" href="annox_use.html"/>
+        <link rel="prev" title="tasks" href="modules.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -103,10 +103,10 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">tasks</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="annox_create.html">annox_create module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">annox_create module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annox_use.html">annox_use module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="esther.html">esther module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gender.html">gender module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="involved.html">involved module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isaiah.html">isaiah module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lingo.html">lingo module</a></li>
@@ -140,24 +140,53 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../index.html">Docs</a> &raquo;</li>
-  <li><a href="">gender module</a></li>
+  <li><a href="">annox_create module</a></li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="../_sources/tasks/gender.txt" rel="nofollow"> View page source</a>
+        <a href="../_sources/tasks/annox_create.txt" rel="nofollow"> View page source</a>
       
     </li>
 </ul>
 <hr/>
 
           
-  <div class="section" id="module-gender">
-<span id="gender-module"></span><h1>gender module<a class="headerlink" href="#module-gender" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-annox_create">
+<span id="annox-create-module"></span><h1>annox_create module<a class="headerlink" href="#module-annox_create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="gender.task">
-<tt class="descname">task</tt><big>(</big><em>graftask</em><big>)</big><a class="reference internal" href="../_modules/gender.html#task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gender.task" title="Permalink to this definition">¶</a></dt>
-<dd><p>Counts the frequencies of words with male and female gender features.
-Outputs the frequencies in a tab-delimited file, with frequency values for
-each chapter in the whole Hebrew Bible.</p>
+<dt id="annox_create.task">
+<tt class="descname">task</tt><big>(</big><em>graftask</em><big>)</big><a class="reference internal" href="../_modules/annox_create.html#task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#annox_create.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Workflow to create new annotations.</p>
+<p>There are two modes:</p>
+<ol class="arabic simple">
+<li>create a blank form (tab delimited file)</li>
+<li>create annotations from a filled-in form</li>
+</ol>
+<p>The dictionary <tt class="docutils literal"><span class="pre">config</span></tt> contains the specifications for creating the form.
+The same specifications are used when reading the filled in form.</p>
+<p>You specify node types that you want to annotate, e.g. <em>word</em> and <em>phrase</em>.
+You specifiy new features for which you want to provide values, e.g. 
+<tt class="docutils literal"><span class="pre">dirk:part.intro</span></tt> and <tt class="docutils literal"><span class="pre">dirk:part.role</span></tt>.
+Finally you specify some chapters in the bible that you want to annotate.</p>
+<p>** Mode 1. creates a tab-delimited spreadsheet for you with the following columns**</p>
+<ol class="upperalpha simple">
+<li>xml_id of the node</li>
+</ol>
+<p>B1, ... , Bn: for each node type a column, with in it the piece of primary text corresponding to it.
+So if in our case a column for <tt class="docutils literal"><span class="pre">word</span></tt> and for <tt class="docutils literal"><span class="pre">phrase</span></tt>.
+If the node is a <tt class="docutils literal"><span class="pre">word</span></tt>, the <tt class="docutils literal"><span class="pre">word</span></tt> column will be filled with the primary text of that word,
+and the <tt class="docutils literal"><span class="pre">phrase</span></tt> column will be empty. If the node is a <tt class="docutils literal"><span class="pre">phrase</span></tt>, it is the other way round, 
+with the <tt class="docutils literal"><span class="pre">phrase</span></tt> content in the <tt class="docutils literal"><span class="pre">phrase</span></tt> column.</p>
+<p>C1, ... , Cm: for each new feature a column.
+These contain the cells where you can put in your feature values.
+If you put the value &#8216;A&#8217; in column <tt class="docutils literal"><span class="pre">dirk:part.intro</span></tt> on the row of node <tt class="docutils literal"><span class="pre">n</span></tt>, 
+you declare that node <tt class="docutils literal"><span class="pre">n</span></tt> has <tt class="docutils literal"><span class="pre">dirk:part.intro</span> <span class="pre">=</span> <span class="pre">'A'</span></tt>.</p>
+<p><strong>Mode 2. reads your filled in form and delivers an annotation file</strong></p>
+<p>If you have filled in the form and renamed it (replacing <tt class="docutils literal"><span class="pre">form</span></tt> in the file name by <tt class="docutils literal"><span class="pre">data</span></tt>),
+then mode 2 can do its work. It creates a file with a name that starts with <tt class="docutils literal"><span class="pre">annot</span></tt>.</p>
+<p><strong>Using the annotations</strong></p>
+<p>If you move the <tt class="docutils literal"><span class="pre">annot</span></tt> file over to the <tt class="docutils literal"><span class="pre">annox</span></tt> directory, and include it in a <tt class="docutils literal"><span class="pre">_header_.xml</span></tt>
+file, you can use the annotations in tasks by selecting it as an annox.
+See the task <a class="reference internal" href="annox_use.html#module-annox_use" title="annox_use"><tt class="xref py py-mod docutils literal"><span class="pre">annox_use</span></tt></a>.</p>
 </dd></dl>
 
 </div>
@@ -167,10 +196,10 @@ each chapter in the whole Hebrew Bible.</p>
   
     <div class="rst-footer-buttons">
       
-        <a href="involved.html" class="btn btn-neutral float-right" title="involved module"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="annox_use.html" class="btn btn-neutral float-right" title="annox_use module"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="esther.html" class="btn btn-neutral" title="esther module"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral" title="tasks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   

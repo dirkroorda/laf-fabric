@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing Tasks &mdash; LAF Fabric 2.0.1 documentation</title>
+  <title>Writing Tasks &mdash; LAF Fabric 2.1.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'./',
-        VERSION:'2.0.1',
+        VERSION:'2.1.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.0.1 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 2.1.0 documentation" href="index.html"/>
         <link rel="next" title="tasks" href="tasks/modules.html"/>
         <link rel="prev" title="LAF workbench" href="workbench.html"/> 
 
@@ -102,6 +102,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_use.html">annox_use module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tasks/esther.html">esther module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tasks/gender.html">gender module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tasks/involved.html">involved module</a></li>
@@ -227,6 +229,7 @@ Here is a snippet of output:</p>
 <p>Note the same clause object <em>28737</em> as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">load</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;primary&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
     <span class="s">&quot;xmlids&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
         <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
@@ -262,9 +265,10 @@ Finally, here is the complete Python code of the task that produced this output:
 <h2>Information flow from task to workbench<a class="headerlink" href="#information-flow-from-task-to-workbench" title="Permalink to this headline">¶</a></h2>
 <p>The main thing the workbench needs to know about your task is a declaration of
 what data the task will use.
-The task needs to tell which feature data should be loaded and whether XML identifier tables
+The task needs to tell whether to load the primary data (with the region information),
+which feature data should be loaded and whether XML identifier tables
 should be loaded.
-Both must be specified separately for nodes and edges.</p>
+Some of these must be specified separately for nodes and edges.</p>
 <p>The feature specification takes the form a dictionary, keyed by annotation spaces first
 and then by kind (node or edge). Under those keys the declaration proceeds
 with a list of lines specifying bunches of features as follows:</p>
@@ -310,13 +314,21 @@ It is a node feature, because otherwise the name had a
 You can look up a feature value of this feature, say for node <tt class="docutils literal"><span class="pre">n</span></tt>,by saying:
 <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.v(n)</span></tt>.</dd>
 <dt><em>P(node)</em></dt>
-<dd>Your gateway to the primary data. For nodes <em>n</em> that are linked to the primary data by 1 or more regions,
+<dd>Your gateway to the primary data. For nodes <em>n</em> that are linked to the primary data by one or more regions,
 P(<em>n</em>) yields a set of chunks of primary data, corresponding with those regions.
 The chunks are maximal, non-overlapping, ordered according to the primary data.
 Every chunk is given as a tuple (<em>pos</em>, <em>text</em>), where <em>pos</em> is the position in the primary data where
 the start of <em>text</em> can be found, and <em>text</em> is the chunk of actual text that is specified by the region.
-Note that <em>text</em> may be empty. This happens in cases where the region is not a true interval but merely
-a point between two characters.</dd>
+The primary data is only available if you have specified in the <em>load</em> directives:
+<tt class="docutils literal"><span class="pre">'primary:</span> <span class="pre">True</span></tt></dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that <em>text</em> may be empty.
+This happens in cases where the region is not a true interval but merely
+a point between two characters.</p>
+</div>
+<dl class="docutils">
 <dt><em>NN(test=function value=something)</em></dt>
 <dd>If you want to walk through all the nodes, possibly skipping some, then this is your method.
 It is an <em>iterator</em> that yields a new node everytime it is called.

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>isaiah &mdash; LAF Fabric 2.1.0 documentation</title>
+  <title>annox_use &mdash; LAF Fabric 2.1.0 documentation</title>
   
 
   
@@ -138,7 +138,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../index.html">Docs</a> &raquo;</li>
-  <li><a href="">isaiah</a></li>
+  <li><a href="">annox_use</a></li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -146,10 +146,11 @@
 <hr/>
 
           
-  <h1>Source code for isaiah</h1><div class="highlight"><pre>
+  <h1>Source code for annox_use</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">load</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;primary&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="s">&quot;xmlids&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
         <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
@@ -157,62 +158,59 @@
     <span class="s">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s">&quot;shebanq&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="s">&quot;db.otype,monads&quot;</span><span class="p">,</span>
-                <span class="s">&quot;ft.text,suffix&quot;</span><span class="p">,</span>
-                <span class="s">&quot;sft.book,chapter,verse&quot;</span><span class="p">,</span>
+                <span class="s">&quot;db.otype&quot;</span><span class="p">,</span>
+                <span class="s">&quot;sft.book&quot;</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s">&quot;dirk&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;part.comment,intro,role&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;part.comment&quot;</span><span class="p">,</span>
             <span class="p">],</span>
         <span class="p">},</span>
     <span class="p">},</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/isaiah.html#isaiah.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Produces the text of thev book Isaiah, interspersed with word numbers</span>
-<span class="sd">    (*monad* numbers in WIVU speak).</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/annox_use.html#annox_use.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Shows how to use added annotations.</span>
 
-<span class="sd">    This is a first, clumsy attempt to pave the way for ading new features.</span>
-<span class="sd">    In order to add new features, you have to indicate unambiguously to which</span>
-<span class="sd">    nodes the features apply. </span>
-<span class="sd">    Here you can at least see the word numbers.</span>
+<span class="sd">    The annotations come from an extra annotation package, which contains a few</span>
+<span class="sd">    extra annotation files.</span>
+<span class="sd">    </span>
+<span class="sd">    **dirk.xml** annotates some of the books in a rather trivial way. </span>
 
-<span class="sd">    A better way is coming, where you can add features to all nodes, not just words nodes,</span>
-<span class="sd">    but also phrase, clause and sentence nodes.</span>
+<span class="sd">    If there is no comment, the output of this task will say &quot;*no comment*, otherwise</span>
+<span class="sd">    the comment is shown.</span>
+
+<span class="sd">    **word_phrase=intro_role.xml** is a form based annotation package.</span>
+<span class="sd">    See task :mod:`annox_create`.</span>
+
+<span class="sd">    It contains a few annotations in Genesis 1.</span>
+<span class="sd">    All these annotations will be shown in a listing in the output.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
+    <span class="n">msg</span><span class="p">(</span><span class="s">&quot;Get the books ...&quot;</span><span class="p">)</span>
+
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
-    <span class="n">the_book</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">the_chapter</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">the_verse</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">ontarget</span> <span class="o">=</span> <span class="bp">True</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
-        <span class="n">this_type</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;word&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ontarget</span><span class="p">:</span>
-                <span class="n">the_monads</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_monads</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">the_text</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_text</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">the_suffix</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_suffix</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_monads</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">the_text</span> <span class="o">+</span> <span class="n">the_suffix</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;book&quot;</span><span class="p">:</span>
-            <span class="n">the_book</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="n">ontarget</span> <span class="o">=</span> <span class="n">the_book</span> <span class="o">==</span> <span class="s">&quot;Isaiah&quot;</span>
-            <span class="k">if</span> <span class="n">ontarget</span><span class="p">:</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_book</span><span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_book</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;chapter&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ontarget</span><span class="p">:</span>
-                <span class="n">the_chapter</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_chapter</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{} {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_book</span><span class="p">,</span> <span class="n">the_chapter</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;verse&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ontarget</span><span class="p">:</span>
-                <span class="n">the_verse</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_verse</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{}:{} &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_chapter</span><span class="p">,</span> <span class="n">the_verse</span><span class="p">))</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span></div>
-</pre></div>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;book&#39;</span><span class="p">):</span>
+        <span class="n">dirk_says</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dirk_part_comment</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">the_output</span> <span class="o">=</span> <span class="s">&quot;{} Dirk: {}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">dirk_says</span> <span class="k">if</span> <span class="n">dirk_says</span> <span class="k">else</span> <span class="s">&#39;no comment&#39;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_output</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;word&#39;</span><span class="p">,</span> <span class="s">&#39;phrase&#39;</span><span class="p">]):</span>
+        <span class="n">the_type</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">intro</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dirk_part_intro</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dirk_part_role</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="ow">and</span> <span class="n">intro</span><span class="p">:</span>
+            <span class="n">the_text</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">text</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="ow">in</span> <span class="n">P</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">{}</span><span class="se">\t</span><span class="s">intro={}</span><span class="se">\t</span><span class="s">role={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_type</span><span class="p">,</span> <span class="n">the_text</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">intro</span><span class="p">))</span>
+</pre></div></div>
 
           <footer>
   

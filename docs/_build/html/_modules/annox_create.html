@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>annox_create &mdash; LAF Fabric 2.1.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'../',
+        VERSION:'2.1.0',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="LAF Fabric 2.1.0 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="icon icon-home"> LAF Fabric</a>
+        <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">LAF Fabric</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#this-workbench">This workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#links">Links</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workbench.html">LAF workbench</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workbench.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../taskwriting.html">Writing Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#what-is-a-task">What is a task?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#a-leading-example">A leading example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/annox_use.html">annox_use module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks/proper.html">proper module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../graf/graf.html">graf package</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">LAF Fabric</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="../index.html">Docs</a> &raquo;</li>
+  <li><a href="">annox_create</a></li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+</ul>
+<hr/>
+
+          
+  <h1>Source code for annox_create</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="n">load</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;primary&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="s">&quot;xmlids&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;shebanq&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&quot;node&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;db.otype,oid,monads&quot;</span><span class="p">,</span>
+                <span class="s">&quot;ft.text&quot;</span><span class="p">,</span>
+                <span class="s">&quot;sft.book,chapter,verse&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s">&quot;edge&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;target_types&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s">&#39;word&#39;</span><span class="p">,</span>
+        <span class="s">&#39;phrase&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s">&#39;new_features&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;dirk&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;node&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&quot;part.intro,role&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="s">&#39;passages&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;Genesis&#39;</span><span class="p">:</span> <span class="s">&#39;1-3&#39;</span><span class="p">,</span>
+        <span class="s">&#39;Isaiah&#39;</span><span class="p">:</span> <span class="s">&#39;40,66&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">target_types</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;target_types&#39;</span><span class="p">]</span>
+<span class="n">type_col</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">n_types</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_types</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">tt</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">target_types</span><span class="p">):</span>
+    <span class="n">type_col</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+
+<span class="n">new_features_spec</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;new_features&#39;</span><span class="p">]</span>
+<span class="n">new_fqnames</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">new_fnames</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">new_features</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">aspace</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">new_features_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">new_features_spec</span><span class="p">[</span><span class="n">aspace</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">new_features_spec</span><span class="p">[</span><span class="n">aspace</span><span class="p">][</span><span class="n">kind</span><span class="p">]:</span>
+            <span class="p">(</span><span class="n">alabel</span><span class="p">,</span> <span class="n">fnames</span><span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">):</span>
+                <span class="n">fqname</span> <span class="o">=</span> <span class="s">&quot;{}:{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+                <span class="n">new_fqnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fqname</span><span class="p">)</span>
+                <span class="n">new_features</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
+                <span class="n">new_fnames</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_fqnames</span><span class="p">)</span>
+
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/annox_create.html#annox_create.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Workflow to create new annotations.</span>
+
+<span class="sd">    There are two modes:</span>
+
+<span class="sd">    1. create a blank form (tab delimited file)</span>
+<span class="sd">    2. create annotations from a filled-in form</span>
+
+<span class="sd">    The dictionary ``config`` contains the specifications for creating the form.</span>
+<span class="sd">    The same specifications are used when reading the filled in form.</span>
+
+<span class="sd">    You specify node types that you want to annotate, e.g. *word* and *phrase*.</span>
+<span class="sd">    You specifiy new features for which you want to provide values, e.g. </span>
+<span class="sd">    ``dirk:part.intro`` and ``dirk:part.role``.</span>
+<span class="sd">    Finally you specify some chapters in the bible that you want to annotate.</span>
+
+<span class="sd">    ** Mode 1. creates a tab-delimited spreadsheet for you with the following columns**</span>
+
+<span class="sd">    A. xml_id of the node</span>
+
+<span class="sd">    B1, ... , Bn: for each node type a column, with in it the piece of primary text corresponding to it.</span>
+<span class="sd">    So if in our case a column for ``word`` and for ``phrase``.</span>
+<span class="sd">    If the node is a ``word``, the ``word`` column will be filled with the primary text of that word,</span>
+<span class="sd">    and the ``phrase`` column will be empty. If the node is a ``phrase``, it is the other way round, </span>
+<span class="sd">    with the ``phrase`` content in the ``phrase`` column.</span>
+
+<span class="sd">    C1, ... , Cm: for each new feature a column.</span>
+<span class="sd">    These contain the cells where you can put in your feature values.</span>
+<span class="sd">    If you put the value &#39;A&#39; in column ``dirk:part.intro`` on the row of node ``n``, </span>
+<span class="sd">    you declare that node ``n`` has ``dirk:part.intro = &#39;A&#39;``.</span>
+
+<span class="sd">    **Mode 2. reads your filled in form and delivers an annotation file**</span>
+
+<span class="sd">    If you have filled in the form and renamed it (replacing ``form`` in the file name by ``data``),</span>
+<span class="sd">    then mode 2 can do its work. It creates a file with a name that starts with ``annot``.</span>
+
+<span class="sd">    **Using the annotations**</span>
+
+<span class="sd">    If you move the ``annot`` file over to the ``annox`` directory, and include it in a ``_header_.xml``</span>
+<span class="sd">    file, you can use the annotations in tasks by selecting it as an annox.</span>
+<span class="sd">    See the task :mod:`annox_use`.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">make_form</span><span class="p">():</span>
+        <span class="n">msg</span><span class="p">(</span><span class="s">&quot;Reading the books ...&quot;</span><span class="p">)</span>
+        <span class="n">outf</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;form_{}={}.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+
+        <span class="n">the_book</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">the_chapter</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">the_verse</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">in_book</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">in_chapter</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">do_chapters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">{}</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;passage&#39;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_fqnames</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">NN</span><span class="p">():</span>
+            <span class="n">this_type</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">this_type</span> <span class="ow">in</span> <span class="n">target_types</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">in_chapter</span><span class="p">:</span>
+                    <span class="n">the_xml_id</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">the_text</span> <span class="o">=</span> <span class="s">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">text</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="ow">in</span> <span class="n">P</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
+                    <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}</span><span class="se">\t</span><span class="s">{}{}{}</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_xml_id</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">*</span> <span class="n">type_col</span><span class="p">[</span><span class="n">this_type</span><span class="p">],</span> <span class="n">the_text</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_types</span> <span class="o">-</span> <span class="n">type_col</span><span class="p">[</span><span class="n">this_type</span><span class="p">]),</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">*</span> <span class="n">n_features</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;book&quot;</span><span class="p">:</span>
+                <span class="n">the_book</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">in_book</span> <span class="o">=</span> <span class="n">the_book</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;passages&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">in_book</span><span class="p">:</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_book</span><span class="p">)</span>
+                    <span class="n">do_chapters</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">chapter_ranges</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;passages&#39;</span><span class="p">][</span><span class="n">the_book</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">chapter_range</span> <span class="ow">in</span> <span class="n">chapter_ranges</span><span class="p">:</span>
+                        <span class="n">boundaries</span> <span class="o">=</span> <span class="n">chapter_range</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+                        <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">boundaries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chapter_range</span><span class="p">)</span>
+                            <span class="n">e</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chapter_range</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">boundaries</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">e</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">boundaries</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="k">for</span> <span class="n">chapter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+                            <span class="n">do_chapters</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">chapter</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;chapter&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">in_book</span><span class="p">:</span>
+                    <span class="n">the_chapter</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_chapter</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">the_chapter</span> <span class="ow">in</span> <span class="n">do_chapters</span><span class="p">:</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{},&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_chapter</span><span class="p">))</span>
+                        <span class="n">in_chapter</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">in_chapter</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">in_chapter</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;verse&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">in_chapter</span><span class="p">:</span>
+                    <span class="n">the_verse</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_verse</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;#{} {}:{}</span><span class="se">\t</span><span class="s">{}</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_book</span><span class="p">,</span> <span class="n">the_chapter</span><span class="p">,</span> <span class="n">the_verse</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">*</span> <span class="n">n_types</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">*</span> <span class="n">n_features</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_annots</span><span class="p">():</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;data_{}={}.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+        <span class="n">outa</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;annot_{}={}.xml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+        <span class="n">outa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="s">&lt;graph xmlns=&quot;http://www.xces.org/ns/GrAF/1.0/&quot; xmlns:graf=&quot;http://www.xces.org/ns/GrAF/1.0/&quot;&gt;</span>
+<span class="s">    &lt;graphHeader&gt;</span>
+<span class="s">        &lt;labelsDecl/&gt;</span>
+<span class="s">        &lt;dependencies/&gt;</span>
+<span class="s">        &lt;annotationSpaces/&gt;</span>
+<span class="s">    &lt;/graphHeader&gt;</span>
+<span class="s">&#39;&#39;&#39;</span><span class="p">)</span>
+        <span class="n">aid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})))</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">inp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">xml_id</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">n_types</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">n_types</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">n_features</span><span class="p">]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span> 
+                <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="o">=</span> <span class="n">new_features</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="n">features</span><span class="p">[</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">][</span><span class="n">xml_id</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">for</span> <span class="n">aspace</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">alabel</span> <span class="ow">in</span> <span class="n">features</span><span class="p">[</span><span class="n">aspace</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">xml_id</span> <span class="ow">in</span> <span class="n">features</span><span class="p">[</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">]:</span>
+                    <span class="n">aid</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">outa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&lt;a xml:id=&quot;a{}&quot; as=&quot;{}&quot; label=&quot;{}&quot; ref=&quot;{}&quot;&gt;&lt;fs&gt;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aid</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">xml_id</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">features</span><span class="p">[</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">][</span><span class="n">xml_id</span><span class="p">]:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">aspace</span><span class="p">][</span><span class="n">alabel</span><span class="p">][</span><span class="n">xml_id</span><span class="p">][</span><span class="n">fname</span><span class="p">]</span>
+                        <span class="n">outa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&lt;f name=&quot;{}&quot; value=&quot;{}&quot;/&gt;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+                    <span class="n">outa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&lt;/fs&gt;&lt;/a&gt;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">outa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;&lt;/graph&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;1 = make form, 2 = make annotations [1/2] &quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">answer</span> <span class="o">==</span> <span class="s">&quot;1&quot;</span><span class="p">:</span>
+        <span class="n">make_form</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">answer</span> <span class="o">==</span> <span class="s">&quot;2&quot;</span><span class="p">:</span>
+        <span class="n">make_annots</span><span class="p">()</span>
+</pre></div></div>
+
+          <footer>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Dirk Roorda.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>

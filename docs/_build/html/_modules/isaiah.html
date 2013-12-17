@@ -178,11 +178,10 @@
 <span class="sd">    A better way is coming, where you can add features to all nodes, not just words nodes,</span>
 <span class="sd">    but also phrase, clause and sentence nodes.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
-    <span class="n">the_book_id</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">the_book</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">the_chapter</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">the_verse</span> <span class="o">=</span> <span class="bp">None</span>
@@ -196,10 +195,9 @@
                 <span class="n">the_suffix</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_suffix</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_monads</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">the_text</span> <span class="o">+</span> <span class="n">the_suffix</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">this_type</span> <span class="o">==</span> <span class="s">&quot;book&quot;</span><span class="p">:</span>
-            <span class="n">the_book_id</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="n">ontarget</span> <span class="o">=</span> <span class="n">the_book_id</span> <span class="o">==</span> <span class="s">&quot;Isaiah&quot;</span>
+            <span class="n">the_book</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">ontarget</span> <span class="o">=</span> <span class="n">the_book</span> <span class="o">==</span> <span class="s">&quot;Isaiah&quot;</span>
             <span class="k">if</span> <span class="n">ontarget</span><span class="p">:</span>
-                <span class="n">the_book</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_sft_book</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">the_book</span><span class="p">)</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_book</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>

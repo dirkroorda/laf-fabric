@@ -154,6 +154,7 @@
 
 <span class="kn">import</span> <span class="nn">array</span>
 <span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 
 <span class="n">aspace_not_given</span> <span class="o">=</span> <span class="s">&quot;_original_&quot;</span>
 
@@ -179,6 +180,9 @@
     <span class="n">faulty_annots</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">global</span> <span class="n">faulty_feats</span>
     <span class="n">faulty_feats</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">global</span> <span class="n">primary_data_file</span>
+    <span class="n">primary_data_file</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">global</span> <span class="n">annotation_files</span>
     <span class="n">annotation_files</span> <span class="o">=</span> <span class="p">[]</span>
@@ -230,9 +234,12 @@
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="HeaderHandler.startElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">primary_data_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;annotation&quot;</span><span class="p">:</span>
             <span class="n">annotation_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&quot;loc&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;primaryData&quot;</span><span class="p">:</span>
+            <span class="n">primary_data_file</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;loc&quot;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="HeaderHandler.endElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
@@ -450,7 +457,7 @@
             <span class="n">feature_val_int</span><span class="p">[</span><span class="n">feature_key</span><span class="p">][</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_fv_id</span>
         <span class="n">feature</span><span class="p">[</span><span class="n">feature_key</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_fv_id</span>
 </div></div>
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">prim_bin_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Parse a GrAF resource.</span>
 <span class="sd">    </span>
 <span class="sd">    Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all</span>
@@ -485,6 +492,9 @@
         <span class="n">identifiers_n</span> <span class="o">=</span> <span class="n">xmlitems</span><span class="p">[</span><span class="s">&#39;node&#39;</span><span class="p">]</span>
         <span class="n">identifiers_e</span> <span class="o">=</span> <span class="n">xmlitems</span><span class="p">[</span><span class="s">&#39;edge&#39;</span><span class="p">]</span>
 
+    <span class="k">if</span> <span class="n">prim_bin_file</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">primary_data_file</span><span class="p">,</span> <span class="n">prim_bin_file</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">annotation_file</span> <span class="ow">in</span> <span class="n">annotation_files</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;parsing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotation_file</span><span class="p">)</span>
         <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -508,8 +518,8 @@
     <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="p">(</span><span class="s">&quot;xid_int&quot;</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:{},</span> <span class="p">((</span><span class="s">&#39;node&#39;</span><span class="p">,</span> <span class="n">identifiers_n</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;edge&#39;</span><span class="p">,</span> <span class="n">identifiers_e</span><span class="p">))),</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;region_begin&quot;</span><span class="p">,</span> <span class="n">region_begin</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;region_end&quot;</span><span class="p">,</span> <span class="n">region_end</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;region_begin&quot;</span><span class="p">,</span> <span class="n">region_begin</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;region_end&quot;</span><span class="p">,</span> <span class="n">region_end</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;node_region_list&quot;</span><span class="p">,</span> <span class="n">node_region_list</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;edges_from&quot;</span><span class="p">,</span> <span class="n">edges_from</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;edges_to&quot;</span><span class="p">,</span> <span class="n">edges_to</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>

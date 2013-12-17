@@ -48,9 +48,6 @@ class Graf(object):
         Simply tables of integer values. 
         Most of the data common to all tasks is in ``array`` s and ``double_array`` s (see below).
 
-        ``region_begin`` and ``region_end``:
-            At position ``i``: the start and end anchors for region ``i``.
-
         ``node_sort``:
             All nodes ordered as induced by the region anchors.
             Nodes that start before others, come before them, 
@@ -70,8 +67,11 @@ class Graf(object):
         and then so many cells of information.
         This array has as its name the name of the primary array plus ``_items``.
 
-        ``node_region`` and ``node_region_items``:
-            For node ``i`` the record ``i`` consists of all regions that this node is linked to.
+        ``node_anchor`` and ``node_anchor_items``:
+            For node ``i`` the record ``i`` consists of all anchor ranges that this node is linked to.
+            The anchor range for a node is a sequence with even length of numbers that are the start and end anchors
+            of primary data ranges that the node is linked to.
+            The ranges have been normalized: they are maximal, non-overlapping, ordered by starting position.
 
         ``node_out`` and ``node_out_items``:
             For node ``i`` the record ``i`` consists of all outgoing edges from this node.
@@ -181,6 +181,7 @@ class Graf(object):
             },
             'load' : {
                 'common': None,
+                'primary': None,
                 'xmlids': None,
                 'feature': None,
                 'annox': None,
@@ -233,6 +234,8 @@ class Graf(object):
         *keys*:
             ``common``:
                 data originating from the chosen source, but not its feature data and not its xml-id data.
+            ``primary``:
+                the primary data of the chosen source, including the region information
             ``xmlids``:
                 the xml-ids originating from the chosen source.
             ``feature``:
@@ -251,14 +254,15 @@ class Graf(object):
 
         self.data_items_def = collections.OrderedDict((
             ('common', collections.OrderedDict([
-                    ("region_begin", 'array'),
-                    ("region_end", 'array'),
-                    ("node_region", 'double_array'),
                     ("node_sort", 'i_array'),
                     ("node_out", 'double_array'),
                     ("node_in", 'double_array'),
                     ("edges_from", 'array'),
                     ("edges_to", 'array'),
+                ])),
+            ('primary', collections.OrderedDict([
+                    ("data", 'string'),
+                    ("node_anchor", 'double_array'),
                 ])),
             ('xmlids', collections.OrderedDict([
                     ("xid", 'x_mapping'),
@@ -299,6 +303,8 @@ class Graf(object):
         if data_group == 'common':
             return item
         if data_group == 'xmlids':
+            return item
+        if data_group == 'primary':
             return item
         if data_group == 'feature' or data_group == 'annox':
             if asFile:
@@ -357,6 +363,7 @@ class Graf(object):
         
         self.given = {
             'common': {},
+            'primary': None,
             'xmlids': {},
             'feature': {},
             'annox': {},
@@ -373,100 +380,101 @@ class Graf(object):
 
         ''' 
         switchboard = {
-#          (env           , compile       , load                        )
-#          ((S    , A    ), (S    , A    ), (C    , X    , F    , A    )) 
-           ((None , None ), (False, False)): (False, False, False, False),
-           ((None , False), (False, False)): (False, False, False, False),
-           ((None , True ), (False, False)): (False, False, False, False),
-           ((False, None ), (False, False)): (False, False, False, False),
-           ((False, False), (False, False)): (False, False, False, False),
-           ((False, True ), (False, False)): (False, False, False, False),
-           ((True , None ), (False, False)): (False, False, False, False),
-           ((True , False), (False, False)): (False, False, False, False),
-           ((True , True ), (False, False)): (False, False, False, False),
+#          (env           , compile        : load                              )
+#          ((S    , A    ), (S    , A    ) : (C    , P,     X    , F    , A    ) 
+           ((None , None ), (False, False)): (False, False, False, False, False),
+           ((None , False), (False, False)): (False, False, False, False, False),
+           ((None , True ), (False, False)): (False, False, False, False, False),
+           ((False, None ), (False, False)): (False, False, False, False, False),
+           ((False, False), (False, False)): (False, False, False, False, False),
+           ((False, True ), (False, False)): (False, False, False, False, False),
+           ((True , None ), (False, False)): (False, False, False, False, False),
+           ((True , False), (False, False)): (False, False, False, False, False),
+           ((True , True ), (False, False)): (False, False, False, False, False),
 
-           ((None , None ), (False, True )): (False, False, False, False),
-           ((None , False), (False, True )): (False, False, False, False),
-           ((None , True ), (False, True )): (False, False, False, None ),
-           ((False, None ), (False, True )): (False, False, False, False),
-           ((False, False), (False, True )): (False, False, False, False),
-           ((False, True ), (False, True )): (False, False, False, None ),
-           ((True , None ), (False, True )): (False, False, False, False),
-           ((True , False), (False, True )): (False, False, False, False),
-           ((True , True ), (False, True )): (False, False, False, None ),
+           ((None , None ), (False, True )): (False, False, False, False, False),
+           ((None , False), (False, True )): (False, False, False, False, False),
+           ((None , True ), (False, True )): (False, False, False, False, None ),
+           ((False, None ), (False, True )): (False, False, False, False, False),
+           ((False, False), (False, True )): (False, False, False, False, False),
+           ((False, True ), (False, True )): (False, False, False, False, None ),
+           ((True , None ), (False, True )): (False, False, False, False, False),
+           ((True , False), (False, True )): (False, False, False, False, False),
+           ((True , True ), (False, True )): (False, False, False, False, None ),
 
-           ((None , None ), (False, None )): (False, False, False, None ),
-           ((None , False), (False, None )): (False, False, False, None ),
-           ((None , True ), (False, None )): (False, False, False, None ),
-           ((False, None ), (False, None )): (False, False, False, None ),
-           ((False, False), (False, None )): (False, False, False, None ),
-           ((False, True ), (False, None )): (False, False, False, None ),
-           ((True , None ), (False, None )): (False, False, False, None ),
-           ((True , False), (False, None )): (False, False, False, None ),
-           ((True , True ), (False, None )): (False, False, False, None ),
+           ((None , None ), (False, None )): (False, False, False, False, None ),
+           ((None , False), (False, None )): (False, False, False, False, None ),
+           ((None , True ), (False, None )): (False, False, False, False, None ),
+           ((False, None ), (False, None )): (False, False, False, False, None ),
+           ((False, False), (False, None )): (False, False, False, False, None ),
+           ((False, True ), (False, None )): (False, False, False, False, None ),
+           ((True , None ), (False, None )): (False, False, False, False, None ),
+           ((True , False), (False, None )): (False, False, False, False, None ),
+           ((True , True ), (False, None )): (False, False, False, False, None ),
 
-           ((None , None ), (True , False)): (False, False, False, False),
-           ((None , False), (True , False)): (False, False, False, False),
-           ((None , True ), (True , False)): (False, False, False, False),
-           ((False, None ), (True , False)): (False, False, False, False),
-           ((False, False), (True , False)): (False, False, False, False),
-           ((False, True ), (True , False)): (False, False, False, False),
-           ((True , None ), (True , False)): (True , None , None , False),
-           ((True , False), (True , False)): (True , None , None , False),
-           ((True , True ), (True , False)): (True , None , None , False),
+           ((None , None ), (True , False)): (False, False, False, False, False),
+           ((None , False), (True , False)): (False, False, False, False, False),
+           ((None , True ), (True , False)): (False, False, False, False, False),
+           ((False, None ), (True , False)): (False, False, False, False, False),
+           ((False, False), (True , False)): (False, False, False, False, False),
+           ((False, True ), (True , False)): (False, False, False, False, False),
+           ((True , None ), (True , False)): (True , None , None , None , False),
+           ((True , False), (True , False)): (True , None , None , None , False),
+           ((True , True ), (True , False)): (True , None , None , None , False),
 
-           ((None , None ), (True , True )): (False, False, False, False),
-           ((None , False), (True , True )): (False, False, False, False),
-           ((None , True ), (True , True )): (False, False, False, None ),
-           ((False, None ), (True , True )): (False, False, False, False),
-           ((False, False), (True , True )): (False, False, False, False),
-           ((False, True ), (True , True )): (False, False, False, None ),
-           ((True , None ), (True , True )): (True , None , None , False),
-           ((True , False), (True , True )): (True , None , None , False),
-           ((True , True ), (True , True )): (True , None , None , None ),
+           ((None , None ), (True , True )): (False, False, False, False, False),
+           ((None , False), (True , True )): (False, False, False, False, False),
+           ((None , True ), (True , True )): (False, False, False, False, None ),
+           ((False, None ), (True , True )): (False, False, False, False, False),
+           ((False, False), (True , True )): (False, False, False, False, False),
+           ((False, True ), (True , True )): (False, False, False, False, None ),
+           ((True , None ), (True , True )): (True , None , None , None , False),
+           ((True , False), (True , True )): (True , None , None , None , False),
+           ((True , True ), (True , True )): (True , None , None , None , None ),
 
-           ((None , None ), (True , None )): (False, None , False, None ),
-           ((None , False), (True , None )): (False, None , False, None ),
-           ((None , True ), (True , None )): (False, None , False, None ),
-           ((False, None ), (True , None )): (False, None , False, None ),
-           ((False, False), (True , None )): (False, None , False, None ),
-           ((False, True ), (True , None )): (False, None , False, None ),
-           ((True , None ), (True , None )): (True , None , None , None ),
-           ((True , False), (True , None )): (True , None , None , None ),
-           ((True , True ), (True , None )): (True , None , None , None ),
+           ((None , None ), (True , None )): (False, None , None , False, None ),
+           ((None , False), (True , None )): (False, None , None , False, None ),
+           ((None , True ), (True , None )): (False, None , None , False, None ),
+           ((False, None ), (True , None )): (False, None , None , False, None ),
+           ((False, False), (True , None )): (False, None , None , False, None ),
+           ((False, True ), (True , None )): (False, None , None , False, None ),
+           ((True , None ), (True , None )): (True , None , None , None , None ),
+           ((True , False), (True , None )): (True , None , None , None , None ),
+           ((True , True ), (True , None )): (True , None , None , None , None ),
 
-           ((None , None ), (None , False)): (True , None , None , False),
-           ((None , False), (None , False)): (True , None , None , False),
-           ((None , True ), (None , False)): (True , None , None , False),
-           ((False, None ), (None , False)): (True , None , None , False),
-           ((False, False), (None , False)): (True , None , None , False),
-           ((False, True ), (None , False)): (True , None , None , False),
-           ((True , None ), (None , False)): (True , None , None , False),
-           ((True , False), (None , False)): (True , None , None , False),
-           ((True , True ), (None , False)): (True , None , None , False),
+           ((None , None ), (None , False)): (True , None , None , None , False),
+           ((None , False), (None , False)): (True , None , None , None , False),
+           ((None , True ), (None , False)): (True , None , None , None , False),
+           ((False, None ), (None , False)): (True , None , None , None , False),
+           ((False, False), (None , False)): (True , None , None , None , False),
+           ((False, True ), (None , False)): (True , None , None , None , False),
+           ((True , None ), (None , False)): (True , None , None , None , False),
+           ((True , False), (None , False)): (True , None , None , None , False),
+           ((True , True ), (None , False)): (True , None , None , None , False),
 
-           ((None , None ), (None , True )): (True , None , None , False),
-           ((None , False), (None , True )): (True , None , None , False),
-           ((None , True ), (None , True )): (True , None , None , None ),
-           ((False, None ), (None , True )): (True , None , None , False),
-           ((False, False), (None , True )): (True , None , None , False),
-           ((False, True ), (None , True )): (True , None , None , None ),
-           ((True , None ), (None , True )): (True , None , None , False),
-           ((True , False), (None , True )): (True , None , None , False),
-           ((True , True ), (None , True )): (True , None , None , None ),
+           ((None , None ), (None , True )): (True , None , None , None , False),
+           ((None , False), (None , True )): (True , None , None , None , False),
+           ((None , True ), (None , True )): (True , None , None , None , None ),
+           ((False, None ), (None , True )): (True , None , None , None , False),
+           ((False, False), (None , True )): (True , None , None , None , False),
+           ((False, True ), (None , True )): (True , None , None , None , None ),
+           ((True , None ), (None , True )): (True , None , None , None , False),
+           ((True , False), (None , True )): (True , None , None , None , False),
+           ((True , True ), (None , True )): (True , None , None , None , None ),
 
-           ((None , None ), (None , None )): (True , None , None , None ),
-           ((None , False), (None , None )): (True , None , None , None ),
-           ((None , True ), (None , None )): (True , None , None , None ),
-           ((False, None ), (None , None )): (True , None , None , None ),
-           ((False, False), (None , None )): (True , None , None , None ),
-           ((False, True ), (None , None )): (True , None , None , None ),
-           ((True , None ), (None , None )): (True , None , None , None ),
-           ((True , False), (None , None )): (True , None , None , None ),
-           ((True , True ), (None , None )): (True , None , None , None ),
+           ((None , None ), (None , None )): (True , None , None , None , None ),
+           ((None , False), (None , None )): (True , None , None , None , None ),
+           ((None , True ), (None , None )): (True , None , None , None , None ),
+           ((False, None ), (None , None )): (True , None , None , None , None ),
+           ((False, False), (None , None )): (True , None , None , None , None ),
+           ((False, True ), (None , None )): (True , None , None , None , None ),
+           ((True , None ), (None , None )): (True , None , None , None , None ),
+           ((True , False), (None , None )): (True , None , None , None , None ),
+           ((True , True ), (None , None )): (True , None , None , None , None ),
         }
         (
             self.status['load']['common'],
+            self.status['load']['primary'],
             self.status['load']['xmlids'],
             self.status['load']['feature'],
             self.status['load']['annox']
@@ -479,6 +487,8 @@ class Graf(object):
         for data_group in self.data_items_def:
             if data_group == 'common':
                 self.loaded[data_group] = 'node_sort' in self.data_items and self.data_items['node_sort'] != None
+            elif data_group == 'primary':
+                self.loaded[data_group] = 'data' in self.data_items and self.data_items['data'] != None
             else:
                 ref_label = 'xid_int' if data_group == 'xmlids' else 'feature' if data_group == 'feature' else 'xfeature'
                 if ref_label not in self.data_items or self.data_items[ref_label] == None:
@@ -499,6 +509,8 @@ class Graf(object):
         for label in self.data_items_def[data_group]:
             if self.data_items_def[data_group][label] == 'i_array':
                 self.data_items[label + '_inv'] = self.make_array_inverse(self.data_items[label])
+
+        # data_group = 'primary': nothing to do or check
 
         data_group = 'xmlids'
         for item in self.given[data_group]:
@@ -557,6 +569,8 @@ class Graf(object):
         self.read_stats()
         self.check_load_status()
 
+        self.given['primary'] = directives['primary'] if 'primary' in directives else False
+
         self.given['xmlids'] = {}
         for item in [k for k in directives['xmlids'] if directives['xmlids'][k]]:
             self.given['xmlids'][item] = None
@@ -599,10 +613,17 @@ class Graf(object):
             if load_status == False:
                 self.clear_data(data_group)
                 self.load_data(data_group)
+
+        elif data_group == 'primary':
+            if load_status == False:
+                self.clear_data(data_group)
+                self.load_data(data_group, items=self.given[data_group])
+            elif load_status == None:
+                self.clear_data(data_group, items=not self.given[data_group])
+                self.load_data(data_group, items=self.given[data_group])
         else:
             unload = []
             load = []
-            keep = []
             the_givens = self.given[data_group] if items == None else items 
             all_items = {}
             for item in the_givens:
@@ -614,7 +635,6 @@ class Graf(object):
             for (item, item_rep) in sorted(all_items.items()):
                 if item in self.loaded[data_group] and item in the_givens:
                     self.progress("keeping {}: {} ...".format(data_group, item_rep))
-                    keep.append(item)
                 elif item in self.loaded[data_group]:
                     unload.append(item)
                 elif item in the_givens:
@@ -623,7 +643,7 @@ class Graf(object):
                 self.clear_data(data_group)
             elif load_status == None:
                 self.clear_data(data_group, items=unload)
-            self.load_data(data_group, items=load, keep=keep) 
+            self.load_data(data_group, items=load) 
 
     def clear_all(self):
         '''Low level data management function to clear all data.
@@ -638,10 +658,11 @@ class Graf(object):
         Args:
             data_group:
                 the group of data items to be cleared
-            items (iterable):
+            items (iterable or boolean):
                 A list of subitems.
                 Optional. If given, only the data for the subitems specified, will be cleared.
-                Otherwise all subitems will be cleared.
+                If a boolean, data will be cleared if true.
+                If not given all subitems will be cleared.
 
         '''
         if data_group == 'common':
@@ -656,6 +677,12 @@ class Graf(object):
                     for sub in subs:
                         lab = label + sub
                         del self.data_items[lab]
+
+        elif data_group == 'primary':
+            for (label, data_type) in self.data_items_def[data_group].items():
+                if items == None or items == True:
+                    if label in self.data_items:
+                        del self.data_items[label]
 
         else:
             sub_int = '_int' if data_group == 'xmlids' else '_val_int'
@@ -769,7 +796,7 @@ class Graf(object):
                 key in ``data_items_def``, indicating the portion of data that has to be adjusted.
         '''
 
-        if data_group == 'common':
+        if data_group == 'common' or data_group == 'primary':
             for (label, data_type) in self.data_items_def[data_group].items():
                 self.progress("writing {}: {} ...".format(data_group, label))
                 if data_type == 'array' or data_type == 'double_array':
@@ -835,13 +862,13 @@ class Graf(object):
             self.stats[label] = int(count)
         handle.close()
 
-    def load_data(self, data_group, items={}, keep={}):
+    def load_data(self, data_group, items=None):
         '''Low level data management function to load data from disk into memory.
 
         Args:
             data_group:
                 the kind of data to load
-            items (iterable):
+            items (iterable or bool):
                 A list of subitems in the data group to be loaded.
                 Only relevant if ``data_group != common``
         '''
@@ -859,6 +886,26 @@ class Graf(object):
                         b_handle = open(b_path, "rb")
                         self.data_items[lab].fromfile(b_handle, self.stats[lab])
                         b_handle.close()
+        elif data_group == 'primary':
+            if items:
+                for (label, data_type) in self.data_items_def[data_group].items():
+                    self.progress("loading {}: {} ... ".format(data_group, label))
+                    if data_type == 'string':
+                        b_path = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data'])
+                        b_handle = open(b_path, "r")
+                        self.data_items[label] = b_handle.read(None)
+                        b_handle.close()
+                    subs = ('',)
+                    if data_type == 'double_array':
+                        subs = ('', '_items')
+                    for sub in subs:
+                        lab = label + sub
+                        self.data_items[lab] = array.array('I')
+                        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+                        if os.path.exists(b_path):
+                            b_handle = open(b_path, "rb")
+                            self.data_items[lab].fromfile(b_handle, self.stats[lab])
+                            b_handle.close()
         else:
             ref_lab = '_int' if data_group == 'xmlids' else ''
             extra_lab = None if data_group == 'xmlids' else '_val_int'
@@ -921,7 +968,10 @@ class Graf(object):
                 self.stamp, os.error,
             )
         
-        parsed_data_items = xmlparse(the_data_file, self.stamp, xmlitems)
+        prim_bin_file = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data']) if data_group == 'source' else None
+
+        parsed_data_items = xmlparse(the_data_file, prim_bin_file, self.stamp, xmlitems)
+
         self.temp_data_items = {}
 
         for parsed_data_item in parsed_data_items:

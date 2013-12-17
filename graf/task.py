@@ -154,13 +154,22 @@ class GrafTask(Graf):
         This is what is returned (the names given are not necessarily the names by which they are used
         in end user tasks. You can give convenient, local names to these methods, e.g::
 
-            (msg, NN, F, X) = graftask.get_mappings()
+            (msg, P, NN, F, X) = graftask.get_mappings()
 
         Using these names, here is the API specification:
 
         msg(text, newline=True, withtime=True):
             For delivering console output, such as progress messages.
             See :meth:`progress <graf.timestamp.Timestamp.progress>`.
+
+        P(:class:`PrimaryData`):
+            Object containing the primary data and the information to which portions of it nodes are linked.
+            ``P.data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.
+            In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from
+            the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the
+            primary data and the fragments are maximal. They do not overlap, and there are no duplicates.
+            A fragment can be empty.
+            This happens when a region is merely a pointer and not an interval.
 
         NN(test=function, value=something):
             An iterator that delivers nodes in the canonical order described in :func:`model <graf.model.model>`.
@@ -217,8 +226,10 @@ class GrafTask(Graf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
+        print("XXX {}".format(len(self.data_items['node_sort'])))
         return (
             self.progress,
+            PrimaryData(self) if self.given['primary'] else None,
             next_node,
             Features(feature_objects),
             XMLids(xmlid_objects)
@@ -477,3 +488,31 @@ class XMLids(object):
         for xo in xmlid_objects:
             exec("self.{} = xo".format(xo.local_name))
 
+class PrimaryData(object):
+    '''This class is responsible for giving access to the primary data.
+    '''
+    def __init__(self, graftask):
+        self.data = graftask.data_items['data']
+        self.graftask = graftask
+
+    def data(self, node):
+        '''Gets the primary data to which a node is linked.
+
+        Args:
+            node(int):
+                The node in question
+
+        Returns:
+            None:
+                if the node is not linked to regions of primary data
+            List of (N, text):
+                all positions *N* to which the node is linked, where *text* is the primary data
+                stretch starting at position *N* that is linked to the node.
+                *text* may be empty.
+                The list is normalized: all stretches are maximal, non overlapping and occur
+                in the order of the primary data (ascending *N*). 
+        '''
+        regions = graftask.getitems(graftask.data_items['node_anchor'], graftask.data_items['node_anchor_items'], node)
+        if not regions:
+            return None
+        return [(n, graftask.data_items['data'][n:m]) for (n, m) in regions]

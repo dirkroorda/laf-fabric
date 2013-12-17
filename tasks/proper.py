@@ -41,7 +41,7 @@ def task(graftask):
     Returns:
         stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
     stats_v_raw = graftask.add_result("stats_v_raw.txt")

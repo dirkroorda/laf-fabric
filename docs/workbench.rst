@@ -309,6 +309,9 @@ So an annotation space and a label uniquely define a kind of annotation.
 In a previous version, this workbench ignored annotation spaces altogether.
 Now annotation spaces are fully functional.
 
+*primary data*
+    This workbench deals with primary data that is UNICODE text anchored by positions between the individual
+    UNICODE characters. The workbench does not deal with alternative units such as bytes or words. 
 *feature structures*
     The content of an annotation can be a feature structure.
     A feature structure is a set of features and sub features, ordered again as a graph.

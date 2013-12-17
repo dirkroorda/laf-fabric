@@ -37,7 +37,7 @@ def task(graftask):
         sentence is co-extensial with a clause (having exactly the same *monads* or words), there is
         nothing in the data that specifies that the clause is contained in the sentence.
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 

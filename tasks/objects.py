@@ -20,7 +20,7 @@ def task(graftask):
     '''Produces a list of all WIVU objects with their types, ids and
     *monads* (words) they contain.
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 

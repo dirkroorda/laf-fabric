@@ -38,6 +38,28 @@ def arrayify(source_list):
     return (dest_array, dests_array)
 
 def normalize_ranges(ranges):
+    '''Normalizes a set of ranges.
+
+    Ranges come from the regions in the primary data.
+    The anchors in the regions point to positions between characters in the primary data.
+    So range (1,1) points to the point after the first character and before the second one.
+    This range does not include any character. But the range (0,1) correspondes with the interval
+    between the points before any character and the point after the first character.
+    So this is character [0] in the string.
+    
+    Nodes may be linked to multiple regions. Then we get multiple ranges associated to nodes.
+    This function simplifies a set of ranges: overlapping ranges will be joined, adjacent regions
+    will be combined, ranges will be ordered.
+
+    Args:
+        ranges(iterable of 2-tuples):
+            List of ranges, where every range is a tuple of exactly 2 integers.
+
+    Returns:
+        The result is a plain list of integers. The number of integers is even.
+        The first two correspond to the first range, the second two to the second range and so on.
+        This way we can deliver the results of many nodes as a compact *double_array*.
+    '''
     covered = {}
     for (start, end) in ranges:
         if start == end:
@@ -67,6 +89,7 @@ def normalize_ranges(ranges):
         result.extend((cur_start, cur_end))
 
     return result
+
 def model(data_items, temp_data_items, stamp):
     '''Remodels various data structures
 

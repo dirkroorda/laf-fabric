@@ -44,20 +44,27 @@ class Graf(object):
         ``xid_rep`` (going from integer to xml).
         Both contain two dictionaries, one for nodes and one for edges separately.
 
+    ``string``:
+        Just an unicode string. Used for ``data``, the primary data.
+
     ``array``, group ``common``:
         Simply tables of integer values. 
         Most of the data common to all tasks is in ``array`` s and ``double_array`` s (see below).
 
-        ``node_sort``:
+        ``edges_from`` and ``edges_to``:
+            At position ``i``: the source and the target of edge ``i``.
+
+    ``i_array``, group ``common``:
+        As ``array`` plus a generated inverse of the array, giving the array index for each value.
+
+        ``node_sort`` and ``node_sort_inv``:
             All nodes ordered as induced by the region anchors.
             Nodes that start before others, come before them, 
             nodes that have equal start points are ordered such that the one with the later end point
             comes first. If both have equal end points, the order is arbitrary.
             If the nodes correspond to objects in a hierarchy without gaps, then embedding objects come before
             embedded objects.
-            
-        ``edges_from`` and ``edges_to``:
-            At position ``i``: the source and the target of edge ``i``.
+            The inverse is handy for sorting subsets of nodes: it gives for each node its rank in the sort order.
 
     ``double_array``, group ``common``: 
         Twin arrays representing a list of records where records may have variable length.
@@ -363,7 +370,7 @@ class Graf(object):
         
         self.given = {
             'common': {},
-            'primary': None,
+            'primary': {},
             'xmlids': {},
             'feature': {},
             'annox': {},
@@ -488,7 +495,11 @@ class Graf(object):
             if data_group == 'common':
                 self.loaded[data_group] = 'node_sort' in self.data_items and self.data_items['node_sort'] != None
             elif data_group == 'primary':
-                self.loaded[data_group] = 'data' in self.data_items and self.data_items['data'] != None
+                self.loaded[data_group] = {}
+                if 'node_anchor' in self.data_items and self.data_items['node_anchor'] != None:
+                    self.loaded[data_group]['regions'] = None
+                if 'data' in self.data_items and self.data_items['data'] != None:
+                    self.loaded[data_group]['data'] = None
             else:
                 ref_label = 'xid_int' if data_group == 'xmlids' else 'feature' if data_group == 'feature' else 'xfeature'
                 if ref_label not in self.data_items or self.data_items[ref_label] == None:
@@ -501,6 +512,7 @@ class Graf(object):
 
         Loading of features may have failed if the task has declared non-existent features!
         This will be spotted here.
+
         '''
         self.check_load_status()
         passed = True
@@ -509,8 +521,6 @@ class Graf(object):
         for label in self.data_items_def[data_group]:
             if self.data_items_def[data_group][label] == 'i_array':
                 self.data_items[label + '_inv'] = self.make_array_inverse(self.data_items[label])
-
-        # data_group = 'primary': nothing to do or check
 
         data_group = 'xmlids'
         for item in self.given[data_group]:
@@ -569,7 +579,9 @@ class Graf(object):
         self.read_stats()
         self.check_load_status()
 
-        self.given['primary'] = directives['primary'] if 'primary' in directives else False
+        self.given['primary'] = {}
+        if 'primary' in directives and directives['primary']:
+            self.given['primary'] = {'data': None, 'regions': None}
 
         self.given['xmlids'] = {}
         for item in [k for k in directives['xmlids'] if directives['xmlids'][k]]:
@@ -619,8 +631,18 @@ class Graf(object):
                 self.clear_data(data_group)
                 self.load_data(data_group, items=self.given[data_group])
             elif load_status == None:
-                self.clear_data(data_group, items=not self.given[data_group])
-                self.load_data(data_group, items=self.given[data_group])
+                unload = []
+                load = []
+                if 'data' in self.given[data_group] and 'data' not in self.loaded[data_group]:
+                    load.append('data')
+                if 'regions' in self.given[data_group] and 'regions' not in self.loaded[data_group]:
+                    load.append('regions')
+                if 'data' not in self.given[data_group] and 'data' in self.loaded[data_group]:
+                    unload.append('data')
+                if 'regions' not in self.given[data_group] and 'regions' in self.loaded[data_group]:
+                    unload.append('regions')
+                self.clear_data(data_group, items=unload)
+                self.load_data(data_group, items=load)
         else:
             unload = []
             load = []
@@ -658,10 +680,9 @@ class Graf(object):
         Args:
             data_group:
                 the group of data items to be cleared
-            items (iterable or boolean):
+            items (iterable):
                 A list of subitems.
                 Optional. If given, only the data for the subitems specified, will be cleared.
-                If a boolean, data will be cleared if true.
                 If not given all subitems will be cleared.
 
         '''
@@ -680,8 +701,9 @@ class Graf(object):
 
         elif data_group == 'primary':
             for (label, data_type) in self.data_items_def[data_group].items():
-                if items == None or items == True:
+                if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):
                     if label in self.data_items:
+                        self.progress("clearing {}: {} ...".format(data_group, label))
                         del self.data_items[label]
 
         else:
@@ -799,7 +821,7 @@ class Graf(object):
         if data_group == 'common' or data_group == 'primary':
             for (label, data_type) in self.data_items_def[data_group].items():
                 self.progress("writing {}: {} ...".format(data_group, label))
-                if data_type == 'array' or data_type == 'double_array':
+                if data_type == 'array' or data_type == 'double_array' or data_type == 'i_array':
                     subs = ('',)
                     if data_type == 'double_array':
                         subs = ('', '_items')
@@ -836,7 +858,7 @@ class Graf(object):
         handle = codecs.open(self.env['stat_file'], "w", encoding = 'utf-8')
         for data_group in self.data_items_def:
             for (label, data_type) in self.data_items_def[data_group].items():
-                if data_type == 'array' or data_type == 'double_array':
+                if data_type == 'array' or data_type == 'double_array' or data_type == 'i_array':
                     subs = ('',)
                     if data_type == 'double_array':
                         subs = ('', '_items')
@@ -868,7 +890,7 @@ class Graf(object):
         Args:
             data_group:
                 the kind of data to load
-            items (iterable or bool):
+            items (iterable):
                 A list of subitems in the data group to be loaded.
                 Only relevant if ``data_group != common``
         '''
@@ -887,25 +909,26 @@ class Graf(object):
                         self.data_items[lab].fromfile(b_handle, self.stats[lab])
                         b_handle.close()
         elif data_group == 'primary':
-            if items:
-                for (label, data_type) in self.data_items_def[data_group].items():
+            for (label, data_type) in self.data_items_def[data_group].items():
+                if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):
                     self.progress("loading {}: {} ... ".format(data_group, label))
                     if data_type == 'string':
                         b_path = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data'])
                         b_handle = open(b_path, "r")
                         self.data_items[label] = b_handle.read(None)
                         b_handle.close()
-                    subs = ('',)
-                    if data_type == 'double_array':
-                        subs = ('', '_items')
-                    for sub in subs:
-                        lab = label + sub
-                        self.data_items[lab] = array.array('I')
-                        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-                        if os.path.exists(b_path):
-                            b_handle = open(b_path, "rb")
-                            self.data_items[lab].fromfile(b_handle, self.stats[lab])
-                            b_handle.close()
+                    else:
+                        subs = ('',)
+                        if data_type == 'double_array':
+                            subs = ('', '_items')
+                        for sub in subs:
+                            lab = label + sub
+                            self.data_items[lab] = array.array('I')
+                            b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+                            if os.path.exists(b_path):
+                                b_handle = open(b_path, "rb")
+                                self.data_items[lab].fromfile(b_handle, self.stats[lab])
+                                b_handle.close()
         else:
             ref_lab = '_int' if data_group == 'xmlids' else ''
             extra_lab = None if data_group == 'xmlids' else '_val_int'

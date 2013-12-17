@@ -37,6 +37,36 @@ def arrayify(source_list):
         j += 1 + len(items)
     return (dest_array, dests_array)
 
+def normalize_ranges(ranges):
+    covered = {}
+    for (start, end) in ranges:
+        if start == end:
+            if start not in covered:
+                covered[start] = False
+        else:
+            for i in range(start, end):
+                covered[i] = True
+    cur_start = None
+    cur_end = None
+    result = []
+    for i in sorted(covered.keys()):
+        if not covered[i]:
+            if cur_end != None:
+                result.extend((cur_start, cur_end))
+            result.extend((i, i))
+            cur_start = None
+            cur_end = None
+        elif cur_end == None or i > cur_end:
+            if cur_end != None:
+                result.extend((cur_start, cur_end))
+            cur_start = i
+            cur_end = i + 1
+        else:
+            cur_end = i + 1
+    if cur_end != None:
+        result.extend((cur_start, cur_end))
+
+    return result
 def model(data_items, temp_data_items, stamp):
     '''Remodels various data structures
 
@@ -81,42 +111,38 @@ def model(data_items, temp_data_items, stamp):
 
     node_region_list = temp_data_items["node_region_list"]
     n_node = len(node_region_list)
-    (node_region, node_region_items) = arrayify(node_region_list)
-    result_items.append(("node_region", node_region))
-    result_items.append(("node_region_items", node_region_items))
 
     stamp.progress("NODES DETERMINING ANCHOR BOUNDARIES")
 
     node_anchor_min = array.array('I', [0 for i in range(n_node)])
     node_anchor_max = array.array('I', [0 for i in range(n_node)])
     node_linked = array.array('I')
-    region_begin = data_items["region_begin"]
-    region_end = data_items["region_end"]
+    region_begin = temp_data_items["region_begin"]
+    region_end = temp_data_items["region_end"]
 
+    node_anchor_list = []
     for node in range(n_node):
         links = node_region_list[node]
         if len(links) == 0:
+            node_anchor_list.append([])
             continue
         node_linked.append(node + 1)
-        cur_min = 0
-        cur_max = 0
-        first = True
+        ranges = []
         for r in links:
             this_anchor_begin = region_begin[r - 1]
             this_anchor_end = region_end[r - 1]
-            if first:
-                cur_min = this_anchor_begin
-                cur_max = this_anchor_end
-                first = False
-            else:
-                if this_anchor_begin < cur_min:
-                    cur_min = this_anchor_begin
-                if this_anchor_end > cur_max:
-                    cur_max = this_anchor_end
-        node_anchor_min[node] = cur_min
-        node_anchor_max[node] = cur_max
+            ranges.append((this_anchor_begin, this_anchor_end))
+        norm_ranges = normalize_ranges(ranges)
+        node_anchor_list.append(norm_ranges)
 
+        node_anchor_min[node] = min(norm_ranges)
+        node_anchor_max[node] = max(norm_ranges)
+
+    (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
+    result_items.append(("node_anchor", node_anchor))
+    result_items.append(("node_anchor_items", node_anchor_items))
     node_region_list = None
+    node_anchor_list = None
     del temp_data_items["node_region_list"]
 
     stamp.progress("NODES SORTING BY REGIONS")

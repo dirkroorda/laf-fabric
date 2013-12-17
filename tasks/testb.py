@@ -3,6 +3,7 @@
 import sys
 
 load = {
+    "primary": True,
     "xmlids": {
         "node": True,
         "edge": False,
@@ -40,7 +41,7 @@ def task(graftask):
 
     The dictionary ``config`` contains the specifications.
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.csv")
 
@@ -55,10 +56,10 @@ def task(graftask):
     target_type = config['target_type']
     for i in NN():
         this_type = F.shebanq_db_otype.v(i)
+        print("{} {}".format(this_type, i))
         if this_type == target_type:
             if in_chapter:
-                the_regions = graftask.getitems(
-                the_text = F.shebanq_ft_text.v(i)
+                the_text = "*".join([text for (n. text) in P.data(i)])
                 out.write("\t{}".format(the_text))
         elif this_type == "book":
             the_book = F.shebanq_sft_book.v(i)

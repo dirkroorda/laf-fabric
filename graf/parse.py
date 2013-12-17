@@ -7,6 +7,7 @@ from xml.sax.handler import ContentHandler
 
 import array
 import collections
+import shutil
 
 aspace_not_given = "_original_"
 
@@ -32,6 +33,9 @@ def init():
     faulty_annots = 0
     global faulty_feats
     faulty_feats = 0
+
+    global primary_data_file
+    primary_data_file = None
 
     global annotation_files
     annotation_files = []
@@ -83,9 +87,12 @@ class HeaderHandler(ContentHandler):
         pass
 
     def startElement(self, name, attrs):
+        global primary_data_file
         self._tag_stack.append(name)
         if name == "annotation":
             annotation_files.append(attrs["loc"])
+        elif name == "primaryData":
+            primary_data_file = attrs["loc"]
 
     def endElement(self, name):
         self._tag_stack.pop()
@@ -303,7 +310,7 @@ class AnnotationHandler(ContentHandler):
             feature_val_int[feature_key][value] = this_fv_id
         feature[feature_key][self.aref] = this_fv_id
 
-def parse(graf_header_file, stamp, xmlitems):
+def parse(graf_header_file, prim_bin_file, stamp, xmlitems):
     '''Parse a GrAF resource.
     
     Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
@@ -338,6 +345,9 @@ def parse(graf_header_file, stamp, xmlitems):
         identifiers_n = xmlitems['node']
         identifiers_e = xmlitems['edge']
 
+    if prim_bin_file != None:
+        shutil.copy2(primary_data_file, prim_bin_file)
+
     for annotation_file in annotation_files:
         msg = "parsing {}".format(annotation_file)
         stamp.progress(msg)
@@ -361,8 +371,8 @@ def parse(graf_header_file, stamp, xmlitems):
     stamp.progress(msg)
     return (
         ("xid_int", collections.defaultdict(lambda:{}, (('node', identifiers_n), ('edge', identifiers_e))), True),
-        ("region_begin", region_begin, True),
-        ("region_end", region_end, True),
+        ("region_begin", region_begin, False),
+        ("region_end", region_end, False),
         ("node_region_list", node_region_list, False),
         ("edges_from", edges_from, True),
         ("edges_to", edges_to, True),

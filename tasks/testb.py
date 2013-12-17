@@ -43,7 +43,9 @@ def task(graftask):
     '''
     (msg, P, NN, F, X) = graftask.get_mappings()
 
-    out = graftask.add_result("output.csv")
+    target_type = config['target_type']
+
+    out = graftask.add_result("form_{}.csv".format(target_type))
 
     msg("Reading the books ...")
 
@@ -53,13 +55,11 @@ def task(graftask):
     in_book = False
     in_chapter = False
     do_chapters = {}
-    target_type = config['target_type']
     for i in NN():
         this_type = F.shebanq_db_otype.v(i)
-        print("{} {}".format(this_type, i))
         if this_type == target_type:
             if in_chapter:
-                the_text = "*".join([text for (n. text) in P.data(i)])
+                the_text = "_".join([text for (n, text) in P.data(i)])
                 out.write("\t{}".format(the_text))
         elif this_type == "book":
             the_book = F.shebanq_sft_book.v(i)

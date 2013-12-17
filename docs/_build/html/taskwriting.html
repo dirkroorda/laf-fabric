@@ -246,7 +246,7 @@ Finally, here is the complete Python code of the task that produced this output:
     <span class="sd">&#39;&#39;&#39;Produces a list of all WIVU objects with their types, ids and</span>
 <span class="sd">    *monads* (words) they contain.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
@@ -309,6 +309,14 @@ It is a node feature, because otherwise the name had a
 <tt class="docutils literal"><span class="pre">_e</span></tt> appended to it.
 You can look up a feature value of this feature, say for node <tt class="docutils literal"><span class="pre">n</span></tt>,by saying:
 <tt class="docutils literal"><span class="pre">F.shebanq_db_otype.v(n)</span></tt>.</dd>
+<dt><em>P(node)</em></dt>
+<dd>Your gateway to the primary data. For nodes <em>n</em> that are linked to the primary data by 1 or more regions,
+P(<em>n</em>) yields a set of chunks of primary data, corresponding with those regions.
+The chunks are maximal, non-overlapping, ordered according to the primary data.
+Every chunk is given as a tuple (<em>pos</em>, <em>text</em>), where <em>pos</em> is the position in the primary data where
+the start of <em>text</em> can be found, and <em>text</em> is the chunk of actual text that is specified by the region.
+Note that <em>text</em> may be empty. This happens in cases where the region is not a true interval but merely
+a point between two characters.</dd>
 <dt><em>NN(test=function value=something)</em></dt>
 <dd>If you want to walk through all the nodes, possibly skipping some, then this is your method.
 It is an <em>iterator</em> that yields a new node everytime it is called.

@@ -175,21 +175,27 @@ and the node/edge numbers in the compiled data.
 There are two dictionaries: <tt class="docutils literal"><span class="pre">xid_int</span></tt> (going from xml to integer) and
 <tt class="docutils literal"><span class="pre">xid_rep</span></tt> (going from integer to xml).
 Both contain two dictionaries, one for nodes and one for edges separately.</dd>
+<dt><tt class="docutils literal"><span class="pre">string</span></tt>:</dt>
+<dd>Just an unicode string. Used for <tt class="docutils literal"><span class="pre">data</span></tt>, the primary data.</dd>
 <dt><tt class="docutils literal"><span class="pre">array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
 <dd><p class="first">Simply tables of integer values. 
 Most of the data common to all tasks is in <tt class="docutils literal"><span class="pre">array</span></tt> s and <tt class="docutils literal"><span class="pre">double_array</span></tt> s (see below).</p>
 <dl class="last docutils">
-<dt><tt class="docutils literal"><span class="pre">region_begin</span></tt> and <tt class="docutils literal"><span class="pre">region_end</span></tt>:</dt>
-<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the start and end anchors for region <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
-<dt><tt class="docutils literal"><span class="pre">node_sort</span></tt>:</dt>
+<dt><tt class="docutils literal"><span class="pre">edges_from</span></tt> and <tt class="docutils literal"><span class="pre">edges_to</span></tt>:</dt>
+<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the source and the target of edge <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
+</dl>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">i_array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
+<dd><p class="first">As <tt class="docutils literal"><span class="pre">array</span></tt> plus a generated inverse of the array, giving the array index for each value.</p>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">node_sort</span></tt> and <tt class="docutils literal"><span class="pre">node_sort_inv</span></tt>:</dt>
 <dd>All nodes ordered as induced by the region anchors.
 Nodes that start before others, come before them, 
 nodes that have equal start points are ordered such that the one with the later end point
 comes first. If both have equal end points, the order is arbitrary.
 If the nodes correspond to objects in a hierarchy without gaps, then embedding objects come before
-embedded objects.</dd>
-<dt><tt class="docutils literal"><span class="pre">edges_from</span></tt> and <tt class="docutils literal"><span class="pre">edges_to</span></tt>:</dt>
-<dd>At position <tt class="docutils literal"><span class="pre">i</span></tt>: the source and the target of edge <tt class="docutils literal"><span class="pre">i</span></tt>.</dd>
+embedded objects.
+The inverse is handy for sorting subsets of nodes: it gives for each node its rank in the sort order.</dd>
 </dl>
 </dd>
 <dt><tt class="docutils literal"><span class="pre">double_array</span></tt>, group <tt class="docutils literal"><span class="pre">common</span></tt>: </dt>
@@ -200,8 +206,11 @@ The record in the second array starts with a cell containing the length of the r
 and then so many cells of information.
 This array has as its name the name of the primary array plus <tt class="docutils literal"><span class="pre">_items</span></tt>.</p>
 <dl class="last docutils">
-<dt><tt class="docutils literal"><span class="pre">node_region</span></tt> and <tt class="docutils literal"><span class="pre">node_region_items</span></tt>:</dt>
-<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all regions that this node is linked to.</dd>
+<dt><tt class="docutils literal"><span class="pre">node_anchor</span></tt> and <tt class="docutils literal"><span class="pre">node_anchor_items</span></tt>:</dt>
+<dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all anchor ranges that this node is linked to.
+The anchor range for a node is a sequence with even length of numbers that are the start and end anchors
+of primary data ranges that the node is linked to.
+The ranges have been normalized: they are maximal, non-overlapping, ordered by starting position.</dd>
 <dt><tt class="docutils literal"><span class="pre">node_out</span></tt> and <tt class="docutils literal"><span class="pre">node_out_items</span></tt>:</dt>
 <dd>For node <tt class="docutils literal"><span class="pre">i</span></tt> the record <tt class="docutils literal"><span class="pre">i</span></tt> consists of all outgoing edges from this node.</dd>
 <dt><tt class="docutils literal"><span class="pre">node_in</span></tt> and <tt class="docutils literal"><span class="pre">node_in_items</span></tt>:</dt>
@@ -387,7 +396,7 @@ Now per key in the <tt class="docutils literal"><span class="pre">data_items_def
 <dt>items (iterable):</dt>
 <dd>A list of subitems.
 Optional. If given, only the data for the subitems specified, will be cleared.
-Otherwise all subitems will be cleared.</dd>
+If not given all subitems will be cleared.</dd>
 </dl>
 </dd>
 </dl>
@@ -457,7 +466,7 @@ The program might terminate without writing the last bits to file.</p>
 
 <dl class="method">
 <dt id="graf.graf.Graf.load_data">
-<tt class="descname">load_data</tt><big>(</big><em>data_group</em>, <em>items={}</em>, <em>keep={}</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.load_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load_data</tt><big>(</big><em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level data management function to load data from disk into memory.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -553,7 +562,7 @@ at the time it was last run</p>
 <tt class="descname">read_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.read_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.read_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read compilation statistics from file</p>
 <p>The compile process generates some statistics that must be read by the task that loads the compiled data.
-In order to read an <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> by means of its <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array.array.fromfile" title="(in Python v3.3)"><tt class="xref py py-meth docutils literal"><span class="pre">array.array.fromfile()</span></tt></a> method,
+In order to read an <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt> by means of its <tt class="xref py py-meth docutils literal"><span class="pre">array.array.fromfile()</span></tt> method,
 we need to know the length of it on beforehand.</p>
 <p>And later, when we want to load new feature data on top of the existing data, we need to know
 how many distinct values features have.</p>
@@ -581,7 +590,7 @@ how many distinct values features have.</p>
 <li>annox: <em>annox</em></li>
 <li>task: <em>task</em></li>
 <li>compile (bool): whether to force (re)compilation</li>
-<li>settings (<a class="reference external" href="http://docs.python.org/3.3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt></a>): entries corresponding to the main configuration file</li>
+<li>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
 <li>additional computed settings adapt to the current source and task</li>
 </ul>
 </dd></dl>
@@ -662,6 +671,8 @@ the loaded data is still actual.</dd>
 <dd><dl class="first last docutils">
 <dt><tt class="docutils literal"><span class="pre">common</span></tt>:</dt>
 <dd>data originating from the chosen source, but not its feature data and not its xml-id data.</dd>
+<dt><tt class="docutils literal"><span class="pre">primary</span></tt>:</dt>
+<dd>the primary data of the chosen source, including the region information</dd>
 <dt><tt class="docutils literal"><span class="pre">xmlids</span></tt>:</dt>
 <dd>the xml-ids originating from the chosen source.</dd>
 <dt><tt class="docutils literal"><span class="pre">feature</span></tt>:</dt>
@@ -758,7 +769,7 @@ This will be spotted here.</p>
 <dl class="function">
 <dt id="graf.model.arrayify">
 <tt class="descname">arrayify</tt><big>(</big><em>source_list</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#arrayify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.arrayify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Efficient storage of a list of lists of integers in two Python <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a>.</p>
+<dd><p>Efficient storage of a list of lists of integers in two Python <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt>.</p>
 <p><em>This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!</em></p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -770,7 +781,7 @@ This will be spotted here.</p>
 <dt>Returns:</dt>
 <dd><dl class="first docutils">
 <dt>(index_array, items_array):</dt>
-<dd>two <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> s.</dd>
+<dd>two <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt> s.</dd>
 </dl>
 <p class="last"><em>index_array</em> contains an index for each item in <em>source_list</em>.
 <em>items_array</em> contains all the items in the following way: if an item with <em>n</em> members has to be added,
@@ -821,13 +832,40 @@ If the objects are sorted in this way, embedding objects come before all objects
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="graf.model.normalize_ranges">
+<tt class="descname">normalize_ranges</tt><big>(</big><em>ranges</em><big>)</big><a class="headerlink" href="#graf.model.normalize_ranges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalizes a set of ranges.</p>
+<p>Ranges come from the regions in the primary data.
+The anchors in the regions point to positions between characters in the primary data.
+So range (1,1) points to the point after the first character and before the second one.
+This range does not include any character. But the range (0,1) correspondes with the interval
+between the points before any character and the point after the first character.
+So this is character [0] in the string.</p>
+<p>Nodes may be linked to multiple regions. Then we get multiple ranges associated to nodes.
+This function simplifies a set of ranges: overlapping ranges will be joined, adjacent regions
+will be combined, ranges will be ordered.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>ranges(iterable of 2-tuples):</dt>
+<dd>List of ranges, where every range is a tuple of exactly 2 integers.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>The result is a plain list of integers. The number of integers is even.
+The first two correspond to the first range, the second two to the second range and so on.
+This way we can deliver the results of many nodes as a compact <em>double_array</em>.</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-graf.parse">
 <span id="graf-parse-module"></span><h2>graf.parse module<a class="headerlink" href="#module-graf.parse" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="graf.parse.AnnotationHandler">
 <em class="property">class </em><tt class="descname">AnnotationHandler</tt><big>(</big><em>annotation_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.3/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
 <p>Handlers used by SAX parsing the annotation files themselves</p>
 <p>We have to collect all elements <em>region</em>, <em>node</em> and subelement <em>link</em>, <em>edge</em>, <em>annotationSpace</em>, <em>a</em> (annotation) and <em>f</em> (feature).
 From these elements we retrieve identifiers and other attributes.
@@ -911,7 +949,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.truth">
-<tt class="descname">truth</tt><em class="property"> = {'1': True, 'true': True, 'on': True, 'false': False, 'off': False, '0': False, 'yes': True, 'no': False}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">truth</tt><em class="property"> = {'1': True, '0': False, 'true': True, 'yes': True, 'on': True, 'off': False, 'no': False, 'false': False}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -919,7 +957,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 <dl class="class">
 <dt id="graf.parse.HeaderHandler">
 <em class="property">class </em><tt class="descname">HeaderHandler</tt><big>(</big><em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.3/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
 <p>Handlers used by SAX parsing the GrAF header file.</p>
 <p>We just collect the contents of the <em>loc</em> attributes of the <em>annotation</em> elements.
 These are the annotation files that we have to fetch and compile.</p>
@@ -952,7 +990,7 @@ These are the annotation files that we have to fetch and compile.</p>
 
 <dl class="function">
 <dt id="graf.parse.parse">
-<tt class="descname">parse</tt><big>(</big><em>graf_header_file</em>, <em>stamp</em>, <em>xmlitems</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.parse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parse</tt><big>(</big><em>graf_header_file</em>, <em>prim_bin_file</em>, <em>stamp</em>, <em>xmlitems</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a GrAF resource.</p>
 <p>Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
 files mentioned in that header file.</p>
@@ -1271,14 +1309,14 @@ It will import a user task, read directives for data pre-loading, and it will ge
 API for the task, in the form of data structures for nodes and edges and 
 objects that can do feature lookups.</p>
 <p>A task processor must know where the source data is and where the result is going to.
-And it must be able to <em>import</em>: and <a class="reference external" href="http://docs.python.org/3.3/library/imp.html#imp.reload" title="(in Python v3.3)"><tt class="xref py py-func docutils literal"><span class="pre">imp.reload()</span></tt></a>: the tasks.
+And it must be able to <em>import</em>: and <tt class="xref py py-func docutils literal"><span class="pre">imp.reload()</span></tt>: the tasks.
 To that end the search path for modules will be adapted according to the <em>task_dir</em> setting
 in the main configuration file.</p>
 <p>Upon creation, the configuration settings are stored in the object as is.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>settings (<a class="reference external" href="http://docs.python.org/3.3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt></a>):</dt>
+<dt>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>):</dt>
 <dd>entries corresponding to the main configuration file</dd>
 </dl>
 </dd>
@@ -1317,7 +1355,7 @@ for the convenience of the user.</p>
 <dd><p>Return references to API data structures and methods of this class.</p>
 <p>This is what is returned (the names given are not necessarily the names by which they are used
 in end user tasks. You can give convenient, local names to these methods, e.g:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Using these names, here is the API specification:</p>
@@ -1325,6 +1363,14 @@ in end user tasks. You can give convenient, local names to these methods, e.g:</
 <dt>msg(text, newline=True, withtime=True):</dt>
 <dd>For delivering console output, such as progress messages.
 See <a class="reference internal" href="#graf.timestamp.Timestamp.progress" title="graf.timestamp.Timestamp.progress"><tt class="xref py py-meth docutils literal"><span class="pre">progress</span></tt></a>.</dd>
+<dt>P(<a class="reference internal" href="#graf.task.PrimaryData" title="graf.task.PrimaryData"><tt class="xref py py-class docutils literal"><span class="pre">PrimaryData</span></tt></a>):</dt>
+<dd>Object containing the primary data and the information to which portions of it nodes are linked.
+<tt class="docutils literal"><span class="pre">P.all_data</span></tt> is the primary datastring itself, and <tt class="docutils literal"><span class="pre">P.data(n)</span></tt> gives the data that is attached to node <tt class="docutils literal"><span class="pre">n</span></tt>.
+In this case, the data is returned as a tuple of pairs <em>(p, text)</em>, where <em>text</em> is a piece of text from
+the primary data and <em>p</em> its starting point in the text. The fragments come in the order in which they appear in the
+primary data and the fragments are maximal. They do not overlap, and there are no duplicates.
+A fragment can be empty.
+This happens when a region is merely a pointer and not an interval.</dd>
 <dt>NN(test=function, value=something):</dt>
 <dd><p class="first">An iterator that delivers nodes in the canonical order described in <a class="reference internal" href="#graf.model.model" title="graf.model.model"><tt class="xref py py-func docutils literal"><span class="pre">model</span></tt></a>.</p>
 <p class="last"><em>test</em> must be a callable with one argument of type integer. Only nodes for which <em>test</em> delivers <em>something</em>
@@ -1371,10 +1417,33 @@ this is the way to look up the set of related integers for each integer.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.task.GrafTask.getitems_dict">
+<tt class="descname">getitems_dict</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="headerlink" href="#graf.task.GrafTask.getitems_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get related items from an arrayified data structure.</p>
+<p>If a relation between integers and sets of integers has been stored as a double array
+by the <a class="reference internal" href="#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> function,
+this is the way to look up the set of related integers for each integer.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>data (array):</dt>
+<dd>see next</dd>
+<dt>data_items (array):</dt>
+<dd>together with <em>data</em> the arrayified data</dd>
+<dt>elem (int):</dt>
+<dd>the integer for which we want its related set of integers.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>a dict of the related integers, with values none.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="graf.task.GrafTask.hasitem">
 <tt class="descname">hasitem</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.hasitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.hasitem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether an integer is in the set of related items
-with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task.GrafTask.getitems" title="graf.task.GrafTask.getitems"><tt class="xref py py-meth docutils literal"><span class="pre">getitems()</span></tt></a>).</p>
+with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task.GrafTask.getitems_dict" title="graf.task.GrafTask.getitems_dict"><tt class="xref py py-meth docutils literal"><span class="pre">getitems_dict()</span></tt></a>).</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
@@ -1397,7 +1466,7 @@ with respect to an arrayified data structure (see also <a class="reference inter
 <dt id="graf.task.GrafTask.hasitems">
 <tt class="descname">hasitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.hasitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.hasitems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a set of integers intersects with the set of related items
-with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task.GrafTask.getitems" title="graf.task.GrafTask.getitems"><tt class="xref py py-meth docutils literal"><span class="pre">getitems()</span></tt></a>).</p>
+with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task.GrafTask.getitems_dict" title="graf.task.GrafTask.getitems_dict"><tt class="xref py py-meth docutils literal"><span class="pre">getitems_dict()</span></tt></a>).</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
@@ -1455,6 +1524,45 @@ whose presence in the related items set is to be tested.</dd>
 <dd>the chosen task</dd>
 <dt>force_compile (dict):</dt>
 <dd>whether to force (re)compilation of the LAF source for either &#8216;source&#8217; or &#8216;annox&#8217;.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graf.task.PrimaryData">
+<em class="property">class </em><tt class="descname">PrimaryData</tt><big>(</big><em>graftask</em><big>)</big><a class="headerlink" href="#graf.task.PrimaryData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>This class is responsible for giving access to the primary data.</p>
+<dl class="attribute">
+<dt id="graf.task.PrimaryData.all_data">
+<tt class="descname">all_data</tt><em class="property"> = None</em><a class="headerlink" href="#graf.task.PrimaryData.all_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Member that holds the primary data as a single UNICODE string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.task.PrimaryData.data">
+<tt class="descname">data</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#graf.task.PrimaryData.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the primary data to which a node is linked.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>node(int):</dt>
+<dd>The node in question</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>None:</dt>
+<dd>if the node is not linked to regions of primary data</dd>
+<dt>List of (N, text):</dt>
+<dd>all positions <em>N</em> to which the node is linked, where <em>text</em> is the primary data
+stretch starting at position <em>N</em> that is linked to the node.
+<em>text</em> may be empty.
+The list is normalized: all stretches are maximal, non overlapping and occur
+in the order of the primary data (ascending <em>N</em>).</dd>
 </dl>
 </dd>
 </dl>

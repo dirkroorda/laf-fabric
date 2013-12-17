@@ -29,7 +29,7 @@ def task(graftask):
     This is a handy check on all the data transformations involved. If the output of this task
     is not byte for byte equal to the primary data, something seriously wrong with the workbench!
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     prim = graftask.env['source'] != 'tiny'
     if prim:

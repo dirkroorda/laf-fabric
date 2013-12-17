@@ -31,7 +31,7 @@ def task(graftask):
     A better way is coming, where you can add features to all nodes, not just words nodes,
     but also phrase, clause and sentence nodes.
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     out = graftask.add_result("output.txt")
 

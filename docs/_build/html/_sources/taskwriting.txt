@@ -104,7 +104,7 @@ Finally, here is the complete Python code of the task that produced this output:
         '''Produces a list of all WIVU objects with their types, ids and
         *monads* (words) they contain.
         '''
-        (msg, NN, F, X) = graftask.get_mappings()
+        (msg, P, NN, F, X) = graftask.get_mappings()
 
         out = graftask.add_result("output.txt")
 
@@ -168,6 +168,15 @@ Here is a short description of the corresponding methods.
     ``_e`` appended to it.
     You can look up a feature value of this feature, say for node ``n``,by saying:
     ``F.shebanq_db_otype.v(n)``. 
+
+*P(node)*
+    Your gateway to the primary data. For nodes *n* that are linked to the primary data by 1 or more regions,
+    P(*n*) yields a set of chunks of primary data, corresponding with those regions.
+    The chunks are maximal, non-overlapping, ordered according to the primary data.
+    Every chunk is given as a tuple (*pos*, *text*), where *pos* is the position in the primary data where
+    the start of *text* can be found, and *text* is the chunk of actual text that is specified by the region.
+    Note that *text* may be empty. This happens in cases where the region is not a true interval but merely
+    a point between two characters.
 
 *NN(test=function value=something)*
     If you want to walk through all the nodes, possibly skipping some, then this is your method.

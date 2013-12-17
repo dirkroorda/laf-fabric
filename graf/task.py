@@ -164,7 +164,7 @@ class GrafTask(Graf):
 
         P(:class:`PrimaryData`):
             Object containing the primary data and the information to which portions of it nodes are linked.
-            ``P.data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.
+            ``P.all_data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.
             In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from
             the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the
             primary data and the fragments are maximal. They do not overlap, and there are no duplicates.
@@ -226,7 +226,6 @@ class GrafTask(Graf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
-        print("XXX {}".format(len(self.data_items['node_sort'])))
         return (
             self.progress,
             PrimaryData(self) if self.given['primary'] else None,
@@ -234,6 +233,33 @@ class GrafTask(Graf):
             Features(feature_objects),
             XMLids(xmlid_objects)
         )
+
+    def getitems_dict(self, data, data_items, elem):
+        '''Get related items from an arrayified data structure.
+
+        If a relation between integers and sets of integers has been stored as a double array
+        by the :func:`arrayify() <graf.model.arrayify>` function,
+        this is the way to look up the set of related integers for each integer.
+
+        Args:
+            data (array):
+                see next
+
+            data_items (array):
+                together with *data* the arrayified data
+
+            elem (int):
+                the integer for which we want its related set of integers.
+
+        Returns:
+            a dict of the related integers, with values none.
+        '''
+        data_items_index = data[elem - 1]
+        n_items = data_items[data_items_index]
+        items = {}
+        for i in range(n_items):
+            items[data_items[data_items_index + 1 + i]] = None
+        return items
 
     def getitems(self, data, data_items, elem):
         '''Get related items from an arrayified data structure.
@@ -257,14 +283,11 @@ class GrafTask(Graf):
         '''
         data_items_index = data[elem - 1]
         n_items = data_items[data_items_index]
-        items = {}
-        for i in range(n_items):
-            items[data_items[data_items_index + 1 + i]] = None
-        return items
+        return data_items[data_items_index + 1:data_items_index + 1 + n_items]
 
     def hasitem(self, data, data_items, elem, item):
         '''Check whether an integer is in the set of related items
-        with respect to an arrayified data structure (see also :meth:`getitems`).
+        with respect to an arrayified data structure (see also :meth:`getitems_dict`).
 
         Args:
             data (array):
@@ -282,11 +305,11 @@ class GrafTask(Graf):
         Returns:
             bool: whether the integer is in the related set or not.
         '''
-        return item in self.getitems(data, data_items, elem) 
+        return item in self.getitems_dict(data, data_items, elem) 
 
     def hasitems(self, data, data_items, elem, items):
         '''Check whether a set of integers intersects with the set of related items
-        with respect to an arrayified data structure (see also :meth:`getitems`).
+        with respect to an arrayified data structure (see also :meth:`getitems_dict`).
 
         Args:
             data (array):
@@ -306,7 +329,7 @@ class GrafTask(Graf):
             bool:
                 whether one of the integers is in the related set or not.
         '''
-        these_items = self.getitems(data, data_items, elem) 
+        these_items = self.getitems_dict(data, data_items, elem) 
         found = None
         for item in items:
             if item in these_items:
@@ -492,7 +515,9 @@ class PrimaryData(object):
     '''This class is responsible for giving access to the primary data.
     '''
     def __init__(self, graftask):
-        self.data = graftask.data_items['data']
+        self.all_data = graftask.data_items['data']
+        '''Member that holds the primary data as a single UNICODE string.
+        '''
         self.graftask = graftask
 
     def data(self, node):
@@ -512,7 +537,13 @@ class PrimaryData(object):
                 The list is normalized: all stretches are maximal, non overlapping and occur
                 in the order of the primary data (ascending *N*). 
         '''
+        graftask = self.graftask
         regions = graftask.getitems(graftask.data_items['node_anchor'], graftask.data_items['node_anchor_items'], node)
         if not regions:
             return None
-        return [(n, graftask.data_items['data'][n:m]) for (n, m) in regions]
+        all_text = self.all_data
+        result = []
+        for i in range(len(regions) // 2):
+            result.append((regions[2*i], all_text[regions[2*i]:regions[2*i+1]])) 
+        return result
+

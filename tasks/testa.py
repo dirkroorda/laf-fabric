@@ -34,7 +34,7 @@ def task(graftask):
     in a rather trivial way. 
     If there is no comment, the ooutput will say "*no comment*
     '''
-    (msg, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.get_mappings()
 
     msg("Get the books ...")
 

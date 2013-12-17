@@ -8,15 +8,15 @@
         </annotationSpaces>
     </graphHeader>
 <a xml:id="a1" label="part" ref="n1"><fs>
-	<f name="this_is" value="book Genesis"/>
+	<f name="comment" value="First book of the bible. The name means *becoming*."/>
 </fs></a>
 
 <a xml:id="a2" label="part" ref="n98054"><fs>
-	<f name="this_is" value="book Exodus"/>
+	<f name="comment" value="Second book of the bible. The name means *exit*."/>
 </fs></a>
 
 <a xml:id="a3" label="part" ref="es1"><fs>
-	<f name="this_is" value="edge es1"/>
+	<f name="comment" value="edge es1"/>
 </fs></a>
 
 </graph>

@@ -205,10 +205,11 @@ There are also a few simplifications involved, see the section of GrAF :ref:`fea
 
 There are several ideas involved in compiling a LAF resource into something that is compact, fast loadable, and amenable to efficient computing.
 
-#. Replace everything by integers (nearly everything).
+#. Replace nodes and edges and regions by integers.
 #. Store relationships between integers in *arrays*, that is, Python arrays.
 #. Store relationships between integers and sets of integers also in *arrays*.
 #. Keep individual features separate.
+#. Compress data when writing it to disk.
 
 Explanation of these ideas
 --------------------------
@@ -253,24 +254,24 @@ with annotation space ``shebanq``, annotation label ``ft``, feature name ``suffi
 The data of this feature is a mapping of that assigns a string value to each of more than 400,000 nodes.
 So this individual feature represents a significant chunk of data.
 
-In order to reduce this chunk, the string values are kept in a table of unique values, and the mapping from node to value yields
-the number of the value in the list of distinct values of that feature.
-
-So every feature needs as its data a lookup table and a translation table for its values, and when a feature is active,
-the inverse mapping is also needed.
-
 The individual features together take up the bulk of the space.
-In our example, they take 333 MB on disk, and the rest takes only 152 MB.
+In our example, they take 145 MB on disk, and the rest takes only 55 MB.
 Most tasks require only a limited set of individual features.
 So when we run tasks and switch between them, we want to swap feature data in
 and out.
 The design of the workbench is such that feature data is neatly chunked per individual feature.
 
 .. note::
-    Here is the reason that we do not have an overall table for feature values.
+    Here is the reason that we do not have an overall table for feature values, identified by integers.
     We miss some compression here, but with a global feature value mapping, we would burden every task with a significant
     amount of memory. Moreover, when we are going to add the functionality of extra annotation packages, it would become 
     a nightmare to maintain the values of features.
+
+.. note::
+    We even abandoned the whole idea of identifying feature values by integers, even when done separately for individual features.
+    The reason is the extra lookup actions. They take time, and if you do it at load time for all values, it impacts the
+    load time very clearly. So I opted for not treating the values, but store them as they are encountered in the LAF data.
+    The waste of space is then checked by using compression when writing data to disk.
 
 .. note::
     Features coming from the source and features coming from the extra annotation package will be merged

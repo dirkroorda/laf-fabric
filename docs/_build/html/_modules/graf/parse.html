@@ -77,7 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#this-workbench">This workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#author">Author</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#history">History</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#more-on-features">More on features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#input-andoutput">Input andOutput</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#node-order">Node order</a></li>
 </ul>
 </li>
@@ -217,8 +217,6 @@
     <span class="n">edges_to</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">feature</span>
     <span class="n">feature</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:{})</span>
-    <span class="k">global</span> <span class="n">feature_val_int</span>
-    <span class="n">feature_val_int</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:{})</span>
 </div>
 <div class="viewcode-block" id="HeaderHandler"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.HeaderHandler">[docs]</a><span class="k">class</span> <span class="nc">HeaderHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Handlers used by SAX parsing the GrAF header file.</span>
@@ -280,11 +278,6 @@
 <span class="sd">    *feature*</span>
 <span class="sd">        All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),</span>
 <span class="sd">        and finally reference (id of target node or edge).</span>
-<span class="sd">        The values are stored as integer. The mapping to the real value is stored separately.</span>
-
-<span class="sd">    *feature_val_int*</span>
-<span class="sd">        Mapping from real feature values to integer codes. Same values go to same codes, hence space is conserved.</span>
-<span class="sd">        These mappings are set up per individual feature.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        We work with annotation spaces and annotation labels and we distinguish between features in</span>
@@ -424,7 +417,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">good_feats</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_feature_instance</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">feature</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">aspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">)][</span><span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </div>
 <div class="viewcode-block" id="AnnotationHandler.endElement"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;node&quot;</span><span class="p">:</span>
@@ -440,22 +433,12 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span><span class="p">:</span>
                 <span class="n">fname</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_feature_instance</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">feature</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">aspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">)][</span><span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="AnnotationHandler.characters"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
         <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="AnnotationHandler.add_feature_instance"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.AnnotationHandler.add_feature_instance">[docs]</a>    <span class="k">def</span> <span class="nf">add_feature_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">this_fv_id</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">feature_key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">feature_val_int</span><span class="p">[</span><span class="n">feature_key</span><span class="p">]:</span>
-            <span class="n">this_fv_id</span> <span class="o">=</span> <span class="n">feature_val_int</span><span class="p">[</span><span class="n">feature_key</span><span class="p">][</span><span class="n">value</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">this_fv_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_val_int</span><span class="p">[</span><span class="n">feature_key</span><span class="p">])</span>
-            <span class="n">feature_val_int</span><span class="p">[</span><span class="n">feature_key</span><span class="p">][</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_fv_id</span>
-        <span class="n">feature</span><span class="p">[</span><span class="n">feature_key</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_fv_id</span>
 </div></div>
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../graf/graf.html#graf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">prim_bin_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Parse a GrAF resource.</span>
@@ -524,7 +507,6 @@
         <span class="p">(</span><span class="s">&quot;edges_from&quot;</span><span class="p">,</span> <span class="n">edges_from</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;edges_to&quot;</span><span class="p">,</span> <span class="n">edges_to</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
         <span class="p">(</span><span class="s">&quot;feature&quot;</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;feature_val_int&quot;</span><span class="p">,</span> <span class="n">feature_val_int</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
     <span class="p">)</span>
 </pre></div></div>
 

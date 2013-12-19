@@ -107,6 +107,9 @@ It only handles features in so far as they consist of key-value pairs, coded as:
 
 Currently, there is very little API support for dealing with *edges*.
 
+Concerning the type of the *primary* data: this program deals with text data and
+assumes that the anchor type is a character (not a byte).
+
 Future work
 -----------
 The current workbench has proven to function well for a small set of tasks.
@@ -129,8 +132,9 @@ That said, it is not difficult to spot other areas for improvement:
 #. improve the API, add extra primitives, especially for (ordered) node sets and edges
 #. merge the tool with the existing `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_,
    preferably as a user-selectable implementation choice.
-#. Investigate whether NEO4J could serve as a tool to implement feature structures in 
-   full generality. 
+#. Investigate how to implement feature structures in full generality.
+   Probably it is best to move over to a dedicated backend for graph handling, such as
+   `neo4j <http://www.neo4j.org>`_ or the python package `networkx <http://networkx.github.com/>`_.
 
 Rationale
 =========
@@ -177,8 +181,12 @@ See also a description on the `DANS-lab site <http://demo.datanetworkservice.nl/
 
 Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbench.
 
-Links
-=====
+History
+=======
+
+**2013-12-18**
+Demonstration on the `StandOff Markup and GrAF workshop (CLARIN-D) <http://cceh.uni-koeln.de/node/531>`_ in Köln.
+
 **2013-12-12**
 Demonstration for the `ETCBC <http://www.godgeleerdheid.vu.nl/etcbc>`_ team Amsterdam. Updated the 
 `slides <http://www.slideshare.net/dirkroorda/work-28611072>`_.

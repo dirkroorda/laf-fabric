@@ -209,16 +209,28 @@ msg(text, newline=True, withtime=True)
     Normally it appends a newline to the text, but you can suppress it.
     You can also suppress the time indication before the text.
 
-Output
-======
+Input andOutput
+===============
 You can create an output filehandle, open for writing, by calling the
 method :meth:`add_result() <graf.task.GrafTask.add_result>`
-and assigning the result to a variable, say *out*.
+and assigning the result to a variable, say *out* ::
+
+    out = graftask.add_result("output.txt")
+
 From then on you can write output simply by saying::
 
     out.write(text)
 
 You can create as many output handles as you like in this way.
+All these files and up in the task specific working directory.
+
+Likewise, you can place additional input files in that directory,
+and read them by saying::
+
+    inp = graftask.add_result("input.txt")
+    inp.write(text)
+
+if you have used
 Once your task has finished, the workbench will close them all.
 
 .. _node-order:

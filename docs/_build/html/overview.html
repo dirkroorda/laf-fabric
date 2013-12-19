@@ -78,7 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#this-workbench">This workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#author">Author</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#history">History</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workbench.html">LAF workbench</a><ul>
@@ -97,7 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#more-on-features">More on features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
-<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-andoutput">Input andOutput</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
 </ul>
 </li>
@@ -241,6 +241,8 @@ It only handles features in so far as they consist of key-value pairs, coded as:
 <div class="highlight-python"><pre>&lt;f name=&quot;...&quot; value=&quot;...&quot;/&gt;</pre>
 </div>
 <p>Currently, there is very little API support for dealing with <em>edges</em>.</p>
+<p>Concerning the type of the <em>primary</em> data: this program deals with text data and
+assumes that the anchor type is a character (not a byte).</p>
 </div>
 <div class="section" id="future-work">
 <h3>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h3>
@@ -261,8 +263,9 @@ it into a new annotation file that can be properly combined with the original re
 <li>improve the API, add extra primitives, especially for (ordered) node sets and edges</li>
 <li>merge the tool with the existing <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a>,
 preferably as a user-selectable implementation choice.</li>
-<li>Investigate whether NEO4J could serve as a tool to implement feature structures in
-full generality.</li>
+<li>Investigate how to implement feature structures in full generality.
+Probably it is best to move over to a dedicated backend for graph handling, such as
+<a class="reference external" href="http://www.neo4j.org">neo4j</a> or the python package <a class="reference external" href="http://networkx.github.com/">networkx</a>.</li>
 </ol>
 </div>
 </div>
@@ -302,14 +305,16 @@ together with the researchers at the
 <p>See also a description on the <a class="reference external" href="http://demo.datanetworkservice.nl/mediawiki/index.php/LAF_Fabric">DANS-lab site</a>.</p>
 <p>Thanks to Martijn Naaijer and Gino Kalkman for first experiments with the workbench.</p>
 </div>
-<div class="section" id="links">
-<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="history">
+<h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
+<p><strong>2013-12-18</strong>
+Demonstration on the <a class="reference external" href="http://cceh.uni-koeln.de/node/531">StandOff Markup and GrAF workshop (CLARIN-D)</a> in Köln.</p>
 <p><strong>2013-12-12</strong>
 Demonstration for the <a class="reference external" href="http://www.godgeleerdheid.vu.nl/etcbc">ETCBC</a> team Amsterdam. Updated the
 <a class="reference external" href="http://www.slideshare.net/dirkroorda/work-28611072">slides</a>.</p>
 <p><strong>2013-12-09</strong>
 Abstract sent to <a class="reference external" href="http://clin24.inl.nl">CLIN</a> (Computational Linguistics In the Netherlands) accepted.
-To be deliverd 2014-01-17.</p>
+To be delivered 2014-01-17.</p>
 <p><strong>2013-11-26</strong>
 Vitamin Talk to the <a class="reference external" href="http://tla.mpi.nl">TLA team Nijmegen</a>. Here are the
 <a class="reference external" href="http://www.slideshare.net/dirkroorda/work-28611072">slides</a>.</p>

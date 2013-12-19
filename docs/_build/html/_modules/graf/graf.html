@@ -77,7 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#this-workbench">This workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#author">Author</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#history">History</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#more-on-features">More on features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#input-andoutput">Input andOutput</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#node-order">Node order</a></li>
 </ul>
 </li>
@@ -151,11 +151,11 @@
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">import</span> <span class="nn">array</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
 
 <span class="kn">from</span> <span class="nn">.timestamp</span> <span class="kn">import</span> <span class="n">Timestamp</span>
 <span class="kn">from</span> <span class="nn">.parse</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmlparse</span>
@@ -234,21 +234,13 @@
 <span class="sd">            For node ``i`` the record ``i`` consists of all incoming edges into this node.</span>
 
 <span class="sd">    ``feature_mapping``, group ``feature`` resp group ``annox``:</span>
-<span class="sd">        Contains all the feature data of source resp annox. There are in fact three related dictionaries that do the job.</span>
+<span class="sd">        Contains all the feature data of source resp annox.</span>
 <span class="sd">        </span>
 <span class="sd">        ``feature``:</span>
 <span class="sd">            Keyed by *annotation space*, then by *annotation label* (both referring to the annotation that </span>
 <span class="sd">            contains the feature at hand), then by *feature name*, then by *kind* (``node`` or </span>
 <span class="sd">            ``edge``). At this level we have a dictionary, keyed by either the nodes or the edges</span>
-<span class="sd">            (both as integers), and the value for each key is the value of the feature, again coded as</span>
-<span class="sd">            integer.</span>
-<span class="sd">        </span>
-<span class="sd">        ``feature_val_int`` and ``feature_val_rep``:</span>
-<span class="sd">            Raw values are not entered in the ``feature`` dictionary. Instead, every distinct value is uniquely</span>
-<span class="sd">            identified by an integer. It is this integer that is stored in the ``feature`` dictionary.</span>
-<span class="sd">            ``feature_val_int`` maps from raw values to integers, and ``feature_val_raw`` maps from integers to</span>
-<span class="sd">            raw values.</span>
-<span class="sd">            The mapping of values is per individual feature.</span>
+<span class="sd">            (both as integers), and the value for each key is the value of the feature.</span>
 <span class="sd">        </span>
 <span class="sd">        .. note::</span>
 <span class="sd">            If a feature occurs on both nodes and edges, the feature is split into two features with the same name,</span>
@@ -258,13 +250,9 @@
 <span class="sd">        </span>
 <span class="sd">        So the complete road to a value is::</span>
 <span class="sd">        </span>
-<span class="sd">            val = self.data_items[&#39;feature``][annotation_space][annotation_label][feature_name][kind][node_or_edge_id]</span>
+<span class="sd">            val = self.data_items[&#39;feature``][(annotation_space, annotation_label, feature_name, kind)][node_or_edge_id]</span>
 <span class="sd">        </span>
-<span class="sd">        and if you want to get the raw value back you can do so by::</span>
-<span class="sd">        </span>
-<span class="sd">            raw_val = self.data_items[&#39;feature_val_rep``][annotation_space][annotation_label][feature_name][kind][val]</span>
-<span class="sd">        </span>
-<span class="sd">        The API will help you to lookup feature values and hides raw values completely.</span>
+<span class="sd">        The API will help you to lookup feature values.</span>
 <span class="sd">        See :mod:`task &lt;graf.task&gt;` for a description of the API, especially</span>
 <span class="sd">        :meth:`get_mappings &lt;graf.task.GrafTask.get_mappings&gt;`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -854,12 +842,10 @@
                         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sub_int</span> <span class="o">=</span> <span class="s">&#39;_int&#39;</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;_val_int&#39;</span>
-            <span class="n">sub_rep</span> <span class="o">=</span> <span class="s">&#39;_rep&#39;</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;_val_rep&#39;</span>
-            <span class="n">subs</span> <span class="o">=</span> <span class="p">(</span><span class="n">sub_int</span><span class="p">,)</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">sub_int</span><span class="p">)</span>
+            <span class="n">sub_rep</span> <span class="o">=</span> <span class="s">&#39;_rep&#39;</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="bp">None</span>
+            <span class="n">subs</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;_int&#39;</span><span class="p">,)</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,)</span>
             <span class="n">ref_lab</span> <span class="o">=</span> <span class="s">&#39;_int&#39;</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
             <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">data_group</span><span class="p">]:</span>
-                <span class="n">lab_rep</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub_rep</span>
                 <span class="k">if</span> <span class="n">items</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
                         <span class="n">item_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
@@ -869,9 +855,10 @@
                                 <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub</span>
                                 <span class="k">if</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]:</span>
                                     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
-                            <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub_rep</span>
-                            <span class="k">if</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]:</span>
-                                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">sub_rep</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                                <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub_rep</span>
+                                <span class="k">if</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]:</span>
+                                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">label</span> <span class="o">+</span> <span class="n">ref_lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;clearing {}: {} ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
@@ -879,9 +866,10 @@
                             <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub</span>
                             <span class="k">if</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
                                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span>
-                        <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub_rep</span>
-                        <span class="k">if</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
-                            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">sub_rep</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                            <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub_rep</span>
+                            <span class="k">if</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+                                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span>
                     <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">subs</span><span class="p">:</span>
                         <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">)</span>
@@ -975,34 +963,27 @@
                     <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">subs</span><span class="p">:</span>
                         <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub</span>
                         <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">lab</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                        <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
+                        <span class="n">b_handle</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="n">b_handle</span><span class="p">)</span>
                         <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ref_lab</span> <span class="o">=</span> <span class="s">&#39;_int&#39;</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
-            <span class="n">extra_lab</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;_val_int&#39;</span>
             <span class="n">target_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;feat_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;feature&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_bdir&#39;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">data_group</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;writing {}: {} ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="n">ref_lab</span><span class="p">]:</span>
                     <span class="n">item_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">asFile</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
                     <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">item_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                    <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
+                    <span class="n">b_handle</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
                     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="n">ref_lab</span><span class="p">][</span><span class="n">item</span><span class="p">],</span> <span class="n">b_handle</span><span class="p">)</span>
                     <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-                    <span class="k">if</span> <span class="n">extra_lab</span><span class="p">:</span>
-                        <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="s">&#39;values&#39;</span><span class="p">,</span> <span class="n">item_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                        <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
-                        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="n">extra_lab</span><span class="p">][</span><span class="n">item</span><span class="p">],</span> <span class="n">b_handle</span><span class="p">)</span>
-                        <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Graf.write_stats"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.write_stats">[docs]</a>    <span class="k">def</span> <span class="nf">write_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Write compilation statistics to file</span>
 
 <span class="sd">        The compile process generates some statistics that must be read by the task that loads the compiled data.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">],</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">],</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">data_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">:</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">data_group</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;array&#39;</span> <span class="ow">or</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;double_array&#39;</span> <span class="ow">or</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&#39;i_array&#39;</span><span class="p">:</span>
@@ -1024,7 +1005,7 @@
 <span class="sd">        And later, when we want to load new feature data on top of the existing data, we need to know</span>
 <span class="sd">        how many distinct values features have.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">],</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;stat_file&#39;</span><span class="p">],</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
             <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;=&quot;</span><span class="p">)</span>
@@ -1052,7 +1033,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
                     <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">lab</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">b_path</span><span class="p">):</span>
-                        <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+                        <span class="n">b_handle</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">b_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">lab</span><span class="p">])</span>
                         <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;primary&#39;</span><span class="p">:</span>
@@ -1073,12 +1054,11 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)</span>
                             <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">],</span> <span class="n">lab</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
                             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">b_path</span><span class="p">):</span>
-                                <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+                                <span class="n">b_handle</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">b_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">lab</span><span class="p">])</span>
                                 <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ref_lab</span> <span class="o">=</span> <span class="s">&#39;_int&#39;</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
-            <span class="n">extra_lab</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="s">&#39;_val_int&#39;</span>
             <span class="n">target_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;feat_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;feature&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_bdir&#39;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">[</span><span class="n">data_group</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">items</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
@@ -1087,21 +1067,12 @@
                         <span class="n">item_repm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
                         <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">item_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">b_path</span><span class="p">):</span>
-                            <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+                            <span class="n">b_handle</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
                             <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">ref_lab</span>
                             <span class="k">if</span> <span class="n">lab</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_handle</span><span class="p">))</span>
                             <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="n">extra_lab</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">b_path</span><span class="p">):</span>
-                                <span class="n">b_path</span> <span class="o">=</span> <span class="s">&quot;{}/{}_{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="s">&#39;values&#39;</span><span class="p">,</span> <span class="n">item_rep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_EXT</span><span class="p">)</span>
-                                <span class="n">b_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">b_path</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
-                                <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">extra_lab</span>
-                                <span class="k">if</span> <span class="n">lab</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_handle</span><span class="p">)</span>
-                                <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Graf.parse"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Call the XML parser and collect the parse results.</span>
@@ -1270,7 +1241,7 @@
             <span class="p">)</span>
 
         <span class="n">log_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">log_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
         <span class="sd">&#39;&#39;&#39;Instance member holding the open log handle&#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">connect_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>

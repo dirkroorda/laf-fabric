@@ -78,7 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="overview.html#this-workbench">This workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#author">Author</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#history">History</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workbench.html">LAF workbench</a><ul>
@@ -97,7 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#more-on-features">More on features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-andoutput">Input andOutput</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#node-order">Node order</a></li>
 </ul>
 </li>
@@ -353,16 +353,27 @@ Normally it appends a newline to the text, but you can suppress it.
 You can also suppress the time indication before the text.</dd>
 </dl>
 </div>
-<div class="section" id="output">
-<h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input-andoutput">
+<h2>Input andOutput<a class="headerlink" href="#input-andoutput" title="Permalink to this headline">¶</a></h2>
 <p>You can create an output filehandle, open for writing, by calling the
 method <a class="reference internal" href="graf/graf.html#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a>
-and assigning the result to a variable, say <em>out</em>.
-From then on you can write output simply by saying:</p>
+and assigning the result to a variable, say <em>out</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From then on you can write output simply by saying:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can create as many output handles as you like in this way.
+All these files and up in the task specific working directory.</p>
+<p>Likewise, you can place additional input files in that directory,
+and read them by saying:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
+<span class="n">inp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>if you have used
 Once your task has finished, the workbench will close them all.</p>
 </div>
 <div class="section" id="node-order">

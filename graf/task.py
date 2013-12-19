@@ -1,7 +1,6 @@
 import os
 import imp
 import sys
-import codecs
 import subprocess
 import collections
 
@@ -47,9 +46,7 @@ class Feature(object):
         self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
         self.kind = kind
         ref_label = 'xfeature' if extra else 'feature'
-        lookup = graftask.data_items[ref_label][(aspace, alabel, fname, kind)]
-        valrep = graftask.data_items[ref_label + '_val_rep'][(aspace, alabel, fname, kind)]
-        self.lookup = collections.defaultdict(lambda: None, [(ne, valrep[lookup[ne]]) for ne in lookup])
+        self.lookup = collections.defaultdict(lambda: None, graftask.data_items[ref_label][(aspace, alabel, fname, kind)])
 
     def add_data(self, graftask, aspace, alabel, fname, kind):
         '''Upon creation, makes references to the feature data corresponding to the feature specified.
@@ -62,9 +59,8 @@ class Feature(object):
                 that together identify a single feature.
         '''
         lookup = graftask.data_items['xfeature'][(aspace, alabel, fname, kind)]
-        valrep = graftask.data_items['xfeature_val_rep'][(aspace, alabel, fname, kind)]
         for ne in lookup:
-            self.lookup[ne] = valrep[lookup[ne]]
+            self.lookup[ne] = lookup[ne]
 
     def v(self, ne):
         '''Look the feature value up for a node or edge.
@@ -397,7 +393,7 @@ class GrafTask(Graf):
         result_file = "{}/{}".format(
             self.env['result_dir'], file_name
         )
-        handle = codecs.open(result_file, "w", encoding = 'utf-8')
+        handle = open(result_file, "w")
         self.result_files.append(handle)
         return handle
 
@@ -418,7 +414,7 @@ class GrafTask(Graf):
         result_file = "{}/{}".format(
             self.env['result_dir'], file_name
         )
-        handle = codecs.open(result_file, "r", encoding = 'utf-8')
+        handle = open(result_file, "r")
         self.result_files.append(handle)
         return handle
 

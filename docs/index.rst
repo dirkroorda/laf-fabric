@@ -1,5 +1,5 @@
-LAF-Fabric documentation
-========================
+LAF-Fabric |version|
+====================
 .. image:: /files/LAF-Workbench.png
 
 Contents:

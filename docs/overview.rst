@@ -185,7 +185,7 @@ Demonstration for the `ETCBC <http://www.godgeleerdheid.vu.nl/etcbc>`_ team Amst
 
 **2013-12-09**
 Abstract sent to `CLIN <http://clin24.inl.nl>`_ (Computational Linguistics In the Netherlands) accepted.
-To be deliverd 2014-01-17. 
+To be delivered 2014-01-17. 
 
 **2013-11-26**
 Vitamin Talk to the `TLA team Nijmegen <http://tla.mpi.nl>`_. Here are the

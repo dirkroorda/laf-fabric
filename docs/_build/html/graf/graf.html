@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf package &mdash; LAF Fabric 2.2.0 documentation</title>
+  <title>graf package &mdash; LAF Fabric 2.3.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'2.2.0',
+        VERSION:'2.3.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -44,7 +44,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.2.0 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 2.3.0 documentation" href="../index.html"/>
         <link rel="up" title="graf" href="modules.html"/>
         <link rel="prev" title="graf" href="modules.html"/> 
 
@@ -554,7 +554,7 @@ at the time it was last run</p>
 <tt class="descname">read_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.read_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.read_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read compilation statistics from file</p>
 <p>The compile process generates some statistics that must be read by the task that loads the compiled data.
-In order to read an <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt> by means of its <tt class="xref py py-meth docutils literal"><span class="pre">array.array.fromfile()</span></tt> method,
+In order to read an <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> by means of its <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array.array.fromfile" title="(in Python v3.3)"><tt class="xref py py-meth docutils literal"><span class="pre">array.array.fromfile()</span></tt></a> method,
 we need to know the length of it on beforehand.</p>
 <p>And later, when we want to load new feature data on top of the existing data, we need to know
 how many distinct values features have.</p>
@@ -582,7 +582,7 @@ how many distinct values features have.</p>
 <li>annox: <em>annox</em></li>
 <li>task: <em>task</em></li>
 <li>compile (bool): whether to force (re)compilation</li>
-<li>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>): entries corresponding to the main configuration file</li>
+<li>settings (<a class="reference external" href="http://docs.python.org/3.3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt></a>): entries corresponding to the main configuration file</li>
 <li>additional computed settings adapt to the current source and task</li>
 </ul>
 </dd></dl>
@@ -761,7 +761,7 @@ This will be spotted here.</p>
 <dl class="function">
 <dt id="graf.model.arrayify">
 <tt class="descname">arrayify</tt><big>(</big><em>source_list</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#arrayify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.arrayify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Efficient storage of a list of lists of integers in two Python <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt>.</p>
+<dd><p>Efficient storage of a list of lists of integers in two Python <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a>.</p>
 <p><em>This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!</em></p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -773,7 +773,7 @@ This will be spotted here.</p>
 <dt>Returns:</dt>
 <dd><dl class="first docutils">
 <dt>(index_array, items_array):</dt>
-<dd>two <tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt> s.</dd>
+<dd>two <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> s.</dd>
 </dl>
 <p class="last"><em>index_array</em> contains an index for each item in <em>source_list</em>.
 <em>items_array</em> contains all the items in the following way: if an item with <em>n</em> members has to be added,
@@ -857,7 +857,7 @@ This way we can deliver the results of many nodes as a compact <em>double_array<
 <dl class="class">
 <dt id="graf.parse.AnnotationHandler">
 <em class="property">class </em><tt class="descname">AnnotationHandler</tt><big>(</big><em>annotation_file</em>, <em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.3/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
 <p>Handlers used by SAX parsing the annotation files themselves</p>
 <p>We have to collect all elements <em>region</em>, <em>node</em> and subelement <em>link</em>, <em>edge</em>, <em>annotationSpace</em>, <em>a</em> (annotation) and <em>f</em> (feature).
 From these elements we retrieve identifiers and other attributes.
@@ -932,7 +932,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.truth">
-<tt class="descname">truth</tt><em class="property"> = {'true': True, 'false': False, 'on': True, 'off': False, 'no': False, '1': True, '0': False, 'yes': True}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">truth</tt><em class="property"> = {'no': False, '1': True, 'on': True, 'yes': True, 'off': False, 'false': False, '0': False, 'true': True}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -940,7 +940,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 <dl class="class">
 <dt id="graf.parse.HeaderHandler">
 <em class="property">class </em><tt class="descname">HeaderHandler</tt><big>(</big><em>stamp</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/3.3/library/xml.sax.handler.html#xml.sax.handler.ContentHandler" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></a></p>
 <p>Handlers used by SAX parsing the GrAF header file.</p>
 <p>We just collect the contents of the <em>loc</em> attributes of the <em>annotation</em> elements.
 These are the annotation files that we have to fetch and compile.</p>
@@ -1292,14 +1292,14 @@ It will import a user task, read directives for data pre-loading, and it will ge
 API for the task, in the form of data structures for nodes and edges and 
 objects that can do feature lookups.</p>
 <p>A task processor must know where the source data is and where the result is going to.
-And it must be able to <em>import</em>: and <tt class="xref py py-func docutils literal"><span class="pre">imp.reload()</span></tt>: the tasks.
+And it must be able to <em>import</em>: and <a class="reference external" href="http://docs.python.org/3.3/library/imp.html#imp.reload" title="(in Python v3.3)"><tt class="xref py py-func docutils literal"><span class="pre">imp.reload()</span></tt></a>: the tasks.
 To that end the search path for modules will be adapted according to the <em>task_dir</em> setting
 in the main configuration file.</p>
 <p>Upon creation, the configuration settings are stored in the object as is.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>settings (<tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt>):</dt>
+<dt>settings (<a class="reference external" href="http://docs.python.org/3.3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.3)"><tt class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></tt></a>):</dt>
 <dd>entries corresponding to the main configuration file</dd>
 </dl>
 </dd>

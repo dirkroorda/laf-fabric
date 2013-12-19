@@ -68,8 +68,6 @@ def init():
     edges_to = array.array('I')
     global feature
     feature = collections.defaultdict(lambda:{})
-    global feature_val_int
-    feature_val_int = collections.defaultdict(lambda:{})
 
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
@@ -131,11 +129,6 @@ class AnnotationHandler(ContentHandler):
     *feature*
         All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),
         and finally reference (id of target node or edge).
-        The values are stored as integer. The mapping to the real value is stored separately.
-
-    *feature_val_int*
-        Mapping from real feature values to integer codes. Same values go to same codes, hence space is conserved.
-        These mappings are set up per individual feature.
 
     .. note::
         We work with annotation spaces and annotation labels and we distinguish between features in
@@ -275,7 +268,7 @@ class AnnotationHandler(ContentHandler):
             else:
                 good_feats += 1
                 value = attrs["value"]
-                self.add_feature_instance(fname, value)
+                feature[(self.aspace, self.alabel, fname, self.atype)][self.aref] = value
 
     def endElement(self, name):
         if name == "node":
@@ -291,22 +284,12 @@ class AnnotationHandler(ContentHandler):
             if self.aempty:
                 fname = ''
                 value = 1
-                self.add_feature_instance(fname, value)
+                feature[(self.aspace, self.alabel, fname, self.atype)][self.aref] = value
 
         self._tag_stack.pop()
 
     def characters(self, ch):
         pass
-
-    def add_feature_instance(self, fname, value):
-        this_fv_id = None
-        feature_key = (self.aspace, self.alabel, fname, self.atype)
-        if value in feature_val_int[feature_key]:
-            this_fv_id = feature_val_int[feature_key][value]
-        else:
-            this_fv_id = len(feature_val_int[feature_key])
-            feature_val_int[feature_key][value] = this_fv_id
-        feature[feature_key][self.aref] = this_fv_id
 
 def parse(graf_header_file, prim_bin_file, stamp, xmlitems):
     '''Parse a GrAF resource.
@@ -375,7 +358,6 @@ def parse(graf_header_file, prim_bin_file, stamp, xmlitems):
         ("edges_from", edges_from, True),
         ("edges_to", edges_to, True),
         ("feature", feature, True),
-        ("feature_val_int", feature_val_int, True),
     )
 
 

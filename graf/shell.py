@@ -1,5 +1,4 @@
 import os
-import codecs
 import glob
 import sys
 import traceback
@@ -47,7 +46,7 @@ class Shell(object):
         '''
 
         self.settings = configparser.ConfigParser(inline_comment_prefixes=('#'))
-        self.settings.read_file(codecs.open(MAIN_CFG, encoding = 'utf-8'))
+        self.settings.read_file(open(MAIN_CFG))
 
         self.source_choices = self.settings['source_choices']
         self.annox_choices = [self.settings['annox']['empty']] + [

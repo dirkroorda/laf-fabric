@@ -2,11 +2,11 @@ import os
 import os.path
 import shutil
 import glob
-import codecs
 import collections
 
 import array
 import pickle
+import gzip
 
 from .timestamp import Timestamp
 from .parse import parse as xmlparse
@@ -85,21 +85,13 @@ class Graf(object):
             For node ``i`` the record ``i`` consists of all incoming edges into this node.
 
     ``feature_mapping``, group ``feature`` resp group ``annox``:
-        Contains all the feature data of source resp annox. There are in fact three related dictionaries that do the job.
+        Contains all the feature data of source resp annox.
         
         ``feature``:
             Keyed by *annotation space*, then by *annotation label* (both referring to the annotation that 
             contains the feature at hand), then by *feature name*, then by *kind* (``node`` or 
             ``edge``). At this level we have a dictionary, keyed by either the nodes or the edges
-            (both as integers), and the value for each key is the value of the feature, again coded as
-            integer.
-        
-        ``feature_val_int`` and ``feature_val_rep``:
-            Raw values are not entered in the ``feature`` dictionary. Instead, every distinct value is uniquely
-            identified by an integer. It is this integer that is stored in the ``feature`` dictionary.
-            ``feature_val_int`` maps from raw values to integers, and ``feature_val_raw`` maps from integers to
-            raw values.
-            The mapping of values is per individual feature.
+            (both as integers), and the value for each key is the value of the feature.
         
         .. note::
             If a feature occurs on both nodes and edges, the feature is split into two features with the same name,
@@ -109,13 +101,9 @@ class Graf(object):
         
         So the complete road to a value is::
         
-            val = self.data_items['feature``][annotation_space][annotation_label][feature_name][kind][node_or_edge_id]
+            val = self.data_items['feature``][(annotation_space, annotation_label, feature_name, kind)][node_or_edge_id]
         
-        and if you want to get the raw value back you can do so by::
-        
-            raw_val = self.data_items['feature_val_rep``][annotation_space][annotation_label][feature_name][kind][val]
-        
-        The API will help you to lookup feature values and hides raw values completely.
+        The API will help you to lookup feature values.
         See :mod:`task <graf.task>` for a description of the API, especially
         :meth:`get_mappings <graf.task.GrafTask.get_mappings>`
     '''
@@ -705,12 +693,10 @@ class Graf(object):
                         del self.data_items[label]
 
         else:
-            sub_int = '_int' if data_group == 'xmlids' else '_val_int'
-            sub_rep = '_rep' if data_group == 'xmlids' else '_val_rep'
-            subs = (sub_int,) if data_group == 'xmlids' else ('', sub_int)
+            sub_rep = '_rep' if data_group == 'xmlids' else None
+            subs = ('_int',) if data_group == 'xmlids' else ('',)
             ref_lab = '_int' if data_group == 'xmlids' else ''
             for label in self.data_items_def[data_group]:
-                lab_rep = label + sub_rep
                 if items != None:
                     for item in items:
                         item_rep = self.format_item(data_group, item)
@@ -720,9 +706,10 @@ class Graf(object):
                                 lab = label + sub
                                 if lab in self.data_items and item in self.data_items[lab]:
                                     del self.data_items[lab][item]
-                            lab = label + sub_rep
-                            if lab in self.data_items and item in self.data_items[lab]:
-                                del self.data_items[lab][item]
+                            if sub_rep != None:
+                                lab = label + sub_rep
+                                if lab in self.data_items and item in self.data_items[lab]:
+                                    del self.data_items[lab][item]
                 else:
                     if label + ref_lab in self.data_items:
                         self.progress("clearing {}: {} ...".format(data_group, label))
@@ -730,9 +717,10 @@ class Graf(object):
                             lab = label + sub
                             if lab in self.data_items:
                                 del self.data_items[lab]
-                        lab = label + sub_rep
-                        if lab in self.data_items:
-                            del self.data_items[lab]
+                        if sub_rep != None:
+                            lab = label + sub_rep
+                            if lab in self.data_items:
+                                del self.data_items[lab]
                     for sub in subs:
                         lab = label + sub
                         self.data_items[lab] = collections.defaultdict(lambda: None)
@@ -826,34 +814,27 @@ class Graf(object):
                     for sub in subs:
                         lab = label + sub
                         b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-                        b_handle = open(b_path, "wb")
+                        b_handle = gzip.open(b_path, "wb")
                         self.data_items[lab].tofile(b_handle)
                         b_handle.close()
         else:
             ref_lab = '_int' if data_group == 'xmlids' else ''
-            extra_lab = None if data_group == 'xmlids' else '_val_int'
             target_dir = self.env['bin_dir'] if data_group == 'xmlids' else self.env['feat_dir'] if data_group == 'feature' else self.env['annox_bdir']
             for label in self.data_items_def[data_group]:
                 self.progress("writing {}: {} ...".format(data_group, label))
                 for item in self.data_items[label + ref_lab]:
                     item_rep = self.format_item(data_group, item, asFile=True)
                     b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
-                    b_handle = open(b_path, "wb")
+                    b_handle = gzip.open(b_path, "wb")
                     pickle.dump(self.data_items[label + ref_lab][item], b_handle)
                     b_handle.close()
-
-                    if extra_lab:
-                        b_path = "{}/{}_{}.{}".format(target_dir, 'values', item_rep, self.BIN_EXT)
-                        b_handle = open(b_path, "wb")
-                        pickle.dump(self.data_items[label + extra_lab][item], b_handle)
-                        b_handle.close()
 
     def write_stats(self):
         '''Write compilation statistics to file
 
         The compile process generates some statistics that must be read by the task that loads the compiled data.
         '''
-        handle = codecs.open(self.env['stat_file'], "w", encoding = 'utf-8')
+        handle = open(self.env['stat_file'], "w")
         for data_group in self.data_items_def:
             for (label, data_type) in self.data_items_def[data_group].items():
                 if data_type == 'array' or data_type == 'double_array' or data_type == 'i_array':
@@ -875,7 +856,7 @@ class Graf(object):
         And later, when we want to load new feature data on top of the existing data, we need to know
         how many distinct values features have.
         '''
-        handle = codecs.open(self.env['stat_file'], "r", encoding = 'utf-8')
+        handle = open(self.env['stat_file'], "r")
         self.stats = {}
         for line in handle:
             (label, count) = line.rstrip("\n").split("=")
@@ -903,7 +884,7 @@ class Graf(object):
                     self.data_items[lab] = array.array('I')
                     b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
                     if os.path.exists(b_path):
-                        b_handle = open(b_path, "rb")
+                        b_handle = gzip.open(b_path, "rb")
                         self.data_items[lab].fromfile(b_handle, self.stats[lab])
                         b_handle.close()
         elif data_group == 'primary':
@@ -924,12 +905,11 @@ class Graf(object):
                             self.data_items[lab] = array.array('I')
                             b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
                             if os.path.exists(b_path):
-                                b_handle = open(b_path, "rb")
+                                b_handle = gzip.open(b_path, "rb")
                                 self.data_items[lab].fromfile(b_handle, self.stats[lab])
                                 b_handle.close()
         else:
             ref_lab = '_int' if data_group == 'xmlids' else ''
-            extra_lab = None if data_group == 'xmlids' else '_val_int'
             target_dir = self.env['bin_dir'] if data_group == 'xmlids' else self.env['feat_dir'] if data_group == 'feature' else self.env['annox_bdir']
             for label in self.data_items_def[data_group]:
                 if items != None and len(items):
@@ -938,21 +918,12 @@ class Graf(object):
                         item_repm = self.format_item(data_group, item)
                         b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
                         if os.path.exists(b_path):
-                            b_handle = open(b_path, "rb")
+                            b_handle = gzip.open(b_path, "rb")
                             lab = label + ref_lab
                             if lab not in self.data_items:
                                 self.data_items[lab] = {}
                             self.data_items[lab][item] = collections.defaultdict(lambda: None, pickle.load(b_handle))
                             b_handle.close()
-                        if extra_lab:
-                            if os.path.exists(b_path):
-                                b_path = "{}/{}_{}.{}".format(target_dir, 'values', item_rep, self.BIN_EXT)
-                                b_handle = open(b_path, "rb")
-                                lab = label + extra_lab
-                                if lab not in self.data_items:
-                                    self.data_items[lab] = {}
-                                self.data_items[lab][item] = pickle.load(b_handle)
-                                b_handle.close()
 
     def parse(self, data_group, xmlitems):
         '''Call the XML parser and collect the parse results.
@@ -1121,7 +1092,7 @@ class Graf(object):
             )
 
         log_file = "{}/{}".format(log_dir, log_name)
-        self.log = codecs.open(log_file, "w", encoding = 'utf-8')
+        self.log = open(log_file, "w")
         '''Instance member holding the open log handle'''
 
         self.stamp.connect_log(self.log)

@@ -1,5 +1,5 @@
-graf
-====
+graf |release|
+==============
 
 .. toctree::
    :maxdepth: 4

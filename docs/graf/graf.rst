@@ -1,5 +1,5 @@
-graf package
-============
+graf |release|
+==============
 
 Submodules
 ----------
@@ -52,11 +52,3 @@ graf.timestamp module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: graf
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -115,8 +115,8 @@
 <li class="toctree-l2"><a class="reference internal" href="proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../graf/graf.html">graf package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf 2.3.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../graf/graf.html">graf 2.3.0</a></li>
 </ul>
 </li>
 </ul>
@@ -167,22 +167,27 @@ The same specifications are used when reading the filled in form.</p>
 You specifiy new features for which you want to provide values, e.g. 
 <tt class="docutils literal"><span class="pre">dirk:part.intro</span></tt> and <tt class="docutils literal"><span class="pre">dirk:part.role</span></tt>.
 Finally you specify some chapters in the bible that you want to annotate.</p>
-<p>** Mode 1. creates a tab-delimited spreadsheet for you with the following columns**</p>
-<ol class="upperalpha simple">
-<li>xml_id of the node</li>
-</ol>
-<p>B1, ... , Bn: for each node type a column, with in it the piece of primary text corresponding to it.
+<p><strong>Mode 1. creates a tab-delimited spreadsheet</strong></p>
+<p>It will have the following columns:</p>
+<dl class="docutils">
+<dt>A:</dt>
+<dd>xml_id of the node</dd>
+<dt>B1, ... , Bn:</dt>
+<dd>for each node type a column, with in it the piece of primary text corresponding to it.
 So if in our case a column for <tt class="docutils literal"><span class="pre">word</span></tt> and for <tt class="docutils literal"><span class="pre">phrase</span></tt>.
 If the node is a <tt class="docutils literal"><span class="pre">word</span></tt>, the <tt class="docutils literal"><span class="pre">word</span></tt> column will be filled with the primary text of that word,
 and the <tt class="docutils literal"><span class="pre">phrase</span></tt> column will be empty. If the node is a <tt class="docutils literal"><span class="pre">phrase</span></tt>, it is the other way round, 
-with the <tt class="docutils literal"><span class="pre">phrase</span></tt> content in the <tt class="docutils literal"><span class="pre">phrase</span></tt> column.</p>
-<p>C1, ... , Cm: for each new feature a column.
+with the <tt class="docutils literal"><span class="pre">phrase</span></tt> content in the <tt class="docutils literal"><span class="pre">phrase</span></tt> column.</dd>
+<dt>C1, ... , Cm</dt>
+<dd>for each new feature a column.
 These contain the cells where you can put in your feature values.
 If you put the value &#8216;A&#8217; in column <tt class="docutils literal"><span class="pre">dirk:part.intro</span></tt> on the row of node <tt class="docutils literal"><span class="pre">n</span></tt>, 
-you declare that node <tt class="docutils literal"><span class="pre">n</span></tt> has <tt class="docutils literal"><span class="pre">dirk:part.intro</span> <span class="pre">=</span> <span class="pre">'A'</span></tt>.</p>
-<p><strong>Mode 2. reads your filled in form and delivers an annotation file</strong></p>
+you declare that node <tt class="docutils literal"><span class="pre">n</span></tt> has <tt class="docutils literal"><span class="pre">dirk:part.intro</span> <span class="pre">=</span> <span class="pre">'A'</span></tt>.</dd>
+</dl>
+<p><strong>Mode 2. creates a LAF annotation file</strong></p>
 <p>If you have filled in the form and renamed it (replacing <tt class="docutils literal"><span class="pre">form</span></tt> in the file name by <tt class="docutils literal"><span class="pre">data</span></tt>),
-then mode 2 can do its work. It creates a file with a name that starts with <tt class="docutils literal"><span class="pre">annot</span></tt>.</p>
+then mode 2 can do its work. It creates a file with a name that starts with <tt class="docutils literal"><span class="pre">annot</span></tt>.
+It will transform the information that you have put into the spreadsheet into properly targeted annotations.</p>
 <p><strong>Using the annotations</strong></p>
 <p>If you move the <tt class="docutils literal"><span class="pre">annot</span></tt> file over to the <tt class="docutils literal"><span class="pre">annox</span></tt> directory, and include it in a <tt class="docutils literal"><span class="pre">_header_.xml</span></tt>
 file, you can use the annotations in tasks by selecting it as an annox.

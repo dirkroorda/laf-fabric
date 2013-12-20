@@ -44,8 +44,6 @@ def init():
     identifiers_n = {}
     global identifiers_e
     identifiers_e = {}
-    global identifiers_a
-    identifiers_a = {}
 
     global id_region
     id_region = 0
@@ -225,7 +223,6 @@ class AnnotationHandler(ContentHandler):
             global id_annot
             aid = attrs["xml:id"]
             id_annot += 1
-            identifiers_a[aid] = id_annot
             self.aid = aid
             self.aempty = True
             if "as" in attrs:

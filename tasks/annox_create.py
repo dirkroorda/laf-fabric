@@ -75,25 +75,31 @@ def task(graftask):
     ``dirk:part.intro`` and ``dirk:part.role``.
     Finally you specify some chapters in the bible that you want to annotate.
 
-    ** Mode 1. creates a tab-delimited spreadsheet for you with the following columns**
+    **Mode 1. creates a tab-delimited spreadsheet**
 
-    A. xml_id of the node
+    It will have the following columns:
 
-    B1, ... , Bn: for each node type a column, with in it the piece of primary text corresponding to it.
-    So if in our case a column for ``word`` and for ``phrase``.
-    If the node is a ``word``, the ``word`` column will be filled with the primary text of that word,
-    and the ``phrase`` column will be empty. If the node is a ``phrase``, it is the other way round, 
-    with the ``phrase`` content in the ``phrase`` column.
+    A:
+        xml_id of the node
 
-    C1, ... , Cm: for each new feature a column.
-    These contain the cells where you can put in your feature values.
-    If you put the value 'A' in column ``dirk:part.intro`` on the row of node ``n``, 
-    you declare that node ``n`` has ``dirk:part.intro = 'A'``.
+    B1, ... , Bn:
+        for each node type a column, with in it the piece of primary text corresponding to it.
+        So if in our case a column for ``word`` and for ``phrase``.
+        If the node is a ``word``, the ``word`` column will be filled with the primary text of that word,
+        and the ``phrase`` column will be empty. If the node is a ``phrase``, it is the other way round, 
+        with the ``phrase`` content in the ``phrase`` column.
 
-    **Mode 2. reads your filled in form and delivers an annotation file**
+    C1, ... , Cm
+        for each new feature a column.
+        These contain the cells where you can put in your feature values.
+        If you put the value 'A' in column ``dirk:part.intro`` on the row of node ``n``, 
+        you declare that node ``n`` has ``dirk:part.intro = 'A'``.
+
+    **Mode 2. creates a LAF annotation file**
 
     If you have filled in the form and renamed it (replacing ``form`` in the file name by ``data``),
     then mode 2 can do its work. It creates a file with a name that starts with ``annot``.
+    It will transform the information that you have put into the spreadsheet into properly targeted annotations.
 
     **Using the annotations**
 

@@ -313,17 +313,21 @@ Now annotation spaces are fully functional.
 *primary data*
     This workbench deals with primary data that is UNICODE text anchored by positions between the individual
     UNICODE characters. The workbench does not deal with alternative units such as bytes or words. 
+
 *feature structures*
     The content of an annotation can be a feature structure.
     A feature structure is a set of features and sub features, ordered again as a graph.
     This workbench can deal with feature structures that are merely sets of key-value pairs.
     The graph-like model of features and subfeatures is not supported.
+
 *annotations*
     Even annotations get lost. The workbench is primarily interested in features and values.
     It forgets the annotations in which they have been packaged except for: 
+
     * the annotation space,
     * the annotation label,
     * the target of the annotation (node or edge)
+
 *dependencies*
     In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations.
     The workbench assumes that all dependent files are present in the resource.
@@ -360,4 +364,4 @@ See the GrAF :ref:`feature coverage` for a specification of what data ends up in
    You can still add extra annotation packages, which still can be compiled against the original LAF source,
    since the original XML identifiers are part of the compiled data.
    In case of the WIVU LAF resource: the original resource is over 2 GB on disk,
-   while the compiled binary data is less than 500 MB.
+   while the compiled binary data is less than 200 MB.

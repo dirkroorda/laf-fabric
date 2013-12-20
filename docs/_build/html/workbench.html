@@ -114,8 +114,8 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="graf/graf.html">graf package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.3.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graf/graf.html">graf 2.3.0</a></li>
 </ul>
 </li>
 </ul>
@@ -213,7 +213,7 @@ of others to use it.</p>
 <p>Here are detailed instructions for installing, configuring and using the workbench.</p>
 <div class="section" id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
-<p>In this Github project <em>LAF-Fabric</em> there is a Python package called <a class="reference internal" href="graf/graf.html#module-graf" title="graf"><tt class="xref py py-mod docutils literal"><span class="pre">graf</span></tt></a>.
+<p>In this Github project <em>LAF-Fabric</em> there is a Python package called <tt class="xref py py-mod docutils literal"><span class="pre">graf</span></tt>.
 It is a package without extension modules, so it will run from anywhere in your system.
 I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation.
 You can just clone it from github and work with it right away:</p>
@@ -448,11 +448,14 @@ A feature structure is a set of features and sub features, ordered again as a gr
 This workbench can deal with feature structures that are merely sets of key-value pairs.
 The graph-like model of features and subfeatures is not supported.</dd>
 <dt><em>annotations</em></dt>
-<dd>Even annotations get lost. The workbench is primarily interested in features and values.
-It forgets the annotations in which they have been packaged except for:
-* the annotation space,
-* the annotation label,
-* the target of the annotation (node or edge)</dd>
+<dd><p class="first">Even annotations get lost. The workbench is primarily interested in features and values.
+It forgets the annotations in which they have been packaged except for:</p>
+<ul class="last simple">
+<li>the annotation space,</li>
+<li>the annotation label,</li>
+<li>the target of the annotation (node or edge)</li>
+</ul>
+</dd>
 <dt><em>dependencies</em></dt>
 <dd>In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations.
 The workbench assumes that all dependent files are present in the resource.
@@ -490,7 +493,7 @@ In that case the workbench will not complain, and never attempt to recompile the
 You can still add extra annotation packages, which still can be compiled against the original LAF source,
 since the original XML identifiers are part of the compiled data.
 In case of the WIVU LAF resource: the original resource is over 2 GB on disk,
-while the compiled binary data is less than 500 MB.</td></tr>
+while the compiled binary data is less than 200 MB.</td></tr>
 </tbody>
 </table>
 </div>

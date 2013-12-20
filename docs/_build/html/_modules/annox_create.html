@@ -113,8 +113,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../graf/graf.html">graf package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf 2.3.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../graf/graf.html">graf 2.3.0</a></li>
 </ul>
 </li>
 </ul>
@@ -224,25 +224,31 @@
 <span class="sd">    ``dirk:part.intro`` and ``dirk:part.role``.</span>
 <span class="sd">    Finally you specify some chapters in the bible that you want to annotate.</span>
 
-<span class="sd">    ** Mode 1. creates a tab-delimited spreadsheet for you with the following columns**</span>
+<span class="sd">    **Mode 1. creates a tab-delimited spreadsheet**</span>
 
-<span class="sd">    A. xml_id of the node</span>
+<span class="sd">    It will have the following columns:</span>
 
-<span class="sd">    B1, ... , Bn: for each node type a column, with in it the piece of primary text corresponding to it.</span>
-<span class="sd">    So if in our case a column for ``word`` and for ``phrase``.</span>
-<span class="sd">    If the node is a ``word``, the ``word`` column will be filled with the primary text of that word,</span>
-<span class="sd">    and the ``phrase`` column will be empty. If the node is a ``phrase``, it is the other way round, </span>
-<span class="sd">    with the ``phrase`` content in the ``phrase`` column.</span>
+<span class="sd">    A:</span>
+<span class="sd">        xml_id of the node</span>
 
-<span class="sd">    C1, ... , Cm: for each new feature a column.</span>
-<span class="sd">    These contain the cells where you can put in your feature values.</span>
-<span class="sd">    If you put the value &#39;A&#39; in column ``dirk:part.intro`` on the row of node ``n``, </span>
-<span class="sd">    you declare that node ``n`` has ``dirk:part.intro = &#39;A&#39;``.</span>
+<span class="sd">    B1, ... , Bn:</span>
+<span class="sd">        for each node type a column, with in it the piece of primary text corresponding to it.</span>
+<span class="sd">        So if in our case a column for ``word`` and for ``phrase``.</span>
+<span class="sd">        If the node is a ``word``, the ``word`` column will be filled with the primary text of that word,</span>
+<span class="sd">        and the ``phrase`` column will be empty. If the node is a ``phrase``, it is the other way round, </span>
+<span class="sd">        with the ``phrase`` content in the ``phrase`` column.</span>
 
-<span class="sd">    **Mode 2. reads your filled in form and delivers an annotation file**</span>
+<span class="sd">    C1, ... , Cm</span>
+<span class="sd">        for each new feature a column.</span>
+<span class="sd">        These contain the cells where you can put in your feature values.</span>
+<span class="sd">        If you put the value &#39;A&#39; in column ``dirk:part.intro`` on the row of node ``n``, </span>
+<span class="sd">        you declare that node ``n`` has ``dirk:part.intro = &#39;A&#39;``.</span>
+
+<span class="sd">    **Mode 2. creates a LAF annotation file**</span>
 
 <span class="sd">    If you have filled in the form and renamed it (replacing ``form`` in the file name by ``data``),</span>
 <span class="sd">    then mode 2 can do its work. It creates a file with a name that starts with ``annot``.</span>
+<span class="sd">    It will transform the information that you have put into the spreadsheet into properly targeted annotations.</span>
 
 <span class="sd">    **Using the annotations**</span>
 

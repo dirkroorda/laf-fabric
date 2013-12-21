@@ -94,6 +94,12 @@ With this device it becomes possible for you to include a set of corrections to 
 Or alternatively, you can include the results of your own work, whether manual or algorithmic or both,
 with the original data. You can then do *what-if* research on the combination.
 
+There are two example tasks that demonstrate this workflow.
+With the :mod:`annox_create` task you can produce spreadsheets customized to the annotations that you
+want to make. The same task can then transform your input into valid LAF annotations,
+targeted at the pieces of primary data that you have specified in the spreadsheet.
+The :mod:`annox_use` task shows you how you can use your annotations in analysis. 
+
 Limitations
 -----------
 While the `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_ module
@@ -117,14 +123,8 @@ This proves that the methodology works and that we can try more challenging thin
 The direction of the future work should be determined by your research needs.
 
 While the workbench supports adding an extra annotation package to the existing LAF resource,
-it does not contain a ready made workflow to create such packages.
-All ingredients are available though. The workbench API exposes the original XML identifiers to 
-your tasks. So you can write a workbench task that emits a spreadsheet with text plus
-node and edge identifiers, where you can put new annotations in an interlinear way.
-An other workbench task could read that spreadsheet and compute the right XML identifiers and transform
-it into a new annotation file that can be properly combined with the original resource.
-
-I hope to find time to provide example tasks that exemplify this workflow.
+and contains an example workflow to create such packages, this process has not been
+honed by practice yet. Concrete exercises with real data are planned to start in January 2014.
 
 That said, it is not difficult to spot other areas for improvement:
 

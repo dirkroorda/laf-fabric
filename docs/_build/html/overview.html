@@ -230,6 +230,11 @@ the original values are used.</p>
 <p>With this device it becomes possible for you to include a set of corrections to the original features.
 Or alternatively, you can include the results of your own work, whether manual or algorithmic or both,
 with the original data. You can then do <em>what-if</em> research on the combination.</p>
+<p>There are two example tasks that demonstrate this workflow.
+With the <a class="reference internal" href="tasks/annox_create.html#module-annox_create" title="annox_create"><tt class="xref py py-mod docutils literal"><span class="pre">annox_create</span></tt></a> task you can produce spreadsheets customized to the annotations that you
+want to make. The same task can then transform your input into valid LAF annotations,
+targeted at the pieces of primary data that you have specified in the spreadsheet.
+The <a class="reference internal" href="tasks/annox_use.html#module-annox_use" title="annox_use"><tt class="xref py py-mod docutils literal"><span class="pre">annox_use</span></tt></a> task shows you how you can use your annotations in analysis.</p>
 <div class="section" id="limitations">
 <h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
 <p>While the <a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a> module
@@ -250,13 +255,8 @@ assumes that the anchor type is a character (not a byte).</p>
 This proves that the methodology works and that we can try more challenging things.
 The direction of the future work should be determined by your research needs.</p>
 <p>While the workbench supports adding an extra annotation package to the existing LAF resource,
-it does not contain a ready made workflow to create such packages.
-All ingredients are available though. The workbench API exposes the original XML identifiers to
-your tasks. So you can write a workbench task that emits a spreadsheet with text plus
-node and edge identifiers, where you can put new annotations in an interlinear way.
-An other workbench task could read that spreadsheet and compute the right XML identifiers and transform
-it into a new annotation file that can be properly combined with the original resource.</p>
-<p>I hope to find time to provide example tasks that exemplify this workflow.</p>
+and contains an example workflow to create such packages, this process has not been
+honed by practice yet. Concrete exercises with real data are planned to start in January 2014.</p>
 <p>That said, it is not difficult to spot other areas for improvement:</p>
 <ol class="arabic simple">
 <li>adapt the tool for use with <a class="reference external" href="http://ipython.org">IPython and the IPy notebook</a></li>

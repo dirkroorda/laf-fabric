@@ -512,10 +512,10 @@ class Graf(object):
         for item in self.given[data_group]:
             item_rep = self.format_item(data_group, item)
             if item not in self.loaded[data_group]:
-                self.progress('ERROR: {}: {} failed to load'.format(data_group, item_rep))
+                self.progress('ERROR: {}: {} not present'.format(data_group, item_rep))
                 passed = False
             else:
-                self.progress("loaded {}: {}".format(data_group, item_rep))
+                self.progress("present {}: {}".format(data_group, item_rep))
         for item in self.loaded[data_group]:
             item_rep = self.format_item(data_group, item)
             if item not in self.given[data_group]:
@@ -531,9 +531,9 @@ class Graf(object):
         for item in self.given['feature']:
             item_rep = self.format_item('feature', item)
             if item not in loaded_features:
-                self.progress('WARNING: feature: {} failed to load from source {} or annox {}'.format(item_rep, self.env['source'], self.env['annox']))
+                self.progress('WARNING: feature: {} not present from source {} nor annox {}'.format(item_rep, self.env['source'], self.env['annox']))
             else:
-                self.progress('loaded feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item].keys())))
+                self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item].keys())))
 
         for item in loaded_features:
             item_rep = self.format_item('feature', item)

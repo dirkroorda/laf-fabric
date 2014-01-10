@@ -1,6 +1,5 @@
 import os
 import glob
-import sys
 import traceback
 import collections
 import argparse
@@ -96,7 +95,7 @@ class Shell(object):
         argsparser.add_argument(
             "--menu",
             dest = 'menu',
-            action = "store_true",
+        action = "store_true",
             help = "Display menu, use other arguments as defaults"
         )
         self.args = argsparser.parse_args()
@@ -120,6 +119,25 @@ class Shell(object):
 
         self.graftask = GrafTask(self.settings)
 
+    def run(self, source, annox, task, function, force_compile, load):
+        '''Does a single task. Useful for stand alone tasks.
+
+        If invoked after the completion of another task, it unloads data from memory that is not needed anymore,
+        and loads addtional required data.
+
+        Args:
+            source(str):
+                the name of the source data
+            annox(str):
+                the name of an additional annotation package (use ``--`` for no additional package.
+            task(str):
+                the name of the task to execute. All tasks reside in a directory specified in the main config file.
+            function(callable): 
+                the function that implements the task. It should accept one argument, being the GrafTask object
+                through which all data in the LAF resource can be accessed.
+        '''
+        self.graftask.run(source, annox, task, force_compile=force_compile, load=load, function=function)
+        
     def processor(self):
         '''Does work. Decides to run one task or start the command prompt.
 

@@ -334,7 +334,7 @@ class GrafTask(Graf):
             XMLids(xmlid_objects)
         )
 
-    def run(self, source, annox, task, force_compile={}):
+    def run(self, source, annox, task, force_compile={}, load=None, function=None):
         '''Run a task.
 
         That is:
@@ -362,18 +362,19 @@ class GrafTask(Graf):
         self.compile_all(force_compile)
         self.stamp.reset()
 
-        exec("import {}".format(task))
-        exec("imp.reload({})".format(task))
-
-        load = eval("{}.load".format(task))
+        if load == None:
+            exec("import {}".format(task))
+            exec("imp.reload({})".format(task))
+            load = eval("{}.load".format(task))
         self.adjust_all(load)
 
-        taskcommand = eval("{}.task".format(task))
+        if function == None:
+            function = eval("{}.task".format(task))
 
         self.stamp.reset()
 
         self.init_task()
-        taskcommand(self) 
+        function(self) 
         self.finish_task()
 
     def add_result(self, file_name):

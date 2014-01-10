@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -115,7 +116,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">graf 2.3.0</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="">graf 2.3.0</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="graf.html">graf 2.3.0</a></li>
 </ul>
 </li>
 </ul>
@@ -290,9 +291,9 @@ the LAF resource has to be (re)compiled.</li>
 <dd><p>extension for text files</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.add_logfile">
-<tt class="descname">add_logfile</tt><big>(</big><em>location=None</em>, <em>name=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.add_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.add_logfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_logfile</tt><big>(</big><em>self</em>, <em>location=None</em>, <em>name=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.add_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.add_logfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and open a log file for a given task.</p>
 <p>When tasks run, they generate progress messages with timing information in them.
 They may issue errors and warnings. All this information also goes into a log file.
@@ -309,9 +310,9 @@ The log file is placed in the result directory of the task at hand.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.adjust_all">
-<tt class="descname">adjust_all</tt><big>(</big><em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.adjust_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.adjust_all" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">adjust_all</tt><big>(</big><em>self</em>, <em>directives</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.adjust_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.adjust_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function: adjust the data to the task at hand.
 Load what is needed, discard what is no longer need, leave alone what does not to be changed.</p>
 <dl class="docutils">
@@ -325,9 +326,9 @@ which features it uses and whether there is need for the orginal XML ids.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.adjust_data">
-<tt class="descname">adjust_data</tt><big>(</big><em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.adjust_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.adjust_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">adjust_data</tt><big>(</big><em>self</em>, <em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.adjust_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.adjust_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function for adjusting data.
 Now per key in the <tt class="docutils literal"><span class="pre">data_items_def</span></tt> dictionary.</p>
 <dl class="docutils">
@@ -345,9 +346,9 @@ If not given, looks at <tt class="docutils literal"><span class="pre">self.given
 <p>Clearance of data is deferred to <a class="reference internal" href="#graf.graf.Graf.clear_data" title="graf.graf.Graf.clear_data"><tt class="xref py py-meth docutils literal"><span class="pre">clear_data()</span></tt></a>, loading to <a class="reference internal" href="#graf.graf.Graf.load_data" title="graf.graf.Graf.load_data"><tt class="xref py py-meth docutils literal"><span class="pre">load_data()</span></tt></a>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.check_load_status">
-<tt class="descname">check_load_status</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.check_load_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.check_load_status" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">check_load_status</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.check_load_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.check_load_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the <tt class="docutils literal"><span class="pre">load</span></tt> part of the status from the other parts.</p>
 <p>The rules for the status are not easy to state and it is easy to miss out cases.
 So I have spelled out all cases in a switchboard.
@@ -355,9 +356,9 @@ Given the <tt class="docutils literal"><span class="pre">env</span></tt> and <tt
 <p>To be called just before compiling and loading.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.check_status">
-<tt class="descname">check_status</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.check_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.check_status" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">check_status</tt><big>(</big><em>self</em>, <em>source</em>, <em>annox</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.check_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.check_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the complete status information by inspecting the environment and
 detecting the compile status.</p>
 <p>This function is called at the start of each task execution, before any compiling or loading
@@ -369,15 +370,15 @@ data is up to the task.</p>
 <tt class="docutils literal"><span class="pre">env</span></tt> and <tt class="docutils literal"><span class="pre">compile</span></tt> parts of the status accordingly.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.clear_all">
-<tt class="descname">clear_all</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.clear_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.clear_all" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">clear_all</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.clear_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.clear_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level data management function to clear all data.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.clear_data">
-<tt class="descname">clear_data</tt><big>(</big><em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.clear_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.clear_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">clear_data</tt><big>(</big><em>self</em>, <em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.clear_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.clear_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level data management function to clear all data.
 Now per key in the <tt class="docutils literal"><span class="pre">data_items_def</span></tt> dictionary.</p>
 <dl class="docutils">
@@ -394,15 +395,15 @@ If not given all subitems will be cleared.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.compile_all">
-<tt class="descname">compile_all</tt><big>(</big><em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.compile_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.compile_all" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">compile_all</tt><big>(</big><em>self</em>, <em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.compile_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.compile_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manages the complete compilation process.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.compile_data">
-<tt class="descname">compile_data</tt><big>(</big><em>data_group</em>, <em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.compile_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.compile_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">compile_data</tt><big>(</big><em>self</em>, <em>data_group</em>, <em>force</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.compile_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.compile_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manages the compilation process for either the source data or extra annotation files.</p>
 <p>Detects the need for compiling, responds to the <em>force</em> argument. Then parses, remodels and writes.</p>
 <dl class="docutils">
@@ -432,22 +433,22 @@ dependent on tnd predictable from he data type and data group.</p>
 <dd><p>Holds the context information for the current task, such as chosen source, annox and task.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.finish_logfile">
-<tt class="descname">finish_logfile</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.finish_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.finish_logfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">finish_logfile</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.finish_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.finish_logfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Explicitly close log file.</p>
 <p>Do not rely on the <tt class="docutils literal"><span class="pre">__del__</span></tt> method and hence on garbage collection.
 The program might terminate without writing the last bits to file.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.flush_logfile">
-<tt class="descname">flush_logfile</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.flush_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.flush_logfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">flush_logfile</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.flush_logfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.flush_logfile" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.format_item">
-<tt class="descname">format_item</tt><big>(</big><em>data_group</em>, <em>item</em>, <em>asFile=False</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.format_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.format_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">format_item</tt><big>(</big><em>self</em>, <em>data_group</em>, <em>item</em>, <em>asFile=False</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.format_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.format_item" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -456,9 +457,9 @@ The program might terminate without writing the last bits to file.</p>
 <dd><p>List of items given in the load directives of a task, per data group</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.load_data">
-<tt class="descname">load_data</tt><big>(</big><em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.load_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load_data</tt><big>(</big><em>self</em>, <em>data_group</em>, <em>items=None</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level data management function to load data from disk into memory.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -486,27 +487,27 @@ Only relevant if <tt class="docutils literal"><span class="pre">data_group</span
 and of the task executions.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.make_array_inverse">
-<tt class="descname">make_array_inverse</tt><big>(</big><em>arraylist</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.make_array_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.make_array_inverse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">make_array_inverse</tt><big>(</big><em>self</em>, <em>arraylist</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.make_array_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.make_array_inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the inverse lookup table for a data table given as a Python array.</p>
 <p>This is a low level function for creating inverse mappings.
 When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.
 Upon loading, the inverse mapping is generated by means of this function.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.make_inverse">
-<tt class="descname">make_inverse</tt><big>(</big><em>mapping</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.make_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.make_inverse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">make_inverse</tt><big>(</big><em>self</em>, <em>mapping</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.make_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.make_inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the inverse lookup table for a data table given as a dictionary.</p>
 <p>This is a low level function for creating inverse mappings.
 When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.
 Upon loading, the inverse mapping is generated by means of this function.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.model">
-<tt class="descname">model</tt><big>(</big><em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.model" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">model</tt><big>(</big><em>self</em>, <em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call the remodeler and store the remodeled data in the object.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -518,9 +519,9 @@ Upon loading, the inverse mapping is generated by means of this function.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.parse">
-<tt class="descname">parse</tt><big>(</big><em>data_group</em>, <em>xmlitems</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.parse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parse</tt><big>(</big><em>self</em>, <em>data_group</em>, <em>xmlitems</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call the XML parser and collect the parse results.</p>
 <p>Some parse results must be remodelled afterwards.
 After remodelling some parse data can be thrown away.
@@ -543,26 +544,26 @@ Only store data that is needed for task execution in the object.</p>
 at the time it was last run</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.progress">
-<tt class="descname">progress</tt><big>(</big><em>msg</em>, <em>newline=True</em>, <em>withtime=True</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.progress" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">progress</tt><big>(</big><em>self</em>, <em>msg</em>, <em>newline=True</em>, <em>withtime=True</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method to call the progress of the associated stamp directly from the Graf object</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.read_stats">
-<tt class="descname">read_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.read_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.read_stats" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read_stats</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.read_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.read_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read compilation statistics from file</p>
 <p>The compile process generates some statistics that must be read by the task that loads the compiled data.
-In order to read an <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> by means of its <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array.array.fromfile" title="(in Python v3.3)"><tt class="xref py py-meth docutils literal"><span class="pre">array.array.fromfile()</span></tt></a> method,
+In order to read an <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> by means of its <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array.array.fromfile" title="(in Python v3.3)"><tt class="xref py py-meth docutils literal"><span class="pre">array.array.fromfile()</span></tt></a> method,
 we need to know the length of it on beforehand.</p>
 <p>And later, when we want to load new feature data on top of the existing data, we need to know
 how many distinct values features have.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.set_environment">
-<tt class="descname">set_environment</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.set_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.set_environment" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_environment</tt><big>(</big><em>self</em>, <em>source</em>, <em>annox</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.set_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.set_environment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the source and result locations for a task execution.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -687,18 +688,18 @@ All data that is present must be cleared.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.store_all">
-<tt class="descname">store_all</tt><big>(</big><em>compile_data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_all" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">store_all</tt><big>(</big><em>self</em>, <em>compile_data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function: write data from memory to disk.</p>
 <p>This function is typically invoked at the end of compilation. 
 When in the business of running user tasks, there is no need for this function, 
 since tasks do not modify the data.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.store_data">
-<tt class="descname">store_data</tt><big>(</big><em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">store_data</tt><big>(</big><em>self</em>, <em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.store_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.store_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top level data management function for writing data to disk.
 Now per key in the <tt class="docutils literal"><span class="pre">data_items_def</span></tt> dictionary.</p>
 <dl class="docutils">
@@ -718,17 +719,17 @@ Now per key in the <tt class="docutils literal"><span class="pre">data_items_def
 The data that we must keep is stored in the object, of course.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.verify_all">
-<tt class="descname">verify_all</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.verify_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.verify_all" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">verify_all</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.verify_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.verify_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>After loading, verify whether everything is as desired.</p>
 <p>Loading of features may have failed if the task has declared non-existent features!
 This will be spotted here.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.write_data">
-<tt class="descname">write_data</tt><big>(</big><em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.write_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_data</tt><big>(</big><em>self</em>, <em>data_group</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.write_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes compiled data to disk.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -740,9 +741,9 @@ This will be spotted here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.graf.Graf.write_stats">
-<tt class="descname">write_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.write_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.write_stats" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_stats</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/graf.html#Graf.write_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.graf.Graf.write_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write compilation statistics to file</p>
 <p>The compile process generates some statistics that must be read by the task that loads the compiled data.</p>
 </dd></dl>
@@ -761,7 +762,7 @@ This will be spotted here.</p>
 <dl class="function">
 <dt id="graf.model.arrayify">
 <tt class="descname">arrayify</tt><big>(</big><em>source_list</em><big>)</big><a class="reference internal" href="../_modules/graf/model.html#arrayify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.model.arrayify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Efficient storage of a list of lists of integers in two Python <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a>.</p>
+<dd><p>Efficient storage of a list of lists of integers in two Python <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a>.</p>
 <p><em>This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!</em></p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -773,7 +774,7 @@ This will be spotted here.</p>
 <dt>Returns:</dt>
 <dd><dl class="first docutils">
 <dt>(index_array, items_array):</dt>
-<dd>two <a class="reference external" href="http://docs.python.org/3.3/library/array.html#module-array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> s.</dd>
+<dd>two <a class="reference external" href="http://docs.python.org/3.3/library/array.html#array" title="(in Python v3.3)"><tt class="xref py py-mod docutils literal"><span class="pre">array</span></tt></a> s.</dd>
 </dl>
 <p class="last"><em>index_array</em> contains an index for each item in <em>source_list</em>.
 <em>items_array</em> contains all the items in the following way: if an item with <em>n</em> members has to be added,
@@ -900,14 +901,14 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 <tt class="descname">aid</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.aid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.parse.AnnotationHandler.characters">
-<tt class="descname">characters</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.characters" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">characters</tt><big>(</big><em>self</em>, <em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.characters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.parse.AnnotationHandler.endElement">
-<tt class="descname">endElement</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.endElement" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">endElement</tt><big>(</big><em>self</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.endElement" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -925,14 +926,14 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 <tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.AnnotationHandler.stamp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.parse.AnnotationHandler.startElement">
-<tt class="descname">startElement</tt><big>(</big><em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.startElement" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">startElement</tt><big>(</big><em>self</em>, <em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#AnnotationHandler.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.AnnotationHandler.startElement" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.truth">
-<tt class="descname">truth</tt><em class="property"> = {'1': True, '0': False, 'yes': True, 'on': True, 'true': True, 'off': False, 'no': False, 'false': False}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">truth</tt><em class="property"> = {'yes': True, 'false': False, 'off': False, 'true': True, '0': False, 'on': True, '1': True, 'no': False}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -944,14 +945,14 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 <p>Handlers used by SAX parsing the GrAF header file.</p>
 <p>We just collect the contents of the <em>loc</em> attributes of the <em>annotation</em> elements.
 These are the annotation files that we have to fetch and compile.</p>
-<dl class="method">
+<dl class="function">
 <dt id="graf.parse.HeaderHandler.characters">
-<tt class="descname">characters</tt><big>(</big><em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.characters" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">characters</tt><big>(</big><em>self</em>, <em>ch</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.characters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.parse.HeaderHandler.endElement">
-<tt class="descname">endElement</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.endElement" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">endElement</tt><big>(</big><em>self</em>, <em>name</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.endElement" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -959,9 +960,9 @@ These are the annotation files that we have to fetch and compile.</p>
 <tt class="descname">stamp</tt><em class="property"> = None</em><a class="headerlink" href="#graf.parse.HeaderHandler.stamp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.parse.HeaderHandler.startElement">
-<tt class="descname">startElement</tt><big>(</big><em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.startElement" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">startElement</tt><big>(</big><em>self</em>, <em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/graf/parse.html#HeaderHandler.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.parse.HeaderHandler.startElement" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1013,9 +1014,9 @@ and configuration files.
 It collects those information pieces and passes them in suitable form
 to the factual task processor.</p>
 <p>Upon creation, create a <a class="reference internal" href="#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a> object based on settings.</p>
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.command_loop">
-<tt class="descname">command_loop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.command_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.command_loop" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">command_loop</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.command_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.command_loop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Command prompt for repeated running of tasks.</p>
 </dd></dl>
 
@@ -1034,9 +1035,9 @@ If the user does pass some of these values and the command prompt is started, th
 command line values are parsed here, and the command prompt will use them as initial values.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.do_command">
-<tt class="descname">do_command</tt><big>(</big><em>prompt</em>, <em>choices</em>, <em>helpstr</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.do_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.do_command" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">do_command</tt><big>(</big><em>self</em>, <em>prompt</em>, <em>choices</em>, <em>helpstr</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.do_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.do_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prompts the user to enter a command and dispatches it, if correct.</p>
 <p>This method asks the user for a command consisting of a single letter.
 It checks whether the letter is a legal option.
@@ -1062,9 +1063,9 @@ If he user enters <tt class="docutils literal"><span class="pre">?</span></tt>, 
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.get_ch">
-<tt class="descname">get_ch</tt><big>(</big><em>prompt=''</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.get_ch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.get_ch" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_ch</tt><big>(</big><em>self</em>, <em>prompt=''</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.get_ch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.get_ch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asks for unbuffered single character input, with an optional prompt.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1082,9 +1083,9 @@ If he user enters <tt class="docutils literal"><span class="pre">?</span></tt>, 
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.get_num">
-<tt class="descname">get_num</tt><big>(</big><em>prompt</em>, <em>start</em>, <em>end</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.get_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.get_num" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_num</tt><big>(</big><em>self</em>, <em>prompt</em>, <em>start</em>, <em>end</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.get_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.get_num" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asks for a numeric value, and checks whether teh value is in a legal range.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1106,9 +1107,9 @@ If he user enters <tt class="docutils literal"><span class="pre">?</span></tt>, 
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.main_command">
-<tt class="descname">main_command</tt><big>(</big><em>command</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.main_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.main_command" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">main_command</tt><big>(</big><em>self</em>, <em>command</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.main_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.main_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interprets a top level command.</p>
 <p>Depending on the command passed, this methods prompts for additional information.
 This happens for the commands that modify the source and task selection.</p>
@@ -1134,9 +1135,9 @@ This happens for the commands that modify the source and task selection.</p>
 <dd><p>Response messages to be displayed after the prompt</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.processor">
-<tt class="descname">processor</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.processor" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">processor</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.processor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does work. Decides to run one task or start the command prompt.</p>
 <p>The decision is based on the presence of command line arguments.
 If all arguments are present to specify a task, the <em>run once</em> option will be chosen,
@@ -1145,15 +1146,38 @@ Otherwise the command prompt is started. If that is the case, the
 command line args that did come through, are used as initial values.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.shell.Shell.prompt">
-<tt class="descname">prompt</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.prompt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.prompt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">prompt</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.prompt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes an self-explanatory prompt text to the terminal.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
+<dt id="graf.shell.Shell.run">
+<tt class="descname">run</tt><big>(</big><em>self</em>, <em>source</em>, <em>annox</em>, <em>task</em>, <em>function</em>, <em>force_compile</em>, <em>load</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does a single task. Useful for stand alone tasks.</p>
+<p>If invoked after the completion of another task, it unloads data from memory that is not needed anymore,
+and loads addtional required data.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>source(str):</dt>
+<dd>the name of the source data</dd>
+<dt>annox(str):</dt>
+<dd>the name of an additional annotation package (use <tt class="docutils literal"><span class="pre">--</span></tt> for no additional package.</dd>
+<dt>task(str):</dt>
+<dd>the name of the task to execute. All tasks reside in a directory specified in the main config file.</dd>
+<dt>function(callable): </dt>
+<dd>the function that implements the task. It should accept one argument, being the GrafTask object
+through which all data in the LAF resource can be accessed.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="graf.shell.Shell.weave">
-<tt class="descname">weave</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.weave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.weave" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">weave</tt><big>(</big><em>self</em>, <em>data</em><big>)</big><a class="reference internal" href="../_modules/graf/shell.html#Shell.weave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.shell.Shell.weave" title="Permalink to this definition">¶</a></dt>
 <dd><p>Utility value that prepares data for presenting several columns of options
 on a terminal screen.</p>
 <dl class="docutils">
@@ -1214,9 +1238,9 @@ sits in another dictionary than source feature data.</dd>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.Feature.add_data">
-<tt class="descname">add_data</tt><big>(</big><em>graftask</em>, <em>aspace</em>, <em>alabel</em>, <em>fname</em>, <em>kind</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.add_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.add_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_data</tt><big>(</big><em>self</em>, <em>graftask</em>, <em>aspace</em>, <em>alabel</em>, <em>fname</em>, <em>kind</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.add_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.add_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upon creation, makes references to the feature data corresponding to the feature specified.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1231,9 +1255,9 @@ that together identify a single feature.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.Feature.s">
-<tt class="descname">s</tt><big>(</big><em>value=None</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.s" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">s</tt><big>(</big><em>self</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator that yields the node set that has a defined value for this feature.</p>
 <p>The node set is given in the canonical node set order.</p>
 <dl class="docutils">
@@ -1249,9 +1273,9 @@ is equal to it.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.Feature.v">
-<tt class="descname">v</tt><big>(</big><em>ne</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.v" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">v</tt><big>(</big><em>self</em>, <em>ne</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#Feature.v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.Feature.v" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look the feature value up for a node or edge.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1304,9 +1328,9 @@ in the main configuration file.</p>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.add_input">
-<tt class="descname">add_input</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.add_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.add_input" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_input</tt><big>(</big><em>self</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.add_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.add_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens a file for reading and stores the handle.</p>
 <p>Every task is advised to use this method for opening files for its input.
 The file will be closed by the workbench when the task terminates.</p>
@@ -1323,9 +1347,9 @@ Its location is the result directory for this task and this source.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.add_result">
-<tt class="descname">add_result</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.add_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.add_result" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_result</tt><big>(</big><em>self</em>, <em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.add_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.add_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens a file for writing and stores the handle.</p>
 <p>Every task is advised to use this method for opening files for its output.
 The file will be closed by the workbench when the task terminates.</p>
@@ -1342,18 +1366,18 @@ Its location is the result directory for this task and this source.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.finish_task">
-<tt class="descname">finish_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.finish_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.finish_task" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">finish_task</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.finish_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.finish_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finalizes the current task.</p>
 <p>Open result files will be closed.</p>
 <p>There will be a progress message, and a directory listing of the result directory,
 for the convenience of the user.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.get_mappings">
-<tt class="descname">get_mappings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.get_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.get_mappings" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_mappings</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.get_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.get_mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return references to API data structures and methods of this class.</p>
 <p>This is what is returned (the names given are not necessarily the names by which they are used
 in end user tasks. You can give convenient, local names to these methods, e.g:</p>
@@ -1389,15 +1413,15 @@ perform the mappings in individual cases. See <a class="reference internal" href
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.get_task_mtime">
-<tt class="descname">get_task_mtime</tt><big>(</big><em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.get_task_mtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.get_task_mtime" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_task_mtime</tt><big>(</big><em>self</em>, <em>task</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.get_task_mtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.get_task_mtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the last modification date of the file that contains the task code</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.getitems">
-<tt class="descname">getitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.getitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.getitems" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getitems</tt><big>(</big><em>self</em>, <em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.getitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.getitems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get related items from an arrayified data structure.</p>
 <p>If a relation between integers and sets of integers has been stored as a double array
 by the <a class="reference internal" href="#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> function,
@@ -1418,9 +1442,9 @@ this is the way to look up the set of related integers for each integer.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.getitems_dict">
-<tt class="descname">getitems_dict</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.getitems_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.getitems_dict" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getitems_dict</tt><big>(</big><em>self</em>, <em>data</em>, <em>data_items</em>, <em>elem</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.getitems_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.getitems_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get related items from an arrayified data structure.</p>
 <p>If a relation between integers and sets of integers has been stored as a double array
 by the <a class="reference internal" href="#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> function,
@@ -1441,9 +1465,9 @@ this is the way to look up the set of related integers for each integer.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.hasitem">
-<tt class="descname">hasitem</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.hasitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.hasitem" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">hasitem</tt><big>(</big><em>self</em>, <em>data</em>, <em>data_items</em>, <em>elem</em>, <em>item</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.hasitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.hasitem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether an integer is in the set of related items
 with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task.GrafTask.getitems_dict" title="graf.task.GrafTask.getitems_dict"><tt class="xref py py-meth docutils literal"><span class="pre">getitems_dict()</span></tt></a>).</p>
 <dl class="docutils">
@@ -1464,9 +1488,9 @@ with respect to an arrayified data structure (see also <a class="reference inter
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.hasitems">
-<tt class="descname">hasitems</tt><big>(</big><em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.hasitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.hasitems" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">hasitems</tt><big>(</big><em>self</em>, <em>data</em>, <em>data_items</em>, <em>elem</em>, <em>items</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.hasitems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.hasitems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a set of integers intersects with the set of related items
 with respect to an arrayified data structure (see also <a class="reference internal" href="#graf.task.GrafTask.getitems_dict" title="graf.task.GrafTask.getitems_dict"><tt class="xref py py-meth docutils literal"><span class="pre">getitems_dict()</span></tt></a>).</p>
 <dl class="docutils">
@@ -1492,9 +1516,9 @@ whose presence in the related items set is to be tested.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.init_task">
-<tt class="descname">init_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.init_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.init_task" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">init_task</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.init_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.init_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the current task.</p>
 <p>Provide a log file, reset the timer, and issue a progress message.</p>
 </dd></dl>
@@ -1505,9 +1529,9 @@ whose presence in the related items set is to be tested.</dd>
 <dd><p>List of handles to result files created by the task through the method <a class="reference internal" href="#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a></p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.GrafTask.run">
-<tt class="descname">run</tt><big>(</big><em>source</em>, <em>annox</em>, <em>task</em>, <em>force_compile={}</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>self</em>, <em>source</em>, <em>annox</em>, <em>task</em>, <em>force_compile={}</em>, <em>load=None</em>, <em>function=None</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a task.</p>
 <p>That is:
 * Load the data
@@ -1544,9 +1568,9 @@ whose presence in the related items set is to be tested.</dd>
 <dd><p>Member that holds the primary data as a single UNICODE string.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.PrimaryData.data">
-<tt class="descname">data</tt><big>(</big><em>node</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#PrimaryData.data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.PrimaryData.data" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">data</tt><big>(</big><em>self</em>, <em>node</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#PrimaryData.data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.PrimaryData.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the primary data to which a node is linked.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1592,9 +1616,9 @@ for which to make available the identifiers.</dd>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.XMLid.i">
-<tt class="descname">i</tt><big>(</big><em>xml_id</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#XMLid.i"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.XMLid.i" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">i</tt><big>(</big><em>self</em>, <em>xml_id</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#XMLid.i"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.XMLid.i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the integer code of an XML identifier.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1608,9 +1632,9 @@ for which to make available the identifiers.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.task.XMLid.r">
-<tt class="descname">r</tt><big>(</big><em>int_code</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#XMLid.r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.XMLid.r" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">r</tt><big>(</big><em>self</em>, <em>int_code</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#XMLid.r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.XMLid.r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the XML identifier corresponding to an integer.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1660,9 +1684,9 @@ When progress messages are issued, they are also written to the connected log fi
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="function">
 <dt id="graf.timestamp.Timestamp.connect_log">
-<tt class="descname">connect_log</tt><big>(</big><em>log_file</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.connect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">connect_log</tt><big>(</big><em>self</em>, <em>log_file</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.connect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.connect_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects a log file to the object.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1674,9 +1698,9 @@ When progress messages are issued, they are also written to the connected log fi
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.timestamp.Timestamp.disconnect_log">
-<tt class="descname">disconnect_log</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.disconnect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.disconnect_log" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">disconnect_log</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.disconnect_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.disconnect_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects a log file to the object.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -1688,9 +1712,9 @@ When progress messages are issued, they are also written to the connected log fi
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.timestamp.Timestamp.elapsed">
-<tt class="descname">elapsed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.elapsed" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">elapsed</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.elapsed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the time elapsed since creation of the <a class="reference internal" href="#graf.timestamp.Timestamp" title="graf.timestamp.Timestamp"><tt class="xref py py-class docutils literal"><span class="pre">Timestamp</span></tt></a> object.</p>
 <dl class="docutils">
 <dt>Returns:</dt>
@@ -1704,9 +1728,9 @@ When progress messages are issued, they are also written to the connected log fi
 <dd><p>Instance member holding a handle to a logfile, open for writing, if a log file has been attached to the object.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.timestamp.Timestamp.progress">
-<tt class="descname">progress</tt><big>(</big><em>msg</em>, <em>newline=True</em>, <em>withtime=True</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.progress" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">progress</tt><big>(</big><em>self</em>, <em>msg</em>, <em>newline=True</em>, <em>withtime=True</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>API: issues a timed progress message.</p>
 <p>The message is issued to the standard output, and, if a log file has been connected, also to the log file.</p>
 <dl class="docutils">
@@ -1724,9 +1748,9 @@ underlying <tt class="xref py py-class docutils literal"><span class="pre">graf.
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="function">
 <dt id="graf.timestamp.Timestamp.reset">
-<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.reset" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">reset</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="../_modules/graf/timestamp.html#Timestamp.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.timestamp.Timestamp.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the time to the current time</p>
 </dd></dl>
 

@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -483,7 +484,7 @@
             <span class="n">XMLids</span><span class="p">(</span><span class="n">xmlid_objects</span><span class="p">)</span>
         <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{}):</span>
+<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{},</span> <span class="n">load</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run a task.</span>
 
 <span class="sd">        That is:</span>
@@ -511,18 +512,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">force_compile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;import {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-        <span class="k">exec</span><span class="p">(</span><span class="s">&quot;imp.reload({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
-
-        <span class="n">load</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.load&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">load</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">exec</span><span class="p">(</span><span class="s">&quot;import {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+            <span class="k">exec</span><span class="p">(</span><span class="s">&quot;imp.reload({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+            <span class="n">load</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.load&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adjust_all</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
 
-        <span class="n">taskcommand</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.task&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;{}.task&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">init_task</span><span class="p">()</span>
-        <span class="n">taskcommand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
+        <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">finish_task</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="GrafTask.add_result"><a class="viewcode-back" href="../../graf/graf.html#graf.task.GrafTask.add_result">[docs]</a>    <span class="k">def</span> <span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>

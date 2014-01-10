@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -149,7 +150,6 @@
   <h1>Source code for graf.shell</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
@@ -245,7 +245,7 @@
         <span class="n">argsparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s">&quot;--menu&quot;</span><span class="p">,</span>
             <span class="n">dest</span> <span class="o">=</span> <span class="s">&#39;menu&#39;</span><span class="p">,</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;store_true&quot;</span><span class="p">,</span>
             <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;Display menu, use other arguments as defaults&quot;</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">argsparser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
@@ -269,6 +269,25 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">GrafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Shell.run"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">force_compile</span><span class="p">,</span> <span class="n">load</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Does a single task. Useful for stand alone tasks.</span>
+
+<span class="sd">        If invoked after the completion of another task, it unloads data from memory that is not needed anymore,</span>
+<span class="sd">        and loads addtional required data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source(str):</span>
+<span class="sd">                the name of the source data</span>
+<span class="sd">            annox(str):</span>
+<span class="sd">                the name of an additional annotation package (use ``--`` for no additional package.</span>
+<span class="sd">            task(str):</span>
+<span class="sd">                the name of the task to execute. All tasks reside in a directory specified in the main config file.</span>
+<span class="sd">            function(callable): </span>
+<span class="sd">                the function that implements the task. It should accept one argument, being the GrafTask object</span>
+<span class="sd">                through which all data in the LAF resource can be accessed.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="n">force_compile</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">)</span>
+        </div>
 <div class="viewcode-block" id="Shell.processor"><a class="viewcode-back" href="../../graf/graf.html#graf.shell.Shell.processor">[docs]</a>    <span class="k">def</span> <span class="nf">processor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Does work. Decides to run one task or start the command prompt.</span>
 

@@ -98,7 +98,7 @@ class Shell(object):
         action = "store_true",
             help = "Display menu, use other arguments as defaults"
         )
-        self.args = argsparser.parse_args()
+        (self.args, remaining) = argsparser.parse_known_args()
 
         (self.prompt_data, self.index, self.iindex) = self.weave((sorted(self.source_choices.keys()), sorted(self.annox_choices), sorted(self.task_choices)))
         if self.args.source:
@@ -119,7 +119,7 @@ class Shell(object):
 
         self.graftask = GrafTask(self.settings)
 
-    def run(self, source, annox, task, function, force_compile, load):
+    def run(self, source, annox, task, force_compile, load, function=None, stage=None):
         '''Does a single task. Useful for stand alone tasks.
 
         If invoked after the completion of another task, it unloads data from memory that is not needed anymore,
@@ -136,7 +136,7 @@ class Shell(object):
                 the function that implements the task. It should accept one argument, being the GrafTask object
                 through which all data in the LAF resource can be accessed.
         '''
-        self.graftask.run(source, annox, task, force_compile=force_compile, load=load, function=function)
+        self.graftask.run(source, annox, task, force_compile=force_compile, load=load, function=function, stage=stage)
         
     def processor(self):
         '''Does work. Decides to run one task or start the command prompt.

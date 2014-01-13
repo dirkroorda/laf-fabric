@@ -16,7 +16,7 @@ The location of industry, a factory (but that word derives from the slightly dif
 What if you want to study the data that is in the fabric of a LAF resource?
 You need tools. And what if you want to add your own tapestry to the fabric?
 
-You need an environment where tools can be developed and data can be combined.
+You need an interactive environment where tools can be developed and data can be combined.
 
 This is the LAF Fabric.
 
@@ -99,6 +99,13 @@ With the :mod:`annox_create` task you can produce spreadsheets customized to the
 want to make. The same task can then transform your input into valid LAF annotations,
 targeted at the pieces of primary data that you have specified in the spreadsheet.
 The :mod:`annox_use` task shows you how you can use your annotations in analysis. 
+
+Interactive notebooks
+=====================
+The workbench is designed to work within `iPython notebooks <http://ipython.org>`_.
+That is a great environment to run tasks interactively, exploring the data as you go, and visualizing
+your intermediate results at the moment they become available.
+Last but not least, you can add documentation to notebooks and share them with your colleagues.
 
 Limitations
 -----------

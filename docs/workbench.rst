@@ -27,9 +27,12 @@ The typical workflow is:
    But see also [#nolaf]_ for working without the original resource.
 #. install the LAF workbench package somewhere on a computing system.
 #. in a configuration file, adapt the locations of the LAF directory and provide a work/results directory.
-#. write your own script, and put it in the right directory.
-#. run the workbench by invoking the calling script.
+#. write your own script, and put it in the right directory, or alternatively,
+   write your script in an `iPython notebook <http://ipython.org>`_.
+#. run the workbench from the command line, or run the code cells in an `iPython notebook <http://ipython.org>`_.
 
+Scenario 1: work-bench centered
+-------------------------------
 The workbench behaves in the same pattern as the ``mysql>`` prompt for a database. You can use it as in interactive
 command interpreter that lets you select and run tasks.
 You can also invoke it to run a single task without interaction.
@@ -57,6 +60,13 @@ You must declare the LAF-features that you use in your script, and the workbench
 Loading a feature typically adds 0.1 to 1 second to the load time.
 It will also unload the data for features that the script has not declared.
 This is in order not to burden the RAM with data that does not pertain to the task.
+
+Scenario 2: interactively in an iPython notebook
+------------------------------------------------
+You can write a task as a stand-alone script, importing the work bench as a module.
+You can then break such a script up into chunks of code, and paste them in the code cells of an 
+`iPython notebook <http://ipython.org>`_.
+See the *notebooks* directory for a executable example.
 
 License
 =======
@@ -96,6 +106,15 @@ You get a directory *laf-fabric* with the following inside:
    See *Configuration* below.
 
 Before running the workbench, the calling script has to be configured.
+
+If you want to run stand-alone tasks that import the work bench or run your tasks from a notebook,
+you need to install LAF-Fabric as a module. 
+That can be accomplished in the standard way:
+    
+#. «unpack the tar-ball in the «dist» directory
+#. cd dist/graf-|release|
+#. python setup.py install
+
 
 Configuration
 -------------

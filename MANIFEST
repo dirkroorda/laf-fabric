@@ -4,7 +4,9 @@ setup.py
 graf/__init__.py
 graf/graf.py
 graf/model.py
+graf/notebook.py
 graf/parse.py
+graf/settings.py
 graf/shell.py
 graf/task.py
 graf/timestamp.py

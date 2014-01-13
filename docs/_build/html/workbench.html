@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LAF workbench &mdash; LAF Fabric 2.3.0 documentation</title>
+  <title>LAF workbench &mdash; LAF Fabric 2.3.1 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'',
-        VERSION:'2.3.0',
+        VERSION:'2.3.1',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,7 +45,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.3.0 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 2.3.1 documentation" href="index.html"/>
         <link rel="next" title="Writing Tasks" href="taskwriting.html"/>
         <link rel="prev" title="LAF Fabric" href="overview.html"/> 
 
@@ -77,6 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#this-workbench">This workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#interactive-notebooks">Interactive notebooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#author">Author</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#history">History</a></li>
@@ -96,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#what-is-a-task">What is a task?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#a-leading-example">A leading example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#interactive-execution">Interactive execution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-andoutput">Input andOutput</a></li>
@@ -115,8 +117,15 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.3.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="graf/graf.html">graf 2.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.3.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.parse">graf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.shell">graf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.task">graf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -177,9 +186,12 @@ In testing the workbench, I used a the <a class="reference internal" href="overv
 But see also <a class="footnote-reference" href="#nolaf" id="id1">[1]</a> for working without the original resource.</li>
 <li>install the LAF workbench package somewhere on a computing system.</li>
 <li>in a configuration file, adapt the locations of the LAF directory and provide a work/results directory.</li>
-<li>write your own script, and put it in the right directory.</li>
-<li>run the workbench by invoking the calling script.</li>
+<li>write your own script, and put it in the right directory, or alternatively,
+write your script in an <a class="reference external" href="http://ipython.org">iPython notebook</a>.</li>
+<li>run the workbench from the command line, or run the code cells in an <a class="reference external" href="http://ipython.org">iPython notebook</a>.</li>
 </ol>
+<div class="section" id="scenario-1-work-bench-centered">
+<h3>Scenario 1: work-bench centered<a class="headerlink" href="#scenario-1-work-bench-centered" title="Permalink to this headline">¶</a></h3>
 <p>The workbench behaves in the same pattern as the <tt class="docutils literal"><span class="pre">mysql&gt;</span></tt> prompt for a database. You can use it as in interactive
 command interpreter that lets you select and run tasks.
 You can also invoke it to run a single task without interaction.</p>
@@ -201,6 +213,14 @@ You must declare the LAF-features that you use in your script, and the workbench
 Loading a feature typically adds 0.1 to 1 second to the load time.
 It will also unload the data for features that the script has not declared.
 This is in order not to burden the RAM with data that does not pertain to the task.</p>
+</div>
+<div class="section" id="scenario-2-interactively-in-an-ipython-notebook">
+<h3>Scenario 2: interactively in an iPython notebook<a class="headerlink" href="#scenario-2-interactively-in-an-ipython-notebook" title="Permalink to this headline">¶</a></h3>
+<p>You can write a task as a stand-alone script, importing the work bench as a module.
+You can then break such a script up into chunks of code, and paste them in the code cells of an
+<a class="reference external" href="http://ipython.org">iPython notebook</a>.
+See the <em>notebooks</em> directory for a executable example.</p>
+</div>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
@@ -237,6 +257,14 @@ may loose your work in them when you pull updates from Github.
 See <em>Configuration</em> below.</p>
 </div>
 <p>Before running the workbench, the calling script has to be configured.</p>
+<p>If you want to run stand-alone tasks that import the work bench or run your tasks from a notebook,
+you need to install LAF-Fabric as a module.
+That can be accomplished in the standard way:</p>
+<ol class="arabic simple">
+<li>«unpack the tar-ball in the «dist» directory</li>
+<li>cd dist/graf-2.3.1</li>
+<li>python setup.py install</li>
+</ol>
 </div>
 <div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
@@ -370,7 +398,7 @@ we need to be more tricky, because we cannot store sets of numbers as integers.
 What we do instead is: we build two arrays, the first array points to data records in the second array.
 A data record in the second array consists of a number giving the length of the record,
 followed by that number of integers.
-The function <a class="reference internal" href="graf/graf.html#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
+The function <a class="reference internal" href="graf/modules.html#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
 <p><strong>Keep individual features separate</strong>
 A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
 they occur in, since these annotations have a <em>label</em> and occur in an <em>annotation space</em>.

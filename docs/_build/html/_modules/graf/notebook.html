@@ -1,0 +1,246 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graf.notebook &mdash; LAF Fabric 2.3.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'../../',
+        VERSION:'2.3.1',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="LAF Fabric 2.3.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="icon icon-home"> LAF Fabric</a>
+        <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">LAF Fabric</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#this-workbench">This workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#interactive-notebooks">Interactive notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#history">History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../workbench.html">LAF workbench</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../workbench.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../taskwriting.html">Writing Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#what-is-a-task">What is a task?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#a-leading-example">A leading example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#interactive-execution">Interactive execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#input-andoutput">Input andOutput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/annox_use.html">annox_use module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 2.3.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">LAF Fabric</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="../../index.html">Docs</a> &raquo;</li>
+  <li><a href="">graf.notebook</a></li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+</ul>
+<hr/>
+
+          
+  <h1>Source code for graf.notebook</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">from</span> <span class="nn">.settings</span> <span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">GrafTask</span>
+
+<div class="viewcode-block" id="Notebook"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook">[docs]</a><span class="k">class</span> <span class="nc">Notebook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Execute tasks, either in a single run, within a notebook</span>
+
+<span class="sd">    See :doc:`Writing Tasks &lt;../taskwriting&gt;` for how to run a task in an iPython notebook.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, create a :class:`GrafTask &lt;graf.task.GrafTask&gt;` object based on settings.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">GrafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Notebook.init"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">force_compile_source</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">force_compile_annox</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize task execution.</span>
+
+<span class="sd">        Run this method before executing your task code.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source(str):</span>
+<span class="sd">                the laf source of which the data will be used.</span>
+<span class="sd">            annox(str):</span>
+<span class="sd">                additional annotation packages in addition to the laf source.</span>
+<span class="sd">            task(str):</span>
+<span class="sd">                a name for your task. This name will be used for a directory where the log file</span>
+<span class="sd">                and output files for your tasks can be created.</span>
+<span class="sd">            load(dict):</span>
+<span class="sd">                a dictionary specifying what data to load. See :doc:`Writing Tasks &lt;../taskwriting&gt;`.</span>
+<span class="sd">            force_compile_source(bool):</span>
+<span class="sd">                Whether to force compilation of the laf source.</span>
+<span class="sd">                Optional, default False.</span>
+<span class="sd">            force_compile_annox(bool):</span>
+<span class="sd">                Whether to force compilation of the additional annotation package.</span>
+<span class="sd">                Optional, default False.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span>
+            <span class="n">force_compile</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;source&#39;</span><span class="p">:</span> <span class="n">force_compile_source</span><span class="p">,</span> <span class="s">&#39;annox&#39;</span><span class="p">:</span> <span class="n">force_compile_annox</span><span class="p">},</span>
+            <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="s">&#39;init&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+<div class="viewcode-block" id="Notebook.final"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.final">[docs]</a>    <span class="k">def</span> <span class="nf">final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Finalize task execution.</span>
+
+<span class="sd">        Run this method after executing your task code, in order to</span>
+<span class="sd">        close all open files for output and logging.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span>
+            <span class="n">stage</span><span class="o">=</span><span class="s">&#39;final&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+<div class="viewcode-block" id="Notebook.data"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Insert the names by which you can access the data into your name space.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span></div></div>
+</pre></div>
+
+          <footer>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Dirk Roorda.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>

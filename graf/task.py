@@ -1,6 +1,7 @@
 import os
 import imp
 import sys
+import time
 import subprocess
 import collections
 
@@ -237,8 +238,9 @@ class GrafTask(Graf):
 
         cur_dir = os.getcwd()
         task_dir = self.settings['locations']['task_dir']
-        task_include_dir = task_dir if task_dir.startswith('/') else '{}/{}'.format(cur_dir, task_dir)
-        sys.path.append(task_include_dir)
+        task_include_dir = None if task_dir == '<' else task_dir if task_dir.startswith('/') else '{}/{}'.format(cur_dir, task_dir)
+        if task_include_dir != None:
+            sys.path.append(task_include_dir)
 
     def get_mappings(self):
         '''Return references to API data structures and methods of this class.
@@ -351,8 +353,11 @@ class GrafTask(Graf):
             annox (str):
                 name of the extra annotation package
 
-            task:
+            task (str):
                 the chosen task
+
+            load (dict):
+                a dictionary specifying what to load
 
             force_compile (dict):
                 whether to force (re)compilation of the LAF source for either 'source' or 'annox'.
@@ -564,7 +569,10 @@ class GrafTask(Graf):
         '''Get the last modification date of the file that contains the task code
         '''
         task_dir = self.settings['locations']['task_dir']
-        return os.path.getmtime('{}/{}.py'.format(task_dir, task))
+        if task_dir == '<':
+            return time.time()
+        else:
+            return os.path.getmtime('{}/{}.py'.format(task_dir, task))
 
     def __del__(self):
         '''Upon destruction, all file handles used by the task will be closed.

@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.graf &mdash; LAF Fabric 2.3.0 documentation</title>
+  <title>graf.graf &mdash; LAF Fabric 2.3.1 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../../',
-        VERSION:'2.3.0',
+        VERSION:'2.3.1',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,7 +45,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.3.0 documentation" href="../../index.html"/>
+    <link rel="top" title="LAF Fabric 2.3.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -76,6 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#this-workbench">This workbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#interactive-notebooks">Interactive notebooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#rationale">Rationale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#author">Author</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#history">History</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#what-is-a-task">What is a task?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#a-leading-example">A leading example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#interactive-execution">Interactive execution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../taskwriting.html#input-andoutput">Input andOutput</a></li>
@@ -114,8 +116,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 2.3.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/graf.html">graf 2.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 2.3.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -162,13 +171,13 @@
 <span class="kn">from</span> <span class="nn">.parse</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmlparse</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">model</span> <span class="k">as</span> <span class="n">remodel</span>
 
-<div class="viewcode-block" id="GrafException"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.GrafException">[docs]</a><span class="k">class</span> <span class="nc">GrafException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="GrafException"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.GrafException">[docs]</a><span class="k">class</span> <span class="nc">GrafException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">Errors</span><span class="p">):</span>
         <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
         <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">raise</span>
 </div>
-<div class="viewcode-block" id="Graf"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf">[docs]</a><span class="k">class</span> <span class="nc">Graf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf">[docs]</a><span class="k">class</span> <span class="nc">Graf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Base class for compiling LAF resources and running analytic tasks on them.</span>
 
 <span class="sd">    The data of this class represents the compiled data on the basis of which tasks can run.</span>
@@ -442,7 +451,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_all</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Graf.format_item"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.format_item">[docs]</a>    <span class="k">def</span> <span class="nf">format_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">asFile</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.format_item"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.format_item">[docs]</a>    <span class="k">def</span> <span class="nf">format_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">asFile</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;common&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">item</span>
         <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;xmlids&#39;</span><span class="p">:</span>
@@ -455,7 +464,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="s">&#39;{}:{}.{} ({})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">item</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.check_status"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.check_status">[docs]</a>    <span class="k">def</span> <span class="nf">check_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.check_status"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.check_status">[docs]</a>    <span class="k">def</span> <span class="nf">check_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Updates the complete status information by inspecting the environment and</span>
 <span class="sd">        detecting the compile status.</span>
 
@@ -512,7 +521,7 @@
             <span class="s">&#39;annox&#39;</span><span class="p">:</span> <span class="p">{},</span>
         <span class="p">}</span>
 </div>
-<div class="viewcode-block" id="Graf.check_load_status"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.check_load_status">[docs]</a>    <span class="k">def</span> <span class="nf">check_load_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.check_load_status"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.check_load_status">[docs]</a>    <span class="k">def</span> <span class="nf">check_load_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Computes the ``load`` part of the status from the other parts.</span>
 
 <span class="sd">        The rules for the status are not easy to state and it is easy to miss out cases.</span>
@@ -643,7 +652,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="n">data_group</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">ref_label</span><span class="p">]])</span>
 </div>
-<div class="viewcode-block" id="Graf.verify_all"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.verify_all">[docs]</a>    <span class="k">def</span> <span class="nf">verify_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.verify_all"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.verify_all">[docs]</a>    <span class="k">def</span> <span class="nf">verify_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;After loading, verify whether everything is as desired.</span>
 
 <span class="sd">        Loading of features may have failed if the task has declared non-existent features!</span>
@@ -703,7 +712,7 @@
                     <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label_rep</span><span class="p">]:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label_rep</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="n">item</span><span class="p">])</span>
 </div>
-<div class="viewcode-block" id="Graf.adjust_all"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.adjust_all">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directives</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.adjust_all"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.adjust_all">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directives</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Top level data management function: adjust the data to the task at hand.</span>
 <span class="sd">        Load what is needed, discard what is no longer need, leave alone what does not to be changed.</span>
 
@@ -739,7 +748,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">verify_all</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Graf.adjust_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.adjust_data">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.adjust_data"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.adjust_data">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Top level data management function for adjusting data.</span>
 <span class="sd">        Now per key in the ``data_items_def`` dictionary.</span>
 
@@ -803,13 +812,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">clear_data</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">unload</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">load</span><span class="p">)</span> 
 </div>
-<div class="viewcode-block" id="Graf.clear_all"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.clear_all">[docs]</a>    <span class="k">def</span> <span class="nf">clear_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.clear_all"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.clear_all">[docs]</a>    <span class="k">def</span> <span class="nf">clear_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Low level data management function to clear all data.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="n">data_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items_def</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clear_data</span><span class="p">(</span><span class="n">data_group</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.clear_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.clear_data">[docs]</a>    <span class="k">def</span> <span class="nf">clear_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.clear_data"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.clear_data">[docs]</a>    <span class="k">def</span> <span class="nf">clear_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Low level data management function to clear all data.</span>
 <span class="sd">        Now per key in the ``data_items_def`` dictionary.</span>
 
@@ -875,13 +884,13 @@
                         <span class="n">lab</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="n">sub</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.compile_all"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.compile_all">[docs]</a>    <span class="k">def</span> <span class="nf">compile_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.compile_all"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.compile_all">[docs]</a>    <span class="k">def</span> <span class="nf">compile_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Manages the complete compilation process.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compile_data</span><span class="p">(</span><span class="s">&#39;source&#39;</span><span class="p">,</span> <span class="n">force</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compile_data</span><span class="p">(</span><span class="s">&#39;annox&#39;</span><span class="p">,</span> <span class="n">force</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">])</span>
 </div>
-<div class="viewcode-block" id="Graf.compile_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.compile_data">[docs]</a>    <span class="k">def</span> <span class="nf">compile_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.compile_data"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.compile_data">[docs]</a>    <span class="k">def</span> <span class="nf">compile_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Manages the compilation process for either the source data or extra annotation files.</span>
 
 <span class="sd">        Detects the need for compiling, responds to the *force* argument. Then parses, remodels and writes.</span>
@@ -902,7 +911,7 @@
             <span class="n">the_what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">]</span>
             <span class="n">the_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPILE_NAME</span> <span class="o">+</span> <span class="n">the_what</span>
             <span class="n">the_log_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_base_bdir&#39;</span><span class="p">]</span>
-            <span class="n">the_data_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_file&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_file&#39;</span><span class="p">]</span>
+            <span class="n">the_data_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_file&#39;</span><span class="p">]</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;BEGIN COMPILE {}: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_group</span><span class="p">,</span> <span class="n">the_what</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_logfile</span><span class="p">(</span><span class="n">the_log_dir</span><span class="p">,</span> <span class="n">the_log_file</span><span class="p">)</span>
@@ -915,7 +924,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;COMPILING {}: UP TO DATE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_group</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="Graf.write_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.write_data"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Writes compiled data to disk.</span>
 
 <span class="sd">        Args:</span>
@@ -934,7 +943,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;FINALIZATION&quot;</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Graf.store_all"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.store_all">[docs]</a>    <span class="k">def</span> <span class="nf">store_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compile_data_group</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.store_all"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.store_all">[docs]</a>    <span class="k">def</span> <span class="nf">store_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compile_data_group</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Top level data management function: write data from memory to disk.</span>
 
 <span class="sd">        This function is typically invoked at the end of compilation. </span>
@@ -945,7 +954,7 @@
             <span class="k">if</span> <span class="p">(</span><span class="n">compile_data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="ow">and</span> <span class="n">data_group</span> <span class="o">!=</span> <span class="s">&#39;annox&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">compile_data_group</span> <span class="o">==</span> <span class="s">&#39;annox&#39;</span> <span class="ow">and</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;annox&#39;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">store_data</span><span class="p">(</span><span class="n">data_group</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.store_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.store_data">[docs]</a>    <span class="k">def</span> <span class="nf">store_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.store_data"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.store_data">[docs]</a>    <span class="k">def</span> <span class="nf">store_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Top level data management function for writing data to disk.</span>
 <span class="sd">        Now per key in the ``data_items_def`` dictionary.</span>
 
@@ -979,7 +988,7 @@
                     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="n">ref_lab</span><span class="p">][</span><span class="n">item</span><span class="p">],</span> <span class="n">b_handle</span><span class="p">)</span>
                     <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Graf.write_stats"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.write_stats">[docs]</a>    <span class="k">def</span> <span class="nf">write_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.write_stats"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.write_stats">[docs]</a>    <span class="k">def</span> <span class="nf">write_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Write compilation statistics to file</span>
 
 <span class="sd">        The compile process generates some statistics that must be read by the task that loads the compiled data.</span>
@@ -996,7 +1005,7 @@
                         <span class="n">handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{}={}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">])))</span>
         <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Graf.read_stats"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.read_stats">[docs]</a>    <span class="k">def</span> <span class="nf">read_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.read_stats"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.read_stats">[docs]</a>    <span class="k">def</span> <span class="nf">read_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Read compilation statistics from file</span>
 
 <span class="sd">        The compile process generates some statistics that must be read by the task that loads the compiled data.</span>
@@ -1013,7 +1022,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
         <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Graf.load_data"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.load_data"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Low level data management function to load data from disk into memory.</span>
 
 <span class="sd">        Args:</span>
@@ -1075,7 +1084,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">lab</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_handle</span><span class="p">))</span>
                             <span class="n">b_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Graf.parse"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.parse"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Call the XML parser and collect the parse results.</span>
 
 <span class="sd">        Some parse results must be remodelled afterwards.</span>
@@ -1091,14 +1100,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;PARSING ANNOTATION FILES&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
 
-        <span class="n">the_data_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_file&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_file&#39;</span><span class="p">]</span>
-        <span class="n">the_data_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;data_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_dir&#39;</span><span class="p">]</span>
+        <span class="n">the_data_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_file&#39;</span><span class="p">]</span>
+        <span class="n">the_laf_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;laf_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_dir&#39;</span><span class="p">]</span>
         <span class="n">the_bin_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;feat_dir&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_group</span> <span class="o">==</span> <span class="s">&#39;source&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_bdir&#39;</span><span class="p">]</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">the_data_dir</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">the_laf_dir</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">GrafException</span><span class="p">(</span><span class="s">&quot;ERROR: could not change to LAF data directory {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_data_dir</span><span class="p">),</span>
+            <span class="k">raise</span> <span class="n">GrafException</span><span class="p">(</span><span class="s">&quot;ERROR: could not change to LAF data directory {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">the_laf_dir</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">error</span>
             <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1131,7 +1140,7 @@
 
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_dir</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.model"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.model">[docs]</a>    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.model"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.model">[docs]</a>    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_group</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Call the remodeler and store the remodeled data in the object.</span>
 
 <span class="sd">        Args:</span>
@@ -1146,7 +1155,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">temp_data_items</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="Graf.set_environment"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.set_environment">[docs]</a>    <span class="k">def</span> <span class="nf">set_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.set_environment"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.set_environment">[docs]</a>    <span class="k">def</span> <span class="nf">set_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set the source and result locations for a task execution.</span>
 
 <span class="sd">        Args:</span>
@@ -1168,8 +1177,8 @@
 
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
-        <span class="n">data_file</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;source_choices&#39;</span><span class="p">][</span><span class="n">source</span><span class="p">]</span>
-        <span class="n">data_root</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;data_root&#39;</span><span class="p">]</span>
+        <span class="n">work_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;work_dir&#39;</span><span class="p">]</span>
+        <span class="n">laf_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;laf_dir&#39;</span><span class="p">]</span>
         <span class="n">annox_file</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">][</span><span class="s">&#39;header&#39;</span><span class="p">]</span>
         <span class="n">annox_root</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;annox_dir&#39;</span><span class="p">]</span>
         <span class="n">laf_source</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;laf_source&#39;</span><span class="p">]</span>
@@ -1184,17 +1193,16 @@
             <span class="s">&#39;annox&#39;</span><span class="p">:</span> <span class="n">annox</span><span class="p">,</span>
             <span class="s">&#39;task&#39;</span><span class="p">:</span> <span class="n">task</span><span class="p">,</span>
             <span class="s">&#39;task_dir&#39;</span><span class="p">:</span> <span class="n">task_dir</span><span class="p">,</span>
-            <span class="s">&#39;data_file&#39;</span><span class="p">:</span> <span class="n">data_file</span><span class="p">,</span>
-            <span class="s">&#39;data_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">laf_source</span><span class="p">),</span>
-            <span class="s">&#39;data_path&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">laf_source</span><span class="p">,</span> <span class="n">data_file</span><span class="p">),</span>
+            <span class="s">&#39;laf_dir&#39;</span><span class="p">:</span> <span class="n">laf_dir</span><span class="p">,</span>
+            <span class="s">&#39;data_path&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">laf_dir</span><span class="p">,</span> <span class="n">source</span><span class="p">),</span>
             <span class="s">&#39;annox_file&#39;</span><span class="p">:</span> <span class="n">annox_file</span><span class="p">,</span>
             <span class="s">&#39;annox_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annox_root</span><span class="p">,</span> <span class="n">annox</span><span class="p">),</span>
             <span class="s">&#39;annox_path&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annox_root</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">annox_file</span><span class="p">),</span>
-            <span class="s">&#39;bin_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">),</span>
-            <span class="s">&#39;feat_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">,</span> <span class="n">feat_subdir</span><span class="p">),</span>
-            <span class="s">&#39;annox_base_bdir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">,</span> <span class="n">annox_subdir</span><span class="p">),</span>
-            <span class="s">&#39;annox_bdir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">,</span> <span class="n">annox_subdir</span><span class="p">,</span> <span class="n">annox</span><span class="p">),</span>
-            <span class="s">&#39;result_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_root</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">task</span><span class="p">),</span>
+            <span class="s">&#39;bin_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">),</span>
+            <span class="s">&#39;feat_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">,</span> <span class="n">feat_subdir</span><span class="p">),</span>
+            <span class="s">&#39;annox_base_bdir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">,</span> <span class="n">annox_subdir</span><span class="p">),</span>
+            <span class="s">&#39;annox_bdir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">bin_subdir</span><span class="p">,</span> <span class="n">annox_subdir</span><span class="p">,</span> <span class="n">annox</span><span class="p">),</span>
+            <span class="s">&#39;result_dir&#39;</span><span class="p">:</span> <span class="s">&#39;{}/{}/{}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">base_bdir</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">task</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;bin_dir&#39;</span><span class="p">]):</span>
@@ -1216,7 +1224,7 @@
         <span class="sd">&#39;&#39;&#39;Instance member holding name and location of the statistics file that describes the compiled data&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_check_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;{}/{}{}{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox_base_bdir&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPILE_NAME</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEXT_EXT</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.add_logfile"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.add_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">add_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.add_logfile"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.add_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">add_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Create and open a log file for a given task.</span>
 
 <span class="sd">        When tasks run, they generate progress messages with timing information in them.</span>
@@ -1248,7 +1256,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">connect_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;LOGFILE={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="Graf.finish_logfile"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.finish_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">finish_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.finish_logfile"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.finish_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">finish_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Explicitly close log file.</span>
 
 <span class="sd">        Do not rely on the ``__del__`` method and hence on garbage collection.</span>
@@ -1261,17 +1269,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">disconnect_log</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="Graf.flush_logfile"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.flush_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">flush_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.flush_logfile"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.flush_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">flush_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="Graf.progress"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.progress"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Convenience method to call the progress of the associated stamp directly from the Graf object&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="n">withtime</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Graf.make_inverse"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.make_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">make_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.make_inverse"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.make_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">make_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Creates the inverse lookup table for a data table given as a dictionary.</span>
 
 <span class="sd">        This is a low level function for creating inverse mappings.</span>
@@ -1280,7 +1288,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
 </div>
-<div class="viewcode-block" id="Graf.make_array_inverse"><a class="viewcode-back" href="../../graf/graf.html#graf.graf.Graf.make_array_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">make_array_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arraylist</span><span class="p">):</span>
+<div class="viewcode-block" id="Graf.make_array_inverse"><a class="viewcode-back" href="../../graf/modules.html#graf.graf.Graf.make_array_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">make_array_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arraylist</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Creates the inverse lookup table for a data table given as a Python array.</span>
 
 <span class="sd">        This is a low level function for creating inverse mappings.</span>

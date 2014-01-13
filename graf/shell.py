@@ -1,22 +1,11 @@
 import os
-import glob
 import traceback
 import collections
 import argparse
-import configparser
 import sys, tty, termios
 
+from .settings import Settings
 from .task import GrafTask
-
-### USAGE
-
-# python laf-fabric.py
-
-### BEGIN CONFIG
-
-MAIN_CFG = 'laf-fabric.cfg'
-
-### END CONFIG
 
 class Shell(object):
     '''Execute tasks, either in a single run, or with an interactive prompt.
@@ -44,23 +33,14 @@ class Shell(object):
         command line values are parsed here, and the command prompt will use them as initial values.
         '''
 
-        self.settings = configparser.ConfigParser(inline_comment_prefixes=('#'))
-        self.settings.read_file(open(MAIN_CFG))
-
-        self.source_choices = self.settings['source_choices']
-        self.annox_choices = [self.settings['annox']['empty']] + [
-            os.path.splitext(os.path.basename(f))[0]
-            for f in glob.glob("{}/*".format(self.settings['locations']['annox_dir']))
-            if os.path.exists("{}/{}".format(f, self.settings['annox']['header']))
-        ]
-        self.task_choices = [os.path.splitext(os.path.basename(f))[0] for f in glob.glob("{}/*.py".format(self.settings['locations']['task_dir']))]
+        self.settings = Settings()
 
         argsparser = argparse.ArgumentParser(description = 'Conversion of LAF to Binary')
         argsparser.add_argument(
             "--source",
             dest = 'source',
             type = str,
-            choices = self.source_choices.keys(),
+            choices = self.settings.source_choices,
             metavar = 'Source',
             help = "which source to take",
         )
@@ -68,7 +48,7 @@ class Shell(object):
             "--annox",
             dest = 'annox',
             type = str,
-            choices = self.annox_choices,
+            choices = self.settings.annox_choices,
             metavar = 'Annox',
             help = "which annox to take",
         )
@@ -76,7 +56,7 @@ class Shell(object):
             "--task",
             dest = 'task',
             type = str,
-            choices = self.task_choices,
+            choices = self.settings.task_choices,
             metavar = 'Task',
             help = "which task to perform",
         )
@@ -100,7 +80,11 @@ class Shell(object):
         )
         (self.args, remaining) = argsparser.parse_known_args()
 
-        (self.prompt_data, self.index, self.iindex) = self.weave((sorted(self.source_choices.keys()), sorted(self.annox_choices), sorted(self.task_choices)))
+        (self.prompt_data, self.index, self.iindex) = self.weave((
+            sorted(self.settings.source_choices),
+            sorted(self.settings.annox_choices),
+            sorted(self.settings.task_choices),
+        ))
         if self.args.source:
             self.default[0] = self.iindex[0][self.args.source]
         if self.args.annox:
@@ -117,7 +101,7 @@ class Shell(object):
         self.cur.append(self.args.forcecompilesource)
         self.cur.append(self.args.forcecompileannox)
 
-        self.graftask = GrafTask(self.settings)
+        self.graftask = GrafTask(self.settings.settings)
 
     def run(self, source, annox, task, force_compile, load, function=None, stage=None):
         '''Does a single task. Useful for stand alone tasks.
@@ -132,6 +116,8 @@ class Shell(object):
                 the name of an additional annotation package (use ``--`` for no additional package.
             task(str):
                 the name of the task to execute. All tasks reside in a directory specified in the main config file.
+            load(dict):
+                a dictionary specifying what data to load. See :doc:`Writing Tasks <../taskwriting>`.
             function(callable): 
                 the function that implements the task. It should accept one argument, being the GrafTask object
                 through which all data in the LAF resource can be accessed.
@@ -148,7 +134,12 @@ class Shell(object):
         command line args that did come through, are used as initial values.
         '''
         if self.args.source and self.args.annox and self.args.task and not self.args.menu:
-            self.graftask.run(self.args.source, self.args.annox, self.args.task, force_compile={'source': self.args.forcecompilesource, 'annox': self.args.forcecompileannox})
+            self.graftask.run(
+                self.args.source,
+                self.args.annox,
+                self.args.task,
+                force_compile={'source': self.args.forcecompilesource, 'annox': self.args.forcecompileannox},
+            )
         else:
             self.command_loop()
 
@@ -185,15 +176,15 @@ class Shell(object):
         '''
         message = ''
         if command == 's':
-            source = self.get_num("source", 1, len(self.source_choices))
+            source = self.get_num("source", 1, len(self.settings.source_choices))
             if source:
                 self.cur[0] = source - 1
         if command == 'a':
-            annox = self.get_num("annox", 1, len(self.annox_choices))
+            annox = self.get_num("annox", 1, len(self.settings.annox_choices))
             if annox:
                 self.cur[1] = annox - 1
         elif command == 't':
-            task = self.get_num("task", 1, len(self.task_choices))
+            task = self.get_num("task", 1, len(self.settings.task_choices))
             if task:
                 self.cur[2] = task - 1
         elif command == "C":

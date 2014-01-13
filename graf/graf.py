@@ -752,7 +752,7 @@ class Graf(object):
             the_what = self.env['source'] if data_group == 'source' else self.env['annox']
             the_log_file = self.COMPILE_NAME + the_what
             the_log_dir = self.env['bin_dir'] if data_group == 'source' else self.env['annox_base_bdir']
-            the_data_file = self.env['data_file'] if data_group == 'source' else self.env['annox_file']
+            the_data_file = self.env['source'] if data_group == 'source' else self.env['annox_file']
 
             self.progress("BEGIN COMPILE {}: {}".format(data_group, the_what))
             self.add_logfile(the_log_dir, the_log_file)
@@ -941,14 +941,14 @@ class Graf(object):
         self.progress("PARSING ANNOTATION FILES")
         self.cur_dir = os.getcwd()
 
-        the_data_file = self.env['data_file'] if data_group == 'source' else self.env['annox_file']
-        the_data_dir = self.env['data_dir'] if data_group == 'source' else self.env['annox_dir']
+        the_data_file = self.env['source'] if data_group == 'source' else self.env['annox_file']
+        the_laf_dir = self.env['laf_dir'] if data_group == 'source' else self.env['annox_dir']
         the_bin_dir = self.env['feat_dir'] if data_group == 'source' else self.env['annox_bdir']
 
         try:
-            os.chdir(the_data_dir)
+            os.chdir(the_laf_dir)
         except os.error:
-            raise GrafException("ERROR: could not change to LAF data directory {}".format(the_data_dir),
+            raise GrafException("ERROR: could not change to LAF data directory {}".format(the_laf_dir),
                 self.stamp, os.error
             )
         try:
@@ -1018,8 +1018,8 @@ class Graf(object):
 
         '''
         settings = self.settings
-        data_file = settings['source_choices'][source]
-        data_root = settings['locations']['data_root']
+        work_dir = settings['locations']['work_dir']
+        laf_dir = settings['locations']['laf_dir']
         annox_file = settings['annox']['header']
         annox_root = settings['locations']['annox_dir']
         laf_source = settings['locations']['laf_source']
@@ -1034,17 +1034,16 @@ class Graf(object):
             'annox': annox,
             'task': task,
             'task_dir': task_dir,
-            'data_file': data_file,
-            'data_dir': '{}/{}'.format(data_root, laf_source),
-            'data_path': '{}/{}/{}'.format(data_root, laf_source, data_file),
+            'laf_dir': laf_dir,
+            'data_path': '{}/{}'.format(laf_dir, source),
             'annox_file': annox_file,
             'annox_dir': '{}/{}'.format(annox_root, annox),
             'annox_path': '{}/{}/{}'.format(annox_root, annox, annox_file),
-            'bin_dir': '{}/{}/{}/{}'.format(data_root, base_bdir, source, bin_subdir),
-            'feat_dir': '{}/{}/{}/{}/{}'.format(data_root, base_bdir, source, bin_subdir, feat_subdir),
-            'annox_base_bdir': '{}/{}/{}/{}/{}'.format(data_root, base_bdir, source, bin_subdir, annox_subdir),
-            'annox_bdir': '{}/{}/{}/{}/{}/{}'.format(data_root, base_bdir, source, bin_subdir, annox_subdir, annox),
-            'result_dir': '{}/{}/{}/{}'.format(data_root, base_bdir, source, task),
+            'bin_dir': '{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir),
+            'feat_dir': '{}/{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir, feat_subdir),
+            'annox_base_bdir': '{}/{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir, annox_subdir),
+            'annox_bdir': '{}/{}/{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir, annox_subdir, annox),
+            'result_dir': '{}/{}/{}/{}'.format(work_dir, base_bdir, source, task),
         }
         try:
             if not os.path.exists(self.env['bin_dir']):

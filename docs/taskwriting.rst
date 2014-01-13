@@ -7,7 +7,14 @@ What is a task?
 A task is an ordinary Python script with some magical capabilities
 for looking into a LAF resource (a *compiled* LAF resource to be precise).
 
-A task gets those capabilities because it is called by the workbench.
+There are two scenarios for executing tasks:
+
+1. start the workbench and use its interface to call tasks
+2. import the workbench as a module in your task code
+
+
+Scenario 1: workbench centric
+-----------------------------
 In order to be called by the workbench, you have to put into the *tasks* directory
 (see :ref:`configuration <task_dir>`).
 
@@ -22,35 +29,32 @@ Apart from these things, your script may contain arbitrary Python code,
 it may import arbitrary modules.
 The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.
 
+This scenario is handy if you have a bunch of tasks that you want to run in quick succession.
+
+Scenario 2: task centric
+------------------------
+Here you write your tasks as stand alone scripts that import the workbench as a module.
+In this scenario you can also run your tasks interactively in an iPython notebook.
+
 A leading example
 =================
 Our target LAF resource is the Hebrew text data base (see :ref:`data`).
-In the text database there are objects carrying features.
-The conversion to LAF has translated objects in to nodes, and relationships between objects into edges.
-The features of the text database have been grouped and put into annotations, which carry labels.
-Objects have types in the database.
-The types of objects translate to annotations with label *db* with the feature *otype*.
-Likewise the *id* of objects translates into feature *db.oid*.
-The anchoring of objects to primary data: the features *minmonad*, *maxmonad* and *monads* take care of that.
-In the original LAF it looks like this::
-
-    <node xml:id="n28737"><link targets="w_1 w_2 w_3 w_4 w_5 w_6 w_7 w_8 w_9 w_10 w_11"/></node>
-    <a xml:id="al28737" label="db" ref="n28737"><fs>
-        <f name="otype" value="clause"/>
-        <f name="oid" value="28737"/>
-        <f name="monads" value="1-11"/>
-        <f name="minmonad" value="1"/>
-        <f name="maxmonad" value="11"/>
-    </fs></a>
+Some nodes are annotated as words, and some nodes as chapters.
+Words in Hebrew are either masculine, or feminine, or unknown.
+We want to plot the percentage of masculine and feminine words per chapter.
+The names of chapters and the genders of words are coded as features inside annotations to the
+nodes that represent words and chapters.
 
 More on features
 ================
+The features we need are present in an annotation space named ``shebanq`` (after the project
+that produced this LAF resource).
+The chapter features are labeled with ``sft`` and the other features with ``ft``.
+
 When the workbench compiles features into binary data, it forgets the annotations in which the features come,
 but the annotation *space* and *label* are retained in a double prefix to the feature name.
-In the example above, you see an annotation with label ``db`` and in it a feature structure
-with features named ``otype``, ``oid``, etc.
-The annotation is in the default *annotation space*, which happens to be ``shebanq``.
-The workbench remembers those features by their *fully qualified* names: ``shebanq:db.otype``, ``shebanq:db.oid`` etc.
+
+The workbench remembers those features by their *fully qualified* names: ``shebanq:ft.gender``, ``shebanq:sft.chapter`` etc.
 There may also be annotations without feature contents. Such annotations will be stored as features with as name the 
 annotation label only, without the dot: ``shebanq:db``.
 
@@ -62,30 +66,26 @@ annotation label only, without the dot: ``shebanq:db``.
     Features names that are used for nodes and edges may coexist, but their
     data are in separate tables.
 
-The example task :mod:`objects` lists all objects in *resource order* with their original ids,
-object types etc and even their node number in the compiled resource.
-Not very useful, but handy for debugging or linking new annotation files to the existing data.
-Here is a snippet of output::
+The example task :mod:`gender` counts all words in the Hebrew bible and produces
+a table, where each row consists of the bible book plus chapter, followed
+by the percentage masculine words, followed by the percentage of feminine words in that chapter::
 
-     426500   28737 clause               {1-11         }
-     514887   34680 clause_atom          {1-11         }
-    1131695   84383 sentence             {1-11         }
-    1203049   88917 sentence_atom        {1-11         }
-    1385280   95056 half_verse           {1-4          }
-     604948   59556 phrase               {1-2          }
-     862057   40767 phrase_atom          {1-2          }
-          1       2 word                 {1            }
-          2       3 word                 {2            }
-          3       4 word                 {3            }
-     604949   59557 phrase               {3            }
-     862058   40768 phrase_atom          {3            }
-          4       5 word                 {4            }
+    Genesis 1	22.9	5.2
+    Genesis 2	19.2	6.48
+    Genesis 3	20.6	9.02
+    Genesis 4	32	11
+    Genesis 5	36.6	17.9
+    Genesis 6	22.7	8.7
+    Genesis 7	18.8	10.7
+    Genesis 8	16.7	8.94
+    Genesis 9	19.9	6.76
+    Genesis 10	22	4.45
 
-Note the same clause object *28737* as in the original LAF file.
 Finally, here is the complete Python code of the task that produced this output::
 
+    import sys
+
     load = {
-        "primary": False,
         "xmlids": {
             "node": False,
             "edge": False,
@@ -93,7 +93,9 @@ Finally, here is the complete Python code of the task that produced this output:
         "features": {
             "shebanq": {
                 "node": [
-                    "db.oid,otype,monads",
+                    "db.otype",
+                    "ft.gender",
+                    "sft.chapter,book",
                 ],
                 "edge": [
                 ],
@@ -102,18 +104,58 @@ Finally, here is the complete Python code of the task that produced this output:
     }
 
     def task(graftask):
-        '''Produces a list of all WIVU objects with their types, ids and
-        *monads* (words) they contain.
+        '''Counts the frequencies of words with male and female gender features.
+        Outputs the frequencies in a tab-delimited file, with frequency values for
+        each chapter in the whole Hebrew Bible.
         '''
         (msg, P, NN, F, X) = graftask.get_mappings()
+        stats_file = graftask.add_result("stats.txt")
 
-        out = graftask.add_result("output.txt")
+        stats = [0, 0, 0]
+        cur_chapter = None
+        ch = []
+        m = []
+        f = []
 
-        for i in NN():
-            oid = F.shebanq_db_oid.v(i)
-            otype = F.shebanq_db_otype.v(i)
-            monads = F.shebanq_db_monads.v(i)
-            out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))
+        for node in NN():
+            otype = F.shebanq_db_otype.v(node)
+            if otype == "word":
+                stats[0] += 1
+                if F.shebanq_ft_gender.v(node) == "masculine":
+                    stats[1] += 1
+                elif F.shebanq_ft_gender.v(node) == "feminine":
+                    stats[2] += 1
+            elif otype == "chapter":
+                if cur_chapter != None:
+                    masc = 0 if not stats[0] else 100 * float(stats[1]) / stats[0]
+                    fem = 0 if not stats[0] else 100 * float(stats[2]) / stats[0]
+                    ch.append(cur_chapter)
+                    m.append(masc)
+                    f.append(fem)
+                    stats_file.write("{}\t{:.3g}\t{:.3g}\n".format(cur_chapter, masc, fem))
+                this_chapter = "{} {}".format(F.shebanq_sft_book.v(node), F.shebanq_sft_chapter.v(node))
+                sys.stderr.write("\r{:<15}".format(this_chapter))
+                stats = [0, 0, 0]
+                cur_chapter = this_chapter
+
+Interactive execution
+=====================
+It is more fun to work with tasks interactively. Here is how:
+
+Install `anaconda <https://store.continuum.io/cshop/anaconda/>`_,
+a Python distribution for scientific computing.
+
+.. note::
+    use the *miniconda* way to install anaconda for python 3
+
+In the terminal, cd to the notebooks directory and issue the command::
+
+    ipython notebook
+
+You get a web browser pointed at an overview of all notebooks in that directory.
+Choose ``gender``.
+Now you see code in a series of cells, ready to be executed.
+Executing the last cell gives you a plot of the data.
 
 Information flow from task to workbench
 =======================================
@@ -178,7 +220,7 @@ Here is a short description of the corresponding methods.
     Every chunk is given as a tuple (*pos*, *text*), where *pos* is the position in the primary data where
     the start of *text* can be found, and *text* is the chunk of actual text that is specified by the region.
     The primary data is only available if you have specified in the *load* directives: 
-    ``'primary: True``
+    ``primary: True``
 
 .. note:: Note that *text* may be empty.
     This happens in cases where the region is not a true interval but merely

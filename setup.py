@@ -5,5 +5,6 @@ setup(name='graf',
       author='Dirk Roorda',
       author_email='dirk.roorda@dans.knaw.nl',
       description='Tool to read LAF resources (Linguistic Annotation Framework ISO 24612:2012) and analyse them efficiently',
-      packages=['graf']
+      packages=['graf'],
+      url='http://laf-fabric.readthedocs.org',
 )

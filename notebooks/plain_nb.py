@@ -1,4 +1,5 @@
 import sys
+import graf
 from graf.shell import Shell
 
 load = {

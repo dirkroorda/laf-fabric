@@ -334,7 +334,7 @@ class GrafTask(Graf):
             XMLids(xmlid_objects)
         )
 
-    def run(self, source, annox, task, force_compile={}, load=None, function=None):
+    def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None):
         '''Run a task.
 
         That is:
@@ -357,25 +357,30 @@ class GrafTask(Graf):
             force_compile (dict):
                 whether to force (re)compilation of the LAF source for either 'source' or 'annox'.
         '''
-        self.check_status(source, annox, task)
-        self.stamp.reset()
-        self.compile_all(force_compile)
-        self.stamp.reset()
+        if stage == None or stage == 'init':
+            self.check_status(source, annox, task)
+            self.stamp.reset()
+            self.compile_all(force_compile)
+            self.stamp.reset()
 
-        if load == None:
-            exec("import {}".format(task))
-            exec("imp.reload({})".format(task))
-            load = eval("{}.load".format(task))
-        self.adjust_all(load)
+            if load == None:
+                exec("import {}".format(task))
+                exec("imp.reload({})".format(task))
+                load = eval("{}.load".format(task))
+            self.adjust_all(load)
 
-        if function == None:
-            function = eval("{}.task".format(task))
+            if function == None:
+                function = eval("{}.task".format(task))
 
-        self.stamp.reset()
+            self.stamp.reset()
 
-        self.init_task()
-        function(self) 
-        self.finish_task()
+            self.init_task()
+
+        if stage == None or stage == 'execute':
+            function(self) 
+
+        if stage == None or stage == 'final':
+            self.finish_task()
 
     def add_result(self, file_name):
         '''Opens a file for writing and stores the handle.

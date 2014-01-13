@@ -106,6 +106,9 @@ The workbench is designed to work within `iPython notebooks <http://ipython.org>
 That is a great environment to run tasks interactively, exploring the data as you go, and visualizing
 your intermediate results at the moment they become available.
 Last but not least, you can add documentation to notebooks and share them with your colleagues.
+As an example, look at `gender <http://nbviewer.ipython.org/gist/dirkroorda/8404866>`_,
+a notebook to draw a graph of the percentage of masculine and feminine
+words in each chapter of the Hebrew Bible.
 
 Limitations
 -----------

@@ -62,3 +62,8 @@ class Notebook(object):
         '''Insert the names by which you can access the data into your name space.
         '''
         return self.graftask.get_mappings()
+
+    def out_file(self, file_name):
+        '''Create an output file in the folder for the output of this task
+        '''
+        return self.graftask.add_result(file_name)

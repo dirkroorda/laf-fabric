@@ -220,7 +220,12 @@
 <div class="viewcode-block" id="Notebook.data"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Insert the names by which you can access the data into your name space.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Notebook.out_file"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.out_file">[docs]</a>    <span class="k">def</span> <span class="nf">out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create an output file in the folder for the output of this task</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span></div></div>
 </pre></div>
 
           <footer>

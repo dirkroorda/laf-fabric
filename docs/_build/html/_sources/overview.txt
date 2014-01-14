@@ -138,7 +138,6 @@ honed by practice yet. Concrete exercises with real data are planned to start in
 
 That said, it is not difficult to spot other areas for improvement:
 
-#. adapt the tool for use with `IPython and the IPy notebook <http://ipython.org>`_
 #. gain experience with the tool by adding more example tasks
 #. improve the API, add extra primitives, especially for (ordered) node sets and edges
 #. merge the tool with the existing `POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_,

@@ -183,5 +183,5 @@ def task(graftask):
             out_file.write("</edges>\n")
             out_file.write("</graph></gexf>\n")
 
-        sys.stdout.write("{}: nodes:  {}\nedges: {}\n".format(this_type, len(books), edge_id))
+        sys.stdout.write("{}: nodes:  {}; edges: {}\n".format(this_type, len(books), edge_id))
 

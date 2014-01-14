@@ -41,8 +41,8 @@ If you click on the link, you are taken to the public `notebook viewer website <
 which shows static versions of notebooks without storing them. In order to run them,
 you need to download them to your local machine.
 
-* `gender <https://github.com/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
-* `cooccurrences <https://github.com/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
+* `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+* `cooccurrences <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
 
 A leading example
 =================

@@ -94,13 +94,15 @@ You get a directory *laf-fabric* with the following inside:
 
 * *graf*: the workbench itself, a Python package
 * *laf-fabric.py*: a script to call the workbench
+* *laf-fabric.cfg*: relevant locations in the file system
 * *docs*: this documentation
-* *tasks*: a directory with example tasks.
+* *tasks*: a directory with example tasks
+* *notebooks*: a directory with example tasks in the form of IPython notebooks
 * *annotations*: a directory with example annotations (toy)
 
 .. caution::
 
-   If you develop your own tasks and annotations,
+   If you develop your own tasks, notebooks and annotations,
    put them in a separate directory, otherwise you
    may loose your work in them when you pull updates from Github.
    See *Configuration* below.
@@ -121,41 +123,24 @@ Configuration
 The configuration file script is *laf-fabric.cfg*.
 In it is a configuration section::
 
-    [locations]                                      # paths in the file system
-    data_root = /Users/dirk/Scratch/shebanq/results  # working directory
-    laf_source = laf                                 # subdirectory for the LAF data
-    task_dir = tasks                                 # absolute or relative path to the directory with the tasks
-    annox_dir = annotations                          # absolute or relative path to the directory with annotation add-ons
-    base_bdir = db                                   # subdirectory for task results
-    bin_subdir = bin                                 # subdirectory of compiled data
-    feat_subdir = feat                               # subdirectory within bin_subdir for feature data
-    annox_subdir = annox                             # subdirectory within bin_subdir for annox feature data
-
-    [source_choices]                                 # several GrAF header files
-    edge = bhs3.txt-edge.hdr
-    tiny = bhs3.txt-tiny.hdr
-    test = bhs3.txt-bhstext.hdr
-    total = bhs3.txt.hdr
-
-    [annox]
-    empty = --
-    header = _header_.xml
+    [locations]
+    work_dir  = /Users/dirk/Scratch/shebanq/results
+    laf_dir   = /Users/dirk/Scratch/shebanq/results/laf
+    task_dir  = tasks
+    annox_dir = annotations
     
-You are likely to want to change the following entries:
+You are likely to want to change these entries.
 
-*data_root*
-    point to the folder containing your LAF directory.
-*laf_source*
-    change into the directory name of your LAF directory.
-*source_choices*
-    Normally, a LAF resource has a *LAF-header file* and a *primary data header file*, aka. *the GrAF header file*.
-    The workbench needs to look at a *GrAF header file*.
-    This header file has references to all files that make up the resource.
-    You might want to restrict the workbench to only part of the annotation files in the resource,
-    e.g. if there are big annotation files that do not contain features that are relevant for your analysis.
-    In that case, you can copy the original GrAF header file,
-    and leave out all references to files that you do not want to take into consideration.
-    The *source_choices* dictionary must contain all GrAF header files that you want to choose from.
+.. _work_dir:
+
+*work_dir*
+    folder where the binary compilation of the LAF resource is put; also the output of the
+    tasks is collected here
+
+.. _laf_dir:
+
+*laf_dir*
+    points to the folder containing your LAF resource.
 
 .. _task_dir:
 
@@ -172,10 +157,12 @@ You are likely to want to change the following entries:
     adapt *annox_dir* to point to that. By default, *annox_dir* points to the directory with example annotation packages
     that come with the distribution of the workbench.
 
-You probably do not need to change the other settings, since they are used for generating subdirectories under control of
-the workbench.
+.. Note::
+    There is no setting for the notebooks directory. Notebooks are stand-alone scripts that import the work bench
+    instead of the other way round. If you run notebooks, there should be a version of the *laf-fabric.cfg* file
+    be present in the notebook directory, next to the notebooks.
 
-Now you are set to run your tasks.
+Now you are set to run your tasks and notebooks.
 You might want to run an example task from the examples in the *tasks* directory
 but they might fail because they refer to features that might not occur in your resource.
 You can also write a task yourself and add it to the *tasks* directory. See :doc:`Writing Tasks <taskwriting>`.
@@ -368,6 +355,8 @@ Many reasonable candidates for an API have not yet been implemented. Basically w
     feature values.
 *xml identifier mapping*
     a mapping from orginal xml identifiers to integers.
+*primary data access*
+    The primary data can be accessed through nodes that are linked to regions of primary data.
 
 Now Python does not have strict encapsulation of data structures,
 so by just inspecting the classes and objects you can reach out

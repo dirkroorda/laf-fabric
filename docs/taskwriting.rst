@@ -36,6 +36,14 @@ Scenario 2: task centric
 Here you write your tasks as stand alone scripts that import the workbench as a module.
 In this scenario you can also run your tasks interactively in an iPython notebook.
 
+Here is a list of current notebooks for LAF-fabric.
+If you click on the link, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
+which shows static versions of notebooks without storing them. In order to run them,
+you need to download them to your local machine.
+
+* `gender <https://github.com/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+* `cooccurrences <https://github.com/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
+
 A leading example
 =================
 Our target LAF resource is the Hebrew text data base (see :ref:`data`).

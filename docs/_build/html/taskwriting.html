@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing Tasks &mdash; LAF Fabric 2.4.1 documentation</title>
+  <title>Writing Tasks &mdash; LAF Fabric 2.4.2 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'',
-        VERSION:'2.4.1',
+        VERSION:'2.4.2',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,7 +45,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.4.1 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 2.4.2 documentation" href="index.html"/>
         <link rel="next" title="tasks" href="tasks/modules.html"/>
         <link rel="prev" title="LAF workbench" href="workbench.html"/> 
 
@@ -117,7 +117,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.4.1</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.4.2</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
@@ -170,23 +170,8 @@ for looking into a LAF resource (a <em>compiled</em> LAF resource to be precise)
 <li>start the workbench and use its interface to call tasks</li>
 <li>import the workbench as a module in your task code</li>
 </ol>
-<div class="section" id="scenario-1-workbench-centric">
-<h3>Scenario 1: workbench centric<a class="headerlink" href="#scenario-1-workbench-centric" title="Permalink to this headline">¶</a></h3>
-<p>In order to be called by the workbench, you have to put into the <em>tasks</em> directory
-(see <a class="reference internal" href="workbench.html#task-dir"><em>configuration</em></a>).</p>
-<p>The workbench passes an object to your task,
-which contains the information needed to peek into the LAF resource.
-Conversely, in your task script you can pass some initialization information to the workbench,
-so that it can build or load the appropriate feature data.
-And you can ask the workbench for convenient names by which you can use the feature
-data that is present in the LAF resource.</p>
-<p>Apart from these things, your script may contain arbitrary Python code,
-it may import arbitrary modules.
-The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.</p>
-<p>This scenario is handy if you have a bunch of tasks that you want to run in quick succession.</p>
-</div>
-<div class="section" id="scenario-2-task-centric">
-<h3>Scenario 2: task centric<a class="headerlink" href="#scenario-2-task-centric" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="notebook-mode">
+<h3>Notebook mode<a class="headerlink" href="#notebook-mode" title="Permalink to this headline">¶</a></h3>
 <p>Here you write your tasks as stand alone scripts that import the workbench as a module.
 In this scenario you can also run your tasks interactively in an iPython notebook.</p>
 <p>Here is a list of current notebooks for LAF-fabric.
@@ -197,6 +182,20 @@ you need to download them to your local machine.</p>
 <li><a class="reference external" href="http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb">gender</a></li>
 <li><a class="reference external" href="http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb">cooccurrences</a></li>
 </ul>
+</div>
+<div class="section" id="workbench-mode">
+<h3>Workbench mode<a class="headerlink" href="#workbench-mode" title="Permalink to this headline">¶</a></h3>
+<p>In order to be called by the workbench, you have to put into the <em>tasks</em> directory.</p>
+<p>The workbench passes an object to your task,
+which contains the information needed to peek into the LAF resource.
+Conversely, in your task script you can pass some initialization information to the workbench,
+so that it can build or load the appropriate feature data.
+And you can ask the workbench for convenient names by which you can use the feature
+data that is present in the LAF resource.</p>
+<p>Apart from these things, your script may contain arbitrary Python code,
+it may import arbitrary modules.
+The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.</p>
+<p>This scenario is handy if you have a bunch of tasks that you want to run in quick succession.</p>
 </div>
 </div>
 <div class="section" id="a-leading-example">

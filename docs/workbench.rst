@@ -29,10 +29,17 @@ The typical workflow is:
 #. in a configuration file, adapt the locations of the LAF directory and provide a work/results directory.
 #. write your own script, and put it in the right directory, or alternatively,
    write your script in an `iPython notebook <http://ipython.org>`_.
-#. run the workbench from the command line, or run the code cells in an `iPython notebook <http://ipython.org>`_.
+#. run the code cells in an `iPython notebook <http://ipython.org>`_ or run the workbench from the command line.
 
-Scenario 1: work-bench centered
--------------------------------
+Notebook mode
+-------------
+You can write a task as a stand-alone script, importing the work bench as a module.
+You can then break such a script up into chunks of code, and paste them in the code cells of an 
+`iPython notebook <http://ipython.org>`_.
+See the *notebooks* directory for executable examples.
+
+Workbench mode
+--------------
 The workbench behaves in the same pattern as the ``mysql>`` prompt for a database. You can use it as in interactive
 command interpreter that lets you select and run tasks.
 You can also invoke it to run a single task without interaction.
@@ -61,13 +68,6 @@ Loading a feature typically adds 0.1 to 1 second to the load time.
 It will also unload the data for features that the script has not declared.
 This is in order not to burden the RAM with data that does not pertain to the task.
 
-Scenario 2: interactively in an iPython notebook
-------------------------------------------------
-You can write a task as a stand-alone script, importing the work bench as a module.
-You can then break such a script up into chunks of code, and paste them in the code cells of an 
-`iPython notebook <http://ipython.org>`_.
-See the *notebooks* directory for a executable example.
-
 License
 =======
 
@@ -84,7 +84,7 @@ Installation
 ------------
 In this Github project *LAF-Fabric* there is a Python package called :mod:`graf`.
 It is a package without extension modules, so it will run from anywhere in your system.
-I did not use the Python distutils to create a distribution that you can incorporate in your local Python installation.
+I also used the Python distutils to create a distribution that you can incorporate in your local Python installation.
 You can just clone it from github and work with it right away::
 
     cd «directory of your choice»
@@ -94,18 +94,10 @@ You get a directory *laf-fabric* with the following inside:
 
 * *graf*: the workbench itself, a Python package
 * *laf-fabric.py*: a script to call the workbench
-* *laf-fabric.cfg*: relevant locations in the file system
 * *docs*: this documentation
 * *tasks*: a directory with example tasks
 * *notebooks*: a directory with example tasks in the form of IPython notebooks
 * *annotations*: a directory with example annotations (toy)
-
-.. caution::
-
-   If you develop your own tasks, notebooks and annotations,
-   put them in a separate directory, otherwise you
-   may loose your work in them when you pull updates from Github.
-   See *Configuration* below.
 
 Before running the workbench, the calling script has to be configured.
 
@@ -117,50 +109,37 @@ That can be accomplished in the standard way:
 #. cd dist/graf-|release|
 #. python setup.py install
 
+If you want to run the IPython notebook, you may have to install that too.
+
+Tips:
+
+#. Have a quick look at the `ipython site <http://ipython.org>`_
+#. Make a new python installation on your machine using `anaconda <https://store.continuum.io/cshop/anaconda/>`_
+#. Install this through the miniconda approach in order to work with python 3 instead of 2.
+
+Installing through miniconda works as follows:
+
+#. Pick your download from `miniconda installers <http://repo.continuum.io/miniconda/index.html>`_
+   (be sure to pick a python3 option)
+#. install miniconda (preferably for the current user)
+#. on the command line run::
+
+    conda install anaconda
+
 
 Configuration
 -------------
-The configuration file script is *laf-fabric.cfg*.
+The configuration file script is *laf-fabric.cfg* in the directory *notebooks*.
 In it is a configuration section::
 
     [locations]
     work_dir  = /Users/dirk/Scratch/shebanq/results
-    laf_dir   = /Users/dirk/Scratch/shebanq/results/laf
-    task_dir  = tasks
-    annox_dir = annotations
     
-You are likely to want to change these entries.
-
 .. _work_dir:
 
 *work_dir*
     folder where the binary compilation of the LAF resource is put; also the output of the
     tasks is collected here
-
-.. _laf_dir:
-
-*laf_dir*
-    points to the folder containing your LAF resource.
-
-.. _task_dir:
-
-*task_dir*
-    The directory in which your tasks can be found. If you have your own tasks outside this distribution,
-    adapt *task_dir* to point to that. By default, *task_dir* points to the directory with example tasks
-    that come with the distribution of the workbench.
-
-.. _annox_dir:
-
-*annox_dir*
-    The directory in which your own extra annotation packages can be found.
-    If you have your own annotations outside this distribution,
-    adapt *annox_dir* to point to that. By default, *annox_dir* points to the directory with example annotation packages
-    that come with the distribution of the workbench.
-
-.. Note::
-    There is no setting for the notebooks directory. Notebooks are stand-alone scripts that import the work bench
-    instead of the other way round. If you run notebooks, there should be a version of the *laf-fabric.cfg* file
-    be present in the notebook directory, next to the notebooks.
 
 Now you are set to run your tasks and notebooks.
 You might want to run an example task from the examples in the *tasks* directory
@@ -173,26 +152,31 @@ Go to the directory where *laf-fabric.py* resides::
 
     cd «path_to_dir_of_laf-fabric.py»
 
-*single use mode*::
+*notebook mode*::
+
+    cd notebooks
+    ipython notebook
+
+This starts a python process that communicates with a browser tab, which will pop up in fron of you.
+This is your dashboard of notebooks.
+You can pick an existing notebook to work with, or create a new one.
+
+*workbench single use mode*::
 
     python laf-fabric.py --source=«source» --annox=«annox» --task=«task» [--force-compile-source] [--force-compile-annox]
 
-*to start the command interpreter mode*::
+If all of the ``«source»``, ``«annox»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
+the workbench runs the specified task without asking and quits.
+
+*workbench re-use mode*::
 
     python laf-fabric.py [--source=«source» ] [--annox=«annox»] [--task=«task» ] [--force-compile-source] [--force-compile-annox]
 
-The workbench is a Python program that is invoked from the command line.
-
-*interactive use mode*
-    If some of the ``«source»``, ``«annox»`` and ``«task»`` arguments are missing or if the ``--menu`` argument is present
-    it starts in interactive mode prompting you for sources and commands to run tasks.
-    The ``«source»``, ``«annox»`` and ``«task»`` arguments are given are used for initial values.
-    In interactive mode you can change your ``«source»``, ``«annox»`` and ``«task»`` selection, and run tasks.
-    There is a help command and the prompt is self explanatory.
-
-*single use mode*
-    If all of the ``«source»``, ``«annox»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
-    the workbench runs the specified task without asking and quits.
+If some of the ``«source»``, ``«annox»`` and ``«task»`` arguments are missing or if the ``--menu`` argument is present
+it starts in interactive mode prompting you for sources and commands to run tasks.
+The ``«source»``, ``«annox»`` and ``«task»`` arguments are given are used for initial values.
+In interactive mode you can change your ``«source»``, ``«annox»`` and ``«task»`` selection, and run tasks.
+There is a help command and the prompt is self explanatory.
 
 Other options
 -------------

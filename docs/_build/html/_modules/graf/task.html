@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.task &mdash; LAF Fabric 2.4.1 documentation</title>
+  <title>graf.task &mdash; LAF Fabric 2.4.2 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../../',
-        VERSION:'2.4.1',
+        VERSION:'2.4.2',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,7 +45,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.4.1 documentation" href="../../index.html"/>
+    <link rel="top" title="LAF Fabric 2.4.2 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -116,7 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 2.4.1</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 2.4.2</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
@@ -626,11 +626,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;END TASK {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flush_logfile</span><span class="p">()</span>
 
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;ls -lh {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">result_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;Results directory:</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result_dir</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">result_dir</span><span class="p">)):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> 
+            <span class="n">size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">mtime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;{:&lt;30} {:&gt;12} {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">mtime</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&quot;du -h {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish_logfile</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="GrafTask.getitems_dict"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.getitems_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getitems_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>

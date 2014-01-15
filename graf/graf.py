@@ -1022,8 +1022,6 @@ class Graf(object):
         laf_dir = settings['locations']['laf_dir']
         annox_file = settings['annox']['header']
         annox_root = settings['locations']['annox_dir']
-        laf_source = settings['locations']['laf_source']
-        base_bdir = settings['locations']['base_bdir']
         bin_subdir = settings['locations']['bin_subdir']
         task_dir = settings['locations']['task_dir']
         feat_subdir = settings['locations']['feat_subdir']
@@ -1039,11 +1037,11 @@ class Graf(object):
             'annox_file': annox_file,
             'annox_dir': '{}/{}'.format(annox_root, annox),
             'annox_path': '{}/{}/{}'.format(annox_root, annox, annox_file),
-            'bin_dir': '{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir),
-            'feat_dir': '{}/{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir, feat_subdir),
-            'annox_base_bdir': '{}/{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir, annox_subdir),
-            'annox_bdir': '{}/{}/{}/{}/{}/{}'.format(work_dir, base_bdir, source, bin_subdir, annox_subdir, annox),
-            'result_dir': '{}/{}/{}/{}'.format(work_dir, base_bdir, source, task),
+            'bin_dir': '{}/{}/{}'.format(work_dir, source, bin_subdir),
+            'feat_dir': '{}/{}/{}/{}'.format(work_dir, source, bin_subdir, feat_subdir),
+            'annox_base_bdir': '{}/{}/{}/{}'.format(work_dir, source, bin_subdir, annox_subdir),
+            'annox_bdir': '{}/{}/{}/{}/{}'.format(work_dir, source, bin_subdir, annox_subdir, annox),
+            'result_dir': '{}/{}/{}'.format(work_dir, source, task),
         }
         try:
             if not os.path.exists(self.env['bin_dir']):

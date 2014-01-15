@@ -60,15 +60,20 @@ class Notebook(object):
             stage='final',
         )
 
-    def data(self):
+    def API(self):
         '''Insert the names by which you can access the data into your name space.
         '''
-        return self.graftask.get_mappings()
+        return self.graftask.API()
 
-    def out_file(self, file_name):
+    def add_output(self, file_name):
         '''Create an output file in the folder for the output of this task
         '''
-        return self.graftask.add_result(file_name)
+        return self.graftask.add_output(file_name)
+
+    def add_input(self, file_name):
+        '''Create an input file in the folder for the output of this task
+        '''
+        return self.graftask.add_input(file_name)
 
     def my_files(self, file_name=None):
         '''The location where the output files of this task can be found

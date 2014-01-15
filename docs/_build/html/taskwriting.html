@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing Tasks &mdash; LAF Fabric 2.4.2 documentation</title>
+  <title>Writing Tasks &mdash; LAF Fabric 2.4.3 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'',
-        VERSION:'2.4.2',
+        VERSION:'2.4.3',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,9 +45,9 @@
   
 
   
-    <link rel="top" title="LAF Fabric 2.4.2 documentation" href="index.html"/>
-        <link rel="next" title="tasks" href="tasks/modules.html"/>
-        <link rel="prev" title="LAF workbench" href="workbench.html"/> 
+    <link rel="top" title="LAF Fabric 2.4.3 documentation" href="index.html"/>
+        <link rel="next" title="Background" href="background.html"/>
+        <link rel="prev" title="Getting Started" href="getting-started.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -72,25 +72,24 @@
         
         
             <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">LAF Fabric</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#what-is-laf-graf">What is LAF/GrAF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#data">Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#this-workbench">This workbench</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#interactive-notebooks">Interactive notebooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#rationale">Rationale</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#author">Author</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#history">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="welcome.html">Welcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about-laf-fabric.html">About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#future-directions">Future directions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="workbench.html">LAF workbench</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#description">Description</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#license">License</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#how-to-use-the-workbench">How to use the workbench?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#designed-for-performance">Designed for Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#graf-feature-coverage">GrAF feature coverage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workbench.html#development">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#your-python-setup">Your python setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-laf-fabric">Get LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#install-laf-fabric">Install LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#configure-laf-fabric">Configure LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-the-data">Get the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#run-laf-fabric">Run LAF-Fabric</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Writing Tasks</a><ul>
@@ -98,10 +97,21 @@
 <li class="toctree-l2"><a class="reference internal" href="#a-leading-example">A leading example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-on-features">More on features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interactive-execution">Interactive execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#information-flow-from-task-to-workbench">Information flow from task to workbench</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#information-flow-from-workbench-to-task">Information flow from workbench to task</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#input-andoutput">Input andOutput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#information-flow-from-task-to-laf-fabric">Information flow from task to LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="background.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tasks/modules.html">tasks</a><ul>
@@ -117,7 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.4.2</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.4.3</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
@@ -166,41 +176,39 @@
 <p>A task is an ordinary Python script with some magical capabilities
 for looking into a LAF resource (a <em>compiled</em> LAF resource to be precise).</p>
 <p>There are two scenarios for executing tasks:</p>
-<ol class="arabic simple">
-<li>start the workbench and use its interface to call tasks</li>
-<li>import the workbench as a module in your task code</li>
-</ol>
 <div class="section" id="notebook-mode">
 <h3>Notebook mode<a class="headerlink" href="#notebook-mode" title="Permalink to this headline">¶</a></h3>
-<p>Here you write your tasks as stand alone scripts that import the workbench as a module.
-In this scenario you can also run your tasks interactively in an iPython notebook.</p>
-<p>Here is a list of current notebooks for LAF-fabric.
-If you click on the link, you are taken to the public <a class="reference external" href="http://nbviewer.ipython.org">notebook viewer website</a>,
-which shows static versions of notebooks without storing them. In order to run them,
-you need to download them to your local machine.</p>
+<p>In notebook mode you write your tasks in code cells in iPython notebooks.
+There you have to import LAF-Fabric, or rather the <em>graf</em> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">graf</span>
+<span class="kn">from</span> <span class="nn">graf.notebook</span> <span class="kn">import</span> <span class="n">Notebook</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here is a list of current notebooks for LAF-fabric.</p>
 <ul class="simple">
 <li><a class="reference external" href="http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb">gender</a></li>
 <li><a class="reference external" href="http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb">cooccurrences</a></li>
 </ul>
+<p>If you click on the link, you are taken to the public <a class="reference external" href="http://nbviewer.ipython.org">notebook viewer website</a>,
+which shows static versions of notebooks without storing them.
+In order to run them, you need to download them to your computer.</p>
 </div>
 <div class="section" id="workbench-mode">
 <h3>Workbench mode<a class="headerlink" href="#workbench-mode" title="Permalink to this headline">¶</a></h3>
-<p>In order to be called by the workbench, you have to put into the <em>tasks</em> directory.</p>
-<p>The workbench passes an object to your task,
-which contains the information needed to peek into the LAF resource.
-Conversely, in your task script you can pass some initialization information to the workbench,
-so that it can build or load the appropriate feature data.
-And you can ask the workbench for convenient names by which you can use the feature
-data that is present in the LAF resource.</p>
-<p>Apart from these things, your script may contain arbitrary Python code,
-it may import arbitrary modules.
-The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.</p>
+<p>In workbench mode you place your tasks into the <em>tasks</em> directory.
+In your script you have to define a function <tt class="docutils literal"><span class="pre">task(graftask)</span></tt> that takes as its sole argument
+an object that gives access to all the LAF data from your resource:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;this function executes your task&#39;&#39;&#39;</span>
+</pre></div>
+</div>
 <p>This scenario is handy if you have a bunch of tasks that you want to run in quick succession.</p>
 </div>
 </div>
 <div class="section" id="a-leading-example">
 <h2>A leading example<a class="headerlink" href="#a-leading-example" title="Permalink to this headline">¶</a></h2>
-<p>Our target LAF resource is the Hebrew text data base (see <a class="reference internal" href="overview.html#data"><em>Data</em></a>).
+<p>Our target LAF resource is the Hebrew text data base (see <a class="reference internal" href="background.html#data"><em>Data</em></a>).
 Some nodes are annotated as words, and some nodes as chapters.
 Words in Hebrew are either masculine, or feminine, or unknown.
 We want to plot the percentage of masculine and feminine words per chapter.
@@ -212,16 +220,16 @@ nodes that represent words and chapters.</p>
 <p>The features we need are present in an annotation space named <tt class="docutils literal"><span class="pre">shebanq</span></tt> (after the project
 that produced this LAF resource).
 The chapter features are labeled with <tt class="docutils literal"><span class="pre">sft</span></tt> and the other features with <tt class="docutils literal"><span class="pre">ft</span></tt>.</p>
-<p>When the workbench compiles features into binary data, it forgets the annotations in which the features come,
+<p>When LAF-Fabric compiles features into binary data, it forgets the annotations in which the features come,
 but the annotation <em>space</em> and <em>label</em> are retained in a double prefix to the feature name.</p>
-<p>The workbench remembers those features by their <em>fully qualified</em> names: <tt class="docutils literal"><span class="pre">shebanq:ft.gender</span></tt>, <tt class="docutils literal"><span class="pre">shebanq:sft.chapter</span></tt> etc.
+<p>LAF-Fabric remembers those features by their <em>fully qualified</em> names: <tt class="docutils literal"><span class="pre">shebanq:ft.gender</span></tt>, <tt class="docutils literal"><span class="pre">shebanq:sft.chapter</span></tt> etc.
 There may also be annotations without feature contents. Such annotations will be stored as features with as name the
 annotation label only, without the dot: <tt class="docutils literal"><span class="pre">shebanq:db</span></tt>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Annotations may reference nodes or edges.
 It is possible that nodes and edges have features with the same name.
-However, the workbench maintains a strict distinction between features
+However, LAF-Fabric maintains a strict distinction between features
 of nodes and features of edges. They have separate name spaces, implicitly.
 Features names that are used for nodes and edges may coexist, but their
 data are in separate tables.</p>
@@ -266,8 +274,8 @@ Genesis 10  22      4.45</pre>
 <span class="sd">    Outputs the frequencies in a tab-delimited file, with frequency values for</span>
 <span class="sd">    each chapter in the whole Hebrew Bible.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">get_mappings</span><span class="p">()</span>
-    <span class="n">stats_file</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;stats.txt&quot;</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="n">stats_file</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats.txt&quot;</span><span class="p">)</span>
 
     <span class="n">stats</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">cur_chapter</span> <span class="o">=</span> <span class="bp">None</span>
@@ -300,24 +308,28 @@ Genesis 10  22      4.45</pre>
 </div>
 <div class="section" id="interactive-execution">
 <h2>Interactive execution<a class="headerlink" href="#interactive-execution" title="Permalink to this headline">¶</a></h2>
-<p>It is more fun to work with tasks interactively. Here is how:</p>
-<p>Install <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">anaconda</a>,
-a Python distribution for scientific computing.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">use the <em>miniconda</em> way to install anaconda for python 3</p>
+<p>It is more fun to work with tasks interactively.
+See <a class="reference internal" href="getting-started.html"><em>Getting Started</em></a> how to set it up.</p>
+<p>In interactive mode, the data remains in memory after the task has completed.
+You can then load additional packages and add pieces of python code
+to do fancy things with your data, such as plotting graphs.</p>
+<p>When your task has finished, put this into a cell:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">processor</span><span class="o">.</span><span class="n">final</span><span class="p">()</span>
+</pre></div>
 </div>
-<p>In the terminal, cd to the notebooks directory and issue the command:</p>
-<div class="highlight-python"><pre>ipython notebook</pre>
+<p>This will close all output and input files, and show you
+the location of those files plus a listing of them, complete
+with sizes and modification times.</p>
+<p>If you want to work with those files in following code cells,
+you can get their location into a python variable, say <em>table_file</em>, as follows:</p>
+<div class="highlight-python"><pre>table_file = processor.my_files(«filename»)</pre>
 </div>
-<p>You get a web browser pointed at an overview of all notebooks in that directory.
-Choose <tt class="docutils literal"><span class="pre">gender</span></tt>.
-Now you see code in a series of cells, ready to be executed.
-Executing the last cell gives you a plot of the data.</p>
+<p>LAF-Fabric does not check whether <tt class="docutils literal"><span class="pre">«filename»</span></tt> exists, it just
+prepends the directory name to <tt class="docutils literal"><span class="pre">/«filename»</span></tt>.</p>
 </div>
-<div class="section" id="information-flow-from-task-to-workbench">
-<h2>Information flow from task to workbench<a class="headerlink" href="#information-flow-from-task-to-workbench" title="Permalink to this headline">¶</a></h2>
-<p>The main thing the workbench needs to know about your task is a declaration of
+<div class="section" id="information-flow-from-task-to-laf-fabric">
+<h2>Information flow from task to LAF-Fabric<a class="headerlink" href="#information-flow-from-task-to-laf-fabric" title="Permalink to this headline">¶</a></h2>
+<p>The main thing LAF-Fabric needs to know about your task is a declaration of
 what data the task will use.
 The task needs to tell whether to load the primary data (with the region information),
 which feature data should be loaded and whether XML identifier tables
@@ -337,22 +349,26 @@ For all other features data will be unloaded, if still loaded.</p>
 <p>Missing feature data.</p>
 <p class="last">If you forget to mention a feature in the load declaration and you
 do use it in your task,
-the workbench will stop your task and shout error messages at you.
+LAF-Fabric will stop your task and shout error messages at you.
 If you declare features that do not exist in the LAF data, you just get
 a warning. But if you try to use such features, you get also a loud error.</p>
 </div>
 </div>
-<div class="section" id="information-flow-from-workbench-to-task">
-<h2>Information flow from workbench to task<a class="headerlink" href="#information-flow-from-workbench-to-task" title="Permalink to this headline">¶</a></h2>
-<p>The workbench will call the function <em>task(object)</em> in your task script,
+<div class="section" id="information-flow-from-laf-fabric-to-task">
+<h2>Information flow from LAF-Fabric to task<a class="headerlink" href="#information-flow-from-laf-fabric-to-task" title="Permalink to this headline">¶</a></h2>
+<p>LAF-Fabric will call the function <em>task(object)</em> in your task script (assuming you follow workbench mode),
 and the thing it hands over to it as <em>object</em> is an object of
 class <a class="reference internal" href="graf/modules.html#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>.
 By using this object, you have to access all of its methods.</p>
+<p>In notebook this handing over occurs when you say:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">processor</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>In order to write an efficient task,
-it is convenient to import the names of the most important methods as <em>local variables</em> of the <em>task</em> function.
+it is convenient to import the names of the API methods as <em>local variables</em> of the <em>task</em> function.
 The lookup of names in Python is fastest for local names.
 And it makes the code much cleaner.</p>
-<p>The method <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.get_mappings" title="graf.task.GrafTask.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">get_mappings()</span></tt></a> delivers the methods,
+<p>The method <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.API" title="graf.task.GrafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API()</span></tt></a> delivers the methods,
 and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.</p>
@@ -393,7 +409,7 @@ If given, <tt class="docutils literal"><span class="pre">test</span></tt> should
 <tt class="docutils literal"><span class="pre">test</span></tt> will be called for each passing node,
 and if the value returned is not equal to the given <tt class="docutils literal"><span class="pre">value</span></tt>,
 the node will be skipped.
-See <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.get_mappings" title="graf.task.GrafTask.get_mappings"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</dd>
+See <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.API" title="graf.task.GrafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</dd>
 <dt><em>X</em></dt>
 <dd>If you need to convert the integers that identify nodes and edges in the compiled data back to
 their original XML identifiers, you can do that with the <em>X</em> object.
@@ -407,12 +423,12 @@ Normally it appends a newline to the text, but you can suppress it.
 You can also suppress the time indication before the text.</dd>
 </dl>
 </div>
-<div class="section" id="input-andoutput">
-<h2>Input andOutput<a class="headerlink" href="#input-andoutput" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input-and-output">
+<h2>Input and Output<a class="headerlink" href="#input-and-output" title="Permalink to this headline">¶</a></h2>
 <p>You can create an output filehandle, open for writing, by calling the
-method <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.add_result" title="graf.task.GrafTask.add_result"><tt class="xref py py-meth docutils literal"><span class="pre">add_result()</span></tt></a>
+method <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.add_output" title="graf.task.GrafTask.add_output"><tt class="xref py py-meth docutils literal"><span class="pre">add_output()</span></tt></a>
 and assigning the result to a variable, say <em>out</em></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>From then on you can write output simply by saying:</p>
@@ -423,18 +439,17 @@ and assigning the result to a variable, say <em>out</em></p>
 All these files and up in the task specific working directory.</p>
 <p>Likewise, you can place additional input files in that directory,
 and read them by saying:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
 <span class="n">inp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>if you have used
-Once your task has finished, the workbench will close them all.</p>
+<p>Once your task has finished, LAF-Fabric will close them all.</p>
 </div>
 <div class="section" id="node-order">
 <span id="id1"></span><h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
 <p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em>
 which are stretches of primary data, and the primary data is totally ordered.
-The order we use in the workbench is defined as follows.</p>
+The order we use in LAF-Fabric is defined as follows.</p>
 <p>Suppose we compare node <em>A</em> and node <em>B</em>.
 Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region
 and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
@@ -442,7 +457,7 @@ and the last point of the last region for <em>A</em> and <em>B</em>, and call th
 <p>In other words: if <em>A</em> starts before <em>B</em>, then <em>A</em> becomes before <em>B</em>.
 If <em>A</em> and <em>B</em> start at the same point, the one that ends last, counts as the earlier of the two.</p>
 <p>If neither <em>A</em> &lt; <em>B</em> nor <em>B</em> &lt; <em>A</em> then the order is not specified.
-The workbench will select an arbitrary but consistent order between thoses nodes.
+LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
 The only way this can happen is when <em>A</em> and <em>B</em> start and end at the same point.
 Between those points they might be very different.</p>
 <p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
@@ -456,10 +471,10 @@ and embedded children come in the order dictated by the primary data.</p>
   
     <div class="rst-footer-buttons">
       
-        <a href="tasks/modules.html" class="btn btn-neutral float-right" title="tasks"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="background.html" class="btn btn-neutral float-right" title="Background"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="workbench.html" class="btn btn-neutral" title="LAF workbench"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="getting-started.html" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   

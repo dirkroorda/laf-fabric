@@ -9,36 +9,32 @@ for looking into a LAF resource (a *compiled* LAF resource to be precise).
 
 There are two scenarios for executing tasks:
 
-1. start the workbench and use its interface to call tasks
-2. import the workbench as a module in your task code
-
 Notebook mode
 -------------
-Here you write your tasks as stand alone scripts that import the workbench as a module.
-In this scenario you can also run your tasks interactively in an iPython notebook.
+In notebook mode you write your tasks in code cells in iPython notebooks.
+There you have to import LAF-Fabric, or rather the *graf* module::
+
+    import graf
+    from graf.notebook import Notebook
+    processor = Notebook()
 
 Here is a list of current notebooks for LAF-fabric.
-If you click on the link, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
-which shows static versions of notebooks without storing them. In order to run them,
-you need to download them to your local machine.
 
 * `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
 * `cooccurrences <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
 
+If you click on the link, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
+which shows static versions of notebooks without storing them.
+In order to run them, you need to download them to your computer.
+
 Workbench mode
 --------------
-In order to be called by the workbench, you have to put into the *tasks* directory.
+In workbench mode you place your tasks into the *tasks* directory.
+In your script you have to define a function ``task(graftask)`` that takes as its sole argument
+an object that gives access to all the LAF data from your resource::
 
-The workbench passes an object to your task,
-which contains the information needed to peek into the LAF resource.
-Conversely, in your task script you can pass some initialization information to the workbench,
-so that it can build or load the appropriate feature data. 
-And you can ask the workbench for convenient names by which you can use the feature
-data that is present in the LAF resource.
-
-Apart from these things, your script may contain arbitrary Python code,
-it may import arbitrary modules.
-The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.
+    def task(graftask):
+        '''this function executes your task'''
 
 This scenario is handy if you have a bunch of tasks that you want to run in quick succession.
 
@@ -57,17 +53,17 @@ The features we need are present in an annotation space named ``shebanq`` (after
 that produced this LAF resource).
 The chapter features are labeled with ``sft`` and the other features with ``ft``.
 
-When the workbench compiles features into binary data, it forgets the annotations in which the features come,
+When LAF-Fabric compiles features into binary data, it forgets the annotations in which the features come,
 but the annotation *space* and *label* are retained in a double prefix to the feature name.
 
-The workbench remembers those features by their *fully qualified* names: ``shebanq:ft.gender``, ``shebanq:sft.chapter`` etc.
+LAF-Fabric remembers those features by their *fully qualified* names: ``shebanq:ft.gender``, ``shebanq:sft.chapter`` etc.
 There may also be annotations without feature contents. Such annotations will be stored as features with as name the 
 annotation label only, without the dot: ``shebanq:db``.
 
 .. note::
     Annotations may reference nodes or edges.
     It is possible that nodes and edges have features with the same name. 
-    However, the workbench maintains a strict distinction between features
+    However, LAF-Fabric maintains a strict distinction between features
     of nodes and features of edges. They have separate name spaces, implicitly.
     Features names that are used for nodes and edges may coexist, but their
     data are in separate tables.
@@ -114,8 +110,8 @@ Finally, here is the complete Python code of the task that produced this output:
         Outputs the frequencies in a tab-delimited file, with frequency values for
         each chapter in the whole Hebrew Bible.
         '''
-        (msg, P, NN, F, X) = graftask.get_mappings()
-        stats_file = graftask.add_result("stats.txt")
+        (msg, P, NN, F, X) = graftask.API()
+        stats_file = graftask.add_output("stats.txt")
 
         stats = [0, 0, 0]
         cur_chapter = None
@@ -146,26 +142,32 @@ Finally, here is the complete Python code of the task that produced this output:
 
 Interactive execution
 =====================
-It is more fun to work with tasks interactively. Here is how:
+It is more fun to work with tasks interactively.
+See :doc:`getting-started` how to set it up.
 
-Install `anaconda <https://store.continuum.io/cshop/anaconda/>`_,
-a Python distribution for scientific computing.
+In interactive mode, the data remains in memory after the task has completed.
+You can then load additional packages and add pieces of python code
+to do fancy things with your data, such as plotting graphs.
 
-.. note::
-    use the *miniconda* way to install anaconda for python 3
+When your task has finished, put this into a cell::
 
-In the terminal, cd to the notebooks directory and issue the command::
+    processor.final()
 
-    ipython notebook
+This will close all output and input files, and show you
+the location of those files plus a listing of them, complete
+with sizes and modification times.
 
-You get a web browser pointed at an overview of all notebooks in that directory.
-Choose ``gender``.
-Now you see code in a series of cells, ready to be executed.
-Executing the last cell gives you a plot of the data.
+If you want to work with those files in following code cells,
+you can get their location into a python variable, say *table_file*, as follows::
 
-Information flow from task to workbench
-=======================================
-The main thing the workbench needs to know about your task is a declaration of
+    table_file = processor.my_files(«filename»)
+
+LAF-Fabric does not check whether ``«filename»`` exists, it just
+prepends the directory name to ``/«filename»``.
+
+Information flow from task to LAF-Fabric
+========================================
+The main thing LAF-Fabric needs to know about your task is a declaration of
 what data the task will use.
 The task needs to tell whether to load the primary data (with the region information),
 which feature data should be loaded and whether XML identifier tables
@@ -187,23 +189,27 @@ For all other features data will be unloaded, if still loaded.
 
     If you forget to mention a feature in the load declaration and you
     do use it in your task,
-    the workbench will stop your task and shout error messages at you.
+    LAF-Fabric will stop your task and shout error messages at you.
     If you declare features that do not exist in the LAF data, you just get
     a warning. But if you try to use such features, you get also a loud error.
 
-Information flow from workbench to task
-=======================================
-The workbench will call the function *task(object)* in your task script,
+Information flow from LAF-Fabric to task
+========================================
+LAF-Fabric will call the function *task(object)* in your task script (assuming you follow workbench mode),
 and the thing it hands over to it as *object* is an object of
 class :class:`GrafTask <graf.task.GrafTask>`.
 By using this object, you have to access all of its methods. 
 
+In notebook this handing over occurs when you say::
+
+    processor = Notebook()
+
 In order to write an efficient task,
-it is convenient to import the names of the most important methods as *local variables* of the *task* function.
+it is convenient to import the names of the API methods as *local variables* of the *task* function.
 The lookup of names in Python is fastest for local names.
 And it makes the code much cleaner.
 
-The method :meth:`get_mappings() <graf.task.GrafTask.get_mappings>` delivers the methods,
+The method :meth:`API() <graf.task.GrafTask.API>` delivers the methods,
 and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.
@@ -242,7 +248,7 @@ Here is a short description of the corresponding methods.
     ``test`` will be called for each passing node,
     and if the value returned is not equal to the given ``value``,
     the node will be skipped.
-    See :meth:`next_node() <graf.task.GrafTask.get_mappings>`.
+    See :meth:`next_node() <graf.task.GrafTask.API>`.
 
 *X*
     If you need to convert the integers that identify nodes and edges in the compiled data back to
@@ -257,13 +263,13 @@ msg(text, newline=True, withtime=True)
     Normally it appends a newline to the text, but you can suppress it.
     You can also suppress the time indication before the text.
 
-Input andOutput
-===============
+Input and Output
+================
 You can create an output filehandle, open for writing, by calling the
-method :meth:`add_result() <graf.task.GrafTask.add_result>`
+method :meth:`add_output() <graf.task.GrafTask.add_output>`
 and assigning the result to a variable, say *out* ::
 
-    out = graftask.add_result("output.txt")
+    out = graftask.add_output("output.txt")
 
 From then on you can write output simply by saying::
 
@@ -275,11 +281,10 @@ All these files and up in the task specific working directory.
 Likewise, you can place additional input files in that directory,
 and read them by saying::
 
-    inp = graftask.add_result("input.txt")
+    inp = graftask.add_input("input.txt")
     inp.write(text)
 
-if you have used
-Once your task has finished, the workbench will close them all.
+Once your task has finished, LAF-Fabric will close them all.
 
 .. _node-order:
 
@@ -287,7 +292,7 @@ Node order
 ==========
 There is an implicit partial order on nodes, derived from their attachment to *regions*
 which are stretches of primary data, and the primary data is totally ordered.
-The order we use in the workbench is defined as follows.
+The order we use in LAF-Fabric is defined as follows.
 
 Suppose we compare node *A* and node *B*.
 Look up all regions for *A* and for *B* and determine the first point of the first region
@@ -299,7 +304,7 @@ In other words: if *A* starts before *B*, then *A* becomes before *B*.
 If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
 
 If neither *A* < *B* nor *B* < *A* then the order is not specified.
-The workbench will select an arbitrary but consistent order between thoses nodes.
+LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
 The only way this can happen is when *A* and *B* start and end at the same point.
 Between those points they might be very different. 
 

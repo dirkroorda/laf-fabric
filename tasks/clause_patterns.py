@@ -24,11 +24,11 @@ def task(graftask):
     '''Counts the frequencies of the all clause patterns in the books of Genesis and the Psalms.
     Outputs the frequencies in a tab-delimited file.
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
     msg("Get the frequencies of the clause patterns...")
 
-    out = graftask.add_result("clause_patterns.csv")
+    out = graftask.add_output("clause_patterns.csv")
 
     books = ["Genesis", "Psalms"]
     clause_atom_relations = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))

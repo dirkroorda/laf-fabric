@@ -1,0 +1,485 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>About &mdash; LAF Fabric 2.4.3 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'',
+        VERSION:'2.4.3',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="LAF Fabric 2.4.3 documentation" href="index.html"/>
+        <link rel="next" title="Getting Started" href="getting-started.html"/>
+        <link rel="prev" title="Welcome" href="welcome.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="icon icon-home"> LAF Fabric</a>
+        <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="welcome.html">Welcome</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#future-directions">Future directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#your-python-setup">Your python setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-laf-fabric">Get LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#install-laf-fabric">Install LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#configure-laf-fabric">Configure LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-the-data">Get the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#run-laf-fabric">Run LAF-Fabric</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="taskwriting.html">Writing Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#what-is-a-task">What is a task?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#a-leading-example">A leading example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#interactive-execution">Interactive execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-task-to-laf-fabric">Information flow from task to LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="background.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_use.html">annox_use module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.4.3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.parse">graf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.shell">graf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.task">graf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">LAF Fabric</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="index.html">Docs</a> &raquo;</li>
+  <li><a href="">About</a></li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="_sources/about-laf-fabric.txt" rel="nofollow"> View page source</a>
+      
+    </li>
+</ul>
+<hr/>
+
+          
+  <div class="section" id="about">
+<h1>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>LAF-fabric is a Python tool for running Python scripts with access to the information in a LAF resource.
+It has two major components:</p>
+<ol class="arabic simple">
+<li>a LAF compiler for transforming a LAF resource into binary data that can be loaded very into Python data structures;</li>
+<li>an execution environment that gives Python scripts access to LAF data and is optimized for feature lookup.</li>
+</ol>
+<p>The selling point of LAF-fabric is performance, both in terms of speed and memory usage.
+The second goal is to make it really easy for you to write analytic tasks straightforwardly in terms of LAF concepts
+without bothering about performance.</p>
+<p>Both points go hand in hand, because if LAF-fabric needs too much time to execute your tasks,
+it becomes very tedious to experiment with them.
+I wrote LAF-fabric to make the cycle of trial and error with your tasks as smooth as possible.</p>
+</div>
+<div class="section" id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
+<p>The typical workflow is:</p>
+<ol class="arabic simple">
+<li>download a LAF resource <a class="footnote-reference" href="#laf" id="id1">[1]</a> to your computer
+(or work with a compiled version <a class="footnote-reference" href="#nolaf" id="id2">[2]</a>).</li>
+<li>install LAF-fabric on your computer.</li>
+<li>adapt a config file to change the location of the work directory.</li>
+<li>write your own task in an <a class="reference external" href="http://ipython.org">iPython notebook</a>, or
+write your task as script and put it into LAF-Fabric.</li>
+<li>run the code cells in an <a class="reference external" href="http://ipython.org">iPython notebook</a>, or run LAF-fabric from the command line.</li>
+</ol>
+<div class="section" id="notebook-mode">
+<h3>Notebook mode<a class="headerlink" href="#notebook-mode" title="Permalink to this headline">¶</a></h3>
+<p>You can write a task as a stand-alone script, importing LAF-fabric as a module, called <em>graf</em>.
+You can then break such a script up into chunks of code, and paste them in the code cells of an
+<a class="reference external" href="http://ipython.org">iPython notebook</a>.
+See the <em>notebooks</em> directory for executable examples.</p>
+</div>
+<div class="section" id="workbench-mode">
+<h3>Workbench mode<a class="headerlink" href="#workbench-mode" title="Permalink to this headline">¶</a></h3>
+<p>LAF-fabric behaves in the same pattern as the <tt class="docutils literal"><span class="pre">mysql&gt;</span></tt> prompt for a database. You can use it as in interactive
+command interpreter that lets you select and run tasks.
+You can also invoke it to run a single task without interaction.</p>
+<p>During a prompt session you can make a selection of source and <em>annox</em> and task.
+<em>Annox</em> is shorthand for <em>extra annotation package</em>.</p>
+<p>You can run your selection, modify the selection, run it again, ad libitum.
+While this session is alive, loading and unloading of data will be done only when it is really needed.
+Data that is needed for one task, will be reused for the next task.</p>
+<p>So if you have to debug a script, you can do so without repeatedly waiting for the loading of the data.</p>
+<p>The first time a source or annox is used, the LAF resource will be compiled.
+Compiling of the full Hebrew Bible source may take considerable time,
+say 10 minutes for a 2 GB XML annotations on a Macbook Air (2012).
+The compiled source will be saved to disk across runs of LAF-fabric.
+Loading the compiled data takes, in the same setting with the Hebrew Bible, less than a second,
+but then the feature data is not yet loaded, only the regions, nodes and edges.
+If you need the original XML identifiers for your task, there will be 2 to 5 seconds of extra load time.</p>
+<p>And you can even cut out this loading time by running multiple tasks in a single session.</p>
+<p>After loading the data, LAF-fabric invokes your task script(s).</p>
+</div>
+<div class="section" id="both-modes">
+<h3>Both modes<a class="headerlink" href="#both-modes" title="Permalink to this headline">¶</a></h3>
+<p>You must declare the LAF-features that you use in your task, and LAF-fabric will load data for them.
+Loading a feature typically adds 0.1 to 1 second to the load time.
+It will also unload the left-over data from previous tasks for features
+that the current task has not declared.
+In this way we can give each task the maximal amount of RAM.</p>
+</div>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>This work is freely available, without any restrictions.
+It is free for commerical use and non-commercial use.
+The only limitation is that parties that include this work may not in anyway restrict the freedom
+of others to use it.</p>
+</div>
+<div class="section" id="designed-for-performance">
+<h2>Designed for Performance<a class="headerlink" href="#designed-for-performance" title="Permalink to this headline">¶</a></h2>
+<p>Since there is a generic LAF tool for smaller resources,
+(<a class="reference external" href="http://media.cidles.eu/poio/graf-python/">POIO, Graf-python</a>)
+this tool has been designed with performance in mind.
+In fact, performance has been the most important design criterion of all.
+In this section the design decisions and particulars are listed.
+There are also a few simplifications involved, see the section of GrAF <a class="reference internal" href="#feature-coverage"><em>GrAF feature coverage</em></a> below.</p>
+<p>There are several ideas involved in compiling a LAF resource into something that is compact, fast loadable, and amenable to efficient computing.</p>
+<ol class="arabic simple">
+<li>Replace nodes and edges and regions by integers.</li>
+<li>Store relationships between integers in <em>arrays</em>, that is, Python arrays.</li>
+<li>Store relationships between integers and sets of integers also in <em>arrays</em>.</li>
+<li>Keep individual features separate.</li>
+<li>Compress data when writing it to disk.</li>
+</ol>
+<div class="section" id="explanation-of-these-ideas">
+<h3>Explanation of these ideas<a class="headerlink" href="#explanation-of-these-ideas" title="Permalink to this headline">¶</a></h3>
+<p><strong>Everything is integer</strong>
+In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
+Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
+In the compiled version we get rid of all XML identifiers.
+We will represent everything that comes in great quantities by integers: regions, nodes, edges, feature values.
+But feature names, annotation labels and annotation spaces will be kept as is.</p>
+<p><strong>Relationships between integers as Python arrays</strong>
+In Python, an array is a C-like structure of memory slots of fixed size.
+You do not have arrays of arrays, nor arrays with mixed types.
+This makes array handling very efficient, especially loading data from disk and saving it to disk.
+Moreover, the amount of space in memory needed is like in C, without the overhead a scripting language usually adds to its data types.</p>
+<p>There is an other advantage:
+a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column.
+In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.</p>
+<p><strong>Relationships between integers as Python arrays</strong>
+If we want to map numbers to sets of numbers,
+we need to be more tricky, because we cannot store sets of numbers as integers.
+What we do instead is: we build two arrays, the first array points to data records in the second array.
+A data record in the second array consists of a number giving the length of the record,
+followed by that number of integers.
+The function <a class="reference internal" href="graf/modules.html#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
+<p><strong>Keep individual features separate</strong>
+A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
+they occur in, since these annotations have a <em>label</em> and occur in an <em>annotation space</em>.
+We let features inherit the label and the space of their annotations. Within space and label, features are distinguished by name.
+And the part of a feature that addresses edges is kept separate from the part that addresses nodes.</p>
+<p>So an individual feature is identified by <em>annotation space</em>, <em>annotation label</em>, <em>feature name</em>, and <em>kind</em> (node or edge).
+For example, in the Hebrew Bible data, we have the feature:</p>
+<div class="highlight-python"><pre>shebanq:ft.suffix (node)</pre>
+</div>
+<p>with annotation space <tt class="docutils literal"><span class="pre">shebanq</span></tt>, annotation label <tt class="docutils literal"><span class="pre">ft</span></tt>, feature name <tt class="docutils literal"><span class="pre">suffix</span></tt>, and kind <tt class="docutils literal"><span class="pre">node</span></tt>.
+The data of this feature is a mapping that assigns a string value to each of more than 400,000 nodes.
+So this individual feature represents a significant chunk of data.</p>
+<p>The individual features together take up the bulk of the space.
+In our example, they take 145 MB on disk, and the rest takes only 55 MB.
+Most tasks require only a limited set of individual features.
+So when we run tasks and switch between them, we want to swap feature data in
+and out.
+The design of LAF-fabric is such that feature data is neatly chunked per individual feature.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Here is the reason that we do not have an overall table for feature values, identified by integers.
+We miss some compression here, but with a global feature value mapping, we would burden every task with a significant
+amount of memory.
+Moreover, the functionality of extra annotation packages is easier to implement
+when individual features are cleanly separable.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Features coming from the source and features coming from the extra annotation package will be merged
+before the you can touch them in tasks.
+This merging occurs late in the process, even after the loading of features by LAF-fabric.
+Only at the point in time when a task declares the names of the API methods
+(see <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.API" title="graf.task.GrafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API</span></tt></a>)
+the features will be assembled into objects.
+At this point the source features and annox features finally get merged.
+When a task no longer uses a merged feature, or want to merge with a different package,
+the feature data involved will be cleared, so that a fresh merger can take place.</p>
+</div>
+</div>
+<div class="section" id="consequences">
+<h3>Consequences<a class="headerlink" href="#consequences" title="Permalink to this headline">¶</a></h3>
+<p>The concrete XML identifiers present in the LAF resource are moved to the background.
+Only if your task asks for them explicitly, they can be loaded.
+In that case you get mappings between the xml-identifiers and the internal integer codes
+for nodes and for edges. This requires considerable overhead.</p>
+<p>Whoever designs a LAF resource to be worked on by LAF-fabric,
+should not rely on the values of the XML identifiers to derive implicit meanings from.
+I did that in initial stages, producing identifiers <tt class="docutils literal"><span class="pre">n_1,</span> <span class="pre">n_2,</span> <span class="pre">e_1,</span> <span class="pre">e_2</span></tt> etcetera for node 1, 2 and edge 1, 2.
+There is nothing wrong with such identifiers, but do not expect to determine in your tasks whether
+something is a node or edge by looking at an identifier.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are cases where a task really needs the original identifiers.
+Tasks that create new annotations for existing nodes or edges,
+need to know the xml-identifiers used in the source.</p>
+</div>
+</div>
+</div>
+<div class="section" id="graf-feature-coverage">
+<span id="feature-coverage"></span><h2>GrAF feature coverage<a class="headerlink" href="#graf-feature-coverage" title="Permalink to this headline">¶</a></h2>
+<p>This tool cannot deal with LAF resources in their full generality.</p>
+<p>In LAF, annotations have labels, and annotations are organized in annotation spaces.
+In a previous version, LAF-fabric ignored annotation spaces altogether.
+Now annotation spaces are fully functional.</p>
+<dl class="docutils">
+<dt><em>primary data</em></dt>
+<dd>LAF-fabric deals with primary data in the form of text.
+It is not designed for other media such as audio and video.
+Further, it is assumed that the text is represented in UNICODE, in an
+encoding supported by python, such as utf-8.
+LAF-fabric assumes that the basic unit is the UNICODE character.
+It does not deal with alternative units such as bytes or words.</dd>
+<dt><em>feature structures</em></dt>
+<dd>The content of an annotation can be a feature structure.
+A feature structure is a set of features and sub features, ordered again as a graph.
+LAF-fabric can deal with feature structures that are merely sets of key-value pairs.
+The graph-like model of features and subfeatures is not supported.</dd>
+<dt><em>annotations</em></dt>
+<dd><p class="first">Even annotations get lost. LAF-fabric is primarily interested in features and values.
+It forgets the annotations in which they have been packaged except for:</p>
+<ul class="last simple">
+<li>the annotation space,</li>
+<li>the annotation label,</li>
+<li>the target kind of the annotation (node or edge)</li>
+</ul>
+</dd>
+<dt><em>dependencies</em></dt>
+<dd>In LAF one can specify the dependencies of the files containing regions, nodes, edges and/or annotations.
+LAF-fabric assumes that all dependent files are present in the resource.
+Hence LAF-fabric reads all files mentioned in the GrAF header, in the order stated in the GrAF header file.
+This should be an order in which regions appear before the nodes that link to them,
+nodes before the edges that connect them, and nodes and edges before the annotations that target them.</dd>
+</dl>
+</div>
+<div class="section" id="future-directions">
+<h2>Future directions<a class="headerlink" href="#future-directions" title="Permalink to this headline">¶</a></h2>
+<p>LAF-Fabric has proven to function well for a small set of tasks.
+This proves that the methodology works and that we can try more challenging things.
+The direction of the future work should be determined by your research needs.</p>
+<div class="section" id="adding-new-annotations">
+<h3>Adding new annotations<a class="headerlink" href="#adding-new-annotations" title="Permalink to this headline">¶</a></h3>
+<p>While LAF-Fabric supports adding an extra annotation package to the existing LAF resource,
+and contains an example workflow to create such packages, this process has not been
+honed by practice yet.</p>
+<p>We are working on concrete tasks with real data as of January 2014.</p>
+</div>
+<div class="section" id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h3>
+<p>If you develop tasks in notebook mode, you can invoke additional packages for
+data analysis and visualization right after your task has been completed in the notebook.</p>
+<p>The division of labour is that LAF-Fabric helps you to extract the relevant data from the resource,
+and outside LAF-Fabric, but still inside your notebook, you continue to play with that data.</p>
+<p>When we get more experience with visualization, we might need new ways of data extraction, which
+would drive a new wave of changes in LAF-Fabric.</p>
+</div>
+<div class="section" id="graph-methodology-and-full-feature-structures">
+<h3>Graph methodology and full feature structures<a class="headerlink" href="#graph-methodology-and-full-feature-structures" title="Permalink to this headline">¶</a></h3>
+<p>LAF-Fabric has not been implemented as a graph database.
+We might adopt more techniques from graph databases to make it more compatible with
+current graph technology.
+We could use the python <a class="reference external" href="http://networkx.github.io/#">networkx</a> module for that.
+That would also help to implement feature structures in full generality.</p>
+</div>
+<div class="section" id="api-completion">
+<h3>API completion<a class="headerlink" href="#api-completion" title="Permalink to this headline">¶</a></h3>
+<p>Many reasonable candidates for an API have not yet been implemented. Basically we have only:</p>
+<dl class="docutils">
+<dt><em>node iterator</em></dt>
+<dd>iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered).</dd>
+<dt><em>feature lookup</em></dt>
+<dd>a class that gives easy access to feature data and has methods for feature value lookup and mapping of
+feature values.</dd>
+<dt><em>xml identifier mapping</em></dt>
+<dd>a mapping from orginal xml identifiers to integers.</dd>
+<dt><em>primary data access</em></dt>
+<dd>The primary data can be accessed through nodes that are linked to regions of primary data.</dd>
+</dl>
+<p>Probably it is also handy to make custom node sets so that we can use python&#8217;s set methods
+to manipulate with node sets.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Python does not have strict encapsulation of data structures,
+so by just inspecting the classes and objects you can reach out
+for all aspects of the LAF data that went into the compiled data.
+See the GrAF <a class="reference internal" href="#feature-coverage"><em>GrAF feature coverage</em></a> for a specification of what data ends up in the compilation.</p>
+</div>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="laf" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>A LAF resource is a directory with a primary data file, annotation files and header files.
+This program has been tested with <a class="reference internal" href="background.html#data"><em>LAF version of the Hebrew Bible</em></a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="nolaf" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>It is perfectly possible to run the workflow without the original LAF resource.
+If somebody has compiled a LAF resource for you, he only need to give you the compiled data,
+and let the LAF source in the configuration point to something non-existent.
+In that case LAF-fabric will not complain, and never attempt to recompile the original resource.
+You can still add extra annotation packages, which still can be compiled against the original LAF source,
+since the original XML identifiers are part of the compiled data.
+In case of the Hebrew Bible LAF resource: the original resource is over 2 GB on disk,
+while the compiled binary data is less than 200 MB.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="getting-started.html" class="btn btn-neutral float-right" title="Getting Started"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="welcome.html" class="btn btn-neutral" title="Welcome"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Dirk Roorda.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>

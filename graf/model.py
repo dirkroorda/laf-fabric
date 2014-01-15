@@ -4,7 +4,7 @@ import array
 def arrayify(source_list):
     '''Efficient storage of a list of lists of integers in two Python :py:mod:`array`.
 
-    *This is one of the most important tricks of the whole workbench, and yet it is only 10 lines of code!*
+    *This is one of the most important tricks of the LAF-Fabric, and yet it is only 10 lines of code!*
 
     Args:
         source_list (iterable):

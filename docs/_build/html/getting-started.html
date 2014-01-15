@@ -1,0 +1,344 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; LAF Fabric 2.4.3 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'',
+        VERSION:'2.4.3',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="LAF Fabric 2.4.3 documentation" href="index.html"/>
+        <link rel="next" title="Writing Tasks" href="taskwriting.html"/>
+        <link rel="prev" title="About" href="about-laf-fabric.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="icon icon-home"> LAF Fabric</a>
+        <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="welcome.html">Welcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about-laf-fabric.html">About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#future-directions">Future directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#your-python-setup">Your python setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-laf-fabric">Get LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-laf-fabric">Install LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure-laf-fabric">Configure LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-the-data">Get the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-laf-fabric">Run LAF-Fabric</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="taskwriting.html">Writing Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#what-is-a-task">What is a task?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#a-leading-example">A leading example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#interactive-execution">Interactive execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-task-to-laf-fabric">Information flow from task to LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="background.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_use.html">annox_use module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 2.4.3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.parse">graf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.shell">graf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.task">graf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">LAF Fabric</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="index.html">Docs</a> &raquo;</li>
+  <li><a href="">Getting Started</a></li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="_sources/getting-started.txt" rel="nofollow"> View page source</a>
+      
+    </li>
+</ul>
+<hr/>
+
+          
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p><em>LAF-Fabric</em> is a <a class="reference external" href="https://github.com/dirkroorda/laf-fabric">github project</a>
+in which there is a Python package called <tt class="xref py py-mod docutils literal"><span class="pre">graf</span></tt>.
+It is a package without extension modules,
+so it will run without installation from anywhere in your system.
+In order to run it in notebook mode (recommended), you must
+install it as a package in your current python installation.
+This can be done in the standard pythonic way,
+and the precise instructions will be spelled out below.</p>
+</div>
+<div class="section" id="your-python-setup">
+<h2>Your python setup<a class="headerlink" href="#your-python-setup" title="Permalink to this headline">¶</a></h2>
+<p>First of all, make sure that you have the right Python installation.
+You need a python3 installation with numerous scientific packages.
+Below is the easiest way to get up and running with python.
+You can also use it if you have already a python, but in the wrong versions and without some
+necessary modules.
+The following setup ensures that it will not interfere with existing python installations
+and it will get you all modules in one go.</p>
+<div class="section" id="getting-to-know-interactive-python">
+<h3>Getting to know interactive python<a class="headerlink" href="#getting-to-know-interactive-python" title="Permalink to this headline">¶</a></h3>
+<p>The following step may take a while, so in the meantime you can familiarize yourself with
+ipython, if you like. The <a class="reference external" href="http://ipython.org">website</a> is a good entry point.</p>
+</div>
+<div class="section" id="download-anaconda">
+<h3>Download Anaconda<a class="headerlink" href="#download-anaconda" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> is our distribution of choice.
+We want, however, base it on python3, so we have to take a detour.</p>
+<ol class="arabic">
+<li><p class="first">Download a <em>miniconda</em> installer from <a class="reference external" href="http://repo.continuum.io/miniconda/index.html">here</a>.
+Pick the one starting with <em>Miniconda3</em> that fits your operating system.
+Install it. If asked to install for single user or all users, choose single user.</p>
+</li>
+<li><p class="first">Start up a new command prompt, and say:</p>
+<div class="highlight-python"><pre>conda install anaconda</pre>
+</div>
+<p>This will install all anaconda packages in your fresh python3 installation.
+Now you have <em>ipython</em>, <em>networkx</em>, <em>mathplotlib</em>, <em>numpy</em> to name but a few popular
+python packages for scientific computing.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="get-laf-fabric">
+<h2>Get LAF-Fabric<a class="headerlink" href="#get-laf-fabric" title="Permalink to this headline">¶</a></h2>
+<p>If you have git you can just clone it from github on the command line:</p>
+<div class="highlight-python"><pre>cd «directory of your choice»
+git clone https://github.com/dirkroorda/laf-fabric</pre>
+</div>
+<p>If you do not have git, consider getting it from <a class="reference external" href="https://github.com">github</a>.
+It makes updating your LAF-Fabric easier later on.</p>
+<p>Nevertheless, you can also download the latest version from
+<a class="reference external" href="https://github.com/dirkroorda/laf-fabric">github/laf-fabric</a>.
+Unpack this somewhere on your file system. Change the name from <em>laf-fabric-master</em> to <em>laf-fabric</em>.
+In a command prompt, navigate to this directory.</p>
+</div>
+<div class="section" id="install-laf-fabric">
+<h2>Install LAF-Fabric<a class="headerlink" href="#install-laf-fabric" title="Permalink to this headline">¶</a></h2>
+<p>Here are the steps, assuming you are in the command line, at the top level directory in <em>laf-fabric</em>:</p>
+<div class="highlight-python"><pre>cd dist
+tar xvf graf-*
+cd graf-*
+python setup.py install</pre>
+</div>
+</div>
+<div class="section" id="configure-laf-fabric">
+<h2>Configure LAF-Fabric<a class="headerlink" href="#configure-laf-fabric" title="Permalink to this headline">¶</a></h2>
+<p>The configuration file script is <em>laf-fabric.cfg</em> in the directory <em>notebooks</em>.
+In it there is just one setting, and you have to adapt it to your local situation:</p>
+<div class="highlight-python"><pre>[locations]
+work_dir  = /Users/dirk/Scratch/shebanq/results</pre>
+</div>
+<dl class="docutils" id="work-dir">
+<dt><em>work_dir</em></dt>
+<dd>folder where all the data is, input, intermediate, output.</dd>
+</dl>
+</div>
+<div class="section" id="get-the-data">
+<h2>Get the data<a class="headerlink" href="#get-the-data" title="Permalink to this headline">¶</a></h2>
+<p>If you have a LAF resource, create a subdirectory <em>laf</em> inside the <em>work_dir</em>, and put
+the files of the LAF resource there.</p>
+<p>If you only have a compiled LAF resource, e.g. <em>bhs3.txt.hdr</em>, put it also
+inside <em>work_dir</em>.</p>
+</div>
+<div class="section" id="run-laf-fabric">
+<h2>Run LAF-Fabric<a class="headerlink" href="#run-laf-fabric" title="Permalink to this headline">¶</a></h2>
+<p>In the command prompt, go to the directory where <em>laf-fabric.py</em> resides:</p>
+<div class="highlight-python"><pre>cd «path_to_dir_of_laf-fabric.py»</pre>
+</div>
+<p><em>notebook mode</em>, example notebooks:</p>
+<div class="highlight-python"><pre>cd notebooks
+ipython notebook</pre>
+</div>
+<p>This starts a python process that communicates with a browser tab, which will pop up in fron of you.
+This is your dashboard of notebooks.
+You can pick an existing notebook to work with, or create a new one.</p>
+<p><em>notebook mode</em>, your own notebooks</p>
+<ol class="arabic">
+<li><p class="first">Create a notebook directory somewhere in your system and navigate there in a command prompt.</p>
+</li>
+<li><p class="first">Copy your version of <em>laf-fabric.cfg</em> in the example notebooks directory to your own notebook directory.</p>
+</li>
+<li><p class="first">Then:</p>
+<div class="highlight-python"><pre>ipython notebook</pre>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you create a notebook that you are proud of, it would be nice to include it in the example
+notebooks.
+If you want to share your notebook this way, mail it to <a class="reference external" href="mailto:dirk&#46;roorda&#37;&#52;&#48;dans&#46;knaw&#46;nl">me</a>.</p>
+</div>
+<p><em>workbench single use mode</em>:</p>
+<div class="highlight-python"><pre>python laf-fabric.py --source=«source» --annox=«annox» --task=«task» [--force-compile-source] [--force-compile-annox]</pre>
+</div>
+<p>If all of the <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are present and if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is absent
+LAF-fabric runs the specified task without asking and quits.</p>
+<p><em>workbench re-use mode</em>:</p>
+<div class="highlight-python"><pre>python laf-fabric.py [--source=«source» ] [--annox=«annox»] [--task=«task» ] [--force-compile-source] [--force-compile-annox]</pre>
+</div>
+<p>If some of the <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are missing or if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is present
+it starts in interactive mode prompting you for sources and commands to run tasks.
+The <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are given are used for initial values.
+In interactive mode you can change your <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> selection, and run tasks.
+There is a help command and the prompt is self explanatory.</p>
+<div class="section" id="other-options">
+<h3>Other options<a class="headerlink" href="#other-options" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">--force-compile-source</span></tt> and <tt class="docutils literal"><span class="pre">--force-compile-annox</span></tt></dt>
+<dd>If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
+The detection is based on the modified dates of the GrAF header file and the compiled files.
+In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
+In interactive mode, there is a command to force recompilation of the current source.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="taskwriting.html" class="btn btn-neutral float-right" title="Writing Tasks"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="about-laf-fabric.html" class="btn btn-neutral" title="About"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Dirk Roorda.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>

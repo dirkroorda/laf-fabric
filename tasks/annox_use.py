@@ -43,11 +43,11 @@ def task(graftask):
     It contains a few annotations in Genesis 1.
     All these annotations will be shown in a listing in the output.
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
     msg("Get the books ...")
 
-    out = graftask.add_result("output.txt")
+    out = graftask.add_output("output.txt")
 
     for i in NN(test=F.shebanq_db_otype.v, value='book'):
         dirk_says = F.dirk_part_comment.v(i)

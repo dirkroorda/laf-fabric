@@ -225,7 +225,20 @@
 <div class="viewcode-block" id="Notebook.out_file"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.out_file">[docs]</a>    <span class="k">def</span> <span class="nf">out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Create an output file in the folder for the output of this task</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Notebook.my_files"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.my_files">[docs]</a>    <span class="k">def</span> <span class="nf">my_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;The location where the output files of this task can be found</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str):</span>
+<span class="sd">                the name of the file, without path information.</span>
+<span class="sd">                Optional. If not present, returns the path to the output directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the path to *file_name* or the directory of the output files.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span></div></div>
 </pre></div>
 
           <footer>

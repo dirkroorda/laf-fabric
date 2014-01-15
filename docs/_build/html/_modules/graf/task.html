@@ -560,9 +560,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A handle to the opened file.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span>
-        <span class="p">)</span>
+        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span><span class="p">)</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">handle</span>
@@ -581,12 +579,26 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A handle to the opened file.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span>
-        <span class="p">)</span>
+        <span class="n">result_file</span> <span class="o">=</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span><span class="p">)</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">handle</span>
+</div>
+<div class="viewcode-block" id="GrafTask.result"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.result">[docs]</a>    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;The location where the files of this task can be found</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (str):</span>
+<span class="sd">                the name of the file, without path information.</span>
+<span class="sd">                Optional. If not present, returns the path to the output directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the path to *file_name* or the directory of the output files.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="GrafTask.init_task"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.init_task">[docs]</a>    <span class="k">def</span> <span class="nf">init_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initializes the current task.</span>

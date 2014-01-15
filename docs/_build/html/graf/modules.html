@@ -913,6 +913,23 @@ Optional, default False.</dd>
 </dd></dl>
 
 <dl class="method">
+<dt id="graf.notebook.Notebook.my_files">
+<tt class="descname">my_files</tt><big>(</big><em>file_name=None</em><big>)</big><a class="reference internal" href="../_modules/graf/notebook.html#Notebook.my_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.notebook.Notebook.my_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>The location where the output files of this task can be found</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>file_name (str):</dt>
+<dd>the name of the file, without path information.
+Optional. If not present, returns the path to the output directory.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>the path to <em>file_name</em> or the directory of the output files.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="graf.notebook.Notebook.out_file">
 <tt class="descname">out_file</tt><big>(</big><em>file_name</em><big>)</big><a class="reference internal" href="../_modules/graf/notebook.html#Notebook.out_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.notebook.Notebook.out_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an output file in the folder for the output of this task</p>
@@ -1001,7 +1018,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 
 <dl class="attribute">
 <dt id="graf.parse.AnnotationHandler.truth">
-<tt class="descname">truth</tt><em class="property"> = {'yes': True, '0': False, 'false': False, 'true': True, '1': True, 'on': True, 'no': False, 'off': False}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">truth</tt><em class="property"> = {'no': False, 'off': False, '0': False, 'on': True, '1': True, 'false': False, 'true': True, 'yes': True}</em><a class="headerlink" href="#graf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1591,6 +1608,23 @@ whose presence in the related items set is to be tested.</dd>
 <tt class="descname">init_task</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.init_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.init_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the current task.</p>
 <p>Provide a log file, reset the timer, and issue a progress message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graf.task.GrafTask.result">
+<tt class="descname">result</tt><big>(</big><em>file_name=None</em><big>)</big><a class="reference internal" href="../_modules/graf/task.html#GrafTask.result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graf.task.GrafTask.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>The location where the files of this task can be found</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>file_name (str):</dt>
+<dd>the name of the file, without path information.
+Optional. If not present, returns the path to the output directory.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>the path to <em>file_name</em> or the directory of the output files.</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">

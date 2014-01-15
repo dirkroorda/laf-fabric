@@ -401,9 +401,7 @@ class GrafTask(Graf):
         Returns:
             A handle to the opened file.
         '''
-        result_file = "{}/{}".format(
-            self.env['result_dir'], file_name
-        )
+        result_file = "{}/{}".format(self.env['result_dir'], file_name)
         handle = open(result_file, "w")
         self.result_files.append(handle)
         return handle
@@ -422,12 +420,26 @@ class GrafTask(Graf):
         Returns:
             A handle to the opened file.
         '''
-        result_file = "{}/{}".format(
-            self.env['result_dir'], file_name
-        )
+        result_file = "{}/{}".format(self.env['result_dir'], file_name)
         handle = open(result_file, "r")
         self.result_files.append(handle)
         return handle
+
+    def result(self, file_name=None):
+        '''The location where the files of this task can be found
+
+        Args:
+            file_name (str):
+                the name of the file, without path information.
+                Optional. If not present, returns the path to the output directory.
+
+        Returns:
+            the path to *file_name* or the directory of the output files.
+        '''
+        if file_name == None:
+            return self.env['result_dir']
+        else:
+            return "{}/{}".format(self.env['result_dir'], file_name)
 
     def init_task(self):
         '''Initializes the current task.

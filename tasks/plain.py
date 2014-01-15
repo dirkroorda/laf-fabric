@@ -25,9 +25,9 @@ def task(graftask):
     The outcome should be identical to the primary data file in the original LAF resource.
 
     This is a handy check on all the data transformations involved. If the output of this task
-    is not byte for byte equal to the primary data, something seriously wrong with the workbench!
+    is not byte for byte equal to the primary data, something seriously wrong with LAF-Fabric!
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
     prim = graftask.env['source'] != 'tiny'
     if prim:
@@ -35,7 +35,7 @@ def task(graftask):
     else:
         msg("Get the books ...")
 
-    out = graftask.add_result("output.txt")
+    out = graftask.add_output("output.txt")
 
     for i in F.shebanq_db_otype.s('word' if prim else 'book'):
         the_output = ''

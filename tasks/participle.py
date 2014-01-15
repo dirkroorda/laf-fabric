@@ -46,11 +46,11 @@ def task(graftask):
         common nouns in Esther and as columns the books of the bible.
         A cell contain the frequency of that lexeme in that book multiplied by 1000 
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
 
-    out_all = graftask.add_result("participles.txt")
+    out_all = graftask.add_output("participles.txt")
 
     wordscan = re.compile(r'>W?JB')
     for node in NN():

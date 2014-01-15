@@ -40,12 +40,12 @@ def task(graftask):
     Returns:
         stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
-    out = graftask.add_result("output.txt")
-    stats_v_raw = graftask.add_result("stats_v_raw.txt")
-    stats_v_compact = graftask.add_result("stats_v_compact.txt")
-    stats_c_compact = graftask.add_result("stats_c_compact.txt")
+    out = graftask.add_output("output.txt")
+    stats_v_raw = graftask.add_output("stats_v_raw.txt")
+    stats_v_compact = graftask.add_output("stats_v_compact.txt")
+    stats_c_compact = graftask.add_output("stats_c_compact.txt")
 
     type_map = collections.defaultdict(lambda: None, [
         ("chapter", 'Ch'),

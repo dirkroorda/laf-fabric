@@ -50,27 +50,27 @@ def task(graftask):
 
 
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
     lexemes = collections.defaultdict(lambda: collections.defaultdict(lambda:collections.defaultdict(lambda:0)))
     lexeme_support_book = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
 
     tasks = {
         'noun_common': {
-            '1': graftask.add_result("noun_common_1.gexf"),
-            '2': graftask.add_result("noun_common_2.gexf"),
+            '1': graftask.add_output("noun_common_1.gexf"),
+            '2': graftask.add_output("noun_common_2.gexf"),
         },
         'noun_proper': {
-            '1': graftask.add_result("noun_proper_1.gexf"),
-            '2': graftask.add_result("noun_proper_2.gexf"),
+            '1': graftask.add_output("noun_proper_1.gexf"),
+            '2': graftask.add_output("noun_proper_2.gexf"),
         },
         'verb': {
-            '1': graftask.add_result("verb_1.gexf"),
-            '2': graftask.add_result("verb_2.gexf"),
+            '1': graftask.add_output("verb_1.gexf"),
+            '2': graftask.add_output("verb_2.gexf"),
         },
         'all': {
-            '1': graftask.add_result("all_1.gexf"),
-            '2': graftask.add_result("all_2.gexf"),
+            '1': graftask.add_output("all_1.gexf"),
+            '2': graftask.add_output("all_2.gexf"),
         },
     }
 

@@ -18,9 +18,9 @@ def task(graftask):
     '''Produces a list of all WIVU objects with their types, ids and
     *monads* (words) they contain.
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
-    out = graftask.add_result("output.txt")
+    out = graftask.add_output("output.txt")
 
     for i in NN():
         oid = F.shebanq_db_oid.v(i)

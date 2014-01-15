@@ -24,9 +24,9 @@ def task(graftask):
     In contrast to the task :mod:`task.plain`, the
     books, chapters, and verses are marked.
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
+    (msg, P, NN, F, X) = graftask.API()
 
-    out = graftask.add_result("output.txt")
+    out = graftask.add_output("output.txt")
 
     the_book = None
     the_chapter = None

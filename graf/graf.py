@@ -105,7 +105,7 @@ class Graf(object):
         
         The API will help you to lookup feature values.
         See :mod:`task <graf.task>` for a description of the API, especially
-        :meth:`get_mappings <graf.task.GrafTask.get_mappings>`
+        :meth:`API <graf.task.GrafTask.API>`
     '''
 
     BIN_EXT = 'bin'
@@ -159,7 +159,7 @@ class Graf(object):
         and of the task executions.
         '''
         self.prev_tasks = {}
-        '''List of tasks executed in this run of the workbench, with the modification time of the task program file
+        '''List of tasks executed in this run of LAF-Fabric, with the modification time of the task program file
         at the time it was last run
         '''
         self.status = {

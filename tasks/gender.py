@@ -23,8 +23,8 @@ def task(graftask):
     Outputs the frequencies in a tab-delimited file, with frequency values for
     each chapter in the whole Hebrew Bible.
     '''
-    (msg, P, NN, F, X) = graftask.get_mappings()
-    stats_file = graftask.add_result("stats.txt")
+    (msg, P, NN, F, X) = graftask.API()
+    stats_file = graftask.add_output("stats.txt")
 
     stats = [0, 0, 0]
     cur_chapter = None

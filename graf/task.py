@@ -234,7 +234,7 @@ class GrafTask(Graf):
         Graf.__init__(self, settings)
 
         self.result_files = []
-        '''List of handles to result files created by the task through the method :meth:`add_result`'''
+        '''List of handles to result files created by the task through the method :meth:`add_output`'''
 
         cur_dir = os.getcwd()
         task_dir = self.settings['locations']['task_dir']
@@ -242,14 +242,14 @@ class GrafTask(Graf):
         if task_include_dir != None:
             sys.path.append(task_include_dir)
 
-    def get_mappings(self):
+    def API(self):
         '''Return references to API data structures and methods of this class.
 
         
         This is what is returned (the names given are not necessarily the names by which they are used
         in end user tasks. You can give convenient, local names to these methods, e.g::
 
-            (msg, P, NN, F, X) = graftask.get_mappings()
+            (msg, P, NN, F, X) = graftask.API()
 
         Using these names, here is the API specification:
 
@@ -387,11 +387,11 @@ class GrafTask(Graf):
         if stage == None or stage == 'final':
             self.finish_task()
 
-    def add_result(self, file_name):
+    def add_output(self, file_name):
         '''Opens a file for writing and stores the handle.
 
         Every task is advised to use this method for opening files for its output.
-        The file will be closed by the workbench when the task terminates.
+        The file will be closed by LAF-Fabric when the task terminates.
 
         Args:
             file_name (str):
@@ -410,7 +410,7 @@ class GrafTask(Graf):
         '''Opens a file for reading and stores the handle.
 
         Every task is advised to use this method for opening files for its input.
-        The file will be closed by the workbench when the task terminates.
+        The file will be closed by LAF-Fabric when the task terminates.
 
         Args:
             file_name (str):

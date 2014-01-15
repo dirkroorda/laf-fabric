@@ -67,3 +67,16 @@ class Notebook(object):
         '''Create an output file in the folder for the output of this task
         '''
         return self.graftask.add_result(file_name)
+
+    def my_files(self, file_name=None):
+        '''The location where the output files of this task can be found
+
+        Args:
+            file_name (str):
+                the name of the file, without path information.
+                Optional. If not present, returns the path to the output directory.
+
+        Returns:
+            the path to *file_name* or the directory of the output files.
+        '''
+        return self.graftask.result(file_name=file_name)

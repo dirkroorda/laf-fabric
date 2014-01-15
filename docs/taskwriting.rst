@@ -12,11 +12,22 @@ There are two scenarios for executing tasks:
 1. start the workbench and use its interface to call tasks
 2. import the workbench as a module in your task code
 
+Notebook mode
+-------------
+Here you write your tasks as stand alone scripts that import the workbench as a module.
+In this scenario you can also run your tasks interactively in an iPython notebook.
 
-Scenario 1: workbench centric
------------------------------
-In order to be called by the workbench, you have to put into the *tasks* directory
-(see :ref:`configuration <task_dir>`).
+Here is a list of current notebooks for LAF-fabric.
+If you click on the link, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
+which shows static versions of notebooks without storing them. In order to run them,
+you need to download them to your local machine.
+
+* `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+* `cooccurrences <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
+
+Workbench mode
+--------------
+In order to be called by the workbench, you have to put into the *tasks* directory.
 
 The workbench passes an object to your task,
 which contains the information needed to peek into the LAF resource.
@@ -30,19 +41,6 @@ it may import arbitrary modules.
 The workbench is agnostic of your code, it does not screen it, and will not perform deep tricks.
 
 This scenario is handy if you have a bunch of tasks that you want to run in quick succession.
-
-Scenario 2: task centric
-------------------------
-Here you write your tasks as stand alone scripts that import the workbench as a module.
-In this scenario you can also run your tasks interactively in an iPython notebook.
-
-Here is a list of current notebooks for LAF-fabric.
-If you click on the link, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
-which shows static versions of notebooks without storing them. In order to run them,
-you need to download them to your local machine.
-
-* `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
-* `cooccurrences <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
 
 A leading example
 =================

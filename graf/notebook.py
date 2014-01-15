@@ -16,7 +16,7 @@ class Notebook(object):
 
         '''
 
-        self.settings = Settings()
+        self.settings = Settings(context='nb')
         self.graftask = GrafTask(self.settings.settings)
 
     def init(self, source, annox, task, load, force_compile_source=False, force_compile_annox=False):
@@ -46,6 +46,7 @@ class Notebook(object):
             force_compile={'source': force_compile_source, 'annox': force_compile_annox},
             load=load, function=True, stage='init',
         )
+
     def final(self):
         '''Finalize task execution.
 
@@ -58,6 +59,7 @@ class Notebook(object):
             self.graftask.env['task'],
             stage='final',
         )
+
     def data(self):
         '''Insert the names by which you can access the data into your name space.
         '''

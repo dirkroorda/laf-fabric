@@ -33,7 +33,7 @@ class Shell(object):
         command line values are parsed here, and the command prompt will use them as initial values.
         '''
 
-        self.settings = Settings()
+        self.settings = Settings(context='wb')
 
         argsparser = argparse.ArgumentParser(description = 'Conversion of LAF to Binary')
         argsparser.add_argument(

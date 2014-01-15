@@ -467,11 +467,16 @@ class GrafTask(Graf):
         self.progress("END TASK {}".format(self.env['task']))
         self.flush_logfile()
 
-        msg = subprocess.check_output("ls -lh {}".format(self.env['result_dir']), shell=True)
-        self.progress("\n" + msg.decode('utf-8'))
+        msg = []
+        result_dir = self.env['result_dir']
+        self.progress("Results directory:\n{}".format(result_dir))
+        for name in sorted(os.listdir(path=result_dir)):
+            path = "{}/{}".format(result_dir, name) 
+            size = os.path.getsize(path)
+            mtime = time.ctime(os.path.getmtime(path))
+            msg.append("{:<30} {:>12} {}".format(name, size, mtime))
+        self.progress("\n".join(msg), withtime=False)
 
-        msg = subprocess.check_output("du -h {}".format(self.env['result_dir']), shell=True)
-        self.progress("\n" + msg.decode('utf-8'))
         self.finish_logfile()
 
     def getitems_dict(self, data, data_items, elem):

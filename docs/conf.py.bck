@@ -24,8 +24,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'LAF Fabric'
 copyright = u'2013, Dirk Roorda'
-version = '2.4'
-release = '2.4.3'
+version = '3.0'
+release = '3.0.0'
 exclude_patterns = ['_build']
 add_function_parentheses = True
 add_module_names = False
@@ -38,7 +38,8 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
     html_theme = 'default'
 else:
-    html_theme = 'sphinx_rtd_theme'
+    #html_theme = 'sphinx_rtd_theme'
+    html_theme = 'default'
 html_theme_path = ["_themes", ]
 
 html_static_path = ['_static']

@@ -126,6 +126,82 @@ or the `notebook viewer <http://nbviewer.ipython.org>`_.
 In doing so, you (together) will create a truly state-of-the-art research tool,
 adapted to your scholarly needs of analysis, review and publication.
 
+Implementation highlights
+=========================
+There are several ideas involved in compiling a LAF resource into something
+that is compact, fast loadable, and amenable to efficient computing.
+
+#. Replace nodes and edges and regions by integers.
+#. Store relationships between integers in *arrays*, that is, Python arrays.
+#. Store relationships between integers and sets of integers also in *arrays*.
+#. Keep individual features separate.
+#. Compress data when writing it to disk.
+
+**Everything is integer**
+In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
+Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
+In the compiled version we get rid of all XML identifiers.
+We will represent everything that comes in great quantities by integers: regions, nodes, edges, feature values.
+But feature names, annotation labels and annotation spaces will be kept as is.
+
+**Relationships between integers as Python arrays**
+In Python, an array is a C-like structure of memory slots of fixed size.
+You do not have arrays of arrays, nor arrays with mixed types.
+This makes array handling very efficient, especially loading data from disk and saving it to disk.
+Moreover, the amount of space in memory needed is like in C, without the overhead a scripting language usually adds to its data types.
+
+There is an other advantage:
+a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column.
+In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.
+
+**Relationships between integers as Python arrays**
+If we want to map numbers to sets of numbers,
+we need to be more tricky, because we cannot store sets of numbers as integers.
+What we do instead is: we build two arrays, the first array points to data records in the second array.
+A data record in the second array consists of a number giving the length of the record,
+followed by that number of integers.
+The function :func:`arrayify() <graf.model.arrayify>` takes a list of items and turns it in a double array. 
+
+**Keep individual features separate**
+A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
+they occur in, since these annotations have a *label* and occur in an *annotation space*. 
+We let features inherit the label and the space of their annotations. Within space and label, features are distinguished by name.
+And the part of a feature that addresses edges is kept separate from the part that addresses nodes.
+
+So an individual feature is identified by *annotation space*, *annotation label*, *feature name*, and *kind* (node or edge).
+For example, in the Hebrew Bible data, we have the feature::
+
+    shebanq:ft.suffix (node)
+
+with annotation space ``shebanq``, annotation label ``ft``, feature name ``suffix``, and kind ``node``.
+The data of this feature is a mapping that assigns a string value to each of more than 400,000 nodes.
+So this individual feature represents a significant chunk of data.
+
+The individual features together take up the bulk of the space.
+In our example, they take 145 MB on disk, and the rest takes only 55 MB.
+Most tasks require only a limited set of individual features.
+So when we run tasks and switch between them, we want to swap feature data in
+and out.
+The design of LAF-fabric is such that feature data is neatly chunked per individual feature.
+
+.. note::
+    Here is the reason that we do not have an overall table for feature values, identified by integers.
+    We miss some compression here, but with a global feature value mapping, we would burden every task with a significant
+    amount of memory.
+    Moreover, the functionality of extra annotation packages is easier to implement
+    when individual features are cleanly separable.
+
+.. note::
+    Features coming from the source and features coming from the extra annotation package will be merged
+    before the you can touch them in tasks.
+    This merging occurs late in the process, even after the loading of features by LAF-fabric.
+    Only at the point in time when a task declares the names of the API methods
+    (see :meth:`API <graf.task.GrafTask.API>`)
+    the features will be assembled into objects.
+    At this point the source features and annox features finally get merged.
+    When a task no longer uses a merged feature, or want to merge with a different package,
+    the feature data involved will be cleared, so that a fresh merger can take place.
+
 .. _author:
 
 Author

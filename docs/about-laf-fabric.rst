@@ -6,12 +6,14 @@ Description
 LAF-fabric is a Python tool for running Python scripts with access to the information in a LAF resource.
 It has two major components:
 
-#. a LAF compiler for transforming a LAF resource into binary data that can be loaded very into Python data structures;
-#. an execution environment that gives Python scripts access to LAF data and is optimized for feature lookup.
+#. a LAF compiler for transforming a LAF resource into binary data
+   that can be loaded nearly instantly into Python data structures;
+#. an execution environment that gives Python scripts access to LAF data
+   and is optimized for feature lookup.
 
 The selling point of LAF-fabric is performance, both in terms of speed and memory usage.
-The second goal is to make it really easy for you to write analytic tasks straightforwardly in terms of LAF concepts
-without bothering about performance.
+The second goal is to make it really easy for you to write analytic tasks
+straightforwardly in terms of LAF concepts without bothering about performance.
 
 Both points go hand in hand, because if LAF-fabric needs too much time to execute your tasks,
 it becomes very tedious to experiment with them.
@@ -85,101 +87,8 @@ Since there is a generic LAF tool for smaller resources,
 (`POIO, Graf-python <http://media.cidles.eu/poio/graf-python/>`_)
 this tool has been designed with performance in mind. 
 In fact, performance has been the most important design criterion of all.
-In this section the design decisions and particulars are listed.
-There are also a few simplifications involved, see the section of GrAF :ref:`feature coverage` below.
-
-There are several ideas involved in compiling a LAF resource into something that is compact, fast loadable, and amenable to efficient computing.
-
-#. Replace nodes and edges and regions by integers.
-#. Store relationships between integers in *arrays*, that is, Python arrays.
-#. Store relationships between integers and sets of integers also in *arrays*.
-#. Keep individual features separate.
-#. Compress data when writing it to disk.
-
-Explanation of these ideas
---------------------------
-**Everything is integer**
-In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
-Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
-In the compiled version we get rid of all XML identifiers.
-We will represent everything that comes in great quantities by integers: regions, nodes, edges, feature values.
-But feature names, annotation labels and annotation spaces will be kept as is.
-
-**Relationships between integers as Python arrays**
-In Python, an array is a C-like structure of memory slots of fixed size.
-You do not have arrays of arrays, nor arrays with mixed types.
-This makes array handling very efficient, especially loading data from disk and saving it to disk.
-Moreover, the amount of space in memory needed is like in C, without the overhead a scripting language usually adds to its data types.
-
-There is an other advantage:
-a mapping normally consists of two columns of numbers, and numbers in the left column map to numbers in the right column.
-In the case of arrays of integers, we can leave out the left column: it is the array index, and does not have to be stored.
-
-**Relationships between integers as Python arrays**
-If we want to map numbers to sets of numbers,
-we need to be more tricky, because we cannot store sets of numbers as integers.
-What we do instead is: we build two arrays, the first array points to data records in the second array.
-A data record in the second array consists of a number giving the length of the record,
-followed by that number of integers.
-The function :func:`arrayify() <graf.model.arrayify>` takes a list of items and turns it in a double array. 
-
-**Keep individual features separate**
-A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
-they occur in, since these annotations have a *label* and occur in an *annotation space*. 
-We let features inherit the label and the space of their annotations. Within space and label, features are distinguished by name.
-And the part of a feature that addresses edges is kept separate from the part that addresses nodes.
-
-So an individual feature is identified by *annotation space*, *annotation label*, *feature name*, and *kind* (node or edge).
-For example, in the Hebrew Bible data, we have the feature::
-
-    shebanq:ft.suffix (node)
-
-with annotation space ``shebanq``, annotation label ``ft``, feature name ``suffix``, and kind ``node``.
-The data of this feature is a mapping that assigns a string value to each of more than 400,000 nodes.
-So this individual feature represents a significant chunk of data.
-
-The individual features together take up the bulk of the space.
-In our example, they take 145 MB on disk, and the rest takes only 55 MB.
-Most tasks require only a limited set of individual features.
-So when we run tasks and switch between them, we want to swap feature data in
-and out.
-The design of LAF-fabric is such that feature data is neatly chunked per individual feature.
-
-.. note::
-    Here is the reason that we do not have an overall table for feature values, identified by integers.
-    We miss some compression here, but with a global feature value mapping, we would burden every task with a significant
-    amount of memory.
-    Moreover, the functionality of extra annotation packages is easier to implement
-    when individual features are cleanly separable.
-
-.. note::
-    Features coming from the source and features coming from the extra annotation package will be merged
-    before the you can touch them in tasks.
-    This merging occurs late in the process, even after the loading of features by LAF-fabric.
-    Only at the point in time when a task declares the names of the API methods
-    (see :meth:`API <graf.task.GrafTask.API>`)
-    the features will be assembled into objects.
-    At this point the source features and annox features finally get merged.
-    When a task no longer uses a merged feature, or want to merge with a different package,
-    the feature data involved will be cleared, so that a fresh merger can take place.
-
-Consequences
-------------
-The concrete XML identifiers present in the LAF resource are moved to the background. 
-Only if your task asks for them explicitly, they can be loaded.
-In that case you get mappings between the xml-identifiers and the internal integer codes
-for nodes and for edges. This requires considerable overhead.
-     
-Whoever designs a LAF resource to be worked on by LAF-fabric,
-should not rely on the values of the XML identifiers to derive implicit meanings from.
-I did that in initial stages, producing identifiers ``n_1, n_2, e_1, e_2`` etcetera for node 1, 2 and edge 1, 2.
-There is nothing wrong with such identifiers, but do not expect to determine in your tasks whether
-something is a node or edge by looking at an identifier.
-
-.. note::
-    There are cases where a task really needs the original identifiers. 
-    Tasks that create new annotations for existing nodes or edges,
-    need to know the xml-identifiers used in the source.
+There isa price for that: we use a simplified feature concept.
+See the section of GrAF :ref:`feature coverage` below.
 
 .. _feature coverage:
 
@@ -255,7 +164,8 @@ That would also help to implement feature structures in full generality.
 
 API completion
 --------------
-Many reasonable candidates for an API have not yet been implemented. Basically we have only:
+Many reasonable candidates for an API have not yet been implemented or exposed [#api].
+Basically we have only:
 
 *node iterator*
     iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered).
@@ -270,11 +180,6 @@ Many reasonable candidates for an API have not yet been implemented. Basically w
 Probably it is also handy to make custom node sets so that we can use python's set methods
 to manipulate with node sets.
 
-.. note:: Python does not have strict encapsulation of data structures,
-    so by just inspecting the classes and objects you can reach out
-    for all aspects of the LAF data that went into the compiled data.
-    See the GrAF :ref:`feature coverage` for a specification of what data ends up in the compilation.
-
 .. rubric:: Footnotes
 
 .. [#laf] A LAF resource is a directory with a primary data file, annotation files and header files.
@@ -288,3 +193,8 @@ to manipulate with node sets.
    since the original XML identifiers are part of the compiled data.
    In case of the Hebrew Bible LAF resource: the original resource is over 2 GB on disk,
    while the compiled binary data is less than 200 MB.
+
+.. [#api] Python does not have strict encapsulation of data structures,
+   so by just inspecting the classes and objects you can reach out
+   for all aspects of the LAF data that went into the compiled data.
+

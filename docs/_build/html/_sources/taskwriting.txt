@@ -234,7 +234,7 @@ Here is a short description of the corresponding methods.
     The primary data is only available if you have specified in the *load* directives: 
     ``primary: True``
 
-.. note:: Note that *text* may be empty.
+.. caution:: Note that *text* may be empty.
     This happens in cases where the region is not a true interval but merely
     a point between two characters.
 
@@ -312,3 +312,22 @@ The nice property of this ordering is that if a set of nodes consists of a prope
 the order specifies a walk through the nodes were enclosing nodes come first,
 and embedded children come in the order dictated by the primary data.
 
+Linking to the LAF resource
+===========================
+As a consequence of LAF-Fabric's efficient implementation of the data in a LAF resource,
+the concrete XML identifiers present in the LAF resource have been replaced by integers.
+For normal operations this is noproblem whatsoever.
+
+But when you want to add new annotations to your LAF resource, you eventually need the
+original XML identifiers in order to specify the nodes or edges they point to.
+
+In that case you can ask LAF-Fabric to load mappings
+between the xml-identifiers and the internal integer codes for nodes and for edges.
+This requires considerable overhead.
+     
+Whoever designs a LAF resource to be worked on by LAF-fabric,
+should not rely on XML identifiers with an ad-hoc syntax with implicit meaning.
+For example, if you use identifiers ``n_1, n_2, e_1, e_2`` for node 1, 2 and edge 1, 2,
+there is nothing wrong with that.
+But it is not recommended that in your tasks you split those identifiers up in order to 
+see whether it denotes a node or an edge.

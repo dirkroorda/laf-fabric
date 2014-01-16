@@ -84,6 +84,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#platforms">Platforms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#your-python-setup">Your python setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-laf-fabric">Get LAF-Fabric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#install-laf-fabric">Install LAF-Fabric</a></li>
@@ -101,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
@@ -110,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#implementation-highlights">Implementation highlights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
 </ul>
@@ -188,8 +191,6 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
- | <a href="#V"><strong>V</strong></a>
- | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  
 </div>
@@ -197,53 +198,29 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.task.Feature.add_data">add_data() (Feature method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.add_input">add_input() (GrafTask method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.notebook.Notebook.add_input">(Notebook method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.add_logfile">add_logfile() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.add_output">add_output() (GrafTask method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.notebook.Notebook.add_output">(Notebook method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.adjust_all">adjust_all() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.adjust_data">adjust_data() (Graf method)</a>
-  </dt>
-
-      
   <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.aid">aid (AnnotationHandler attribute)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/modules.html#graf.task.PrimaryData.all_data">all_data (PrimaryData attribute)</a>
   </dt>
 
       
   <dt><a href="graf/modules.html#graf.parse.AnnotationHandler">AnnotationHandler (class in graf.parse)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.characters">AnnotationHandler.characters() (in module graf.parse)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.endElement">AnnotationHandler.endElement() (in module graf.parse)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.startElement">AnnotationHandler.startElement() (in module graf.parse)</a>
   </dt>
 
       
@@ -254,16 +231,6 @@
   <dt><a href="tasks/annox_use.html#module-annox_use">annox_use (module)</a>
   </dt>
 
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.API">API() (GrafTask method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.notebook.Notebook.API">(Notebook method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="graf/modules.html#graf.model.arrayify">arrayify() (in module graf.model)</a>
   </dt>
@@ -285,53 +252,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.characters">characters() (AnnotationHandler method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.parse.HeaderHandler.characters">(HeaderHandler method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.check_load_status">check_load_status() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.check_status">check_status() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.clear_all">clear_all() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.clear_data">clear_data() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.shell.Shell.command_loop">command_loop() (Shell method)</a>
+  <dt><a href="graf/modules.html#graf.graf.Graf.COMPILE_NAME">COMPILE_NAME (Graf attribute)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.compile_all">compile_all() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.compile_data">compile_data() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.COMPILE_NAME">COMPILE_NAME (Graf attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.connect_log">connect_log() (Timestamp method)</a>
-  </dt>
-
       
   <dt><a href="graf/modules.html#graf.shell.Shell.cur">cur (Shell attribute)</a>
   </dt>
@@ -343,25 +268,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.task.PrimaryData.data">data() (PrimaryData method)</a>
-  </dt>
-
-      
   <dt><a href="graf/modules.html#graf.graf.Graf.data_items">data_items (Graf attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.shell.Shell.default">default (Shell attribute)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.disconnect_log">disconnect_log() (Timestamp method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.shell.Shell.do_command">do_command() (Shell method)</a>
+  <dt><a href="graf/modules.html#graf.shell.Shell.default">default (Shell attribute)</a>
   </dt>
 
   </dl></td>
@@ -371,25 +284,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.elapsed">elapsed() (Timestamp method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.endElement">endElement() (AnnotationHandler method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.parse.HeaderHandler.endElement">(HeaderHandler method)</a>
-  </dt>
-
-      </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
   <dt><a href="graf/modules.html#graf.graf.Graf.env">env (Graf attribute)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="tasks/esther.html#module-esther">esther (module)</a>
   </dt>
@@ -405,33 +304,25 @@
   </dt>
 
       
-  <dt><a href="graf/modules.html#graf.task.Features">Features (class in graf.task)</a>
+  <dt><a href="graf/modules.html#graf.task.Feature.add_data">Feature.add_data() (in module graf.task)</a>
   </dt>
 
       
-  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.file_name">file_name (AnnotationHandler attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.notebook.Notebook.final">final() (Notebook method)</a>
+  <dt><a href="graf/modules.html#graf.task.Feature.s">Feature.s() (in module graf.task)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.graf.Graf.finish_logfile">finish_logfile() (Graf method)</a>
+  <dt><a href="graf/modules.html#graf.task.Feature.v">Feature.v() (in module graf.task)</a>
   </dt>
 
       
-  <dt><a href="graf/modules.html#graf.task.GrafTask.finish_task">finish_task() (GrafTask method)</a>
+  <dt><a href="graf/modules.html#graf.task.Features">Features (class in graf.task)</a>
   </dt>
 
       
-  <dt><a href="graf/modules.html#graf.graf.Graf.flush_logfile">flush_logfile() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.format_item">format_item() (Graf method)</a>
+  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.file_name">file_name (AnnotationHandler attribute)</a>
   </dt>
 
   </dl></td>
@@ -445,26 +336,6 @@
   </dt>
 
       
-  <dt><a href="graf/modules.html#graf.shell.Shell.get_ch">get_ch() (Shell method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.shell.Shell.get_num">get_num() (Shell method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.get_task_mtime">get_task_mtime() (GrafTask method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.getitems">getitems() (GrafTask method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.getitems_dict">getitems_dict() (GrafTask method)</a>
-  </dt>
-
-      
   <dt><a href="graf/modules.html#graf.graf.Graf.given">given (Graf attribute)</a>
   </dt>
 
@@ -473,13 +344,75 @@
   </dt>
 
       
+  <dt><a href="graf/modules.html#graf.graf.Graf.add_logfile">Graf.add_logfile() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.adjust_all">Graf.adjust_all() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.adjust_data">Graf.adjust_data() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.check_load_status">Graf.check_load_status() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.check_status">Graf.check_status() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.clear_all">Graf.clear_all() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.clear_data">Graf.clear_data() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.compile_all">Graf.compile_all() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.compile_data">Graf.compile_data() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.finish_logfile">Graf.finish_logfile() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.flush_logfile">Graf.flush_logfile() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.format_item">Graf.format_item() (in module graf.graf)</a>
+  </dt>
+
+      
   <dt><a href="graf/modules.html#module-graf.graf">graf.graf (module)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.load_data">Graf.load_data() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.make_array_inverse">Graf.make_array_inverse() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.make_inverse">Graf.make_inverse() (in module graf.graf)</a>
+  </dt>
+
       
   <dt><a href="graf/modules.html#module-graf.model">graf.model (module)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.model">Graf.model() (in module graf.graf)</a>
   </dt>
 
       
@@ -491,7 +424,33 @@
   </dt>
 
       
+  <dt><a href="graf/modules.html#graf.graf.Graf.parse">Graf.parse() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.progress">Graf.progress() (in module graf.graf)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.read_stats">Graf.read_stats() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.set_environment">Graf.set_environment() (in module graf.graf)</a>
+  </dt>
+
+      
   <dt><a href="graf/modules.html#module-graf.shell">graf.shell (module)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.store_all">Graf.store_all() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.store_data">Graf.store_data() (in module graf.graf)</a>
   </dt>
 
       
@@ -503,11 +462,71 @@
   </dt>
 
       
+  <dt><a href="graf/modules.html#graf.graf.Graf.verify_all">Graf.verify_all() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.write_data">Graf.write_data() (in module graf.graf)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.graf.Graf.write_stats">Graf.write_stats() (in module graf.graf)</a>
+  </dt>
+
+      
   <dt><a href="graf/modules.html#graf.graf.GrafException">GrafException</a>
   </dt>
 
       
   <dt><a href="graf/modules.html#graf.task.GrafTask">GrafTask (class in graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.add_input">GrafTask.add_input() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.add_output">GrafTask.add_output() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.API">GrafTask.API() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.finish_task">GrafTask.finish_task() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.get_task_mtime">GrafTask.get_task_mtime() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.getitems">GrafTask.getitems() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.getitems_dict">GrafTask.getitems_dict() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.hasitem">GrafTask.hasitem() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.hasitems">GrafTask.hasitems() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.init_task">GrafTask.init_task() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.result">GrafTask.result() (in module graf.task)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.task.GrafTask.run">GrafTask.run() (in module graf.task)</a>
   </dt>
 
   </dl></td>
@@ -517,17 +536,21 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.task.GrafTask.hasitem">hasitem() (GrafTask method)</a>
+  <dt><a href="graf/modules.html#graf.parse.HeaderHandler">HeaderHandler (class in graf.parse)</a>
   </dt>
 
       
-  <dt><a href="graf/modules.html#graf.task.GrafTask.hasitems">hasitems() (GrafTask method)</a>
+  <dt><a href="graf/modules.html#graf.parse.HeaderHandler.characters">HeaderHandler.characters() (in module graf.parse)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.parse.HeaderHandler">HeaderHandler (class in graf.parse)</a>
+  <dt><a href="graf/modules.html#graf.parse.HeaderHandler.endElement">HeaderHandler.endElement() (in module graf.parse)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.parse.HeaderHandler.startElement">HeaderHandler.startElement() (in module graf.parse)</a>
   </dt>
 
   </dl></td>
@@ -537,29 +560,15 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.task.XMLid.i">i() (XMLid method)</a>
-  </dt>
-
-      
   <dt><a href="graf/modules.html#graf.parse.init">init() (in module graf.parse)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.notebook.Notebook.init">(Notebook method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.init_task">init_task() (GrafTask method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="tasks/involved.html#module-involved">involved (module)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="tasks/isaiah.html#module-isaiah">isaiah (module)</a>
   </dt>
@@ -572,10 +581,6 @@
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="tasks/lingo.html#module-lingo">lingo (module)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.load_data">load_data() (Graf method)</a>
   </dt>
 
       
@@ -605,35 +610,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.shell.Shell.main_command">main_command() (Shell method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.make_array_inverse">make_array_inverse() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.make_inverse">make_inverse() (Graf method)</a>
+  <dt><a href="graf/modules.html#graf.shell.Shell.message">message (Shell attribute)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.shell.Shell.message">message (Shell attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.model">model() (Graf method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.model.model">(in module graf.model)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="graf/modules.html#graf.notebook.Notebook.my_files">my_files() (Notebook method)</a>
+  <dt><a href="graf/modules.html#graf.model.model">model() (in module graf.model)</a>
   </dt>
 
   </dl></td>
@@ -650,10 +633,34 @@
   <dt><a href="graf/modules.html#graf.model.normalize_ranges">normalize_ranges() (in module graf.model)</a>
   </dt>
 
+      
+  <dt><a href="graf/modules.html#graf.notebook.Notebook">Notebook (class in graf.notebook)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.notebook.Notebook.add_input">Notebook.add_input() (in module graf.notebook)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.notebook.Notebook.add_output">Notebook.add_output() (in module graf.notebook)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.notebook.Notebook">Notebook (class in graf.notebook)</a>
+  <dt><a href="graf/modules.html#graf.notebook.Notebook.API">Notebook.API() (in module graf.notebook)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.notebook.Notebook.final">Notebook.final() (in module graf.notebook)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.notebook.Notebook.init">Notebook.init() (in module graf.notebook)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.notebook.Notebook.my_files">Notebook.my_files() (in module graf.notebook)</a>
   </dt>
 
   </dl></td>
@@ -673,15 +680,9 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.graf.Graf.parse">parse() (Graf method)</a>
+  <dt><a href="graf/modules.html#graf.parse.parse">parse() (in module graf.parse)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.parse.parse">(in module graf.parse)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="tasks/plain.html#module-plain">plain (module)</a>
   </dt>
@@ -690,28 +691,14 @@
   <dt><a href="graf/modules.html#graf.graf.Graf.prev_tasks">prev_tasks (Graf attribute)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/modules.html#graf.task.PrimaryData">PrimaryData (class in graf.task)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.shell.Shell.processor">processor() (Shell method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.progress">progress() (Graf method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.progress">(Timestamp method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="graf/modules.html#graf.shell.Shell.prompt">prompt() (Shell method)</a>
+  <dt><a href="graf/modules.html#graf.task.PrimaryData.data">PrimaryData.data() (in module graf.task)</a>
   </dt>
 
       
@@ -725,37 +712,9 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.task.XMLid.r">r() (XMLid method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.read_stats">read_stats() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.reset">reset() (Timestamp method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.result">result() (GrafTask method)</a>
-  </dt>
-
-      
   <dt><a href="graf/modules.html#graf.task.GrafTask.result_files">result_files (GrafTask attribute)</a>
   </dt>
 
-      
-  <dt><a href="graf/modules.html#graf.task.GrafTask.run">run() (GrafTask method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.shell.Shell.run">(Shell method)</a>
-  </dt>
-
-      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -763,19 +722,49 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="graf/modules.html#graf.task.Feature.s">s() (Feature method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.set_environment">set_environment() (Graf method)</a>
-  </dt>
-
-      
   <dt><a href="graf/modules.html#graf.graf.Graf.settings">settings (Graf attribute)</a>
   </dt>
 
       
   <dt><a href="graf/modules.html#graf.shell.Shell">Shell (class in graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.command_loop">Shell.command_loop() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.do_command">Shell.do_command() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.get_ch">Shell.get_ch() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.get_num">Shell.get_num() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.main_command">Shell.main_command() (in module graf.shell)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.processor">Shell.processor() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.prompt">Shell.prompt() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.run">Shell.run() (in module graf.shell)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.shell.Shell.weave">Shell.weave() (in module graf.shell)</a>
   </dt>
 
       
@@ -792,32 +781,12 @@
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.startElement">startElement() (AnnotationHandler method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="graf/modules.html#graf.parse.HeaderHandler.startElement">(HeaderHandler method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="graf/modules.html#graf.graf.Graf.STAT_NAME">STAT_NAME (Graf attribute)</a>
   </dt>
 
       
   <dt><a href="graf/modules.html#graf.graf.Graf.status">status (Graf attribute)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.store_all">store_all() (Graf method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.store_data">store_data() (Graf method)</a>
   </dt>
 
   </dl></td>
@@ -876,8 +845,6 @@
   <dt><a href="graf/modules.html#graf.graf.Graf.TEXT_EXT">TEXT_EXT (Graf attribute)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="graf/modules.html#graf.timestamp.Timestamp">Timestamp (class in graf.timestamp)</a>
   </dt>
@@ -887,43 +854,29 @@
   </dt>
 
       
+  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.connect_log">Timestamp.connect_log() (in module graf.timestamp)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.disconnect_log">Timestamp.disconnect_log() (in module graf.timestamp)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.elapsed">Timestamp.elapsed() (in module graf.timestamp)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.progress">Timestamp.progress() (in module graf.timestamp)</a>
+  </dt>
+
+      
+  <dt><a href="graf/modules.html#graf.timestamp.Timestamp.reset">Timestamp.reset() (in module graf.timestamp)</a>
+  </dt>
+
+      
   <dt><a href="graf/modules.html#graf.parse.AnnotationHandler.truth">truth (AnnotationHandler attribute)</a>
-  </dt>
-
-  </dl></td>
-</tr></table>
-
-<h2 id="V">V</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.task.Feature.v">v() (Feature method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.verify_all">verify_all() (Graf method)</a>
-  </dt>
-
-  </dl></td>
-</tr></table>
-
-<h2 id="W">W</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.shell.Shell.weave">weave() (Shell method)</a>
-  </dt>
-
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.write_data">write_data() (Graf method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="graf/modules.html#graf.graf.Graf.write_stats">write_stats() (Graf method)</a>
   </dt>
 
   </dl></td>
@@ -936,8 +889,16 @@
   <dt><a href="graf/modules.html#graf.task.XMLid">XMLid (class in graf.task)</a>
   </dt>
 
+      
+  <dt><a href="graf/modules.html#graf.task.XMLid.i">XMLid.i() (in module graf.task)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="graf/modules.html#graf.task.XMLid.r">XMLid.r() (in module graf.task)</a>
+  </dt>
+
       
   <dt><a href="graf/modules.html#graf.task.XMLids">XMLids (class in graf.task)</a>
   </dt>

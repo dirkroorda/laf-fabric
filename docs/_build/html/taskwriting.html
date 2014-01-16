@@ -84,6 +84,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#platforms">Platforms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#your-python-setup">Your python setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-laf-fabric">Get LAF-Fabric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#install-laf-fabric">Install LAF-Fabric</a></li>
@@ -101,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#node-order">Node order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
@@ -110,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#implementation-highlights">Implementation highlights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
 </ul>
@@ -392,8 +395,8 @@ the start of <em>text</em> can be found, and <em>text</em> is the chunk of actua
 The primary data is only available if you have specified in the <em>load</em> directives:
 <tt class="docutils literal"><span class="pre">primary:</span> <span class="pre">True</span></tt></dd>
 </dl>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
 <p class="last">Note that <em>text</em> may be empty.
 This happens in cases where the region is not a true interval but merely
 a point between two characters.</p>
@@ -463,6 +466,23 @@ Between those points they might be very different.</p>
 <p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
 the order specifies a walk through the nodes were enclosing nodes come first,
 and embedded children come in the order dictated by the primary data.</p>
+</div>
+<div class="section" id="linking-to-the-laf-resource">
+<h2>Linking to the LAF resource<a class="headerlink" href="#linking-to-the-laf-resource" title="Permalink to this headline">¶</a></h2>
+<p>As a consequence of LAF-Fabric&#8217;s efficient implementation of the data in a LAF resource,
+the concrete XML identifiers present in the LAF resource have been replaced by integers.
+For normal operations this is noproblem whatsoever.</p>
+<p>But when you want to add new annotations to your LAF resource, you eventually need the
+original XML identifiers in order to specify the nodes or edges they point to.</p>
+<p>In that case you can ask LAF-Fabric to load mappings
+between the xml-identifiers and the internal integer codes for nodes and for edges.
+This requires considerable overhead.</p>
+<p>Whoever designs a LAF resource to be worked on by LAF-fabric,
+should not rely on XML identifiers with an ad-hoc syntax with implicit meaning.
+For example, if you use identifiers <tt class="docutils literal"><span class="pre">n_1,</span> <span class="pre">n_2,</span> <span class="pre">e_1,</span> <span class="pre">e_2</span></tt> for node 1, 2 and edge 1, 2,
+there is nothing wrong with that.
+But it is not recommended that in your tasks you split those identifiers up in order to
+see whether it denotes a node or an edge.</p>
 </div>
 </div>
 

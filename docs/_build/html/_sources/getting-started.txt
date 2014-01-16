@@ -12,6 +12,12 @@ install it as a package in your current python installation.
 This can be done in the standard pythonic way,
 and the precise instructions will be spelled out below.
 
+Platforms
+=========
+LAF-Fabric is being developed on **Mac OSX** Mavericks on a Macbook Air with 8 GB RAM.
+It is being used on a **Linux** virtual machine running on a laptop of respectable age,
+and it runs straight under **Windows** as well.
+
 Your python setup
 =================
 First of all, make sure that you have the right Python installation.
@@ -129,7 +135,7 @@ LAF-fabric runs the specified task without asking and quits.
 
 If some of the ``«source»``, ``«annox»`` and ``«task»`` arguments are missing or if the ``--menu`` argument is present
 it starts in interactive mode prompting you for sources and commands to run tasks.
-The ``«source»``, ``«annox»`` and ``«task»`` arguments are given are used for initial values.
+The ``«source»``, ``«annox»`` and ``«task»`` arguments that are given are used for initial values.
 In interactive mode you can change your ``«source»``, ``«annox»`` and ``«task»`` selection, and run tasks.
 There is a help command and the prompt is self explanatory.
 

@@ -30,4 +30,9 @@ Indices and tables
 
 .. [#laffabric] Image found by an internet search on fabric and some other term that I forgot.
    By a google search on the image itself, I managed to find the
-   `original context <http://www.hobbycraft.co.uk/hobbycraft-textured-fabric-reel-cream-2-metre/584337-1000>`_.
+   original context at ``http://www.hobbycraft.co.uk/hobbycraft-textured-fabric-reel-cream-2-metre/584337-1000>``.
+
+   Today, 2013-01-16, that link is not accessible anymore.
+   A google search on the image itself yields no hits except the present page and some related pages.
+
+   So, LAF-Fabric has given this image a second life!

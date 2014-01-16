@@ -84,6 +84,7 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#platforms">Platforms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#your-python-setup">Your python setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-laf-fabric">Get LAF-Fabric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-laf-fabric">Install LAF-Fabric</a></li>
@@ -101,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
@@ -110,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#implementation-highlights">Implementation highlights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
 <li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
 </ul>
@@ -181,6 +184,12 @@ In order to run it in notebook mode (recommended), you must
 install it as a package in your current python installation.
 This can be done in the standard pythonic way,
 and the precise instructions will be spelled out below.</p>
+</div>
+<div class="section" id="platforms">
+<h2>Platforms<a class="headerlink" href="#platforms" title="Permalink to this headline">¶</a></h2>
+<p>LAF-Fabric is being developed on <strong>Mac OSX</strong> Mavericks on a Macbook Air with 8 GB RAM.
+It is being used on a <strong>Linux</strong> virtual machine running on a laptop of respectable age,
+and it runs straight under <strong>Windows</strong> as well.</p>
 </div>
 <div class="section" id="your-python-setup">
 <h2>Your python setup<a class="headerlink" href="#your-python-setup" title="Permalink to this headline">¶</a></h2>
@@ -295,7 +304,7 @@ LAF-fabric runs the specified task without asking and quits.</p>
 </div>
 <p>If some of the <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are missing or if the <tt class="docutils literal"><span class="pre">--menu</span></tt> argument is present
 it starts in interactive mode prompting you for sources and commands to run tasks.
-The <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments are given are used for initial values.
+The <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> arguments that are given are used for initial values.
 In interactive mode you can change your <tt class="docutils literal"><span class="pre">«source»</span></tt>, <tt class="docutils literal"><span class="pre">«annox»</span></tt> and <tt class="docutils literal"><span class="pre">«task»</span></tt> selection, and run tasks.
 There is a help command and the prompt is self explanatory.</p>
 <div class="section" id="other-options">

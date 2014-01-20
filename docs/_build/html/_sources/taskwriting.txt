@@ -12,10 +12,10 @@ There are two scenarios for executing tasks:
 Notebook mode
 -------------
 In notebook mode you write your tasks in code cells in iPython notebooks.
-There you have to import LAF-Fabric, or rather the *graf* module::
+There you have to import LAF-Fabric, or rather the *laf* module::
 
-    import graf
-    from graf.notebook import Notebook
+    import laf
+    from laf.notebook import Notebook
     processor = Notebook()
 
 Here is a list of current notebooks for LAF-fabric.
@@ -30,10 +30,10 @@ In order to run them, you need to download them to your computer.
 Workbench mode
 --------------
 In workbench mode you place your tasks into the *tasks* directory.
-In your script you have to define a function ``task(graftask)`` that takes as its sole argument
+In your script you have to define a function ``task(lafftask)`` that takes as its sole argument
 an object that gives access to all the LAF data from your resource::
 
-    def task(graftask):
+    def task(lafftask):
         '''this function executes your task'''
 
 This scenario is handy if you have a bunch of tasks that you want to run in quick succession.
@@ -105,13 +105,13 @@ Finally, here is the complete Python code of the task that produced this output:
         },
     }
 
-    def task(graftask):
+    def task(lafftask):
         '''Counts the frequencies of words with male and female gender features.
         Outputs the frequencies in a tab-delimited file, with frequency values for
         each chapter in the whole Hebrew Bible.
         '''
-        (msg, P, NN, F, X) = graftask.API()
-        stats_file = graftask.add_output("stats.txt")
+        (msg, P, NN, F, X) = lafftask.API()
+        stats_file = lafftask.add_output("stats.txt")
 
         stats = [0, 0, 0]
         cur_chapter = None
@@ -197,7 +197,7 @@ Information flow from LAF-Fabric to task
 ========================================
 LAF-Fabric will call the function *task(object)* in your task script (assuming you follow workbench mode),
 and the thing it hands over to it as *object* is an object of
-class :class:`GrafTask <graf.task.GrafTask>`.
+class :class:`GrafTask <laf.task.GrafTask>`.
 By using this object, you have to access all of its methods. 
 
 In notebook this handing over occurs when you say::
@@ -209,7 +209,7 @@ it is convenient to import the names of the API methods as *local variables* of 
 The lookup of names in Python is fastest for local names.
 And it makes the code much cleaner.
 
-The method :meth:`API() <graf.task.GrafTask.API>` delivers the methods,
+The method :meth:`API() <laf.task.GrafTask.API>` delivers the methods,
 and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.
@@ -248,7 +248,7 @@ Here is a short description of the corresponding methods.
     ``test`` will be called for each passing node,
     and if the value returned is not equal to the given ``value``,
     the node will be skipped.
-    See :meth:`next_node() <graf.task.GrafTask.API>`.
+    See :meth:`next_node() <laf.task.GrafTask.API>`.
 
 *X*
     If you need to convert the integers that identify nodes and edges in the compiled data back to
@@ -266,10 +266,10 @@ msg(text, newline=True, withtime=True)
 Input and Output
 ================
 You can create an output filehandle, open for writing, by calling the
-method :meth:`add_output() <graf.task.GrafTask.add_output>`
+method :meth:`add_output() <laf.task.GrafTask.add_output>`
 and assigning the result to a variable, say *out* ::
 
-    out = graftask.add_output("output.txt")
+    out = lafftask.add_output("output.txt")
 
 From then on you can write output simply by saying::
 
@@ -281,7 +281,7 @@ All these files and up in the task specific working directory.
 Likewise, you can place additional input files in that directory,
 and read them by saying::
 
-    inp = graftask.add_input("input.txt")
+    inp = lafftask.add_input("input.txt")
     inp.write(text)
 
 Once your task has finished, LAF-Fabric will close them all.

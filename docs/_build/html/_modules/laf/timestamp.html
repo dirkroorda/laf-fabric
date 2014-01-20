@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.timestamp &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>laf.timestamp &mdash; LAF Fabric 3.0.0 documentation</title>
   
 
   
@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +161,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../../index.html">Docs</a> &raquo;</li>
-  <li><a href="">graf.timestamp</a></li>
+  <li><a href="">laf.timestamp</a></li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -169,11 +169,11 @@
 <hr/>
 
           
-  <h1>Source code for graf.timestamp</h1><div class="highlight"><pre>
+  <h1>Source code for laf.timestamp</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<div class="viewcode-block" id="Timestamp"><a class="viewcode-back" href="../../graf/modules.html#graf.timestamp.Timestamp">[docs]</a><span class="k">class</span> <span class="nc">Timestamp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp"><a class="viewcode-back" href="../../laf/modules.html#laf.timestamp.Timestamp">[docs]</a><span class="k">class</span> <span class="nc">Timestamp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Time management.</span>
 
 <span class="sd">    Objects remember their creation time. So they can issue statements about how much time has been elapsed.</span>
@@ -199,7 +199,7 @@
         <span class="k">if</span> <span class="n">log_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Timestamp.elapsed"><a class="viewcode-back" href="../../graf/modules.html#graf.timestamp.Timestamp.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp.elapsed"><a class="viewcode-back" href="../../laf/modules.html#laf.timestamp.Timestamp.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Returns the time elapsed since creation of the :class:`Timestamp` object.</span>
 
 <span class="sd">        Returns:</span>
@@ -216,12 +216,12 @@
             <span class="k">return</span> <span class="s">&quot;{:&gt;2d}m {:&gt;02d}s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">interval</span> <span class="o">//</span> <span class="mi">60</span><span class="p">,</span> <span class="n">interval</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
         <span class="k">return</span> <span class="s">&quot;{:&gt;2d}h {:&gt;02d}m {:&gt;02d}s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">interval</span> <span class="o">//</span> <span class="mi">3600</span><span class="p">,</span> <span class="p">(</span><span class="n">interval</span> <span class="o">%</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">//</span> <span class="mi">60</span><span class="p">,</span> <span class="n">interval</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Timestamp.reset"><a class="viewcode-back" href="../../graf/modules.html#graf.timestamp.Timestamp.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp.reset"><a class="viewcode-back" href="../../laf/modules.html#laf.timestamp.Timestamp.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set the time to the current time</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Timestamp.connect_log"><a class="viewcode-back" href="../../graf/modules.html#graf.timestamp.Timestamp.connect_log">[docs]</a>    <span class="k">def</span> <span class="nf">connect_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_file</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp.connect_log"><a class="viewcode-back" href="../../laf/modules.html#laf.timestamp.Timestamp.connect_log">[docs]</a>    <span class="k">def</span> <span class="nf">connect_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_file</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Connects a log file to the object.</span>
 
 <span class="sd">        Args:</span>
@@ -231,7 +231,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log_file</span>
 </div>
-<div class="viewcode-block" id="Timestamp.disconnect_log"><a class="viewcode-back" href="../../graf/modules.html#graf.timestamp.Timestamp.disconnect_log">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp.disconnect_log"><a class="viewcode-back" href="../../laf/modules.html#laf.timestamp.Timestamp.disconnect_log">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Connects a log file to the object.</span>
 
 <span class="sd">        Args:</span>
@@ -241,7 +241,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="Timestamp.progress"><a class="viewcode-back" href="../../graf/modules.html#graf.timestamp.Timestamp.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestamp.progress"><a class="viewcode-back" href="../../laf/modules.html#laf.timestamp.Timestamp.progress">[docs]</a>    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;API: issues a timed progress message.</span>
 
 <span class="sd">        The message is issued to the standard output, and, if a log file has been connected, also to the log file.</span>
@@ -253,7 +253,7 @@
 <span class="sd">                whether or not to add a newline. Optional. Make it ``False`` to not add a newline.</span>
 <span class="sd">            withtime (bool):</span>
 <span class="sd">                whether to precede the text with timing information (time elapsed since the last reset of the</span>
-<span class="sd">                underlying :class:`graf.timestamp.Stamp` object.</span>
+<span class="sd">                underlying :class:`laf.timestamp.Stamp` object.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">timed_msg</span> <span class="o">=</span> <span class="s">&quot;{:&gt;7} &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">())</span> <span class="k">if</span> <span class="n">withtime</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
         <span class="n">timed_msg</span> <span class="o">+=</span> <span class="n">msg</span>

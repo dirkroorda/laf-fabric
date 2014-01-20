@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -231,7 +231,7 @@
                 <span class="n">new_fnames</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">n_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_fqnames</span><span class="p">)</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/annox_create.html#annox_create.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/annox_create.html#annox_create.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">laftask</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Workflow to create new annotations.</span>
 
 <span class="sd">    There are two modes:</span>
@@ -279,11 +279,11 @@
 <span class="sd">    file, you can use the annotations in tasks by selecting it as an annox.</span>
 <span class="sd">    See the task :mod:`annox_use`.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">make_form</span><span class="p">():</span>
         <span class="n">msg</span><span class="p">(</span><span class="s">&quot;Reading the books ...&quot;</span><span class="p">)</span>
-        <span class="n">outf</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;form_{}={}.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+        <span class="n">outf</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;form_{}={}.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
 
         <span class="n">the_book</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">the_chapter</span> <span class="o">=</span> <span class="bp">None</span>
@@ -336,8 +336,8 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">make_annots</span><span class="p">():</span>
-        <span class="n">inp</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;data_{}={}.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
-        <span class="n">outa</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;annot_{}={}.xml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;data_{}={}.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+        <span class="n">outa</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;annot_{}={}.xml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_types</span><span class="p">),</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">new_fnames</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
         <span class="n">outa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="s">&lt;graph xmlns=&quot;http://www.xces.org/ns/GrAF/1.0/&quot; xmlns:graf=&quot;http://www.xces.org/ns/GrAF/1.0/&quot;&gt;</span>
 <span class="s">    &lt;graphHeader&gt;</span>

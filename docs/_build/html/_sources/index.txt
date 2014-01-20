@@ -15,7 +15,7 @@ Contents:
     taskwriting
     background
     tasks/modules.rst
-    graf/modules.rst
+    laf/modules.rst
 
 
 

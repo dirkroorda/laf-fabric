@@ -130,15 +130,15 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -182,9 +182,9 @@ for looking into a LAF resource (a <em>compiled</em> LAF resource to be precise)
 <div class="section" id="notebook-mode">
 <h3>Notebook mode<a class="headerlink" href="#notebook-mode" title="Permalink to this headline">¶</a></h3>
 <p>In notebook mode you write your tasks in code cells in iPython notebooks.
-There you have to import LAF-Fabric, or rather the <em>graf</em> module:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">graf</span>
-<span class="kn">from</span> <span class="nn">graf.notebook</span> <span class="kn">import</span> <span class="n">Notebook</span>
+There you have to import LAF-Fabric, or rather the <em>laf</em> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">laf</span>
+<span class="kn">from</span> <span class="nn">laf.notebook</span> <span class="kn">import</span> <span class="n">Notebook</span>
 <span class="n">processor</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -200,9 +200,9 @@ In order to run them, you need to download them to your computer.</p>
 <div class="section" id="workbench-mode">
 <h3>Workbench mode<a class="headerlink" href="#workbench-mode" title="Permalink to this headline">¶</a></h3>
 <p>In workbench mode you place your tasks into the <em>tasks</em> directory.
-In your script you have to define a function <tt class="docutils literal"><span class="pre">task(graftask)</span></tt> that takes as its sole argument
+In your script you have to define a function <tt class="docutils literal"><span class="pre">task(lafftask)</span></tt> that takes as its sole argument
 an object that gives access to all the LAF data from your resource:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">lafftask</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;this function executes your task&#39;&#39;&#39;</span>
 </pre></div>
 </div>
@@ -272,13 +272,13 @@ Genesis 10  22      4.45</pre>
     <span class="p">},</span>
 <span class="p">}</span>
 
-<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">lafftask</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Counts the frequencies of words with male and female gender features.</span>
 <span class="sd">    Outputs the frequencies in a tab-delimited file, with frequency values for</span>
 <span class="sd">    each chapter in the whole Hebrew Bible.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
-    <span class="n">stats_file</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats.txt&quot;</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="n">stats_file</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats.txt&quot;</span><span class="p">)</span>
 
     <span class="n">stats</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">cur_chapter</span> <span class="o">=</span> <span class="bp">None</span>
@@ -361,7 +361,7 @@ a warning. But if you try to use such features, you get also a loud error.</p>
 <h2>Information flow from LAF-Fabric to task<a class="headerlink" href="#information-flow-from-laf-fabric-to-task" title="Permalink to this headline">¶</a></h2>
 <p>LAF-Fabric will call the function <em>task(object)</em> in your task script (assuming you follow workbench mode),
 and the thing it hands over to it as <em>object</em> is an object of
-class <a class="reference internal" href="graf/modules.html#graf.task.GrafTask" title="graf.task.GrafTask"><tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt></a>.
+class <tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt>.
 By using this object, you have to access all of its methods.</p>
 <p>In notebook this handing over occurs when you say:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">processor</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
@@ -371,7 +371,7 @@ By using this object, you have to access all of its methods.</p>
 it is convenient to import the names of the API methods as <em>local variables</em> of the <em>task</em> function.
 The lookup of names in Python is fastest for local names.
 And it makes the code much cleaner.</p>
-<p>The method <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.API" title="graf.task.GrafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API()</span></tt></a> delivers the methods,
+<p>The method <tt class="xref py py-meth docutils literal"><span class="pre">API()</span></tt> delivers the methods,
 and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.</p>
@@ -412,7 +412,7 @@ If given, <tt class="docutils literal"><span class="pre">test</span></tt> should
 <tt class="docutils literal"><span class="pre">test</span></tt> will be called for each passing node,
 and if the value returned is not equal to the given <tt class="docutils literal"><span class="pre">value</span></tt>,
 the node will be skipped.
-See <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.API" title="graf.task.GrafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</dd>
+See <tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt>.</dd>
 <dt><em>X</em></dt>
 <dd>If you need to convert the integers that identify nodes and edges in the compiled data back to
 their original XML identifiers, you can do that with the <em>X</em> object.
@@ -429,9 +429,9 @@ You can also suppress the time indication before the text.</dd>
 <div class="section" id="input-and-output">
 <h2>Input and Output<a class="headerlink" href="#input-and-output" title="Permalink to this headline">¶</a></h2>
 <p>You can create an output filehandle, open for writing, by calling the
-method <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.add_output" title="graf.task.GrafTask.add_output"><tt class="xref py py-meth docutils literal"><span class="pre">add_output()</span></tt></a>
+method <tt class="xref py py-meth docutils literal"><span class="pre">add_output()</span></tt>
 and assigning the result to a variable, say <em>out</em></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>From then on you can write output simply by saying:</p>
@@ -442,7 +442,7 @@ and assigning the result to a variable, say <em>out</em></p>
 All these files and up in the task specific working directory.</p>
 <p>Likewise, you can place additional input files in that directory,
 and read them by saying:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
 <span class="n">inp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>

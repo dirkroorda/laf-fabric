@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.parse &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>laf.parse &mdash; LAF Fabric 3.0.0 documentation</title>
   
 
   
@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +161,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../../index.html">Docs</a> &raquo;</li>
-  <li><a href="">graf.parse</a></li>
+  <li><a href="">laf.parse</a></li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -169,7 +169,7 @@
 <hr/>
 
           
-  <h1>Source code for graf.parse</h1><div class="highlight"><pre>
+  <h1>Source code for laf.parse</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">xml.sax</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">saxparse</span><span class="p">,</span> <span class="n">SAXException</span>
@@ -181,7 +181,7 @@
 
 <span class="n">aspace_not_given</span> <span class="o">=</span> <span class="s">&quot;_original_&quot;</span>
 
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">good_regions</span>
     <span class="n">good_regions</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">global</span> <span class="n">linked_nodes</span>
@@ -239,7 +239,7 @@
     <span class="k">global</span> <span class="n">feature</span>
     <span class="n">feature</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:{})</span>
 </div>
-<div class="viewcode-block" id="HeaderHandler"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.HeaderHandler">[docs]</a><span class="k">class</span> <span class="nc">HeaderHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.HeaderHandler">[docs]</a><span class="k">class</span> <span class="nc">HeaderHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Handlers used by SAX parsing the GrAF header file.</span>
 
 <span class="sd">    We just collect the contents of the *loc* attributes of the *annotation* elements.</span>
@@ -252,7 +252,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span> <span class="o">=</span> <span class="n">stamp</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="HeaderHandler.startElement"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.HeaderHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler.startElement"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.HeaderHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">primary_data_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;annotation&quot;</span><span class="p">:</span>
@@ -260,13 +260,13 @@
         <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;primaryData&quot;</span><span class="p">:</span>
             <span class="n">primary_data_file</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;loc&quot;</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="HeaderHandler.endElement"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.HeaderHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler.endElement"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.HeaderHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="HeaderHandler.characters"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.HeaderHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+<div class="viewcode-block" id="HeaderHandler.characters"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.HeaderHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </div></div>
-<div class="viewcode-block" id="AnnotationHandler"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.AnnotationHandler">[docs]</a><span class="k">class</span> <span class="nc">AnnotationHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.AnnotationHandler">[docs]</a><span class="k">class</span> <span class="nc">AnnotationHandler</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Handlers used by SAX parsing the annotation files themselves</span>
 
 <span class="sd">    We have to collect all elements *region*, *node* and subelement *link*, *edge*, *annotationSpace*, *a* (annotation) and *f* (feature).</span>
@@ -334,7 +334,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">aref</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_link</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="AnnotationHandler.startElement"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.AnnotationHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler.startElement"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.AnnotationHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;annotationSpace&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="s">&quot;as.id&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
@@ -439,7 +439,7 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
                 <span class="n">feature</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">aspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">)][</span><span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </div>
-<div class="viewcode-block" id="AnnotationHandler.endElement"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.AnnotationHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler.endElement"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.AnnotationHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;node&quot;</span><span class="p">:</span>
             <span class="k">global</span> <span class="n">unlinked_nodes</span>
             <span class="k">global</span> <span class="n">linked_nodes</span>
@@ -457,10 +457,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="AnnotationHandler.characters"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.AnnotationHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+<div class="viewcode-block" id="AnnotationHandler.characters"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.AnnotationHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
         <span class="k">pass</span>
 </div></div>
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../graf/modules.html#graf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">prim_bin_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../laf/modules.html#laf.parse.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">graf_header_file</span><span class="p">,</span> <span class="n">prim_bin_file</span><span class="p">,</span> <span class="n">stamp</span><span class="p">,</span> <span class="n">xmlitems</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Parse a GrAF resource.</span>
 <span class="sd">    </span>
 <span class="sd">    Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all</span>

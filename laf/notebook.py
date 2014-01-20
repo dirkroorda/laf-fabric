@@ -3,7 +3,7 @@ import traceback
 import collections
 
 from .settings import Settings
-from .task import GrafTask
+from .task import LafTask
 
 class Notebook(object):
     '''Execute tasks, either in a single run, within a notebook
@@ -12,12 +12,12 @@ class Notebook(object):
     '''
 
     def __init__(self):
-        '''Upon creation, create a :class:`GrafTask <graf.task.GrafTask>` object based on settings.
+        '''Upon creation, create a :class:`LafTask <laf.task.LafTask>` object based on settings.
 
         '''
 
         self.settings = Settings(context='nb')
-        self.graftask = GrafTask(self.settings.settings)
+        self.laftask = LafTask(self.settings.settings)
 
     def init(self, source, annox, task, load, force_compile_source=False, force_compile_annox=False):
         '''Initialize task execution.
@@ -41,7 +41,7 @@ class Notebook(object):
                 Whether to force compilation of the additional annotation package.
                 Optional, default False.
         '''
-        self.graftask.run(
+        self.laftask.run(
             source, annox, task,
             force_compile={'source': force_compile_source, 'annox': force_compile_annox},
             load=load, function=True, stage='init',
@@ -53,27 +53,27 @@ class Notebook(object):
         Run this method after executing your task code, in order to
         close all open files for output and logging.
         '''
-        self.graftask.run(
-            self.graftask.env['source'],
-            self.graftask.env['annox'],
-            self.graftask.env['task'],
+        self.laftask.run(
+            self.laftask.env['source'],
+            self.laftask.env['annox'],
+            self.laftask.env['task'],
             stage='final',
         )
 
     def API(self):
         '''Insert the names by which you can access the data into your name space.
         '''
-        return self.graftask.API()
+        return self.laftask.API()
 
     def add_output(self, file_name):
         '''Create an output file in the folder for the output of this task
         '''
-        return self.graftask.add_output(file_name)
+        return self.laftask.add_output(file_name)
 
     def add_input(self, file_name):
         '''Create an input file in the folder for the output of this task
         '''
-        return self.graftask.add_input(file_name)
+        return self.laftask.add_input(file_name)
 
     def my_files(self, file_name=None):
         '''The location where the output files of this task can be found
@@ -86,4 +86,4 @@ class Notebook(object):
         Returns:
             the path to *file_name* or the directory of the output files.
         '''
-        return self.graftask.result(file_name=file_name)
+        return self.laftask.result(file_name=file_name)

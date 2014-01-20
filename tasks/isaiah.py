@@ -18,7 +18,7 @@ load = {
     },
 }
 
-def task(graftask):
+def task(laftask):
     '''Produces the text of thev book Isaiah, interspersed with word numbers
     (*monad* numbers in WIVU speak).
 
@@ -30,9 +30,9 @@ def task(graftask):
     A better way is coming, where you can add features to all nodes, not just words nodes,
     but also phrase, clause and sentence nodes.
     '''
-    (msg, P, NN, F, X) = graftask.API()
+    (msg, P, NN, F, X) = laftask.API()
 
-    out = graftask.add_output("output.txt")
+    out = laftask.add_output("output.txt")
 
     the_book = None
     the_chapter = None

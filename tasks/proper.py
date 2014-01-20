@@ -19,7 +19,7 @@ load = {
     },
 }
 
-def task(graftask):
+def task(laftask):
     '''An exercise in visualizing and distant reading.
 
     We count proper nouns and their relative frequencies, we record the gender of the nouns.
@@ -40,12 +40,12 @@ def task(graftask):
     Returns:
         stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns
     '''
-    (msg, P, NN, F, X) = graftask.API()
+    (msg, P, NN, F, X) = laftask.API()
 
-    out = graftask.add_output("output.txt")
-    stats_v_raw = graftask.add_output("stats_v_raw.txt")
-    stats_v_compact = graftask.add_output("stats_v_compact.txt")
-    stats_c_compact = graftask.add_output("stats_c_compact.txt")
+    out = laftask.add_output("output.txt")
+    stats_v_raw = laftask.add_output("stats_v_raw.txt")
+    stats_v_compact = laftask.add_output("stats_v_compact.txt")
+    stats_c_compact = laftask.add_output("stats_c_compact.txt")
 
     type_map = collections.defaultdict(lambda: None, [
         ("chapter", 'Ch'),

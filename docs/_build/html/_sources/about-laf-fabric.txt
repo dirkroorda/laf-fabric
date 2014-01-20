@@ -33,7 +33,7 @@ The typical workflow is:
 
 Notebook mode
 -------------
-You can write a task as a stand-alone script, importing LAF-fabric as a module, called *graf*.
+You can write a task as a stand-alone script, importing LAF-fabric as a module, called *laf*.
 You can then break such a script up into chunks of code, and paste them in the code cells of an 
 `iPython notebook <http://ipython.org>`_.
 See the *notebooks* directory for executable examples.

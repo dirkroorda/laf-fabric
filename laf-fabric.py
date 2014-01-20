@@ -1,4 +1,4 @@
-from graf.shell import Shell
+from laf.shell import Shell
 
 # python laf-fabric.py
 

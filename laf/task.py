@@ -8,7 +8,7 @@ import collections
 import array
 import pickle
 
-from .graf import Graf
+from .laf import Laf
 
 class Feature(object):
     '''This class is responsible for making the information in a single feature accessible to 
@@ -29,11 +29,11 @@ class Feature(object):
     annotation spaces.
 
     '''
-    def __init__(self, graftask, aspace, alabel, fname, kind, extra=False):
+    def __init__(self, laftask, aspace, alabel, fname, kind, extra=False):
         '''Upon creation, makes references to the feature data corresponding to the feature specified.
 
         Args:
-            graftask(:class:`GrafTask <graf.task.GrafTask>`):
+            laftask(:class:`LafTask <laf.task.LafTask>`):
                 The task executing object that has all the data.
             aspace, alabel, fname, kind:
                 The annotation space, annotation label, feature name, feature kind (node or edge)
@@ -42,24 +42,24 @@ class Feature(object):
                 indication of where to look for the feature data, because up till now annox feature data
                 sits in another dictionary than source feature data.
         '''
-        self.source = graftask
+        self.source = laftask
         self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind)
         self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
         self.kind = kind
         ref_label = 'xfeature' if extra else 'feature'
-        self.lookup = collections.defaultdict(lambda: None, graftask.data_items[ref_label][(aspace, alabel, fname, kind)])
+        self.lookup = collections.defaultdict(lambda: None, laftask.data_items[ref_label][(aspace, alabel, fname, kind)])
 
-    def add_data(self, graftask, aspace, alabel, fname, kind):
+    def add_data(self, laftask, aspace, alabel, fname, kind):
         '''Upon creation, makes references to the feature data corresponding to the feature specified.
 
         Args:
-            graftask(:class:`GrafTask <graf.task.GrafTask>`):
+            laftask(:class:`LafTask <laf.task.LafTask>`):
                 The task executing object that has all the data.
             aspace, alabel, fname, kind:
                 The annotation space, annotation label, feature name, feature kind (node or edge)
                 that together identify a single feature.
         '''
-        lookup = graftask.data_items['xfeature'][(aspace, alabel, fname, kind)]
+        lookup = laftask.data_items['xfeature'][(aspace, alabel, fname, kind)]
         for ne in lookup:
             self.lookup[ne] = lookup[ne]
 
@@ -122,11 +122,11 @@ class XMLid(object):
     It has a reference to the relevant tables organized by *kind*
     (node or edge). There are methods to map and inverse map.
     '''
-    def __init__(self, graftask, kind):
+    def __init__(self, laftask, kind):
         '''Upon creation, makes a reference to the XMLid data corresponding to the kind specified.
 
         Args:
-            graftask(:class:`GrafTask <graf.task.GrafTask>`):
+            laftask(:class:`LafTask <laf.task.LafTask>`):
                 The task executing object that has all the data.
             kind:
                 The kind (node or edge)
@@ -134,8 +134,8 @@ class XMLid(object):
         '''
         self.local_name = kind
         self.kind = kind
-        self.code = graftask.data_items['xid_int'][kind]
-        self.rep = graftask.data_items['xid_rep'][kind]
+        self.code = laftask.data_items['xid_int'][kind]
+        self.rep = laftask.data_items['xid_rep'][kind]
 
     def r(self, int_code):
         '''Get the XML identifier corresponding to an integer.
@@ -177,11 +177,11 @@ class XMLids(object):
 class PrimaryData(object):
     '''This class is responsible for giving access to the primary data.
     '''
-    def __init__(self, graftask):
-        self.all_data = graftask.data_items['data']
+    def __init__(self, laftask):
+        self.all_data = laftask.data_items['data']
         '''Member that holds the primary data as a single UNICODE string.
         '''
-        self.graftask = graftask
+        self.laftask = laftask
 
     def data(self, node):
         '''Gets the primary data to which a node is linked.
@@ -200,8 +200,8 @@ class PrimaryData(object):
                 The list is normalized: all stretches are maximal, non overlapping and occur
                 in the order of the primary data (ascending *N*). 
         '''
-        graftask = self.graftask
-        regions = graftask.getitems(graftask.data_items['node_anchor'], graftask.data_items['node_anchor_items'], node)
+        laftask = self.laftask
+        regions = laftask.getitems(laftask.data_items['node_anchor'], laftask.data_items['node_anchor_items'], node)
         if not regions:
             return None
         all_text = self.all_data
@@ -210,7 +210,7 @@ class PrimaryData(object):
             result.append((regions[2*i], all_text[regions[2*i]:regions[2*i+1]])) 
         return result
 
-class GrafTask(Graf):
+class LafTask(Laf):
     '''Task processor.
 
     This class is responsible for running user tasks.
@@ -231,7 +231,7 @@ class GrafTask(Graf):
             settings (:py:class:`configparser.ConfigParser`):
                 entries corresponding to the main configuration file
         '''
-        Graf.__init__(self, settings)
+        Laf.__init__(self, settings)
 
         self.result_files = []
         '''List of handles to result files created by the task through the method :meth:`add_output`'''
@@ -249,13 +249,13 @@ class GrafTask(Graf):
         This is what is returned (the names given are not necessarily the names by which they are used
         in end user tasks. You can give convenient, local names to these methods, e.g::
 
-            (msg, P, NN, F, X) = graftask.API()
+            (msg, P, NN, F, X) = laftask.API()
 
         Using these names, here is the API specification:
 
         msg(text, newline=True, withtime=True):
             For delivering console output, such as progress messages.
-            See :meth:`progress <graf.timestamp.Timestamp.progress>`.
+            See :meth:`progress <laf.timestamp.Timestamp.progress>`.
 
         P(:class:`PrimaryData`):
             Object containing the primary data and the information to which portions of it nodes are linked.
@@ -267,7 +267,7 @@ class GrafTask(Graf):
             This happens when a region is merely a pointer and not an interval.
 
         NN(test=function, value=something):
-            An iterator that delivers nodes in the canonical order described in :func:`model <graf.model.model>`.
+            An iterator that delivers nodes in the canonical order described in :func:`model <laf.model.model>`.
 
             *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*
             are passed through, all others are skipped.
@@ -483,7 +483,7 @@ class GrafTask(Graf):
         '''Get related items from an arrayified data structure.
 
         If a relation between integers and sets of integers has been stored as a double array
-        by the :func:`arrayify() <graf.model.arrayify>` function,
+        by the :func:`arrayify() <laf.model.arrayify>` function,
         this is the way to look up the set of related integers for each integer.
 
         Args:
@@ -510,7 +510,7 @@ class GrafTask(Graf):
         '''Get related items from an arrayified data structure.
 
         If a relation between integers and sets of integers has been stored as a double array
-        by the :func:`arrayify() <graf.model.arrayify>` function,
+        by the :func:`arrayify() <laf.model.arrayify>` function,
         this is the way to look up the set of related integers for each integer.
 
         Args:
@@ -597,7 +597,7 @@ class GrafTask(Graf):
         for handle in self.result_files:
             if handle and not handle.closed:
                 handle.close()
-        Graf.__del__(self)
+        Laf.__del__(self)
 
 
 

@@ -4,7 +4,7 @@ Getting Started
 About
 =====
 *LAF-Fabric* is a `github project <https://github.com/dirkroorda/laf-fabric>`_
-in which there is a Python package called :mod:`graf`.
+in which there is a Python package called :mod:`laf`.
 It is a package without extension modules,
 so it will run without installation from anywhere in your system.
 In order to run it in notebook mode (recommended), you must
@@ -69,8 +69,8 @@ Install LAF-Fabric
 Here are the steps, assuming you are in the command line, at the top level directory in *laf-fabric*::
 
     cd dist
-    tar xvf graf-*
-    cd graf-*
+    tar xvf laf-*
+    cd laf-*
     python setup.py install
 
 Configure LAF-Fabric

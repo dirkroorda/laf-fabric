@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -191,7 +191,7 @@
     <span class="p">},</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/esther.html#esther.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">graftask</span><span class="p">):</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/esther.html#esther.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">laftask</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Collect frequency data of common nouns in Esther per bible book.</span>
 
 <span class="sd">    This is part of reproducing results in Martijn Naaijer&#39;s thesis.</span>
@@ -217,13 +217,13 @@
 <span class="sd">        common nouns in Esther and as columns the books of the bible.</span>
 <span class="sd">        A cell contain the frequency of that lexeme in that book multiplied by 1000 </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 
     <span class="n">target_book</span> <span class="o">=</span> <span class="s">&quot;Esther&quot;</span>
     <span class="n">lexemes</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span><span class="mi">0</span><span class="p">))</span>
 
-    <span class="n">out_all</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;lexemes_all.txt&quot;</span><span class="p">)</span>
-    <span class="n">out_esther</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;lexemes_esther.txt&quot;</span><span class="p">)</span>
+    <span class="n">out_all</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;lexemes_all.txt&quot;</span><span class="p">)</span>
+    <span class="n">out_esther</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;lexemes_esther.txt&quot;</span><span class="p">)</span>
 
     <span class="n">ontarget</span> <span class="o">=</span> <span class="bp">True</span>
     <span class="n">book_name</span> <span class="o">=</span> <span class="bp">None</span>

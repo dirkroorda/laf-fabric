@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.task &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>laf.task &mdash; LAF Fabric 3.0.0 documentation</title>
   
 
   
@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +161,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../../index.html">Docs</a> &raquo;</li>
-  <li><a href="">graf.task</a></li>
+  <li><a href="">laf.task</a></li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -169,7 +169,7 @@
 <hr/>
 
           
-  <h1>Source code for graf.task</h1><div class="highlight"><pre>
+  <h1>Source code for laf.task</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">imp</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -180,9 +180,9 @@
 <span class="kn">import</span> <span class="nn">array</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 
-<span class="kn">from</span> <span class="nn">.graf</span> <span class="kn">import</span> <span class="n">Graf</span>
+<span class="kn">from</span> <span class="nn">.laf</span> <span class="kn">import</span> <span class="n">Laf</span>
 
-<div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../graf/modules.html#graf.task.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../laf/modules.html#laf.task.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for making the information in a single feature accessible to </span>
 <span class="sd">    tasks.</span>
 
@@ -201,11 +201,11 @@
 <span class="sd">    annotation spaces.</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">laftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Upon creation, makes references to the feature data corresponding to the feature specified.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            graftask(:class:`GrafTask &lt;graf.task.GrafTask&gt;`):</span>
+<span class="sd">            laftask(:class:`LafTask &lt;laf.task.LafTask&gt;`):</span>
 <span class="sd">                The task executing object that has all the data.</span>
 <span class="sd">            aspace, alabel, fname, kind:</span>
 <span class="sd">                The annotation space, annotation label, feature name, feature kind (node or edge)</span>
@@ -214,28 +214,28 @@
 <span class="sd">                indication of where to look for the feature data, because up till now annox feature data</span>
 <span class="sd">                sits in another dictionary than source feature data.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">graftask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">laftask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fspec</span> <span class="o">=</span> <span class="s">&quot;{}:{}.{} ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="s">&quot;{}_{}_{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="s">&#39;&#39;</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span> <span class="k">else</span> <span class="s">&#39;_e&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="n">ref_label</span> <span class="o">=</span> <span class="s">&#39;xfeature&#39;</span> <span class="k">if</span> <span class="n">extra</span> <span class="k">else</span> <span class="s">&#39;feature&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">ref_label</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">ref_label</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)])</span>
 
-<div class="viewcode-block" id="Feature.add_data"><a class="viewcode-back" href="../../graf/modules.html#graf.task.Feature.add_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature.add_data"><a class="viewcode-back" href="../../laf/modules.html#laf.task.Feature.add_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">laftask</span><span class="p">,</span> <span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Upon creation, makes references to the feature data corresponding to the feature specified.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            graftask(:class:`GrafTask &lt;graf.task.GrafTask&gt;`):</span>
+<span class="sd">            laftask(:class:`LafTask &lt;laf.task.LafTask&gt;`):</span>
 <span class="sd">                The task executing object that has all the data.</span>
 <span class="sd">            aspace, alabel, fname, kind:</span>
 <span class="sd">                The annotation space, annotation label, feature name, feature kind (node or edge)</span>
 <span class="sd">                that together identify a single feature.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">lookup</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xfeature&#39;</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)]</span>
+        <span class="n">lookup</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xfeature&#39;</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">ne</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]</span> <span class="o">=</span> <span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Feature.v"><a class="viewcode-back" href="../../graf/modules.html#graf.task.Feature.v">[docs]</a>    <span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature.v"><a class="viewcode-back" href="../../laf/modules.html#laf.task.Feature.v">[docs]</a>    <span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Look the feature value up for a node or edge.</span>
 
 <span class="sd">        Args:</span>
@@ -247,7 +247,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">ne</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Feature.s"><a class="viewcode-back" href="../../graf/modules.html#graf.task.Feature.s">[docs]</a>    <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature.s"><a class="viewcode-back" href="../../laf/modules.html#laf.task.Feature.s">[docs]</a>    <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Iterator that yields the node set that has a defined value for this feature.</span>
 
 <span class="sd">        The node set is given in the canonical node set order.</span>
@@ -270,7 +270,7 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">n</span>
 </div></div>
-<div class="viewcode-block" id="Features"><a class="viewcode-back" href="../../graf/modules.html#graf.task.Features">[docs]</a><span class="k">class</span> <span class="nc">Features</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Features"><a class="viewcode-back" href="../../laf/modules.html#laf.task.Features">[docs]</a><span class="k">class</span> <span class="nc">Features</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for holding a bunch of features and makes them </span>
 <span class="sd">    accessible by member names.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -287,18 +287,18 @@
             <span class="k">exec</span><span class="p">(</span><span class="s">&quot;self.{} = fo&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fo</span><span class="o">.</span><span class="n">local_name</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">[</span><span class="n">fo</span><span class="o">.</span><span class="n">local_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fo</span><span class="o">.</span><span class="n">lookup</span>
 </div>
-<div class="viewcode-block" id="XMLid"><a class="viewcode-back" href="../../graf/modules.html#graf.task.XMLid">[docs]</a><span class="k">class</span> <span class="nc">XMLid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="XMLid"><a class="viewcode-back" href="../../laf/modules.html#laf.task.XMLid">[docs]</a><span class="k">class</span> <span class="nc">XMLid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for making the original XML identifiers available</span>
 <span class="sd">    to tasks.</span>
 
 <span class="sd">    It has a reference to the relevant tables organized by *kind*</span>
 <span class="sd">    (node or edge). There are methods to map and inverse map.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">laftask</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Upon creation, makes a reference to the XMLid data corresponding to the kind specified.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            graftask(:class:`GrafTask &lt;graf.task.GrafTask&gt;`):</span>
+<span class="sd">            laftask(:class:`LafTask &lt;laf.task.LafTask&gt;`):</span>
 <span class="sd">                The task executing object that has all the data.</span>
 <span class="sd">            kind:</span>
 <span class="sd">                The kind (node or edge)</span>
@@ -306,10 +306,10 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xid_int&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rep</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xid_rep&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xid_int&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rep</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;xid_rep&#39;</span><span class="p">][</span><span class="n">kind</span><span class="p">]</span>
 
-<div class="viewcode-block" id="XMLid.r"><a class="viewcode-back" href="../../graf/modules.html#graf.task.XMLid.r">[docs]</a>    <span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_code</span><span class="p">):</span>
+<div class="viewcode-block" id="XMLid.r"><a class="viewcode-back" href="../../laf/modules.html#laf.task.XMLid.r">[docs]</a>    <span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_code</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get the XML identifier corresponding to an integer.</span>
 
 <span class="sd">        Args:</span>
@@ -321,7 +321,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep</span><span class="p">[</span><span class="n">int_code</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="XMLid.i"><a class="viewcode-back" href="../../graf/modules.html#graf.task.XMLid.i">[docs]</a>    <span class="k">def</span> <span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_id</span><span class="p">):</span>
+<div class="viewcode-block" id="XMLid.i"><a class="viewcode-back" href="../../laf/modules.html#laf.task.XMLid.i">[docs]</a>    <span class="k">def</span> <span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_id</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get the integer code of an XML identifier.</span>
 
 <span class="sd">        Args:</span>
@@ -333,7 +333,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">[</span><span class="n">xml_id</span><span class="p">]</span>
 </div></div>
-<div class="viewcode-block" id="XMLids"><a class="viewcode-back" href="../../graf/modules.html#graf.task.XMLids">[docs]</a><span class="k">class</span> <span class="nc">XMLids</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="XMLids"><a class="viewcode-back" href="../../laf/modules.html#laf.task.XMLids">[docs]</a><span class="k">class</span> <span class="nc">XMLids</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for holding a bunch of XML mappings (node and or edge) and makes them </span>
 <span class="sd">    accessible by member names.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -346,16 +346,16 @@
         <span class="k">for</span> <span class="n">xo</span> <span class="ow">in</span> <span class="n">xmlid_objects</span><span class="p">:</span>
             <span class="k">exec</span><span class="p">(</span><span class="s">&quot;self.{} = xo&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xo</span><span class="o">.</span><span class="n">local_name</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="PrimaryData"><a class="viewcode-back" href="../../graf/modules.html#graf.task.PrimaryData">[docs]</a><span class="k">class</span> <span class="nc">PrimaryData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PrimaryData"><a class="viewcode-back" href="../../laf/modules.html#laf.task.PrimaryData">[docs]</a><span class="k">class</span> <span class="nc">PrimaryData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for giving access to the primary data.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graftask</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">all_data</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">laftask</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_data</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;Member that holds the primary data as a single UNICODE string.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">graftask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span> <span class="o">=</span> <span class="n">laftask</span>
 
-<div class="viewcode-block" id="PrimaryData.data"><a class="viewcode-back" href="../../graf/modules.html#graf.task.PrimaryData.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<div class="viewcode-block" id="PrimaryData.data"><a class="viewcode-back" href="../../laf/modules.html#laf.task.PrimaryData.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Gets the primary data to which a node is linked.</span>
 
 <span class="sd">        Args:</span>
@@ -372,8 +372,8 @@
 <span class="sd">                The list is normalized: all stretches are maximal, non overlapping and occur</span>
 <span class="sd">                in the order of the primary data (ascending *N*). </span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">graftask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span>
-        <span class="n">regions</span> <span class="o">=</span> <span class="n">graftask</span><span class="o">.</span><span class="n">getitems</span><span class="p">(</span><span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;node_anchor&#39;</span><span class="p">],</span> <span class="n">graftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;node_anchor_items&#39;</span><span class="p">],</span> <span class="n">node</span><span class="p">)</span>
+        <span class="n">laftask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span>
+        <span class="n">regions</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">getitems</span><span class="p">(</span><span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;node_anchor&#39;</span><span class="p">],</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;node_anchor_items&#39;</span><span class="p">],</span> <span class="n">node</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">regions</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="n">all_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_data</span>
@@ -382,7 +382,7 @@
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">regions</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">],</span> <span class="n">all_text</span><span class="p">[</span><span class="n">regions</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">]:</span><span class="n">regions</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]]))</span> 
         <span class="k">return</span> <span class="n">result</span>
 </div></div>
-<div class="viewcode-block" id="GrafTask"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask">[docs]</a><span class="k">class</span> <span class="nc">GrafTask</span><span class="p">(</span><span class="n">Graf</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask">[docs]</a><span class="k">class</span> <span class="nc">LafTask</span><span class="p">(</span><span class="n">Laf</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Task processor.</span>
 
 <span class="sd">    This class is responsible for running user tasks.</span>
@@ -403,7 +403,7 @@
 <span class="sd">            settings (:py:class:`configparser.ConfigParser`):</span>
 <span class="sd">                entries corresponding to the main configuration file</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">Graf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+        <span class="n">Laf</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="sd">&#39;&#39;&#39;List of handles to result files created by the task through the method :meth:`add_output`&#39;&#39;&#39;</span>
@@ -414,20 +414,20 @@
         <span class="k">if</span> <span class="n">task_include_dir</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_include_dir</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GrafTask.API"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.API">[docs]</a>    <span class="k">def</span> <span class="nf">API</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.API"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.API">[docs]</a>    <span class="k">def</span> <span class="nf">API</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Return references to API data structures and methods of this class.</span>
 
 <span class="sd">        </span>
 <span class="sd">        This is what is returned (the names given are not necessarily the names by which they are used</span>
 <span class="sd">        in end user tasks. You can give convenient, local names to these methods, e.g::</span>
 
-<span class="sd">            (msg, P, NN, F, X) = graftask.API()</span>
+<span class="sd">            (msg, P, NN, F, X) = laftask.API()</span>
 
 <span class="sd">        Using these names, here is the API specification:</span>
 
 <span class="sd">        msg(text, newline=True, withtime=True):</span>
 <span class="sd">            For delivering console output, such as progress messages.</span>
-<span class="sd">            See :meth:`progress &lt;graf.timestamp.Timestamp.progress&gt;`.</span>
+<span class="sd">            See :meth:`progress &lt;laf.timestamp.Timestamp.progress&gt;`.</span>
 
 <span class="sd">        P(:class:`PrimaryData`):</span>
 <span class="sd">            Object containing the primary data and the information to which portions of it nodes are linked.</span>
@@ -439,7 +439,7 @@
 <span class="sd">            This happens when a region is merely a pointer and not an interval.</span>
 
 <span class="sd">        NN(test=function, value=something):</span>
-<span class="sd">            An iterator that delivers nodes in the canonical order described in :func:`model &lt;graf.model.model&gt;`.</span>
+<span class="sd">            An iterator that delivers nodes in the canonical order described in :func:`model &lt;laf.model.model&gt;`.</span>
 
 <span class="sd">            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*</span>
 <span class="sd">            are passed through, all others are skipped.</span>
@@ -508,7 +508,7 @@
             <span class="n">XMLids</span><span class="p">(</span><span class="n">xmlid_objects</span><span class="p">)</span>
         <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="GrafTask.run"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{},</span> <span class="n">load</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.run"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">force_compile</span><span class="o">=</span><span class="p">{},</span> <span class="n">load</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run a task.</span>
 
 <span class="sd">        That is:</span>
@@ -559,7 +559,7 @@
         <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">stage</span> <span class="o">==</span> <span class="s">&#39;final&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">finish_task</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="GrafTask.add_output"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.add_output">[docs]</a>    <span class="k">def</span> <span class="nf">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.add_output"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.add_output">[docs]</a>    <span class="k">def</span> <span class="nf">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Opens a file for writing and stores the handle.</span>
 
 <span class="sd">        Every task is advised to use this method for opening files for its output.</span>
@@ -578,7 +578,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">handle</span>
 </div>
-<div class="viewcode-block" id="GrafTask.add_input"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.add_input">[docs]</a>    <span class="k">def</span> <span class="nf">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.add_input"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.add_input">[docs]</a>    <span class="k">def</span> <span class="nf">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Opens a file for reading and stores the handle.</span>
 
 <span class="sd">        Every task is advised to use this method for opening files for its input.</span>
@@ -597,7 +597,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">handle</span>
 </div>
-<div class="viewcode-block" id="GrafTask.result"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.result">[docs]</a>    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.result"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.result">[docs]</a>    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;The location where the files of this task can be found</span>
 
 <span class="sd">        Args:</span>
@@ -613,7 +613,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;result_dir&#39;</span><span class="p">],</span> <span class="n">file_name</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="GrafTask.init_task"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.init_task">[docs]</a>    <span class="k">def</span> <span class="nf">init_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.init_task"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.init_task">[docs]</a>    <span class="k">def</span> <span class="nf">init_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initializes the current task.</span>
 
 <span class="sd">        Provide a log file, reset the timer, and issue a progress message.</span>
@@ -622,7 +622,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stamp</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;BEGIN TASK={} SOURCE={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]))</span>
 </div>
-<div class="viewcode-block" id="GrafTask.finish_task"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.finish_task">[docs]</a>    <span class="k">def</span> <span class="nf">finish_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.finish_task"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.finish_task">[docs]</a>    <span class="k">def</span> <span class="nf">finish_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Finalizes the current task.</span>
 
 <span class="sd">        Open result files will be closed.</span>
@@ -651,11 +651,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">finish_logfile</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="GrafTask.getitems_dict"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.getitems_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getitems_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.getitems_dict"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.getitems_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getitems_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get related items from an arrayified data structure.</span>
 
 <span class="sd">        If a relation between integers and sets of integers has been stored as a double array</span>
-<span class="sd">        by the :func:`arrayify() &lt;graf.model.arrayify&gt;` function,</span>
+<span class="sd">        by the :func:`arrayify() &lt;laf.model.arrayify&gt;` function,</span>
 <span class="sd">        this is the way to look up the set of related integers for each integer.</span>
 
 <span class="sd">        Args:</span>
@@ -678,11 +678,11 @@
             <span class="n">items</span><span class="p">[</span><span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">return</span> <span class="n">items</span>
 </div>
-<div class="viewcode-block" id="GrafTask.getitems"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.getitems">[docs]</a>    <span class="k">def</span> <span class="nf">getitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.getitems"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.getitems">[docs]</a>    <span class="k">def</span> <span class="nf">getitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get related items from an arrayified data structure.</span>
 
 <span class="sd">        If a relation between integers and sets of integers has been stored as a double array</span>
-<span class="sd">        by the :func:`arrayify() &lt;graf.model.arrayify&gt;` function,</span>
+<span class="sd">        by the :func:`arrayify() &lt;laf.model.arrayify&gt;` function,</span>
 <span class="sd">        this is the way to look up the set of related integers for each integer.</span>
 
 <span class="sd">        Args:</span>
@@ -702,7 +702,7 @@
         <span class="n">n_items</span> <span class="o">=</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">data_items</span><span class="p">[</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">data_items_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">n_items</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="GrafTask.hasitem"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.hasitem">[docs]</a>    <span class="k">def</span> <span class="nf">hasitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.hasitem"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.hasitem">[docs]</a>    <span class="k">def</span> <span class="nf">hasitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Check whether an integer is in the set of related items</span>
 <span class="sd">        with respect to an arrayified data structure (see also :meth:`getitems_dict`).</span>
 
@@ -724,7 +724,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitems_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> 
 </div>
-<div class="viewcode-block" id="GrafTask.hasitems"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.hasitems">[docs]</a>    <span class="k">def</span> <span class="nf">hasitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.hasitems"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.hasitems">[docs]</a>    <span class="k">def</span> <span class="nf">hasitems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_items</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Check whether a set of integers intersects with the set of related items</span>
 <span class="sd">        with respect to an arrayified data structure (see also :meth:`getitems_dict`).</span>
 
@@ -754,7 +754,7 @@
                 <span class="k">break</span>
         <span class="k">return</span> <span class="n">found</span>
 </div>
-<div class="viewcode-block" id="GrafTask.get_task_mtime"><a class="viewcode-back" href="../../graf/modules.html#graf.task.GrafTask.get_task_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+<div class="viewcode-block" id="LafTask.get_task_mtime"><a class="viewcode-back" href="../../laf/modules.html#laf.task.LafTask.get_task_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get the last modification date of the file that contains the task code</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;locations&#39;</span><span class="p">][</span><span class="s">&#39;task_dir&#39;</span><span class="p">]</span>
@@ -769,7 +769,7 @@
         <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_files</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">handle</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">handle</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
                 <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">Graf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">Laf</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div></div>
 
           <footer>

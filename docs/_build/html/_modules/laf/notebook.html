@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.notebook &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>laf.notebook &mdash; LAF Fabric 3.0.0 documentation</title>
   
 
   
@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +161,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../../index.html">Docs</a> &raquo;</li>
-  <li><a href="">graf.notebook</a></li>
+  <li><a href="">laf.notebook</a></li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -169,29 +169,29 @@
 <hr/>
 
           
-  <h1>Source code for graf.notebook</h1><div class="highlight"><pre>
+  <h1>Source code for laf.notebook</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">from</span> <span class="nn">.settings</span> <span class="kn">import</span> <span class="n">Settings</span>
-<span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">GrafTask</span>
+<span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">LafTask</span>
 
-<div class="viewcode-block" id="Notebook"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook">[docs]</a><span class="k">class</span> <span class="nc">Notebook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook">[docs]</a><span class="k">class</span> <span class="nc">Notebook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Execute tasks, either in a single run, within a notebook</span>
 
 <span class="sd">    See :doc:`Writing Tasks &lt;../taskwriting&gt;` for how to run a task in an iPython notebook.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Upon creation, create a :class:`GrafTask &lt;graf.task.GrafTask&gt;` object based on settings.</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, create a :class:`LafTask &lt;laf.task.LafTask&gt;` object based on settings.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s">&#39;nb&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span> <span class="o">=</span> <span class="n">GrafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span> <span class="o">=</span> <span class="n">LafTask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Notebook.init"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">force_compile_source</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">force_compile_annox</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook.init"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">force_compile_source</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">force_compile_annox</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initialize task execution.</span>
 
 <span class="sd">        Run this method before executing your task code.</span>
@@ -213,41 +213,41 @@
 <span class="sd">                Whether to force compilation of the additional annotation package.</span>
 <span class="sd">                Optional, default False.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="n">source</span><span class="p">,</span> <span class="n">annox</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span>
             <span class="n">force_compile</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;source&#39;</span><span class="p">:</span> <span class="n">force_compile_source</span><span class="p">,</span> <span class="s">&#39;annox&#39;</span><span class="p">:</span> <span class="n">force_compile_annox</span><span class="p">},</span>
             <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="s">&#39;init&#39;</span><span class="p">,</span>
         <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Notebook.final"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.final">[docs]</a>    <span class="k">def</span> <span class="nf">final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook.final"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook.final">[docs]</a>    <span class="k">def</span> <span class="nf">final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Finalize task execution.</span>
 
 <span class="sd">        Run this method after executing your task code, in order to</span>
 <span class="sd">        close all open files for output and logging.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;task&#39;</span><span class="p">],</span>
             <span class="n">stage</span><span class="o">=</span><span class="s">&#39;final&#39;</span><span class="p">,</span>
         <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Notebook.API"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.API">[docs]</a>    <span class="k">def</span> <span class="nf">API</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook.API"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook.API">[docs]</a>    <span class="k">def</span> <span class="nf">API</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Insert the names by which you can access the data into your name space.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Notebook.add_output"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.add_output">[docs]</a>    <span class="k">def</span> <span class="nf">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook.add_output"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook.add_output">[docs]</a>    <span class="k">def</span> <span class="nf">add_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Create an output file in the folder for the output of this task</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Notebook.add_input"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.add_input">[docs]</a>    <span class="k">def</span> <span class="nf">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook.add_input"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook.add_input">[docs]</a>    <span class="k">def</span> <span class="nf">add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Create an input file in the folder for the output of this task</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Notebook.my_files"><a class="viewcode-back" href="../../graf/modules.html#graf.notebook.Notebook.my_files">[docs]</a>    <span class="k">def</span> <span class="nf">my_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Notebook.my_files"><a class="viewcode-back" href="../../laf/modules.html#laf.notebook.Notebook.my_files">[docs]</a>    <span class="k">def</span> <span class="nf">my_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;The location where the output files of this task can be found</span>
 
 <span class="sd">        Args:</span>
@@ -258,7 +258,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            the path to *file_name* or the directory of the output files.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graftask</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">laftask</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span></div></div>
 </pre></div>
 
           <footer>

@@ -130,15 +130,15 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -319,7 +319,7 @@ we need to be more tricky, because we cannot store sets of numbers as integers.
 What we do instead is: we build two arrays, the first array points to data records in the second array.
 A data record in the second array consists of a number giving the length of the record,
 followed by that number of integers.
-The function <a class="reference internal" href="graf/modules.html#graf.model.arrayify" title="graf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
+The function <a class="reference internal" href="laf/modules.html#laf.model.arrayify" title="laf.model.arrayify"><tt class="xref py py-func docutils literal"><span class="pre">arrayify()</span></tt></a> takes a list of items and turns it in a double array.</p>
 <p><strong>Keep individual features separate</strong>
 A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
 they occur in, since these annotations have a <em>label</em> and occur in an <em>annotation space</em>.
@@ -352,7 +352,7 @@ when individual features are cleanly separable.</p>
 before the you can touch them in tasks.
 This merging occurs late in the process, even after the loading of features by LAF-fabric.
 Only at the point in time when a task declares the names of the API methods
-(see <a class="reference internal" href="graf/modules.html#graf.task.GrafTask.API" title="graf.task.GrafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API</span></tt></a>)
+(see <tt class="xref py py-meth docutils literal"><span class="pre">API</span></tt>)
 the features will be assembled into objects.
 At this point the source features and annox features finally get merged.
 When a task no longer uses a merged feature, or want to merge with a different package,

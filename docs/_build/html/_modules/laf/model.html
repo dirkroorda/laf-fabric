@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graf.model &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>laf.model &mdash; LAF Fabric 3.0.0 documentation</title>
   
 
   
@@ -129,15 +129,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../graf/modules.html">graf 3.0.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.graf">graf.graf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.model">graf.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.notebook">graf.notebook module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.parse">graf.parse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.shell">graf.shell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.task">graf.task module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../graf/modules.html#module-graf.timestamp">graf.timestamp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +161,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../../index.html">Docs</a> &raquo;</li>
-  <li><a href="">graf.model</a></li>
+  <li><a href="">laf.model</a></li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -169,11 +169,11 @@
 <hr/>
 
           
-  <h1>Source code for graf.model</h1><div class="highlight"><pre>
+  <h1>Source code for laf.model</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">array</span>
 
-<div class="viewcode-block" id="arrayify"><a class="viewcode-back" href="../../graf/modules.html#graf.model.arrayify">[docs]</a><span class="k">def</span> <span class="nf">arrayify</span><span class="p">(</span><span class="n">source_list</span><span class="p">):</span>
+<div class="viewcode-block" id="arrayify"><a class="viewcode-back" href="../../laf/modules.html#laf.model.arrayify">[docs]</a><span class="k">def</span> <span class="nf">arrayify</span><span class="p">(</span><span class="n">source_list</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Efficient storage of a list of lists of integers in two Python :py:mod:`array`.</span>
 
 <span class="sd">    *This is one of the most important tricks of the LAF-Fabric, and yet it is only 10 lines of code!*</span>
@@ -207,7 +207,7 @@
         <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">dest_array</span><span class="p">,</span> <span class="n">dests_array</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="normalize_ranges"><a class="viewcode-back" href="../../graf/modules.html#graf.model.normalize_ranges">[docs]</a><span class="k">def</span> <span class="nf">normalize_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">):</span>
+<div class="viewcode-block" id="normalize_ranges"><a class="viewcode-back" href="../../laf/modules.html#laf.model.normalize_ranges">[docs]</a><span class="k">def</span> <span class="nf">normalize_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Normalizes a set of ranges.</span>
 
 <span class="sd">    Ranges come from the regions in the primary data.</span>
@@ -260,17 +260,17 @@
 
     <span class="k">return</span> <span class="n">result</span>
 </div>
-<div class="viewcode-block" id="model"><a class="viewcode-back" href="../../graf/modules.html#graf.model.model">[docs]</a><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">data_items</span><span class="p">,</span> <span class="n">temp_data_items</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
+<div class="viewcode-block" id="model"><a class="viewcode-back" href="../../laf/modules.html#laf.model.model">[docs]</a><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">data_items</span><span class="p">,</span> <span class="n">temp_data_items</span><span class="p">,</span> <span class="n">stamp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Remodels various data structures</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data_items:</span>
-<span class="sd">            data structures coming from :mod:`parse &lt;graf.parse&gt;`, that are here to stay</span>
+<span class="sd">            data structures coming from :mod:`parse &lt;laf.parse&gt;`, that are here to stay</span>
 
 <span class="sd">        temp_data_items:</span>
-<span class="sd">            data structures coming from :mod:`parse &lt;graf.parse&gt;` that may be thrown away</span>
+<span class="sd">            data structures coming from :mod:`parse &lt;laf.parse&gt;` that may be thrown away</span>
 
-<span class="sd">        stamp (:class:`Timestamp &lt;graf.timestamp.Timestamp&gt;`):</span>
+<span class="sd">        stamp (:class:`Timestamp &lt;laf.timestamp.Timestamp&gt;`):</span>
 <span class="sd">            object for issuing progress messages</span>
 
 <span class="sd">    Returns:</span>

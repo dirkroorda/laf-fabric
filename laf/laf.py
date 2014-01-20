@@ -12,19 +12,19 @@ from .timestamp import Timestamp
 from .parse import parse as xmlparse
 from .model import model as remodel
 
-class GrafException(Exception):
+class LafException(Exception):
     def __init__(self, message, stamp, Errors):
         Exception.__init__(self, message)
         stamp.progress(message)
         raise
 
-class Graf(object):
+class Laf(object):
     '''Base class for compiling LAF resources and running analytic tasks on them.
 
     The data of this class represents the compiled data on the basis of which tasks can run.
     This data is created by the method :meth:`compile_all` in this class.
 
-    The :class:`Graf` knows the structure of the data, and how to load it into memory.
+    The :class:`Laf` knows the structure of the data, and how to load it into memory.
     It can also see what it loaded and what not, and it can compute conditions that require compiling and (re)loading.
 
     There are various kinds of data, by their shape and by their function.
@@ -104,8 +104,8 @@ class Graf(object):
             val = self.data_items['feature``][(annotation_space, annotation_label, feature_name, kind)][node_or_edge_id]
         
         The API will help you to lookup feature values.
-        See :mod:`task <graf.task>` for a description of the API, especially
-        :meth:`API <graf.task.GrafTask.API>`
+        See :mod:`task <laf.task>` for a description of the API, especially
+        :meth:`API <laf.task.LafTask.API>`
     '''
 
     BIN_EXT = 'bin'
@@ -128,7 +128,7 @@ class Graf(object):
         '''Upon creation, empty datastructures are initialized to hold the binary,
         compiled LAF data and create a directory for their serializations on disk.
 
-        The Graf object holds information that Graf tasks need to perform their operations.
+        The Laf object holds information that Laf tasks need to perform their operations.
         The most important piece of information is the data itself.
         This data consists of arrays and dictionaries that together hold the information that is compiled from a LAF resource.
 
@@ -145,7 +145,7 @@ class Graf(object):
         '''
 
         self.stamp = Timestamp()
-        '''Instance member holding the :class:`Timestamp <graf.timestamp.Timestamp>` object.
+        '''Instance member holding the :class:`Timestamp <laf.timestamp.Timestamp>` object.
            Useful to deliver progress messages with timing information.
         '''
         self.settings = settings
@@ -274,7 +274,7 @@ class Graf(object):
         This dictionary is keyed by the same keys as ``data_items_def`` plus a few additional ones,
         dependent on tnd predictable from he data type and data group.
 
-        See the :mod:`model <graf.model>` modules for the way the compiled data is created.
+        See the :mod:`model <laf.model>` modules for the way the compiled data is created.
         '''
 
         self.temp_data_items = None
@@ -932,7 +932,7 @@ class Graf(object):
         After remodelling some parse data can be thrown away.
         Only store data that is needed for task execution in the object.
 
-        The actual parsing is done in the module :mod:`parse <graf.parse>`.
+        The actual parsing is done in the module :mod:`parse <laf.parse>`.
 
         Args:
             data_group (str):
@@ -948,7 +948,7 @@ class Graf(object):
         try:
             os.chdir(the_laf_dir)
         except os.error:
-            raise GrafException("ERROR: could not change to LAF data directory {}".format(the_laf_dir),
+            raise LafException("ERROR: could not change to LAF data directory {}".format(the_laf_dir),
                 self.stamp, os.error
             )
         try:
@@ -956,7 +956,7 @@ class Graf(object):
                 os.makedirs(the_bin_dir)
         except os.error:
             os.chdir(self.cur_dir)
-            raise GrafException("ERROR: could not create directory for compiled data {}".format(the_bin_dir),
+            raise LafException("ERROR: could not create directory for compiled data {}".format(the_bin_dir),
                 self.stamp, os.error,
             )
         
@@ -1047,7 +1047,7 @@ class Graf(object):
             if not os.path.exists(self.env['bin_dir']):
                 os.makedirs(self.env['bin_dir'])
         except os.error:
-            raise GrafException(
+            raise LafException(
                 "ERROR: could not create bin directory {}".format(self.env['bin_dir']),
                 self.stamp, os.error
             )
@@ -1055,7 +1055,7 @@ class Graf(object):
             if not os.path.exists(self.env['result_dir']):
                 os.makedirs(self.env['result_dir'])
         except os.error:
-            raise GrafException(
+            raise LafException(
                 "ERROR: could not create result directory {}".format(self.env['result_dir']),
                 self.stamp, os.error
             )
@@ -1083,7 +1083,7 @@ class Graf(object):
             if not os.path.exists(log_dir):
                 os.makedirs(log_dir)
         except os.error:
-            raise GrafException(
+            raise LafException(
                 "ERROR: could not create log directory {}".format(log_dir),
                 self.stamp, os.error
             )
@@ -1115,7 +1115,7 @@ class Graf(object):
             pass
 
     def progress(self, msg, newline=True, withtime=True):
-        '''Convenience method to call the progress of the associated stamp directly from the Graf object'''
+        '''Convenience method to call the progress of the associated stamp directly from the Laf object'''
         self.stamp.progress(msg, newline=newline, withtime=withtime)
 
     def make_inverse(self, mapping):

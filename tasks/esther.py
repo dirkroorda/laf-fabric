@@ -19,7 +19,7 @@ load = {
     },
 }
 
-def task(graftask):
+def task(laftask):
     '''Collect frequency data of common nouns in Esther per bible book.
 
     This is part of reproducing results in Martijn Naaijer's thesis.
@@ -45,13 +45,13 @@ def task(graftask):
         common nouns in Esther and as columns the books of the bible.
         A cell contain the frequency of that lexeme in that book multiplied by 1000 
     '''
-    (msg, P, NN, F, X) = graftask.API()
+    (msg, P, NN, F, X) = laftask.API()
 
     target_book = "Esther"
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
 
-    out_all = graftask.add_output("lexemes_all.txt")
-    out_esther = graftask.add_output("lexemes_esther.txt")
+    out_all = laftask.add_output("lexemes_all.txt")
+    out_esther = laftask.add_output("lexemes_esther.txt")
 
     ontarget = True
     book_name = None

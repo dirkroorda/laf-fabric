@@ -81,7 +81,7 @@ class Timestamp(object):
                 whether or not to add a newline. Optional. Make it ``False`` to not add a newline.
             withtime (bool):
                 whether to precede the text with timing information (time elapsed since the last reset of the
-                underlying :class:`graf.timestamp.Stamp` object.
+                underlying :class:`laf.timestamp.Stamp` object.
         '''
         timed_msg = "{:>7} ".format(self.elapsed()) if withtime else ''
         timed_msg += msg

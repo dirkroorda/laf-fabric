@@ -14,13 +14,13 @@ load = {
     },
 }
 
-def task(graftask):
+def task(laftask):
     '''Produces a list of all WIVU objects with their types, ids and
     *monads* (words) they contain.
     '''
-    (msg, P, NN, F, X) = graftask.API()
+    (msg, P, NN, F, X) = laftask.API()
 
-    out = graftask.add_output("output.txt")
+    out = laftask.add_output("output.txt")
 
     for i in NN():
         oid = F.shebanq_db_oid.v(i)

@@ -5,7 +5,7 @@ import argparse
 import sys, tty, termios
 
 from .settings import Settings
-from .task import GrafTask
+from .task import LafTask
 
 class Shell(object):
     '''Execute tasks, either in a single run, or with an interactive prompt.
@@ -18,7 +18,7 @@ class Shell(object):
     '''
 
     def __init__(self):
-        '''Upon creation, create a :class:`GrafTask <graf.task.GrafTask>` object based on settings.
+        '''Upon creation, create a :class:`LafTask <laf.task.LafTask>` object based on settings.
 
         '''
 
@@ -101,7 +101,7 @@ class Shell(object):
         self.cur.append(self.args.forcecompilesource)
         self.cur.append(self.args.forcecompileannox)
 
-        self.graftask = GrafTask(self.settings.settings)
+        self.laftask = LafTask(self.settings.settings)
 
     def run(self, source, annox, task, force_compile, load, function=None, stage=None):
         '''Does a single task. Useful for stand alone tasks.
@@ -119,10 +119,10 @@ class Shell(object):
             load(dict):
                 a dictionary specifying what data to load. See :doc:`Writing Tasks <../taskwriting>`.
             function(callable): 
-                the function that implements the task. It should accept one argument, being the GrafTask object
+                the function that implements the task. It should accept one argument, being the LafTask object
                 through which all data in the LAF resource can be accessed.
         '''
-        self.graftask.run(source, annox, task, force_compile=force_compile, load=load, function=function, stage=stage)
+        self.laftask.run(source, annox, task, force_compile=force_compile, load=load, function=function, stage=stage)
         
     def processor(self):
         '''Does work. Decides to run one task or start the command prompt.
@@ -134,7 +134,7 @@ class Shell(object):
         command line args that did come through, are used as initial values.
         '''
         if self.args.source and self.args.annox and self.args.task and not self.args.menu:
-            self.graftask.run(
+            self.laftask.run(
                 self.args.source,
                 self.args.annox,
                 self.args.task,
@@ -194,7 +194,7 @@ class Shell(object):
         elif command == "x":
             sys.stderr.write("\n")
             try:
-                self.graftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile={"source": self.cur[len(self.cur) - 2], "annox": self.cur[len(self.cur) - 1]})
+                self.laftask.run(*[self.index[col][self.cur[col]] for col in range(len(self.index))], force_compile={"source": self.cur[len(self.cur) - 2], "annox": self.cur[len(self.cur) - 1]})
                 self.cur[len(self.index)] = False
                 self.cur[len(self.index)+1] = False
             except:

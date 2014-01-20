@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 from distutils.core import setup
-setup(name='graf',
-      version='3.0.0',
+setup(name='laf',
+      version='3.1.0',
       author='Dirk Roorda',
       author_email='dirk.roorda@dans.knaw.nl',
       description='Tool to read LAF resources (Linguistic Annotation Framework ISO 24612:2012) and analyse them efficiently',
-      packages=['graf'],
+      packages=['laf'],
       url='http://laf-fabric.readthedocs.org',
 )

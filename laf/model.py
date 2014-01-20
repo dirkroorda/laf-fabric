@@ -93,12 +93,12 @@ def model(data_items, temp_data_items, stamp):
 
     Args:
         data_items:
-            data structures coming from :mod:`parse <graf.parse>`, that are here to stay
+            data structures coming from :mod:`parse <laf.parse>`, that are here to stay
 
         temp_data_items:
-            data structures coming from :mod:`parse <graf.parse>` that may be thrown away
+            data structures coming from :mod:`parse <laf.parse>` that may be thrown away
 
-        stamp (:class:`Timestamp <graf.timestamp.Timestamp>`):
+        stamp (:class:`Timestamp <laf.timestamp.Timestamp>`):
             object for issuing progress messages
 
     Returns:

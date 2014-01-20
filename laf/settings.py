@@ -26,7 +26,7 @@ class Settings(object):
     '''
 
     def __init__(self, context=None):
-        '''Upon creation, create a :class:`GrafTask <graf.task.GrafTask>` object based on settings.
+        '''Upon creation, create a :class:`LafTask <laf.task.LafTask>` object based on settings.
 
         Args:
             context (str): either ``wb`` (workbench) or ``nb`` (notebook).

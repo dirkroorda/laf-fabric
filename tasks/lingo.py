@@ -19,7 +19,7 @@ load = {
     },
 }
 
-def task(graftask):
+def task(laftask):
     '''Crude visualization of the syntactic structure of the text.
 
     Shows the linguistic objects in their actual embedding.
@@ -35,9 +35,9 @@ def task(graftask):
         sentence is co-extensial with a clause (having exactly the same *monads* or words), there is
         nothing in the data that specifies that the clause is contained in the sentence.
     '''
-    (msg, P, NN, F, X) = graftask.API()
+    (msg, P, NN, F, X) = laftask.API()
 
-    out = graftask.add_output("output.txt")
+    out = laftask.add_output("output.txt")
 
     type_map = collections.defaultdict(lambda: None, [
         ("verse", 'V'),

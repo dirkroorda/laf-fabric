@@ -18,13 +18,13 @@ load = {
     },
 }
 
-def task(graftask):
+def task(laftask):
     '''Counts the frequencies of words with male and female gender features.
     Outputs the frequencies in a tab-delimited file, with frequency values for
     each chapter in the whole Hebrew Bible.
     '''
-    (msg, P, NN, F, X) = graftask.API()
-    stats_file = graftask.add_output("stats.txt")
+    (msg, P, NN, F, X) = laftask.API()
+    stats_file = laftask.add_output("stats.txt")
 
     stats = [0, 0, 0]
     cur_chapter = None

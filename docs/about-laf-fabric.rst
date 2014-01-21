@@ -88,12 +88,12 @@ Since there is a generic LAF tool for smaller resources,
 this tool has been designed with performance in mind. 
 In fact, performance has been the most important design criterion of all.
 There isa price for that: we use a simplified feature concept.
-See the section of GrAF :ref:`feature coverage` below.
+See the section of LAF :ref:`feature coverage` below.
 
 .. _feature coverage:
 
-GrAF feature coverage
-=====================
+LAF feature coverage
+====================
 This tool cannot deal with LAF resources in their full generality.
 
 In LAF, annotations have labels, and annotations are organized in annotation spaces.

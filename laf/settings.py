@@ -7,7 +7,7 @@ MAIN_CFG = 'laf-fabric.cfg'
 system_settings = {
     'locations': {
         'bin_subdir': 'bin',                   # subdirectory of compiled data
-        'annox_subdir': 'annotations',         # subdirectory of annotation add-ons
+        'annox_dir': 'annotations',            # subdirectory of annotation add-ons
         'laf_subdir': 'laf',                   # subdirectory of laf resource
         'feat_subdir': 'feat',                 # subdirectory within bin_subdir for feature data
         'annox_subdir': 'annox',               # subdirectory within bin_subdir for annox feature data
@@ -41,7 +41,7 @@ class Settings(object):
                 self.settings[group][var] = system_settings[group][var]
         main_cfg = MAIN_CFG if context == 'nb' else 'notebooks/{}'.format(MAIN_CFG) if context == 'wb' else 'None'
         self.settings.read_file(open(main_cfg))
-        self.settings['locations']['annox_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['annox_subdir'])
+        self.settings['locations']['annox_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['annox_dir'])
         self.settings['locations']['laf_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['laf_subdir'])
 
         self.get_sources()

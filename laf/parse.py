@@ -106,7 +106,7 @@ class AnnotationHandler(ContentHandler):
         The parse process is presupposes that regions are encountered before nodes that link to them,
         nodes before edges that connect them, nodes and edges before annotations that target them.
         The creator of the LAF resource can organize the files that way. The parser reads the annotation file in the
-        order specified in the Graf header file.
+        order specified in the GrAF header file.
 
     Here is a description of the arrays we create:
 
@@ -127,6 +127,10 @@ class AnnotationHandler(ContentHandler):
     *feature*
         All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),
         and finally reference (id of target node or edge).
+
+    .. note::
+        Empty annotations correspond with a feature with empty name within the annotation space and annotation label.
+        This feature has value ``''`` (the empty string) for each node or edge in its domain.
 
     .. note::
         We work with annotation spaces and annotation labels and we distinguish between features in
@@ -280,7 +284,7 @@ class AnnotationHandler(ContentHandler):
         elif name == "a":
             if self.aempty:
                 fname = ''
-                value = 1
+                value = ''
                 feature[(self.aspace, self.alabel, fname, self.atype)][self.aref] = value
 
         self._tag_stack.pop()

@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>laf 3.0.0 &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>laf 3.1.0 &mdash; LAF Fabric 3.1.0 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'../',
-        VERSION:'3.0.0',
+        VERSION:'3.1.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,7 +45,7 @@
   
 
   
-    <link rel="top" title="LAF Fabric 3.0.0 documentation" href="../index.html"/>
+    <link rel="top" title="LAF Fabric 3.1.0 documentation" href="../index.html"/>
         <link rel="prev" title="proper module" href="../tasks/proper.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -77,7 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../about-laf-fabric.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../about-laf-fabric.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../about-laf-fabric.html#designed-for-performance">Designed for Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../about-laf-fabric.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about-laf-fabric.html#laf-feature-coverage">LAF feature coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../about-laf-fabric.html#future-directions">Future directions</a></li>
 </ul>
 </li>
@@ -102,6 +102,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#node-order">Node order</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../taskwriting.html#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../API-reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../API-reference.html#parts-of-the-api">Parts of the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../API-reference.html#where-is-the-api">Where is the API?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../API-reference.html#calling-the-api">Calling the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../API-reference.html#laf-api">LAF API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../API-reference.html#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../API-reference.html#node-order">Node order</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a><ul>
@@ -129,7 +138,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="modules.html">laf 3.1.0</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#module-laf.laf">laf.laf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#module-laf.model">laf.model module</a></li>
@@ -161,7 +170,7 @@
         <div class="rst-content">
           <ul class="wy-breadcrumbs">
   <li><a href="../index.html">Docs</a> &raquo;</li>
-  <li><a href="">laf 3.0.0</a></li>
+  <li><a href="">laf 3.1.0</a></li>
     <li class="wy-breadcrumbs-aside">
       
         <a href="../_sources/laf/modules.txt" rel="nofollow"> View page source</a>
@@ -172,7 +181,7 @@
 
           
   <div class="section" id="laf-release">
-<h1>laf 3.0.0<a class="headerlink" href="#laf-release" title="Permalink to this headline">¶</a></h1>
+<h1>laf 3.1.0<a class="headerlink" href="#laf-release" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -756,7 +765,7 @@ This will be spotted here.</p>
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
 <dt>data_group (str):</dt>
-<dd>what to parse: source data (<tt class="docutils literal"><span class="pre">source</span></tt>) or an extra annotation package (<tt class="docutils literal"><span class="pre">annox</span></tt>)</dd>
+<dd>what to write: source data (<tt class="docutils literal"><span class="pre">source</span></tt>) or an extra annotation package (<tt class="docutils literal"><span class="pre">annox</span></tt>)</dd>
 </dl>
 </dd>
 </dl>
@@ -842,7 +851,9 @@ Otherwise objects count as equal in position.
 If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.</p>
 </dd>
 <dt>Nodes and edges:</dt>
-<dd>Collect the outgoing and incoming edges for each node in a pair of double arrays.</dd>
+<dd><p class="first">Collect the outgoing and incoming edges for each node in a pair of double arrays.</p>
+<p class="last">Collect the set of unannotated edges.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -973,7 +984,7 @@ When we have to associate one piece of data to other pieces, we create arrays of
 <p class="last">The parse process is presupposes that regions are encountered before nodes that link to them,
 nodes before edges that connect them, nodes and edges before annotations that target them.
 The creator of the LAF resource can organize the files that way. The parser reads the annotation file in the
-order specified in the Graf header file.</p>
+order specified in the GrAF header file.</p>
 </div>
 <p>Here is a description of the arrays we create:</p>
 <dl class="docutils">
@@ -994,6 +1005,11 @@ order specified in the Graf header file.</p>
 <dd>All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),
 and finally reference (id of target node or edge).</dd>
 </dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Empty annotations correspond with a feature with empty name within the annotation space and annotation label.
+This feature has value <tt class="docutils literal"><span class="pre">''</span></tt> (the empty string) for each node or edge in its domain.</p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">We work with annotation spaces and annotation labels and we distinguish between features in
@@ -1037,7 +1053,7 @@ Features for nodes and features for edges occupy separate name spaces.</p>
 
 <dl class="attribute">
 <dt id="laf.parse.AnnotationHandler.truth">
-<tt class="descname">truth</tt><em class="property"> = {'no': False, 'on': True, 'yes': True, 'false': False, 'true': True, '1': True, '0': False, 'off': False}</em><a class="headerlink" href="#laf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">truth</tt><em class="property"> = {'yes': True, 'on': True, 'true': True, 'false': False, '1': True, '0': False, 'off': False, 'no': False}</em><a class="headerlink" href="#laf.parse.AnnotationHandler.truth" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1314,13 +1330,45 @@ row number of that item</dd>
 <div class="section" id="module-laf.task">
 <span id="laf-task-module"></span><h2>laf.task module<a class="headerlink" href="#module-laf.task" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
+<dt id="laf.task.Connections">
+<em class="property">class </em><tt class="descname">Connections</tt><big>(</big><em>laftask</em>, <em>feature_objects</em><big>)</big><a class="headerlink" href="#laf.task.Connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>This class is responsible for making adjacency information accessible to tasks.</p>
+<p>Adjacency information is the information needed to walk from node to node.
+Laf-Fabric organizes adjacency information in a <em>connections</em> dictionary:</p>
+<div class="highlight-python"><pre>connections[«edge_feature_name»][«edge_feature_value»][«node_from»][«node_to»] = None</pre>
+</div>
+<p>for every <tt class="docutils literal"><span class="pre">«node_from»</span></tt> from which there is an edge to <tt class="docutils literal"><span class="pre">«node_to»</span></tt>
+having the feature named <tt class="docutils literal"><span class="pre">«edge_feature_name»</span></tt> with value <tt class="docutils literal"><span class="pre">«edge_feature_value»</span></tt>.</p>
+<p>The adjacency information will also be made available by member names:</p>
+<div class="highlight-python"><pre>C.«edge_feature_name»[«edge_feature_value»][«node_from»][«node_to»] = None</pre>
+</div>
+<p>Upon creation, from the edge features the adjacency information will
+be gathered.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>laftask(<a class="reference internal" href="#laf.task.LafTask" title="laf.task.LafTask"><tt class="xref py py-class docutils literal"><span class="pre">LafTask</span></tt></a>):</dt>
+<dd>The task executing object that has all the data.</dd>
+<dt>feature_objects(dict):</dt>
+<dd>feature information for the declared features.
+This information is the combination of info found in the source
+and in the annox.</dd>
+<dt>edge_features(dict):</dt>
+<dd>the set of features for edges.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
 <dt id="laf.task.Feature">
 <em class="property">class </em><tt class="descname">Feature</tt><big>(</big><em>laftask</em>, <em>aspace</em>, <em>alabel</em>, <em>fname</em>, <em>kind</em>, <em>extra=False</em><big>)</big><a class="reference internal" href="../_modules/laf/task.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#laf.task.Feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>This class is responsible for making the information in a single feature accessible to 
 tasks.</p>
 <p>It has a reference to the underlying information of the feature, it stores its <em>kind</em>
-(node or edge) in two ways, as strings (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>) or as booleans (<tt class="docutils literal"><span class="pre">True</span></tt>, <tt class="docutils literal"><span class="pre">False</span></tt>).</p>
+(node or edge) as string (<tt class="docutils literal"><span class="pre">node</span></tt> or <tt class="docutils literal"><span class="pre">edge</span></tt>).</p>
 <p>It also gives a feature a fully qualified name that can act as an identifier.
 In fact, these names will be used as member names of the <a class="reference internal" href="#laf.task.Features" title="laf.task.Features"><tt class="xref py py-class docutils literal"><span class="pre">Features</span></tt></a> class, when its objects
 store sets of features.</p>
@@ -1463,8 +1511,26 @@ are passed through, all others are skipped.</p>
 </dd>
 <dt>F(<a class="reference internal" href="#laf.task.Features" title="laf.task.Features"><tt class="xref py py-class docutils literal"><span class="pre">Features</span></tt></a>):</dt>
 <dd>Object containing all features declared in the task as a member. For example, the feature <tt class="docutils literal"><span class="pre">shebanq:ft.suffix</span></tt> is
-accessible as <tt class="docutils literal"><span class="pre">F.shebanq_ft_suffix</span></tt> if it isa node feature, or <tt class="docutils literal"><span class="pre">F.shebanq_ft_suffix_e</span></tt> if it is an edge feature.
-These feature objects in turn have a method to look features up. See <a class="reference internal" href="#laf.task.Feature" title="laf.task.Feature"><tt class="xref py py-class docutils literal"><span class="pre">Feature</span></tt></a>.</dd>
+accessible as <tt class="docutils literal"><span class="pre">F.shebanq_ft_suffix</span></tt> if it is a node feature, or <tt class="docutils literal"><span class="pre">F.shebanq_ft_suffix_e</span></tt> if it is an edge feature.
+These feature objects in turn have a method to look features up. See <a class="reference internal" href="#laf.task.Feature" title="laf.task.Feature"><tt class="xref py py-class docutils literal"><span class="pre">Feature</span></tt></a>.
+Empty annotations correspond with a feature with an empty name, having the value <tt class="docutils literal"><span class="pre">''</span></tt> (empty string) for each node
+or edge in its domain. For example, an empty edge annotation in the annotation space <tt class="docutils literal"><span class="pre">shebanq</span></tt> having label <tt class="docutils literal"><span class="pre">mother</span></tt>,
+corresponds to the feature <tt class="docutils literal"><span class="pre">shebanq:mother.</span></tt> and is accessible as <tt class="docutils literal"><span class="pre">F.shebanq_mother__e</span></tt>
+(note the empty feature name between the two <tt class="docutils literal"><span class="pre">_``s</span> <span class="pre">and</span> <span class="pre">note</span> <span class="pre">the</span> <span class="pre">``_e</span></tt> suffix to indicate that this is an edge feature.</dd>
+<dt>C(<a class="reference internal" href="#laf.task.Connections" title="laf.task.Connections"><tt class="xref py py-class docutils literal"><span class="pre">Connections</span></tt></a>):</dt>
+<dd><p class="first">Object containing the adjacency information for each node.
+The adjacency information tells for each node how it is connected by outgoing edges to another node. 
+This information is organized as a dictionary:</p>
+<div class="highlight-python"><pre>C.«feature_name».[«feature_value»][«node_from»][«node_to»] = None</pre>
+</div>
+<p>For edges annotated with an empty annotation, «feature_name» has the form:</p>
+<div class="highlight-python"><pre>«annotation space»_«annotation label»__</pre>
+</div>
+<p>and the «feature_value» is <tt class="docutils literal"><span class="pre">''</span></tt> (the empty string).</p>
+<p class="last">For edges that have not been annotated by one of the
+loaded edge features the «feature_name» is completely empty (<tt class="docutils literal"><span class="pre">''</span></tt>) and the «feature_value» as well.
+This only works if you declare the empty edge feature.</p>
+</dd>
 <dt>X(<a class="reference internal" href="#laf.task.XMLids" title="laf.task.XMLids"><tt class="xref py py-class docutils literal"><span class="pre">XMLids</span></tt></a>):</dt>
 <dd>Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
 has specified. <tt class="docutils literal"><span class="pre">X.node</span></tt> contains mappings for nodes, <tt class="docutils literal"><span class="pre">X.edge</span></tt> for edges. These objects in turn have methods to 
@@ -1687,6 +1753,15 @@ Optional. If not present, returns the path to the output directory.</dd>
 <em class="property">class </em><tt class="descname">PrimaryData</tt><big>(</big><em>laftask</em><big>)</big><a class="reference internal" href="../_modules/laf/task.html#PrimaryData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#laf.task.PrimaryData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>This class is responsible for giving access to the primary data.</p>
+<p>Upon creation, the primary data is pointed to.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>laftask(<a class="reference internal" href="#laf.task.LafTask" title="laf.task.LafTask"><tt class="xref py py-class docutils literal"><span class="pre">LafTask</span></tt></a>):</dt>
+<dd>The task executing object that has all the data.</dd>
+</dl>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="laf.task.PrimaryData.all_data">
 <tt class="descname">all_data</tt><em class="property"> = None</em><a class="headerlink" href="#laf.task.PrimaryData.all_data" title="Permalink to this definition">¶</a></dt>

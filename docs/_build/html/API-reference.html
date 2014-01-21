@@ -1,0 +1,470 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API Reference &mdash; LAF Fabric 3.1.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'',
+        VERSION:'3.1.0',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+    <link rel="top" title="LAF Fabric 3.1.0 documentation" href="index.html"/>
+        <link rel="next" title="Background" href="background.html"/>
+        <link rel="prev" title="Writing Tasks" href="taskwriting.html"/> 
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="icon icon-home"> LAF Fabric</a>
+        <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search docs" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="welcome.html">Welcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about-laf-fabric.html">About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#designed-for-performance">Designed for Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#laf-feature-coverage">LAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#future-directions">Future directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#platforms">Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#your-python-setup">Your python setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-laf-fabric">Get LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#install-laf-fabric">Install LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#configure-laf-fabric">Configure LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#get-the-data">Get the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#run-laf-fabric">Run LAF-Fabric</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="taskwriting.html">Writing Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#what-is-a-task">What is a task?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#a-leading-example">A leading example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#more-on-features">More on features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#interactive-execution">Interactive execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-task-to-laf-fabric">Information flow from task to LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#information-flow-from-laf-fabric-to-task">Information flow from LAF-Fabric to task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taskwriting.html#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parts-of-the-api">Parts of the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#where-is-the-api">Where is the API?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calling-the-api">Calling the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#laf-api">LAF API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#node-order">Node order</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="background.html#what-is-laf-graf">What is LAF/GrAF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#existing-tools-for-laf-graf-resources">Existing tools for LAF/GrAF resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#laf-fabric">LAF-Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#interactive-notebooks">Interactive notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#implementation-highlights">Implementation highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#history">History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tasks/modules.html">tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_create.html">annox_create module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/annox_use.html">annox_use module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/esther.html">esther module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/gender.html">gender module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/involved.html">involved module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/isaiah.html">isaiah module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/lingo.html">lingo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/objects.html">objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/plain.html">plain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.1.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.laf">laf.laf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.model">laf.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.notebook">laf.notebook module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.parse">laf.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.shell">laf.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.task">laf.task module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.timestamp">laf.timestamp module</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top">
+        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
+        <a href="/">LAF Fabric</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <ul class="wy-breadcrumbs">
+  <li><a href="index.html">Docs</a> &raquo;</li>
+  <li><a href="">API Reference</a></li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="_sources/API-reference.txt" rel="nofollow"> View page source</a>
+      
+    </li>
+</ul>
+<hr/>
+
+          
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="parts-of-the-api">
+<h2>Parts of the API<a class="headerlink" href="#parts-of-the-api" title="Permalink to this headline">¶</a></h2>
+<p>The API deals with several aspects of task processing.
+First of all, getting information out of the LAF resource.
+But there are also methods for writing to and reading from task-related files and
+for progress messages.</p>
+<p>Finally, there is information about aspects of the organization of the LAF information,
+e.g. the sort order of nodes.</p>
+</div>
+<div class="section" id="where-is-the-api">
+<h2>Where is the API?<a class="headerlink" href="#where-is-the-api" title="Permalink to this headline">¶</a></h2>
+<p>The API is a method of the task processor: <a class="reference internal" href="laf/modules.html#laf.task.LafTask.API" title="laf.task.LafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API()</span></tt></a>.
+This method returns you a set of <em>API elements</em>: objects and/or methods that you can use to retrieve
+information about the LAF resource: its features, nodes, edges, primary data and
+even some of the XML identifiers used.</p>
+<p>By calling this method you can insert the API elements in your local namespace and give it your own names.</p>
+<p>This has two advantages: efficiency and cleanliness of the code of tasks.</p>
+<p>Because API elements might easily be called millions of times in a loop, no space should be
+wasted by things as method lookup. Local names are faster.</p>
+<p>The one who writes tasks may choose names that nicely stand out in the rest of his code,
+enabling readers of the code to easily spot the interface with the actual LAF resource.</p>
+<p>For the sake of documentation, however, I have chosen names for the API elements, and will stick to
+them.</p>
+</div>
+<div class="section" id="calling-the-api">
+<h2>Calling the API<a class="headerlink" href="#calling-the-api" title="Permalink to this headline">¶</a></h2>
+<p>First you have to get a <em>processor</em> object. This is how you get it:</p>
+<ul>
+<li><p class="first">in notebook mode:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">laf</span>
+<span class="kn">from</span> <span class="nn">laf.notebook</span> <span class="kn">import</span> <span class="n">Notebook</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">in workbench mode:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">processor</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;this function executes your task&#39;&#39;&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Once you have the processor, you get the API by means of a call like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="laf-api">
+<h2>LAF API<a class="headerlink" href="#laf-api" title="Permalink to this headline">¶</a></h2>
+<p>Here is a description of the API elements as returned by the API() call, except <tt class="docutils literal"><span class="pre">msg</span></tt>.</p>
+<div class="section" id="f-features">
+<h3>F (Features)<a class="headerlink" href="#f-features" title="Permalink to this headline">¶</a></h3>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="n">F</span><span class="o">.</span><span class="n">shebanq_mother__e</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+<span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_gender</span><span class="o">.</span><span class="n">s</span><span class="p">()</span>
+<span class="n">F</span><span class="o">.</span><span class="n">shebanq_ft_gender</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;feminine&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All that you want to know about features and are not afraid to ask.</p>
+<p><em>F</em> is an object, and for each feature that you have declared, it has a member
+with a handy name.</p>
+<p><tt class="docutils literal"><span class="pre">F.shebanq_db_otype</span></tt> is a feature object
+that corresponds with the LAF feature given in an annotation in the annotation space <tt class="docutils literal"><span class="pre">shebanq</span></tt>,
+with label <tt class="docutils literal"><span class="pre">db</span></tt> and name <tt class="docutils literal"><span class="pre">otype</span></tt>.
+It is a node feature.</p>
+<p><tt class="docutils literal"><span class="pre">F.shebanq_mother__e</span></tt> is also a feature object, but now on an edge, and corresponding
+with an empty annotation.
+Note the extra <tt class="docutils literal"><span class="pre">_e</span></tt> appended to the name, because this is an <em>edge</em> feature.</p>
+<p>If a node or edge is annotated by an empty annotation, we do not have real features, but still there
+is an annotation label and an annotation space.
+In such cases we leave the feature name empty.
+The values of such annotations are always the empty string.
+Whether a node or edge has such an empty feature is determined by whether the value is <tt class="docutils literal"><span class="pre">''</span></tt> or <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+<p>You can look up feature values by calling the method <tt class="docutils literal"><span class="pre">v(«node/edge»)</span></tt> on feature objects.</p>
+<p>You can use features to define sets in an easy manner.
+The <tt class="docutils literal"><span class="pre">s()</span></tt> method yields an iterator that iterates over all nodes for which the feature in question
+has a defined value. For the order of nodes, see <a class="reference internal" href="#node-order"><em>Node order</em></a>.</p>
+<p>If a value is passed to <tt class="docutils literal"><span class="pre">s()</span></tt>, only those nodes are visited that have that value for the feature in question.</p>
+</div>
+<div class="section" id="c-connectivity">
+<h3>C (Connectivity)<a class="headerlink" href="#c-connectivity" title="Permalink to this headline">¶</a></h3>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">target_node</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">xyz_ft_property</span><span class="p">[</span><span class="s">&#39;myvalue&#39;</span><span class="p">][</span><span class="n">source_node</span><span class="p">]</span>
+<span class="n">target_node</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">shebanq_mother_</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">][</span><span class="n">source_node</span><span class="p">]</span>
+<span class="n">target_node</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">_node_</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">][</span><span class="n">source_node</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>This is the connectivity of nodes by edges.
+It is an object that specifies completely how you can walk from one node to another
+by means of an edge.</p>
+<p>For each <em>edge</em>-feature that you have declared, it has a member
+with a handy name.</p>
+<p><tt class="docutils literal"><span class="pre">C.xyz_ft_property</span></tt> is a connection table based on the
+edge-feature <tt class="docutils literal"><span class="pre">property</span></tt> in the annotation space <tt class="docutils literal"><span class="pre">xyz</span></tt>, under annotation label <tt class="docutils literal"><span class="pre">ft</span></tt>.
+Note that there is no <tt class="docutils literal"><span class="pre">_e</span></tt> behind the name, because we are only dealing with edge-features here.</p>
+<p>Such a table gives for each value of the edge-feature in question a nested dictionary, for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">C</span><span class="o">.</span><span class="n">xyz_ft_property</span><span class="p">[</span><span class="s">&#39;myvalue&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The first key it accepts is the node you want to start with (<tt class="docutils literal"><span class="pre">source_node</span></tt>),
+and what you get then:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">C</span><span class="o">.</span><span class="n">xyz_ft_property</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">][</span><span class="n">source_node</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>is a dictionary where the keys are nodes and the values are <tt class="docutils literal"><span class="pre">None</span></tt>, in other words: a set of nodes.</p>
+<p>These are the nodes reachable by an edge from <tt class="docutils literal"><span class="pre">source_node</span></tt> that has been annotated by
+feature <tt class="docutils literal"><span class="pre">property</span></tt> in an annotation with label <tt class="docutils literal"><span class="pre">ft</span></tt> in the space <tt class="docutils literal"><span class="pre">xyz</span></tt>.</p>
+<p>There may be edges that have not been annotated.
+These edges can also be used to travel from node to node.</p>
+<p>Instead of specifying a feature, you specify <tt class="docutils literal"><span class="pre">_none_</span></tt>, so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">target_node</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">_node_</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">][</span><span class="n">source_node</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If you want to use these edges, you have to specify in your load directives:</p>
+<div class="highlight-python"><pre>&quot;other_edges&quot;: True,</pre>
+</div>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">The edges indicated by <tt class="docutils literal"><span class="pre">none</span></tt> are the edges that do not have any of the features specified in your
+load directives. The only way to be sure that these edges are truly un-annotated, is to
+specify <em>all</em> edge features in your load directives.
+I am not pleased with this, but it is quite a job to find out the unannotated edges,
+especially in the presence of extra annotation packages, that may annotated previously
+un-annotated edges.</p>
+</div>
+<p>See the example task <tt class="xref py py-mod docutils literal"><span class="pre">mother</span></tt> and <tt class="xref py py-mod docutils literal"><span class="pre">edges</span></tt> for working code with connectivity.</p>
+</div>
+<div class="section" id="nn-next-node">
+<h3>NN (Next Node)<a class="headerlink" href="#nn-next-node" title="Permalink to this headline">¶</a></h3>
+<p>Examples:</p>
+<div class="highlight-python"><pre>(a) for node in NN():
+        pass
+
+(b) for node in NN(test=F.shebanq_db_otype.v, value=&#x27;book&#x27;):
+        pass
+
+(c) for node in NN(test=F.shebanq_sft_book.v, values=[&#x27;Isaiah&#x27;, &#x27;Psalms&#x27;]):
+        pass</pre>
+</div>
+<p>This is also walking through nodes, not by edges, but through a predefined set, in the
+natural order given by the primary data (see <a class="reference internal" href="#node-order"><em>Node order</em></a>).</p>
+<p>It is an <em>iterator</em> that yields a new node everytime it is called.</p>
+<p>The <tt class="docutils literal"><span class="pre">test</span></tt> and <tt class="docutils literal"><span class="pre">value</span></tt> arguments are optional.
+If given, <tt class="docutils literal"><span class="pre">test</span></tt> should be a <em>callable</em> with one argument, returning a string;
+<tt class="docutils literal"><span class="pre">value</span></tt> should be a string and <tt class="docutils literal"><span class="pre">values</span></tt> should be an iterable of strings.</p>
+<p><tt class="docutils literal"><span class="pre">test</span></tt> will be called for each passing node,
+and if the value returned is not in the set given <tt class="docutils literal"><span class="pre">value</span></tt> and/or <tt class="docutils literal"><span class="pre">values</span></tt>,
+the node will be skipped.</p>
+<p>Example (a) iterates through all nodes, (b) only through the book nodes, because <em>test</em>
+is the feature value lookup function associated with the <tt class="docutils literal"><span class="pre">shebanq_db_otype</span></tt> function,
+which gives for each node its type.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The type of a node is not a LAF concept, but a concept in this particular LAF resource.
+There are annotations which give the feature <tt class="docutils literal"><span class="pre">shebanq_db_otype</span></tt> to nodes, stating
+that nodes are books, chapters, words, phrases, and so on.</p>
+</div>
+<p>See <a class="reference internal" href="laf/modules.html#laf.task.LafTask.API" title="laf.task.LafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt></a>.</p>
+</div>
+<div class="section" id="x-xml-identifiers">
+<h3>X (XML Identifiers)<a class="headerlink" href="#x-xml-identifiers" title="Permalink to this headline">¶</a></h3>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">X</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">X</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">X</span><span class="o">.</span><span class="n">edge</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">X</span><span class="o">.</span><span class="n">edge</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need to convert the integers that identify nodes and edges in the compiled data back to
+their original XML identifiers, you can do that with the <em>X</em> object.</p>
+<p>It has two members, <tt class="docutils literal"><span class="pre">X.node</span></tt> and <tt class="docutils literal"><span class="pre">X.edge</span></tt>, which contain the separate mapping tables for
+nodes and edges.</p>
+<p>Both have two methods, corresponding to the direction of the translation:
+with <tt class="docutils literal"><span class="pre">X.node.i(«xml</span> <span class="pre">id»)</span></tt> you get the corresponding number of a node, and with <tt class="docutils literal"><span class="pre">X.node.r(«number»)</span></tt>
+you get the original XML id by which the node was identified in the LAF resource.</p>
+<p>Analogously for edges.</p>
+</div>
+<div class="section" id="p-primary-data">
+<h3>P (Primary Data)<a class="headerlink" href="#p-primary-data" title="Permalink to this headline">¶</a></h3>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">P</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Your gateway to the primary data. For nodes <tt class="docutils literal"><span class="pre">node</span></tt> that are linked to the primary data by one or more regions,
+<tt class="docutils literal"><span class="pre">P.data(node)</span></tt> yields a set of chunks of primary data, corresponding with those regions.</p>
+<p>The chunks are <em>maximal</em>, <em>non-overlapping</em>, <em>ordered</em> according to the primary data.</p>
+<p>Every chunk is given as a tuple (<em>pos</em>, <em>text</em>), where <em>pos</em> is the position in the primary data where
+the start of <em>text</em> can be found, and <em>text</em> is the chunk of actual text that is specified by the region.
+The primary data is only available if you have specified in the <em>load</em> directives:
+<tt class="docutils literal"><span class="pre">primary:</span> <span class="pre">True</span></tt></p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">Note that <em>text</em> may be empty.
+This happens in cases where the region is not a true interval but merely
+a point between two characters.</p>
+</div>
+</div>
+</div>
+<div class="section" id="input-and-output">
+<h2>Input and Output<a class="headerlink" href="#input-and-output" title="Permalink to this headline">¶</a></h2>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out_handle</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+<span class="n">in_handle</span>  <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
+
+<span class="n">msg</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">msg</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">msg</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">withtime</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can create an output filehandle, open for writing, by calling the
+method <a class="reference internal" href="laf/modules.html#laf.task.LafTask.add_output" title="laf.task.LafTask.add_output"><tt class="xref py py-meth docutils literal"><span class="pre">add_output()</span></tt></a>
+and assigning the result to a variable, say <em>out_handle</em>.</p>
+<p>From then on you can write output simply by saying:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out_handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can create as many output handles as you like in this way.
+All these files and up in the task specific working directory.</p>
+<p>Likewise, you can place additional input files in that directory,
+and read them by saying:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">text</span> <span class="o">=</span> <span class="n">in_handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once your task has finished, LAF-Fabric will close them all.</p>
+<p>You can issue progress messages while executing your task.
+These messages go to the console (the terminal, or the output of a code cell,
+depending whether you are in workbench mode or notebook mode).</p>
+<p>These messages get the elapsed time prepended, unless you say <tt class="docutils literal"><span class="pre">withtime=False</span></tt>.</p>
+<p>A newline will be appended, unless you say <tt class="docutils literal"><span class="pre">newline=False</span></tt>.</p>
+<p>The elapsed timeis reckoned from the start of the task, but after all the task-specific
+loading of features.</p>
+</div>
+<div class="section" id="node-order">
+<span id="id1"></span><h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
+<p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em>
+which are stretches of primary data, and the primary data is totally ordered.
+The order we use in LAF-Fabric is defined as follows.</p>
+<p>Suppose we compare node <em>A</em> and node <em>B</em>.
+Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region
+and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
+<p>Then region <em>A</em> comes before region <em>B</em> if and only if <em>Amin</em> &lt; <em>Bmin</em> or <em>Amin</em> = <em>Bmin</em> and <em>Amax</em> &gt; <em>Bmax</em>.</p>
+<p>In other words: if <em>A</em> starts before <em>B</em>, then <em>A</em> becomes before <em>B</em>.
+If <em>A</em> and <em>B</em> start at the same point, the one that ends last, counts as the earlier of the two.</p>
+<p>If neither <em>A</em> &lt; <em>B</em> nor <em>B</em> &lt; <em>A</em> then the order is not specified.
+LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
+The only way this can happen is when <em>A</em> and <em>B</em> start and end at the same point.
+Between those points they might be very different.</p>
+<p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
+the order specifies a walk through the nodes were enclosing nodes come first,
+and embedded children come in the order dictated by the primary data.</p>
+</div>
+</div>
+
+
+          <footer>
+  
+    <div class="rst-footer-buttons">
+      
+        <a href="background.html" class="btn btn-neutral float-right" title="Background"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="taskwriting.html" class="btn btn-neutral" title="Writing Tasks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <p>
+      &copy; Copyright 2013, Dirk Roorda.
+  </p>
+
+  <a href="https://www.github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="http://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+</body>
+</html>

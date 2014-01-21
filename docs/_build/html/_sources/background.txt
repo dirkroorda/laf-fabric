@@ -196,7 +196,7 @@ The design of LAF-fabric is such that feature data is neatly chunked per individ
     before the you can touch them in tasks.
     This merging occurs late in the process, even after the loading of features by LAF-fabric.
     Only at the point in time when a task declares the names of the API methods
-    (see :meth:`API <laf.task.GrafTask.API>`)
+    (see :meth:`API <laf.task.LafTask.API>`)
     the features will be assembled into objects.
     At this point the source features and annox features finally get merged.
     When a task no longer uses a merged feature, or want to merge with a different package,

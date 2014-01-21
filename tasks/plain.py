@@ -18,7 +18,7 @@ load = {
     },
 }
 
-def task(laftask):
+def task(processor):
     '''Produces the plain text of the Hebrew Bible, in fact the Biblia Hebraica Stuttgartensia version.
 
     No book, chapter, verse marks. Newlines for each verse.
@@ -27,15 +27,15 @@ def task(laftask):
     This is a handy check on all the data transformations involved. If the output of this task
     is not byte for byte equal to the primary data, something seriously wrong with LAF-Fabric!
     '''
-    (msg, P, NN, F, X) = laftask.API()
+    (msg, P, NN, F, C, X) = processor.API()
 
-    prim = laftask.env['source'] != 'tiny'
+    prim = processor.env['source'] != 'tiny'
     if prim:
         msg("Get the words ... ")
     else:
         msg("Get the books ...")
 
-    out = laftask.add_output("output.txt")
+    out = processor.add_output("output.txt")
 
     for i in F.shebanq_db_otype.s('word' if prim else 'book'):
         the_output = ''

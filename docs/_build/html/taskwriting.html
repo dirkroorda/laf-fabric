@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing Tasks &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>Writing Tasks &mdash; LAF Fabric 3.1.0 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'',
-        VERSION:'3.0.0',
+        VERSION:'3.1.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,8 +45,8 @@
   
 
   
-    <link rel="top" title="LAF Fabric 3.0.0 documentation" href="index.html"/>
-        <link rel="next" title="Background" href="background.html"/>
+    <link rel="top" title="LAF Fabric 3.1.0 documentation" href="index.html"/>
+        <link rel="next" title="API Reference" href="API-reference.html"/>
         <link rel="prev" title="Getting Started" href="getting-started.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -78,7 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#designed-for-performance">Designed for Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#laf-feature-coverage">LAF feature coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#future-directions">Future directions</a></li>
 </ul>
 </li>
@@ -103,6 +103,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#node-order">Node order</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API-reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#parts-of-the-api">Parts of the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#where-is-the-api">Where is the API?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#calling-the-api">Calling the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#laf-api">LAF API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#node-order">Node order</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
@@ -130,7 +139,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.1.0</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="laf/modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.laf">laf.laf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.model">laf.model module</a></li>
@@ -200,9 +209,9 @@ In order to run them, you need to download them to your computer.</p>
 <div class="section" id="workbench-mode">
 <h3>Workbench mode<a class="headerlink" href="#workbench-mode" title="Permalink to this headline">¶</a></h3>
 <p>In workbench mode you place your tasks into the <em>tasks</em> directory.
-In your script you have to define a function <tt class="docutils literal"><span class="pre">task(lafftask)</span></tt> that takes as its sole argument
+In your script you have to define a function <tt class="docutils literal"><span class="pre">task(processor)</span></tt> that takes as its sole argument
 an object that gives access to all the LAF data from your resource:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">lafftask</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">processor</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;this function executes your task&#39;&#39;&#39;</span>
 </pre></div>
 </div>
@@ -272,13 +281,13 @@ Genesis 10  22      4.45</pre>
     <span class="p">},</span>
 <span class="p">}</span>
 
-<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">lafftask</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">processor</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Counts the frequencies of words with male and female gender features.</span>
 <span class="sd">    Outputs the frequencies in a tab-delimited file, with frequency values for</span>
 <span class="sd">    each chapter in the whole Hebrew Bible.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
-    <span class="n">stats_file</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats.txt&quot;</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="n">stats_file</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats.txt&quot;</span><span class="p">)</span>
 
     <span class="n">stats</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">cur_chapter</span> <span class="o">=</span> <span class="bp">None</span>
@@ -361,7 +370,7 @@ a warning. But if you try to use such features, you get also a loud error.</p>
 <h2>Information flow from LAF-Fabric to task<a class="headerlink" href="#information-flow-from-laf-fabric-to-task" title="Permalink to this headline">¶</a></h2>
 <p>LAF-Fabric will call the function <em>task(object)</em> in your task script (assuming you follow workbench mode),
 and the thing it hands over to it as <em>object</em> is an object of
-class <tt class="xref py py-class docutils literal"><span class="pre">GrafTask</span></tt>.
+class <a class="reference internal" href="laf/modules.html#laf.task.LafTask" title="laf.task.LafTask"><tt class="xref py py-class docutils literal"><span class="pre">LafTask</span></tt></a>.
 By using this object, you have to access all of its methods.</p>
 <p>In notebook this handing over occurs when you say:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">processor</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
@@ -371,67 +380,33 @@ By using this object, you have to access all of its methods.</p>
 it is convenient to import the names of the API methods as <em>local variables</em> of the <em>task</em> function.
 The lookup of names in Python is fastest for local names.
 And it makes the code much cleaner.</p>
-<p>The method <tt class="xref py py-meth docutils literal"><span class="pre">API()</span></tt> delivers the methods,
+<p>The method <a class="reference internal" href="laf/modules.html#laf.task.LafTask.API" title="laf.task.LafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API()</span></tt></a> delivers the methods,
 and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
-Here is a short description of the corresponding methods.</p>
+Here is a short description of the corresponding methods.
+See :doc`API-reference` for full documentation of the API.</p>
+<p>Here is just a very short description:</p>
 <dl class="docutils">
 <dt><em>F</em></dt>
-<dd>All that you want to know about features and are not afraid to ask.
-It is an object, and for each feature that you have declared, it has a member
-with a handy name. For example, <tt class="docutils literal"><span class="pre">F.shebanq_db_otype</span></tt> is a feature object
-that corresponds with the LAF feature given in an annotation in the annotation space <tt class="docutils literal"><span class="pre">shebanq</span></tt>,
-with label <tt class="docutils literal"><span class="pre">db</span></tt> and name <tt class="docutils literal"><span class="pre">otype</span></tt>.
-It is a node feature, because otherwise the name had a
-<tt class="docutils literal"><span class="pre">_e</span></tt> appended to it.
-You can look up a feature value of this feature, say for node <tt class="docutils literal"><span class="pre">n</span></tt>,by saying:
-<tt class="docutils literal"><span class="pre">F.shebanq_db_otype.v(n)</span></tt>.</dd>
-<dt><em>P(node)</em></dt>
-<dd>Your gateway to the primary data. For nodes <em>n</em> that are linked to the primary data by one or more regions,
-P(<em>n</em>) yields a set of chunks of primary data, corresponding with those regions.
-The chunks are maximal, non-overlapping, ordered according to the primary data.
-Every chunk is given as a tuple (<em>pos</em>, <em>text</em>), where <em>pos</em> is the position in the primary data where
-the start of <em>text</em> can be found, and <em>text</em> is the chunk of actual text that is specified by the region.
-The primary data is only available if you have specified in the <em>load</em> directives:
-<tt class="docutils literal"><span class="pre">primary:</span> <span class="pre">True</span></tt></dd>
-</dl>
-<div class="admonition caution">
-<p class="first admonition-title">Caution</p>
-<p class="last">Note that <em>text</em> may be empty.
-This happens in cases where the region is not a true interval but merely
-a point between two characters.</p>
-</div>
-<dl class="docutils">
-<dt><em>NN(test=function value=something)</em></dt>
-<dd>If you want to walk through all the nodes, possibly skipping some, then this is your method.
-It is an <em>iterator</em> that yields a new node everytime it is called.
-The order is so-called <em>primary data order</em>, which will be explained below.
-The <tt class="docutils literal"><span class="pre">test</span></tt> and <tt class="docutils literal"><span class="pre">value</span></tt> arguments are optional.
-If given, <tt class="docutils literal"><span class="pre">test</span></tt> should be a <em>callable</em> with one argument, returning a string;
-<tt class="docutils literal"><span class="pre">value</span></tt> should be a string.
-<tt class="docutils literal"><span class="pre">test</span></tt> will be called for each passing node,
-and if the value returned is not equal to the given <tt class="docutils literal"><span class="pre">value</span></tt>,
-the node will be skipped.
-See <tt class="xref py py-meth docutils literal"><span class="pre">next_node()</span></tt>.</dd>
+<dd><strong>Features</strong>: All information stored in features</dd>
+<dt><em>C</em></dt>
+<dd><strong>Connectivity</strong>: How to get from one node to another via edges</dd>
+<dt><em>P</em></dt>
+<dd><strong>Primary Data</strong>: Get chunks of primary data that belong to a node</dd>
+<dt><em>N</em></dt>
+<dd><strong>NextNode</strong>: walk through a selected set of nodes (not via edges)</dd>
 <dt><em>X</em></dt>
-<dd>If you need to convert the integers that identify nodes and edges in the compiled data back to
-their original XML identifiers, you can do that with the <em>X</em> object.
-It has two members, <tt class="docutils literal"><span class="pre">X.node</span></tt> and <tt class="docutils literal"><span class="pre">X.edge</span></tt>, which contain the separate mapping tables for
-nodes and edges. Both have two methods, corresponding to the direction of the translation:
-with <tt class="docutils literal"><span class="pre">X.node.i(«xml</span> <span class="pre">id»)</span></tt> you get the corresponding number of a node, and with <tt class="docutils literal"><span class="pre">X.node.r(«number»)</span></tt>
-you get the original XML id by which the node was identified in the LAF resource.</dd>
-<dt>msg(text, newline=True, withtime=True)</dt>
-<dd>Use this to write a message with time information to the terminal and log file.
-Normally it appends a newline to the text, but you can suppress it.
-You can also suppress the time indication before the text.</dd>
+<dd><strong>XML identifiers</strong>: retrieve the original XML identifiers as they appear in the LAF resource on nodes and edges</dd>
+<dt><em>msg</em></dt>
+<dd><strong>message</strong>: issue timed messages to console and log file</dd>
 </dl>
 </div>
 <div class="section" id="input-and-output">
 <h2>Input and Output<a class="headerlink" href="#input-and-output" title="Permalink to this headline">¶</a></h2>
 <p>You can create an output filehandle, open for writing, by calling the
-method <tt class="xref py py-meth docutils literal"><span class="pre">add_output()</span></tt>
+method <a class="reference internal" href="laf/modules.html#laf.task.LafTask.add_output" title="laf.task.LafTask.add_output"><tt class="xref py py-meth docutils literal"><span class="pre">add_output()</span></tt></a>
 and assigning the result to a variable, say <em>out</em></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">out</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>From then on you can write output simply by saying:</p>
@@ -442,30 +417,24 @@ and assigning the result to a variable, say <em>out</em></p>
 All these files and up in the task specific working directory.</p>
 <p>Likewise, you can place additional input files in that directory,
 and read them by saying:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">lafftask</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
-<span class="n">inp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">inp</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_input</span><span class="p">(</span><span class="s">&quot;input.txt&quot;</span><span class="p">)</span>
+<span class="n">inp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Once your task has finished, LAF-Fabric will close them all.</p>
 </div>
 <div class="section" id="node-order">
-<span id="id1"></span><h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
-<p>There is an implicit partial order on nodes, derived from their attachment to <em>regions</em>
-which are stretches of primary data, and the primary data is totally ordered.
-The order we use in LAF-Fabric is defined as follows.</p>
-<p>Suppose we compare node <em>A</em> and node <em>B</em>.
-Look up all regions for <em>A</em> and for <em>B</em> and determine the first point of the first region
-and the last point of the last region for <em>A</em> and <em>B</em>, and call those points <em>Amin, Amax</em>, <em>Bmin, Bmax</em> respectively.</p>
-<p>Then region <em>A</em> comes before region <em>B</em> if and only if <em>Amin</em> &lt; <em>Bmin</em> or <em>Amin</em> = <em>Bmin</em> and <em>Amax</em> &gt; <em>Bmax</em>.</p>
-<p>In other words: if <em>A</em> starts before <em>B</em>, then <em>A</em> becomes before <em>B</em>.
-If <em>A</em> and <em>B</em> start at the same point, the one that ends last, counts as the earlier of the two.</p>
-<p>If neither <em>A</em> &lt; <em>B</em> nor <em>B</em> &lt; <em>A</em> then the order is not specified.
-LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
-The only way this can happen is when <em>A</em> and <em>B</em> start and end at the same point.
-Between those points they might be very different.</p>
-<p>The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
-the order specifies a walk through the nodes were enclosing nodes come first,
-and embedded children come in the order dictated by the primary data.</p>
+<h2>Node order<a class="headerlink" href="#node-order" title="Permalink to this headline">¶</a></h2>
+<p>There is an implicit partial order on nodes.
+The short story is: the nodes that are linked to primary data, inherit the order that is present
+in the primary data.
+The long story is a bit more complicated, since nodes may be attached to multiple ranges of
+primary data.</p>
+<p>See <a class="reference internal" href="API-reference.html#node-order"><em>Node order</em></a> for details. If you don&#8217;t, it might be enough to know
+that <em>embedding</em> nodes always come before <em>embedded</em> nodes, meaning that if a node happens
+to be attached to a big piece of primary data, and a second node to a part of that data,
+then the node with the bigger attachment comes first.</p>
+<p>When there is no inclusion either way, and the start and end points are the same, the order is left undefined.</p>
 </div>
 <div class="section" id="linking-to-the-laf-resource">
 <h2>Linking to the LAF resource<a class="headerlink" href="#linking-to-the-laf-resource" title="Permalink to this headline">¶</a></h2>
@@ -491,7 +460,7 @@ see whether it denotes a node or an edge.</p>
   
     <div class="rst-footer-buttons">
       
-        <a href="background.html" class="btn btn-neutral float-right" title="Background"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="API-reference.html" class="btn btn-neutral float-right" title="API Reference"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="getting-started.html" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>

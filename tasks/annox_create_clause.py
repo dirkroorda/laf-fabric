@@ -84,7 +84,7 @@ n_show_features = len(show_fqnames)
 def nonerep(val):
     return '' if val == None else val
 
-def task(laftask):
+def task(processor):
     '''Workflow to create new annotations, specialized for clauses.
 
     There are two modes:
@@ -135,11 +135,11 @@ def task(laftask):
     file, you can use the annotations in tasks by selecting it as an annox.
     See the task :mod:`annox_use`.
     '''
-    (msg, P, NN, F, X) = laftask.API()
+    (msg, P, NN, F, C, X) = processor.API()
 
     def make_form():
         msg("Reading the books ...")
-        outf = laftask.add_output("form_{}={}.txt".format('_'.join(target_types), '_'.join(new_fnames)))
+        outf = processor.add_output("form_{}={}.txt".format('_'.join(target_types), '_'.join(new_fnames)))
 
         the_book = None
         the_chapter = None
@@ -194,8 +194,8 @@ def task(laftask):
         sys.stderr.write("\n")
 
     def make_annots():
-        inp = laftask.add_input("data_{}={}.txt".format('_'.join(target_types), '_'.join(new_fnames)))
-        outa = laftask.add_output("annot_{}={}.xml".format('_'.join(target_types), '_'.join(new_fnames)))
+        inp = processor.add_input("data_{}={}.txt".format('_'.join(target_types), '_'.join(new_fnames)))
+        outa = processor.add_output("annot_{}={}.xml".format('_'.join(target_types), '_'.join(new_fnames)))
         outa.write('''<?xml version="1.0" encoding="UTF-8"?>
 <graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
     <graphHeader>

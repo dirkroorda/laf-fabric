@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Background &mdash; LAF Fabric 3.0.0 documentation</title>
+  <title>Background &mdash; LAF Fabric 3.1.0 documentation</title>
   
 
   
@@ -23,7 +23,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:'',
-        VERSION:'3.0.0',
+        VERSION:'3.1.0',
         COLLAPSE_INDEX:false,
         FILE_SUFFIX:'.html',
         HAS_SOURCE:  true
@@ -45,9 +45,9 @@
   
 
   
-    <link rel="top" title="LAF Fabric 3.0.0 documentation" href="index.html"/>
+    <link rel="top" title="LAF Fabric 3.1.0 documentation" href="index.html"/>
         <link rel="next" title="tasks" href="tasks/modules.html"/>
-        <link rel="prev" title="Writing Tasks" href="taskwriting.html"/> 
+        <link rel="prev" title="API Reference" href="API-reference.html"/> 
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
@@ -78,7 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#workflow">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#license">License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#designed-for-performance">Designed for Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#graf-feature-coverage">GrAF feature coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#laf-feature-coverage">LAF feature coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about-laf-fabric.html#future-directions">Future directions</a></li>
 </ul>
 </li>
@@ -103,6 +103,15 @@
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#input-and-output">Input and Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#node-order">Node order</a></li>
 <li class="toctree-l2"><a class="reference internal" href="taskwriting.html#linking-to-the-laf-resource">Linking to the LAF resource</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API-reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#parts-of-the-api">Parts of the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#where-is-the-api">Where is the API?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#calling-the-api">Calling the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#laf-api">LAF API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#input-and-output">Input and Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API-reference.html#node-order">Node order</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Background</a><ul>
@@ -130,7 +139,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tasks/proper.html">proper module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.0.0</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="laf/modules.html">laf 3.1.0</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="laf/modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.laf">laf.laf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laf/modules.html#module-laf.model">laf.model module</a></li>
@@ -352,7 +361,7 @@ when individual features are cleanly separable.</p>
 before the you can touch them in tasks.
 This merging occurs late in the process, even after the loading of features by LAF-fabric.
 Only at the point in time when a task declares the names of the API methods
-(see <tt class="xref py py-meth docutils literal"><span class="pre">API</span></tt>)
+(see <a class="reference internal" href="laf/modules.html#laf.task.LafTask.API" title="laf.task.LafTask.API"><tt class="xref py py-meth docutils literal"><span class="pre">API</span></tt></a>)
 the features will be assembled into objects.
 At this point the source features and annox features finally get merged.
 When a task no longer uses a merged feature, or want to merge with a different package,
@@ -395,7 +404,7 @@ Vitamin Talk to the <a class="reference external" href="http://tla.mpi.nl">TLA t
         <a href="tasks/modules.html" class="btn btn-neutral float-right" title="tasks"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="taskwriting.html" class="btn btn-neutral" title="Writing Tasks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="API-reference.html" class="btn btn-neutral" title="API Reference"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   

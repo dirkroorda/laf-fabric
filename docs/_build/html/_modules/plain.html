@@ -199,7 +199,7 @@
     <span class="p">},</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/plain.html#plain.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">laftask</span><span class="p">):</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/plain.html#plain.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">processor</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Produces the plain text of the Hebrew Bible, in fact the Biblia Hebraica Stuttgartensia version.</span>
 
 <span class="sd">    No book, chapter, verse marks. Newlines for each verse.</span>
@@ -208,15 +208,15 @@
 <span class="sd">    This is a handy check on all the data transformations involved. If the output of this task</span>
 <span class="sd">    is not byte for byte equal to the primary data, something seriously wrong with LAF-Fabric!</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 
-    <span class="n">prim</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;tiny&#39;</span>
+    <span class="n">prim</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;source&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;tiny&#39;</span>
     <span class="k">if</span> <span class="n">prim</span><span class="p">:</span>
         <span class="n">msg</span><span class="p">(</span><span class="s">&quot;Get the words ... &quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">msg</span><span class="p">(</span><span class="s">&quot;Get the books ...&quot;</span><span class="p">)</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">F</span><span class="o">.</span><span class="n">shebanq_db_otype</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="s">&#39;word&#39;</span> <span class="k">if</span> <span class="n">prim</span> <span class="k">else</span> <span class="s">&#39;book&#39;</span><span class="p">):</span>
         <span class="n">the_output</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>

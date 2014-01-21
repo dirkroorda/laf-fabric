@@ -306,6 +306,8 @@
 <span class="sd">    Nodes and edges:</span>
 <span class="sd">        Collect the outgoing and incoming edges for each node in a pair of double arrays.</span>
 
+<span class="sd">        Collect the set of unannotated edges.</span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">result_items</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -391,6 +393,8 @@
 
     <span class="n">edges_out</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">edges_in</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">stamp</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s">&quot;PLAIN EDGES&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">result_items</span>
 </pre></div></div>

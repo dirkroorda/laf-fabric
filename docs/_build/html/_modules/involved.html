@@ -199,15 +199,15 @@
     <span class="p">},</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/involved.html#involved.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">laftask</span><span class="p">):</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/involved.html#involved.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">processor</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Produces the plain text of the Hebrew Bible, in fact the Biblia Hebraica Stuttgartensia version.</span>
 
 <span class="sd">    In contrast to the task :mod:`task.plain`, the</span>
 <span class="sd">    books, chapters, and verses are marked.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
 
     <span class="n">the_book</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">the_chapter</span> <span class="o">=</span> <span class="bp">None</span>

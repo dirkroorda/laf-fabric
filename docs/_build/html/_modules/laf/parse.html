@@ -287,7 +287,7 @@
 <span class="sd">        The parse process is presupposes that regions are encountered before nodes that link to them,</span>
 <span class="sd">        nodes before edges that connect them, nodes and edges before annotations that target them.</span>
 <span class="sd">        The creator of the LAF resource can organize the files that way. The parser reads the annotation file in the</span>
-<span class="sd">        order specified in the Graf header file.</span>
+<span class="sd">        order specified in the GrAF header file.</span>
 
 <span class="sd">    Here is a description of the arrays we create:</span>
 
@@ -308,6 +308,10 @@
 <span class="sd">    *feature*</span>
 <span class="sd">        All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),</span>
 <span class="sd">        and finally reference (id of target node or edge).</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Empty annotations correspond with a feature with empty name within the annotation space and annotation label.</span>
+<span class="sd">        This feature has value ``&#39;&#39;`` (the empty string) for each node or edge in its domain.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        We work with annotation spaces and annotation labels and we distinguish between features in</span>
@@ -461,7 +465,7 @@
         <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;a&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aempty</span><span class="p">:</span>
                 <span class="n">fname</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
                 <span class="n">feature</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">aspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atype</span><span class="p">)][</span><span class="bp">self</span><span class="o">.</span><span class="n">aref</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>

@@ -200,7 +200,7 @@
     <span class="p">},</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/proper.html#proper.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">laftask</span><span class="p">):</span>
+<div class="viewcode-block" id="task"><a class="viewcode-back" href="../tasks/proper.html#proper.task">[docs]</a><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">processor</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;An exercise in visualizing and distant reading.</span>
 
 <span class="sd">    We count proper nouns and their relative frequencies, we record the gender of the nouns.</span>
@@ -221,12 +221,12 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NN</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
-    <span class="n">stats_v_raw</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats_v_raw.txt&quot;</span><span class="p">)</span>
-    <span class="n">stats_v_compact</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats_v_compact.txt&quot;</span><span class="p">)</span>
-    <span class="n">stats_c_compact</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats_c_compact.txt&quot;</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+    <span class="n">stats_v_raw</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats_v_raw.txt&quot;</span><span class="p">)</span>
+    <span class="n">stats_v_compact</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats_v_compact.txt&quot;</span><span class="p">)</span>
+    <span class="n">stats_c_compact</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s">&quot;stats_c_compact.txt&quot;</span><span class="p">)</span>
 
     <span class="n">type_map</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="p">[</span>
         <span class="p">(</span><span class="s">&quot;chapter&quot;</span><span class="p">,</span> <span class="s">&#39;Ch&#39;</span><span class="p">),</span>

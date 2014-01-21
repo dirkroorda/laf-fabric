@@ -196,7 +196,7 @@
 <span class="sd">    tasks.</span>
 
 <span class="sd">    It has a reference to the underlying information of the feature, it stores its *kind*</span>
-<span class="sd">    (node or edge) in two ways, as strings (``node`` or ``edge``) or as booleans (``True``, ``False``).</span>
+<span class="sd">    (node or edge) as string (``node`` or ``edge``).</span>
 
 <span class="sd">    It also gives a feature a fully qualified name that can act as an identifier.</span>
 <span class="sd">    In fact, these names will be used as member names of the :class:`Features` class, when its objects</span>
@@ -226,6 +226,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">laftask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fspec</span> <span class="o">=</span> <span class="s">&quot;{}:{}.{} ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_name</span> <span class="o">=</span> <span class="s">&quot;{}_{}_{}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="s">&#39;&#39;</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span> <span class="k">else</span> <span class="s">&#39;_e&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_name</span> <span class="o">=</span> <span class="s">&quot;{}_{}_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="n">ref_label</span> <span class="o">=</span> <span class="s">&#39;xfeature&#39;</span> <span class="k">if</span> <span class="n">extra</span> <span class="k">else</span> <span class="s">&#39;feature&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">ref_label</span><span class="p">][(</span><span class="n">aspace</span><span class="p">,</span> <span class="n">alabel</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">kind</span><span class="p">)])</span>
@@ -296,6 +297,67 @@
             <span class="k">exec</span><span class="p">(</span><span class="s">&quot;self.{} = fo&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fo</span><span class="o">.</span><span class="n">local_name</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">[</span><span class="n">fo</span><span class="o">.</span><span class="n">local_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fo</span><span class="o">.</span><span class="n">lookup</span>
 </div>
+<div class="viewcode-block" id="Connections"><a class="viewcode-back" href="../../laf/modules.html#laf.task.Connections">[docs]</a><span class="k">class</span> <span class="nc">Connections</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class is responsible for making adjacency information accessible to tasks.</span>
+
+<span class="sd">    Adjacency information is the information needed to walk from node to node.</span>
+<span class="sd">    Laf-Fabric organizes adjacency information in a *connections* dictionary::</span>
+
+<span class="sd">        connections[«edge_feature_name»][«edge_feature_value»][«node_from»][«node_to»] = None</span>
+
+<span class="sd">    for every ``«node_from»`` from which there is an edge to ``«node_to»``</span>
+<span class="sd">    having the feature named ``«edge_feature_name»`` with value ``«edge_feature_value»``.</span>
+
+<span class="sd">    The adjacency information will also be made available by member names::</span>
+
+<span class="sd">        C.«edge_feature_name»[«edge_feature_value»][«node_from»][«node_to»] = None</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">laftask</span><span class="p">,</span> <span class="n">feature_objects</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, from the edge features the adjacency information will</span>
+<span class="sd">        be gathered.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            laftask(:class:`LafTask &lt;laf.task.LafTask&gt;`):</span>
+<span class="sd">                The task executing object that has all the data.</span>
+<span class="sd">            feature_objects(dict):</span>
+<span class="sd">                feature information for the declared features.</span>
+<span class="sd">                This information is the combination of info found in the source</span>
+<span class="sd">                and in the annox.</span>
+<span class="sd">            edge_features(dict):</span>
+<span class="sd">                the set of features for edges.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+         
+        <span class="n">connections</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">None</span><span class="p">))))</span>
+        <span class="n">edges_from</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;edges_from&quot;</span><span class="p">]</span>
+        <span class="n">edges_to</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&quot;edges_to&quot;</span><span class="p">]</span>
+        <span class="n">other_edges</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;other_edges&#39;</span><span class="p">]</span>
+        <span class="n">edges_seen</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">feature_obj</span><span class="p">)</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">feature_name</span> <span class="o">=</span> <span class="n">feature_obj</span><span class="o">.</span><span class="n">edge_name</span>
+            <span class="n">feature_map</span> <span class="o">=</span> <span class="n">feature_obj</span><span class="o">.</span><span class="n">lookup</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">fvalue</span><span class="p">)</span> <span class="ow">in</span> <span class="n">feature_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">other_edges</span><span class="p">:</span>
+                    <span class="n">edges_seen</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">node_from</span> <span class="o">=</span> <span class="n">edges_from</span><span class="p">[</span><span class="n">edge</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">node_to</span> <span class="o">=</span> <span class="n">edges_to</span><span class="p">[</span><span class="n">edge</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">connections</span><span class="p">[</span><span class="n">feature_name</span><span class="p">][</span><span class="n">fvalue</span><span class="p">][</span><span class="n">node_from</span><span class="p">][</span><span class="n">node_to</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">other_edges</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges_from</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">edge</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">edges_seen</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">node_from</span> <span class="o">=</span> <span class="n">edges_from</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span>
+                <span class="n">node_to</span> <span class="o">=</span> <span class="n">edges_to</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span>
+                <span class="n">connections</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">][</span><span class="s">&#39;&#39;</span><span class="p">][</span><span class="n">node_from</span><span class="p">][</span><span class="n">node_to</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">=</span> <span class="n">connections</span>
+
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
+            <span class="n">fnrep</span> <span class="o">=</span> <span class="n">fn</span> <span class="k">if</span> <span class="n">fn</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span> <span class="k">else</span> <span class="s">&#39;_none_&#39;</span>
+            <span class="k">exec</span><span class="p">(</span><span class="s">&quot;self.{} = connections[&#39;{}&#39;]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fnrep</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span>
+</div>
 <div class="viewcode-block" id="XMLid"><a class="viewcode-back" href="../../laf/modules.html#laf.task.XMLid">[docs]</a><span class="k">class</span> <span class="nc">XMLid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This class is responsible for making the original XML identifiers available</span>
 <span class="sd">    to tasks.</span>
@@ -359,6 +421,12 @@
     <span class="sd">&#39;&#39;&#39;This class is responsible for giving access to the primary data.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">laftask</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upon creation, the primary data is pointed to.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            laftask(:class:`LafTask &lt;laf.task.LafTask&gt;`):</span>
+<span class="sd">                The task executing object that has all the data.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">all_data</span> <span class="o">=</span> <span class="n">laftask</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;Member that holds the primary data as a single UNICODE string.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -455,8 +523,29 @@
 
 <span class="sd">        F(:class:`Features`):</span>
 <span class="sd">            Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is</span>
-<span class="sd">            accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.</span>
+<span class="sd">            accessible as ``F.shebanq_ft_suffix`` if it is a node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.</span>
 <span class="sd">            These feature objects in turn have a method to look features up. See :class:`Feature`.</span>
+<span class="sd">            Empty annotations correspond with a feature with an empty name, having the value ``&#39;&#39;`` (empty string) for each node</span>
+<span class="sd">            or edge in its domain. For example, an empty edge annotation in the annotation space ``shebanq`` having label ``mother``,</span>
+<span class="sd">            corresponds to the feature ``shebanq:mother.`` and is accessible as ``F.shebanq_mother__e``</span>
+<span class="sd">            (note the empty feature name between the two ``_``s and note the ``_e`` suffix to indicate that this is an edge feature.</span>
+
+<span class="sd">        C(:class:`Connections`):</span>
+<span class="sd">            Object containing the adjacency information for each node.</span>
+<span class="sd">            The adjacency information tells for each node how it is connected by outgoing edges to another node. </span>
+<span class="sd">            This information is organized as a dictionary::</span>
+
+<span class="sd">                C.«feature_name».[«feature_value»][«node_from»][«node_to»] = None</span>
+
+<span class="sd">            For edges annotated with an empty annotation, «feature_name» has the form::</span>
+
+<span class="sd">                «annotation space»_«annotation label»__</span>
+
+<span class="sd">            and the «feature_value» is ``&#39;&#39;`` (the empty string).</span>
+
+<span class="sd">            For edges that have not been annotated by one of the</span>
+<span class="sd">            loaded edge features the «feature_name» is completely empty (``&#39;&#39;``) and the «feature_value» as well.</span>
+<span class="sd">            This only works if you declare the empty edge feature.</span>
 
 <span class="sd">        X(:class:`XMLids`):</span>
 <span class="sd">            Object containg members for XML identifier mappings for nodes and or edges, depending on what the task</span>
@@ -471,11 +560,16 @@
 <span class="sd">            See also :meth:`next_node`.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                name (int):</span>
-<span class="sd">                    the code of a feature name</span>
+<span class="sd">                test (callable):</span>
+<span class="sd">                    Function to test whether a node should be passed on.</span>
+<span class="sd">                    Optional. If not present, all nodes will be passed on and the parameters</span>
+<span class="sd">                    *value* and *values* do not have effect.</span>
 
-<span class="sd">                value (int):</span>
-<span class="sd">                    the code of a feature value</span>
+<span class="sd">                value, values (any type, list(any type)):</span>
+<span class="sd">                    Only effective if the parameter *test* is present.</span>
+<span class="sd">                    The values found in *value* and *values* are collected in a dictionary.</span>
+<span class="sd">                    All nodes node, whose *test(node)* result is in this dictionary</span>
+<span class="sd">                    are passed on, and none of the others.</span>
 <span class="sd">            &#39;&#39;&#39;</span>
 
             <span class="k">if</span> <span class="n">test</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
@@ -495,14 +589,12 @@
         <span class="n">feature_objects</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;feature&#39;</span><span class="p">]:</span>
-            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-            <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">)</span>
+            <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">[</span><span class="s">&#39;annox&#39;</span><span class="p">]:</span>
-            <span class="n">feature_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_item</span><span class="p">(</span><span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">feature_rep</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="p">:</span>
-                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="o">*</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_objects</span><span class="p">:</span>
+                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="o">*</span><span class="n">feature</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature_rep</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">feature_objects</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">feature</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="n">xmlid_objects</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -514,6 +606,7 @@
             <span class="n">PrimaryData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">given</span><span class="p">[</span><span class="s">&#39;primary&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span>
             <span class="n">next_node</span><span class="p">,</span>
             <span class="n">Features</span><span class="p">(</span><span class="n">feature_objects</span><span class="p">),</span>
+            <span class="n">Connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_objects</span><span class="p">),</span>
             <span class="n">XMLids</span><span class="p">(</span><span class="n">xmlid_objects</span><span class="p">)</span>
         <span class="p">)</span>
 </div>

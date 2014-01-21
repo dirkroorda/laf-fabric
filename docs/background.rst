@@ -221,6 +221,9 @@ Thanks to Martijn Naaijer and Gino Kalkman for first experiments with LAF-Fabric
 History
 =======
 
+**2014-01-17**
+Joint presentation with Martijn Naaijer at `CLIN <http://clin24.inl.nl>`_ (Computational Linguistics In the Netherlands).
+
 **2013-12-18**
 Demonstration on the `StandOff Markup and GrAF workshop (CLARIN-D) <http://cceh.uni-koeln.de/node/531>`_ in Köln.
 

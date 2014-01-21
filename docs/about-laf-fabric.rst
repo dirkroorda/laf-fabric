@@ -172,6 +172,8 @@ Basically we have only:
 *feature lookup*
     a class that gives easy access to feature data and has methods for feature value lookup and mapping of
     feature values.
+*connectivity*
+    adjacency information for nodes, by which you can travel via (annotated) edges to neighbouring nodes
 *xml identifier mapping*
     a mapping from orginal xml identifiers to integers.
 *primary data access*
@@ -179,6 +181,8 @@ Basically we have only:
 
 Probably it is also handy to make custom node sets so that we can use python's set methods
 to manipulate with node sets.
+
+Probably we need more traversal primitives, e.g. walking against the direction of edges.
 
 .. rubric:: Footnotes
 

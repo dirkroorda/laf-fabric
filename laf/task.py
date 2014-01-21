@@ -317,7 +317,7 @@ class LafTask(Laf):
         This is what is returned (the names given are not necessarily the names by which they are used
         in end user tasks. You can give convenient, local names to these methods, e.g::
 
-            (msg, P, NN, F, X) = laftask.API()
+            (msg, P, NN, F, C, X) = laftask.API()
 
         Using these names, here is the API specification:
 

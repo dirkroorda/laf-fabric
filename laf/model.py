@@ -125,6 +125,8 @@ def model(data_items, temp_data_items, stamp):
     Nodes and edges:
         Collect the outgoing and incoming edges for each node in a pair of double arrays.
 
+        Collect the set of unannotated edges.
+
     '''
     result_items = []
 
@@ -210,6 +212,8 @@ def model(data_items, temp_data_items, stamp):
 
     edges_out = None
     edges_in = None
+
+    stamp.progress("PLAIN EDGES")
 
     return result_items
 

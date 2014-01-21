@@ -20,7 +20,7 @@ load = {
     },
 }
 
-def task(laftask):
+def task(processor):
     '''Collect co-occurrence data for lexemes across books in the bible.
 
     This is work together with Martijn Naaijer.
@@ -50,27 +50,27 @@ def task(laftask):
 
 
     '''
-    (msg, P, NN, F, X) = laftask.API()
+    (msg, P, NN, F, C, X) = processor.API()
 
     lexemes = collections.defaultdict(lambda: collections.defaultdict(lambda:collections.defaultdict(lambda:0)))
     lexeme_support_book = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))
 
     tasks = {
         'noun_common': {
-            '1': laftask.add_output("noun_common_1.gexf"),
-            '2': laftask.add_output("noun_common_2.gexf"),
+            '1': processor.add_output("noun_common_1.gexf"),
+            '2': processor.add_output("noun_common_2.gexf"),
         },
         'noun_proper': {
-            '1': laftask.add_output("noun_proper_1.gexf"),
-            '2': laftask.add_output("noun_proper_2.gexf"),
+            '1': processor.add_output("noun_proper_1.gexf"),
+            '2': processor.add_output("noun_proper_2.gexf"),
         },
         'verb': {
-            '1': laftask.add_output("verb_1.gexf"),
-            '2': laftask.add_output("verb_2.gexf"),
+            '1': processor.add_output("verb_1.gexf"),
+            '2': processor.add_output("verb_2.gexf"),
         },
         'all': {
-            '1': laftask.add_output("all_1.gexf"),
-            '2': laftask.add_output("all_2.gexf"),
+            '1': processor.add_output("all_1.gexf"),
+            '2': processor.add_output("all_2.gexf"),
         },
     }
 

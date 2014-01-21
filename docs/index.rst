@@ -13,6 +13,7 @@ Contents:
     about-laf-fabric
     getting-started
     taskwriting
+    API-reference
     background
     tasks/modules.rst
     laf/modules.rst

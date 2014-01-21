@@ -30,10 +30,10 @@ In order to run them, you need to download them to your computer.
 Workbench mode
 --------------
 In workbench mode you place your tasks into the *tasks* directory.
-In your script you have to define a function ``task(lafftask)`` that takes as its sole argument
+In your script you have to define a function ``task(processor)`` that takes as its sole argument
 an object that gives access to all the LAF data from your resource::
 
-    def task(lafftask):
+    def task(processor):
         '''this function executes your task'''
 
 This scenario is handy if you have a bunch of tasks that you want to run in quick succession.
@@ -105,13 +105,13 @@ Finally, here is the complete Python code of the task that produced this output:
         },
     }
 
-    def task(lafftask):
+    def task(processor):
         '''Counts the frequencies of words with male and female gender features.
         Outputs the frequencies in a tab-delimited file, with frequency values for
         each chapter in the whole Hebrew Bible.
         '''
-        (msg, P, NN, F, X) = lafftask.API()
-        stats_file = lafftask.add_output("stats.txt")
+        (msg, P, NN, F, C, X) = processor.API()
+        stats_file = processor.add_output("stats.txt")
 
         stats = [0, 0, 0]
         cur_chapter = None
@@ -197,7 +197,7 @@ Information flow from LAF-Fabric to task
 ========================================
 LAF-Fabric will call the function *task(object)* in your task script (assuming you follow workbench mode),
 and the thing it hands over to it as *object* is an object of
-class :class:`GrafTask <laf.task.GrafTask>`.
+class :class:`LafTask <laf.task.LafTask>`.
 By using this object, you have to access all of its methods. 
 
 In notebook this handing over occurs when you say::
@@ -209,67 +209,39 @@ it is convenient to import the names of the API methods as *local variables* of 
 The lookup of names in Python is fastest for local names.
 And it makes the code much cleaner.
 
-The method :meth:`API() <laf.task.GrafTask.API>` delivers the methods,
+The method :meth:`API() <laf.task.LafTask.API>` delivers the methods,
 and it is up to you to give them names.
 It is recommended to stick to the names provided here in this example.
 Here is a short description of the corresponding methods.
+See :doc`API-reference` for full documentation of the API.
+
+Here is just a very short description:
 
 *F*
-    All that you want to know about features and are not afraid to ask.
-    It is an object, and for each feature that you have declared, it has a member
-    with a handy name. For example, ``F.shebanq_db_otype`` is a feature object
-    that corresponds with the LAF feature given in an annotation in the annotation space ``shebanq``,
-    with label ``db`` and name ``otype``.
-    It is a node feature, because otherwise the name had a 
-    ``_e`` appended to it.
-    You can look up a feature value of this feature, say for node ``n``,by saying:
-    ``F.shebanq_db_otype.v(n)``. 
+    **Features**: All information stored in features
 
-*P(node)*
-    Your gateway to the primary data. For nodes *n* that are linked to the primary data by one or more regions,
-    P(*n*) yields a set of chunks of primary data, corresponding with those regions.
-    The chunks are maximal, non-overlapping, ordered according to the primary data.
-    Every chunk is given as a tuple (*pos*, *text*), where *pos* is the position in the primary data where
-    the start of *text* can be found, and *text* is the chunk of actual text that is specified by the region.
-    The primary data is only available if you have specified in the *load* directives: 
-    ``primary: True``
+*C*
+    **Connectivity**: How to get from one node to another via edges
 
-.. caution:: Note that *text* may be empty.
-    This happens in cases where the region is not a true interval but merely
-    a point between two characters.
+*P*
+    **Primary Data**: Get chunks of primary data that belong to a node
 
-*NN(test=function value=something)*
-    If you want to walk through all the nodes, possibly skipping some, then this is your method.
-    It is an *iterator* that yields a new node everytime it is called.
-    The order is so-called *primary data order*, which will be explained below.
-    The ``test`` and ``value`` arguments are optional.
-    If given, ``test`` should be a *callable* with one argument, returning a string;
-    ``value`` should be a string.
-    ``test`` will be called for each passing node,
-    and if the value returned is not equal to the given ``value``,
-    the node will be skipped.
-    See :meth:`next_node() <laf.task.GrafTask.API>`.
+*N*
+    **NextNode**: walk through a selected set of nodes (not via edges)
 
 *X*
-    If you need to convert the integers that identify nodes and edges in the compiled data back to
-    their original XML identifiers, you can do that with the *X* object.
-    It has two members, ``X.node`` and ``X.edge``, which contain the separate mapping tables for
-    nodes and edges. Both have two methods, corresponding to the direction of the translation:
-    with ``X.node.i(«xml id»)`` you get the corresponding number of a node, and with ``X.node.r(«number»)``
-    you get the original XML id by which the node was identified in the LAF resource.
+    **XML identifiers**: retrieve the original XML identifiers as they appear in the LAF resource on nodes and edges
 
-msg(text, newline=True, withtime=True)
-    Use this to write a message with time information to the terminal and log file.
-    Normally it appends a newline to the text, but you can suppress it.
-    You can also suppress the time indication before the text.
+*msg*
+    **message**: issue timed messages to console and log file
 
 Input and Output
 ================
 You can create an output filehandle, open for writing, by calling the
-method :meth:`add_output() <laf.task.GrafTask.add_output>`
+method :meth:`add_output() <laf.task.LafTask.add_output>`
 and assigning the result to a variable, say *out* ::
 
-    out = lafftask.add_output("output.txt")
+    out = processor.add_output("output.txt")
 
 From then on you can write output simply by saying::
 
@@ -281,36 +253,25 @@ All these files and up in the task specific working directory.
 Likewise, you can place additional input files in that directory,
 and read them by saying::
 
-    inp = lafftask.add_input("input.txt")
-    inp.write(text)
+    inp = processor.add_input("input.txt")
+    inp.read(text)
 
 Once your task has finished, LAF-Fabric will close them all.
 
-.. _node-order:
-
 Node order
 ==========
-There is an implicit partial order on nodes, derived from their attachment to *regions*
-which are stretches of primary data, and the primary data is totally ordered.
-The order we use in LAF-Fabric is defined as follows.
+There is an implicit partial order on nodes.
+The short story is: the nodes that are linked to primary data, inherit the order that is present
+in the primary data.
+The long story is a bit more complicated, since nodes may be attached to multiple ranges of 
+primary data.
 
-Suppose we compare node *A* and node *B*.
-Look up all regions for *A* and for *B* and determine the first point of the first region
-and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
+See :ref:`node-order` for details. If you don't, it might be enough to know
+that *embedding* nodes always come before *embedded* nodes, meaning that if a node happens 
+to be attached to a big piece of primary data, and a second node to a part of that data,
+then the node with the bigger attachment comes first.
 
-Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
-
-In other words: if *A* starts before *B*, then *A* becomes before *B*.
-If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
-
-If neither *A* < *B* nor *B* < *A* then the order is not specified.
-LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
-The only way this can happen is when *A* and *B* start and end at the same point.
-Between those points they might be very different. 
-
-The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
-the order specifies a walk through the nodes were enclosing nodes come first,
-and embedded children come in the order dictated by the primary data.
+When there is no inclusion either way, and the start and end points are the same, the order is left undefined. 
 
 Linking to the LAF resource
 ===========================

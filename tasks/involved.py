@@ -18,15 +18,15 @@ load = {
     },
 }
 
-def task(laftask):
+def task(processor):
     '''Produces the plain text of the Hebrew Bible, in fact the Biblia Hebraica Stuttgartensia version.
 
     In contrast to the task :mod:`task.plain`, the
     books, chapters, and verses are marked.
     '''
-    (msg, P, NN, F, X) = laftask.API()
+    (msg, P, NN, F, C, X) = processor.API()
 
-    out = laftask.add_output("output.txt")
+    out = processor.add_output("output.txt")
 
     the_book = None
     the_chapter = None

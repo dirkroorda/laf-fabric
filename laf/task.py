@@ -15,7 +15,7 @@ class Feature(object):
     tasks.
 
     It has a reference to the underlying information of the feature, it stores its *kind*
-    (node or edge) in two ways, as strings (``node`` or ``edge``) or as booleans (``True``, ``False``).
+    (node or edge) as string (``node`` or ``edge``).
 
     It also gives a feature a fully qualified name that can act as an identifier.
     In fact, these names will be used as member names of the :class:`Features` class, when its objects
@@ -45,6 +45,7 @@ class Feature(object):
         self.source = laftask
         self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind)
         self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
+        self.edge_name = "{}_{}_{}".format(aspace, alabel, fname)
         self.kind = kind
         ref_label = 'xfeature' if extra else 'feature'
         self.lookup = collections.defaultdict(lambda: None, laftask.data_items[ref_label][(aspace, alabel, fname, kind)])
@@ -115,6 +116,67 @@ class Features(object):
             exec("self.{} = fo".format(fo.local_name))
             self.F[fo.local_name] = fo.lookup
 
+class Connections(object):
+    '''This class is responsible for making adjacency information accessible to tasks.
+
+    Adjacency information is the information needed to walk from node to node.
+    Laf-Fabric organizes adjacency information in a *connections* dictionary::
+
+        connections[«edge_feature_name»][«edge_feature_value»][«node_from»][«node_to»] = None
+
+    for every ``«node_from»`` from which there is an edge to ``«node_to»``
+    having the feature named ``«edge_feature_name»`` with value ``«edge_feature_value»``.
+
+    The adjacency information will also be made available by member names::
+
+        C.«edge_feature_name»[«edge_feature_value»][«node_from»][«node_to»] = None
+
+    '''
+    def __init__(self, laftask, feature_objects):
+        '''Upon creation, from the edge features the adjacency information will
+        be gathered.
+
+        Args:
+            laftask(:class:`LafTask <laf.task.LafTask>`):
+                The task executing object that has all the data.
+            feature_objects(dict):
+                feature information for the declared features.
+                This information is the combination of info found in the source
+                and in the annox.
+            edge_features(dict):
+                the set of features for edges.
+        '''
+         
+        connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: None))))
+        edges_from = laftask.data_items["edges_from"]
+        edges_to = laftask.data_items["edges_to"]
+        other_edges = laftask.given['other_edges']
+        edges_seen = {}
+        for (feature, feature_obj) in feature_objects.items():
+            if feature[3] == 'node':
+                continue
+            feature_name = feature_obj.edge_name
+            feature_map = feature_obj.lookup
+            for (edge, fvalue) in feature_map.items():
+                if other_edges:
+                    edges_seen[edge] = None
+                node_from = edges_from[edge - 1]
+                node_to = edges_to[edge - 1]
+                connections[feature_name][fvalue][node_from][node_to] = None
+        if other_edges:
+            for edge in range(len(edges_from)):
+                if edge + 1 in edges_seen:
+                    continue
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
+                connections[''][''][node_from][node_to] = None
+
+        self.C = connections
+
+        for fn in connections:
+            fnrep = fn if fn != '' else '_none_'
+            exec("self.{} = connections['{}']".format(fnrep, fn))
+
 class XMLid(object):
     '''This class is responsible for making the original XML identifiers available
     to tasks.
@@ -178,6 +240,12 @@ class PrimaryData(object):
     '''This class is responsible for giving access to the primary data.
     '''
     def __init__(self, laftask):
+        '''Upon creation, the primary data is pointed to.
+
+        Args:
+            laftask(:class:`LafTask <laf.task.LafTask>`):
+                The task executing object that has all the data.
+        '''
         self.all_data = laftask.data_items['data']
         '''Member that holds the primary data as a single UNICODE string.
         '''
@@ -274,8 +342,29 @@ class LafTask(Laf):
 
         F(:class:`Features`):
             Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is
-            accessible as ``F.shebanq_ft_suffix`` if it isa node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.
+            accessible as ``F.shebanq_ft_suffix`` if it is a node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.
             These feature objects in turn have a method to look features up. See :class:`Feature`.
+            Empty annotations correspond with a feature with an empty name, having the value ``''`` (empty string) for each node
+            or edge in its domain. For example, an empty edge annotation in the annotation space ``shebanq`` having label ``mother``,
+            corresponds to the feature ``shebanq:mother.`` and is accessible as ``F.shebanq_mother__e``
+            (note the empty feature name between the two ``_``s and note the ``_e`` suffix to indicate that this is an edge feature.
+
+        C(:class:`Connections`):
+            Object containing the adjacency information for each node.
+            The adjacency information tells for each node how it is connected by outgoing edges to another node. 
+            This information is organized as a dictionary::
+
+                C.«feature_name».[«feature_value»][«node_from»][«node_to»] = None
+
+            For edges annotated with an empty annotation, «feature_name» has the form::
+
+                «annotation space»_«annotation label»__
+
+            and the «feature_value» is ``''`` (the empty string).
+
+            For edges that have not been annotated by one of the
+            loaded edge features the «feature_name» is completely empty (``''``) and the «feature_value» as well.
+            This only works if you declare the empty edge feature.
 
         X(:class:`XMLids`):
             Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
@@ -290,11 +379,16 @@ class LafTask(Laf):
             See also :meth:`next_node`.
 
             Args:
-                name (int):
-                    the code of a feature name
+                test (callable):
+                    Function to test whether a node should be passed on.
+                    Optional. If not present, all nodes will be passed on and the parameters
+                    *value* and *values* do not have effect.
 
-                value (int):
-                    the code of a feature value
+                value, values (any type, list(any type)):
+                    Only effective if the parameter *test* is present.
+                    The values found in *value* and *values* are collected in a dictionary.
+                    All nodes node, whose *test(node)* result is in this dictionary
+                    are passed on, and none of the others.
             '''
 
             if test != None:
@@ -314,14 +408,12 @@ class LafTask(Laf):
         feature_objects = {}
 
         for feature in self.loaded['feature']:
-            feature_rep = self.format_item('feature', feature)
-            feature_objects[feature_rep] = Feature(self, *feature)
+            feature_objects[feature] = Feature(self, *feature)
         for feature in self.loaded['annox']:
-            feature_rep = self.format_item('feature', feature)
-            if feature_rep in feature_objects:
-                feature_objects[feature_rep].add_data(*feature)
+            if feature in feature_objects:
+                feature_objects[feature].add_data(*feature)
             else:
-                feature_objects[feature_rep] = Feature(self, *feature, extra=True)
+                feature_objects[feature] = Feature(self, *feature, extra=True)
 
         xmlid_objects = []
 
@@ -333,6 +425,7 @@ class LafTask(Laf):
             PrimaryData(self) if self.given['primary'] else None,
             next_node,
             Features(feature_objects),
+            Connections(self, feature_objects),
             XMLids(xmlid_objects)
         )
 

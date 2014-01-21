@@ -20,7 +20,7 @@ load = {
     },
 }
 
-def task(laftask):
+def task(processor):
     '''Collect frequency data of common nouns in Esther per bible book.
 
     This is part of reproducing results in Martijn Naaijer's thesis.
@@ -46,11 +46,11 @@ def task(laftask):
         common nouns in Esther and as columns the books of the bible.
         A cell contain the frequency of that lexeme in that book multiplied by 1000 
     '''
-    (msg, P, NN, F, X) = laftask.API()
+    (msg, P, NN, F, C, X) = processor.API()
 
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
 
-    out_all = laftask.add_output("participles.txt")
+    out_all = processor.add_output("participles.txt")
 
     wordscan = re.compile(r'>W?JB')
     for node in NN():

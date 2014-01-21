@@ -587,6 +587,8 @@ class Laf(object):
         for data_group in self.data_items_def:
             self.adjust_data(data_group)
 
+        self.given['other_edges'] = 'other_edges' in directives and directives['other_edges']
+
         self.verify_all()
 
     def adjust_data(self, data_group, items=None):
@@ -770,7 +772,7 @@ class Laf(object):
 
         Args:
             data_group (str):
-                what to parse: source data (``source``) or an extra annotation package (``annox``)
+                what to write: source data (``source``) or an extra annotation package (``annox``)
         '''
         self.progress("WRITING RESULT FILES for {}".format(data_group))
         target_dir = self.env['feat_dir'] if data_group == 'source' else self.env['annox_bdir']
@@ -824,6 +826,7 @@ class Laf(object):
                 self.progress("writing {}: {} ...".format(data_group, label))
                 for item in self.data_items[label + ref_lab]:
                     item_rep = self.format_item(data_group, item, asFile=True)
+                    self.progress("writing {}: {} {} ...".format(data_group, label, item_rep))
                     b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
                     b_handle = gzip.open(b_path, "wb")
                     pickle.dump(self.data_items[label + ref_lab][item], b_handle)

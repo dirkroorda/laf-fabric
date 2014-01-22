@@ -70,7 +70,7 @@ class Timestamp(object):
         self.log = None
 
     def progress(self, msg, newline=True, withtime=True):
-        '''API: issues a timed progress message.
+        '''Issues a timed progress message.
 
         The message is issued to the standard output, and, if a log file has been connected, also to the log file.
 

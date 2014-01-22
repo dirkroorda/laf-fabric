@@ -26,7 +26,11 @@ def task(processor):
     '''Make an inventory of edges with respect to label, type of source node, type of target node.
 
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    C = API['C']
+    NN = API['NN']
+    msg = API['msg']
 
     msg("Get the edges...")
 

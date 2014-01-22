@@ -18,7 +18,9 @@ def task(processor):
     '''Produces a list of all WIVU objects with their types, ids and
     *monads* (words) they contain.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
 
     out = processor.add_output("output.txt")
 

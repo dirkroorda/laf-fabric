@@ -40,7 +40,9 @@ def task(processor):
     Returns:
         stats_c_compact.txt (file): a table with per chapter frequencies for verbs, and proper nouns
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
 
     out = processor.add_output("output.txt")
     stats_v_raw = processor.add_output("stats_v_raw.txt")

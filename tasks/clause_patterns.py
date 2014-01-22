@@ -24,7 +24,10 @@ def task(processor):
     '''Counts the frequencies of the all clause patterns in the books of Genesis and the Psalms.
     Outputs the frequencies in a tab-delimited file.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
+    msg = API['msg']
 
     msg("Get the frequencies of the clause patterns...")
 

@@ -107,7 +107,12 @@ def task(processor):
     file, you can use the annotations in tasks by selecting it as an annox.
     See the task :mod:`annox_use`.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    P = API['P']
+    X = API['X']
+    NN = API['NN']
+    msg = API['msg']
 
     def make_form():
         msg("Reading the books ...")

@@ -49,8 +49,20 @@ First you have to get a *processor* object. This is how you get it:
 
 Once you have the processor, you get the API by means of a call like this::
 
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    C = API['C']
+    P = API['P']
+    X = API['X']
+    NN = API['NN']
+    msg = API['msg']
 
+Of course, you only have to give names to the elements you really use.
+And if performance is not important, you can leave out the naming altogether and just refer to 
+the elements by means of the API dictionary::
+
+    for i in API['NN']():
+        this_type = API['F'].shebanq_db_otype.v(i)
 
 LAF API
 =======

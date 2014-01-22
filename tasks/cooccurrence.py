@@ -50,7 +50,9 @@ def task(processor):
 
 
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
 
     lexemes = collections.defaultdict(lambda: collections.defaultdict(lambda:collections.defaultdict(lambda:0)))
     lexeme_support_book = collections.defaultdict(lambda: collections.defaultdict(lambda: {}))

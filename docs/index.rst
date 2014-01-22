@@ -9,16 +9,15 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
-    welcome
-    about-laf-fabric
-    getting-started
-    taskwriting
-    API-reference
-    background
+    texts/welcome
+    texts/release-notes
+    texts/about-laf-fabric
+    texts/getting-started
+    texts/taskwriting
+    texts/API-reference
+    texts/background
     tasks/modules.rst
     laf/modules.rst
-
-
 
 Indices and tables
 ==================
@@ -31,7 +30,7 @@ Indices and tables
 
 .. [#laffabric] Image found by an internet search on fabric and some other term that I forgot.
    By a google search on the image itself, I managed to find the
-   original context at ``http://www.hobbycraft.co.uk/hobbycraft-textured-fabric-reel-cream-2-metre/584337-1000>``.
+   original context at ``http://www.hobbycraft.co.uk/hobbycraft-textured-fabric-reel-cream-2-metre/584337-1000``.
 
    Today, 2013-01-16, that link is not accessible anymore.
    A google search on the image itself yields no hits except the present page and some related pages.

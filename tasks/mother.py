@@ -26,7 +26,11 @@ def task(processor):
     Outputs the the id and type of every object that has
     a mother, and outputs the ids and object types of the mothers as well.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    C = API['C']
+    NN = API['NN']
+    msg = API['msg']
 
     msg("Get the mothers...")
 

@@ -19,18 +19,3 @@ This is the LAF Fabric, and here are some examples of what you can do with it:
 
 * `gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
 * `cooccurrences notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
-
-What's new
-==========
-3.2.0
-^^^^^
-Connectivity in the API. There is an object C by which you can traverse from nodes via annotated edges to other nodes.
-
-Documentation organization: separate section for API reference.
-
-Incompatible changes:
-
-* laf.task.LafTask.API() now returns a 6-tuple instead of a 5-tuple: C has been added.
-* nodes or edges annotated by an empty annotation will get a feature based on the annotation label.
-  This feature yields value ``''`` (empty string) for all nodes or edges for which it is defined. Was ``1``.
-  **Existing LAF resources should be recompiled**.

@@ -23,7 +23,10 @@ def task(processor):
     Outputs the frequencies in a tab-delimited file, with frequency values for
     each chapter in the whole Hebrew Bible.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
+
     stats_file = processor.add_output("stats.txt")
 
     stats = [0, 0, 0]

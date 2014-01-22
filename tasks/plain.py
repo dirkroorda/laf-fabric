@@ -27,7 +27,9 @@ def task(processor):
     This is a handy check on all the data transformations involved. If the output of this task
     is not byte for byte equal to the primary data, something seriously wrong with LAF-Fabric!
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    msg = API['msg']
 
     prim = processor.env['source'] != 'tiny'
     if prim:

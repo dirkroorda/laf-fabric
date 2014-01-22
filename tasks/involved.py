@@ -24,7 +24,9 @@ def task(processor):
     In contrast to the task :mod:`task.plain`, the
     books, chapters, and verses are marked.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
 
     out = processor.add_output("output.txt")
 

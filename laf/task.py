@@ -311,34 +311,20 @@ class LafTask(Laf):
             sys.path.append(task_include_dir)
 
     def API(self):
-        '''Return references to API data structures and methods of this class.
+        '''Return a dictionary of references to API data structures and methods of this class.
 
         
-        This is what is returned (the names given are not necessarily the names by which they are used
-        in end user tasks. You can give convenient, local names to these methods, e.g::
+        The following elements are returned.
+        The names given are the keys of the elements in the result dictionary.
+        They are not necessarily the names the end user will give to them
+        in end user tasks.
+        You can give convenient, local names to these methods, e.g::
 
-            (msg, P, NN, F, C, X) = laftask.API()
+            API = laftask.API()
+            F = API['F']
+            XMLids = API['X']
 
-        Using these names, here is the API specification:
-
-        msg(text, newline=True, withtime=True):
-            For delivering console output, such as progress messages.
-            See :meth:`progress <laf.timestamp.Timestamp.progress>`.
-
-        P(:class:`PrimaryData`):
-            Object containing the primary data and the information to which portions of it nodes are linked.
-            ``P.all_data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.
-            In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from
-            the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the
-            primary data and the fragments are maximal. They do not overlap, and there are no duplicates.
-            A fragment can be empty.
-            This happens when a region is merely a pointer and not an interval.
-
-        NN(test=function, value=something):
-            An iterator that delivers nodes in the canonical order described in :func:`model <laf.model.model>`.
-
-            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*
-            are passed through, all others are skipped.
+        Using these names, here is the API specification (but see also :doc:`API-reference`):
 
         F(:class:`Features`):
             Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is
@@ -366,14 +352,34 @@ class LafTask(Laf):
             loaded edge features the «feature_name» is completely empty (``''``) and the «feature_value» as well.
             This only works if you declare the empty edge feature.
 
+        P(:class:`PrimaryData`):
+            Object containing the primary data and the information to which portions of it nodes are linked.
+            ``P.all_data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.
+            In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from
+            the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the
+            primary data and the fragments are maximal. They do not overlap, and there are no duplicates.
+            A fragment can be empty.
+            This happens when a region is merely a pointer and not an interval.
+
         X(:class:`XMLids`):
             Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
             has specified. ``X.node`` contains mappings for nodes, ``X.edge`` for edges. These objects in turn have methods to 
             perform the mappings in individual cases. See :class:`XMLid`.
+
+        NN(test=function, value=something):
+            An iterator that delivers nodes in the canonical order described in :func:`model <laf.model.model>`.
+
+            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*
+            are passed through, all others are skipped.
+
+        msg(text, newline=True, withtime=True):
+            For delivering console output, such as progress messages.
+            See :meth:`progress <laf.timestamp.Timestamp.progress>`.
+
         ''' 
 
         def next_node(test=None, value=None, values=None):
-            '''API: iterator of all nodes in primary data order that have a
+            '''Iterator of all nodes in primary data order that have a
             given value for a given feature.
 
             See also :meth:`next_node`.
@@ -420,14 +426,14 @@ class LafTask(Laf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
-        return (
-            self.progress,
-            PrimaryData(self) if self.given['primary'] else None,
-            next_node,
-            Features(feature_objects),
-            Connections(self, feature_objects),
-            XMLids(xmlid_objects)
-        )
+        return {
+            'msg':  self.progress,
+            'P':    PrimaryData(self) if self.given['primary'] else None,
+            'NN':   next_node,
+            'F':    Features(feature_objects),
+            'C':    Connections(self, feature_objects),
+            'X':    XMLids(xmlid_objects),
+        }
 
     def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None):
         '''Run a task.

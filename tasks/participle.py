@@ -46,7 +46,10 @@ def task(processor):
         common nouns in Esther and as columns the books of the bible.
         A cell contain the frequency of that lexeme in that book multiplied by 1000 
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
+    msg = API['msg']
 
     lexemes = collections.defaultdict(lambda:collections.defaultdict(lambda:0))
 

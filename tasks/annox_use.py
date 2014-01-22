@@ -43,7 +43,11 @@ def task(processor):
     It contains a few annotations in Genesis 1.
     All these annotations will be shown in a listing in the output.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    P = API['P']
+    NN = API['NN']
+    msg = API['msg']
 
     msg("Get the books ...")
 

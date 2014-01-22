@@ -40,3 +40,8 @@ Thumbs.db
 ###################
 *.swp
 *.pyc
+
+# Build directories #
+#####################
+_build/
+__pycache__

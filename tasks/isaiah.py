@@ -30,7 +30,9 @@ def task(processor):
     A better way is coming, where you can add features to all nodes, not just words nodes,
     but also phrase, clause and sentence nodes.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
 
     out = processor.add_output("output.txt")
 

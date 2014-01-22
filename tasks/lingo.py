@@ -35,7 +35,9 @@ def task(processor):
         sentence is co-extensial with a clause (having exactly the same *monads* or words), there is
         nothing in the data that specifies that the clause is contained in the sentence.
     '''
-    (msg, P, NN, F, C, X) = processor.API()
+    API = processor.API()
+    F = API['F']
+    NN = API['NN']
 
     out = processor.add_output("output.txt")
 

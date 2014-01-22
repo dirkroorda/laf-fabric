@@ -10,6 +10,8 @@ API
 
 * Documentation: added release notes.
 
+* New Example Notebook: `participle <>`_.
+
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^
 * :meth:`API() <laf.task.LafTask.API>` now returns a keyed dictionary instead of a 6-tuple.

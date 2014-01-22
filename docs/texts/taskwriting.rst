@@ -236,7 +236,7 @@ Here is just a very short description:
     **XML identifiers**: retrieve the original XML identifiers as they appear in the LAF resource on nodes and edges
 
 *msg*
-    **message**: issue timed messages to console and log file
+    **message**: issue timed messages to console (standard error) and log file
 
 Input and Output
 ================

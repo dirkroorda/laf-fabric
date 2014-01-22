@@ -72,7 +72,7 @@ class Timestamp(object):
     def progress(self, msg, newline=True, withtime=True):
         '''Issues a timed progress message.
 
-        The message is issued to the standard output, and, if a log file has been connected, also to the log file.
+        The message is issued to the standard error, and, if a log file has been connected, also to the log file.
 
         Args:
             msg (str):
@@ -87,7 +87,7 @@ class Timestamp(object):
         timed_msg += msg
         if newline:
             timed_msg += "\n"
-        sys.stdout.write(timed_msg)
-        sys.stdout.flush()
+        sys.stderr.write(timed_msg)
+        sys.stderr.flush()
         if self.log:
             self.log.write(timed_msg)

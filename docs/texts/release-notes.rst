@@ -10,7 +10,7 @@ API
 
 * Documentation: added release notes.
 
-* New Example Notebook: `participle <>`_.
+* New Example Notebook: `participle <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/participle.ipynb>`_.
 
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^

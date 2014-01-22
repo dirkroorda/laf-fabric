@@ -13,17 +13,18 @@ API
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^
 * :meth:`API() <laf.task.LafTask.API>` now returns a keyed dictionary instead of a 6-tuple.
-    The statement where you define API names must be changed from::
-
-        (msg, NN, F, C, X, P) = processor.API()
-
-    to::
+    The statement where you define API is now 
 
         API = processor.API()
         F = API['F']
         NN = API['NN']
+        ...
 
-   etc.
+    (was::
+
+        (msg, NN, F, C, X, P) = processor.API()
+
+    )
 
 3.2.0
 =====

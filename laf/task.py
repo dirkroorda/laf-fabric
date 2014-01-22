@@ -324,7 +324,7 @@ class LafTask(Laf):
             F = API['F']
             XMLids = API['X']
 
-        Using these names, here is the API specification (but see also :doc:`API-reference`):
+        Using these names, here is the API specification (but see also :doc:`/texts/API-reference`):
 
         F(:class:`Features`):
             Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is

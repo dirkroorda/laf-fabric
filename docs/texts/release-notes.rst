@@ -7,6 +7,7 @@ API
 * Node events are added to the API, see :ref:`node-events`. With ``NE()`` you traverse the anchor positions in the primary data,
   and at each anchor position there is a list of which nodes start, end, resume or suspend there.
   This helps greatly if your task needs the embedding structure of nodes.
+  There are facilities to suppress certain sets of node events.
 
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^

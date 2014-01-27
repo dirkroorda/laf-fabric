@@ -3,6 +3,7 @@ README
 setup.py
 laf/__init__.py
 laf/laf.py
+laf/lib.py
 laf/model.py
 laf/notebook.py
 laf/parse.py

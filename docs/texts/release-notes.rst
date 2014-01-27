@@ -1,5 +1,18 @@
 Release Notes
 #############
+3.2.2
+=====
+API
+---
+* Node events are added to the API, see :ref:`node-events`. With ``NE()`` you traverse the anchor positions in the primary data,
+  and at each anchor position there is a list of which nodes start, end, resume or suspend there.
+  This helps greatly if your task needs the embedding structure of nodes.
+
+Incompatible changes
+^^^^^^^^^^^^^^^^^^^^
+* Node events make use of new data structures that are created when the LAF resource is being compiled.
+  **Existing LAF resources should be recompiled**.
+
 3.2.1
 =====
 API
@@ -32,7 +45,7 @@ Incompatible changes
 =====
 API
 ---
-* Connectivity added to the API.
+* Connectivity added to the API, see :ref:`connectivity`.
     There is an object C by which you can traverse from nodes via annotated edges to other nodes.
 
 * Documentation organization:

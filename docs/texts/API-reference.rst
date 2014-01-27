@@ -55,6 +55,7 @@ Once you have the processor, you get the API by means of a call like this::
     P = API['P']
     X = API['X']
     NN = API['NN']
+    NE = API['NE']
     msg = API['msg']
 
 Of course, you only have to give names to the elements you really use.
@@ -104,6 +105,8 @@ The ``s()`` method yields an iterator that iterates over all nodes for which the
 has a defined value. For the order of nodes, see :ref:`node-order`.
 
 If a value is passed to ``s()``, only those nodes are visited that have that value for the feature in question.
+
+.. _connectivity:
 
 C (Connectivity)
 ----------------
@@ -172,7 +175,7 @@ Examples::
     (c) for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
             pass
 
-This is also walking through nodes, not by edges, but through a predefined set, in the
+NN() walks through nodes, not by edges, but through a predefined set, in the
 natural order given by the primary data (see :ref:`node-order`).
 
 It is an *iterator* that yields a new node everytime it is called.
@@ -195,6 +198,102 @@ which gives for each node its type.
     that nodes are books, chapters, words, phrases, and so on.
 
 See :meth:`next_node() <laf.task.LafTask.API>`.
+
+.. _node-events:
+
+NE (Next Event)
+---------------
+Examples::
+    
+    for (anchor, events) in NE():
+        for (node, kind) in events:
+            if kind == 3:
+                '''close node event'''
+            elif kind == 2:
+                '''suspend node event'''
+            elif kind == 1:
+                '''resume node event'''
+            elif kind == 0:
+                '''start node event'''
+            
+    for (anchor, events) in NE(key=filter):
+    for (anchor, events) in NE(simplify=filter):
+    for (anchor, events) in NE(key=filter1, simplify=filter2):
+
+NE() walks through the primary data, or, more precisely, through the anchor positions where
+something happens with the nodes.
+What can happen is that a node *starts*, *resumes*, *suspends* or *ends* at a certain anchor position.
+This things are called *node_events*.
+
+*start*
+    The start anchor of the first range that the node is linked to
+*resume*
+    The start anchor of any non-first range that the node is linked to
+*suspend*
+    The end anchor of any non-last range that the node is linked to
+*end*
+    The end anchor of the last range that the node is linked to
+
+The events for each anchored are are ordered according to the primary data order of nodes, see :ref:`node-order`,
+where for events of the kind *suspend* and *end* the order is reversed.
+
+The consequence of this ordering is that if the nodes correspond to a tree structure, the node events
+correspond precisely with the tree structure.
+You can use the events to generate start and end tags for each node and you get a properly nested representation.
+
+Note however, that if two nodes have the same set of ranges, it is impossible to say which embeds which.
+
+You can, however, pass a *key=filter* argument to NE(). 
+Before a node event is generated for a node, *filter* will be applied to it.
+If the outcome is ``None``, the events for this node will be skipped, the consumer of events will not see them.
+If the outcome is not ``None``, the value will be used as a sort key for additional sorting.
+
+The events are already sorted fairly good, but only those node events that have the same kind and corresponds to nodes
+with the same start and end point, may occur in an undesirable order.
+By assigning a key, you can remedy that. 
+The key will be used in inversed order for opening/resume events, and in normal order for close/suspend events.
+
+For example, if you pass a filter as *key* that assigns to nodes that correspond to *sentences* the number 5,
+and to nodes that correspond to *clauses* the number 4, then the following happens.
+
+Whenever there is a sentence that coincides with a clause, then the sentence-open event will
+occur before the clause-open event, and the clause-close before the sentence-close.
+
+If there are many regions in the primary data that are not inside regions or in regions that are not linked to nodes,
+or in regions not linked to relevant nodes, it may bethe case that many relevant nodes get interrupted around these gaps.
+That will cause many spurious suspend-resume pairs of events. It is possible to suppress those.
+
+Example: suppose that all white space is not linked to nodes, and suppose that sentences and clauses are linked
+to their individual words. Then they become interrupted at each word.
+
+If you pass the *simplify=filter* argument to NE() the following will happen.
+First of all: a gap is now a stretch of primary data that does not occur between the start and end position
+of any node for which the filter is not None.
+
+In our example of sentences and clauses: suppose that a verse is linked to the continuous regions of all its material,
+including white space. Suppose that by our *key=filter1* argument we are interested in sentences, clauses and verses.
+With respect to this set, the white spaces are no gaps, because they occur in the verses.
+
+But if we give a simplify=filter2 that only admits sentences and clauses, then the white spaces become true gaps.
+And NE(simplify=filter2) will actively weed out all node-suspend, node-resume pairs around true gaps.
+
+Even if the nodes do not correspond with a tree, the order of the node events correspond to an
+intuitive way to mark the embedding of nodes.
+
+Note that we do not say *region* but *range*.
+LAF-Fabric has converted the region-linking of nodes by range-linking.
+The range list of a node is a sequence of maximal, non-overlapping pieces of primary data in primary data order.
+
+Consequently, if a node suspends at an anchor, it will not resume at that anchor,
+so the node has a real gap at that anchor.
+
+Formally, a node event is a tuple ``(node, kind)`` where ``kind`` is 0, 1, ,2, or 3, meaning
+*start*, *resume*, *suspend*, *end* respectively.
+
+It is an *iterator* that yields the set of events for the next anchor that has events everytime it is called.
+It will return a pair, consisting of the anchor position and a list of events.
+
+See :meth:`next_event() <laf.task.LafTask.API>`.
 
 X (XML Identifiers)
 -------------------

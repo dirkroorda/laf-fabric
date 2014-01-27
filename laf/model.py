@@ -1,5 +1,7 @@
 import os
+import collections
 import array
+from .lib import grouper
 
 def arrayify(source_list):
     '''Efficient storage of a list of lists of integers in two Python :py:mod:`array`.
@@ -113,6 +115,21 @@ def model(data_items, temp_data_items, stamp):
         As a preparation to sorting, the minimal and maximal anchors of each node
         are determined. Nodes may be linked to many regions.
 
+        It also creates a list of node events:
+
+        For each anchor position, a list will be created of nodes that start, terminate, suspend and resume there.
+        
+        * A node *starts* at an anchor if the anchor is the first anchor position of that node
+        * A node *terminates* at an anchor if the anchor is the last anchor position of that node
+        * A node *suspends* at an anchor position if
+            #. the anchor position belongs to that node, 
+            #. the next anchor position does not belong to that node
+            #. there are later anchor positions that belong to that node
+        * A node *resumes* at an anchor position if
+            #. the anchor position belongs to that node, 
+            #. the previous anchor position does not belong to that node
+            #. there are earlier anchor positions that belong to that node
+
     Node sorting:
         Create a list of nodes in a sort order derived from their linking to regions,
         and the ordered nature of the primary data. 
@@ -135,7 +152,7 @@ def model(data_items, temp_data_items, stamp):
     node_region_list = temp_data_items["node_region_list"]
     n_node = len(node_region_list)
 
-    stamp.progress("NODES DETERMINING ANCHOR BOUNDARIES")
+    stamp.progress("NODES ANCHOR BOUNDARIES")
 
     node_anchor_min = array.array('I', [0 for i in range(n_node)])
     node_anchor_max = array.array('I', [0 for i in range(n_node)])
@@ -162,31 +179,66 @@ def model(data_items, temp_data_items, stamp):
         node_anchor_max[node] = max(norm_ranges)
 
     (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
+    result_items.append(("node_anchor_min", node_anchor_min))
+    result_items.append(("node_anchor_max", node_anchor_max))
     result_items.append(("node_anchor", node_anchor))
     result_items.append(("node_anchor_items", node_anchor_items))
     node_region_list = None
-    node_anchor_list = None
     del temp_data_items["node_region_list"]
 
-    stamp.progress("NODES SORTING BY REGIONS")
-
-    def interval(ob):
+    def interval(node):
         ''' Key function used when sorting objects according to embedding and left right.
 
         Args:
-            iv (int, int):
+            node (int):
                 interval
 
         Returns:
             a tuple containing the left boundary and the nagative of the right boundary
         '''
-        return (node_anchor_min[ob - 1], -node_anchor_max[ob - 1])
+        return (node_anchor_min[node - 1], -node_anchor_max[node - 1])
+
+    stamp.progress("NODES EVENTS")
+
+    anchor_max = max(node_anchor_max)
+    node_events = list([collections.deque([]) for n in range(anchor_max + 1)])
+
+    for (n, ranges) in enumerate(node_anchor_list):
+        for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
+            is_first = r == 0
+            is_last = r == (len(ranges) / 2) - 1
+            start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
+            end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
+            node_events[a_start].append((n + 1, start_kind))
+            node_events[a_end].appendleft((n + 1, end_kind))
+
+    node_events_n = array.array('I')
+    node_events_k = array.array('I')
+    node_events_a = list([[] for n in range(anchor_max + 1)])
+
+    e_index = 0
+    for (anchor, events) in enumerate(node_events):
+        for (node, kind) in sorted(events, key=lambda e: (interval(e[0]), e[1])):
+            node_events_n.append(node)
+            node_events_k.append(kind)
+            node_events_a[anchor].append(e_index)
+            e_index += 1
+
+    node_events = None
+    (node_events, node_events_items) = arrayify(node_events_a)
+    node_events_a = None
+
+    result_items.append(("node_events_n", node_events_n))
+    result_items.append(("node_events_k", node_events_k))
+    result_items.append(("node_events", node_events))
+    result_items.append(("node_events_items", node_events_items))
+
+    node_anchor_list = None
+
+    stamp.progress("NODES SORTING BY REGIONS")
 
     node_sort = array.array('I', sorted(node_linked, key=interval))
     result_items.append(("node_sort", node_sort))
-
-    node_anchor_min = None
-    node_anchor_max = None
 
     stamp.progress("NODES AND EDGES")
 

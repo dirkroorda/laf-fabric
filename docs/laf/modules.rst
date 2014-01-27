@@ -12,6 +12,14 @@ laf.laf module
     :undoc-members:
     :show-inheritance:
 
+laf.lib module
+--------------
+
+.. automodule:: laf.lib
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 laf.model module
 ----------------
 

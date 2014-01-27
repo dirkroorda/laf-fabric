@@ -12,6 +12,8 @@ from .timestamp import Timestamp
 from .parse import parse as xmlparse
 from .model import model as remodel
 
+GZIP_LEVEL = 2
+
 class LafException(Exception):
     def __init__(self, message, stamp, Errors):
         Exception.__init__(self, message)
@@ -38,24 +40,33 @@ class Laf(object):
     ``x_mapping``, group ``xmlids``:
         mappings between xml identifiers as they occur in the original LAF source
         and the node/edge numbers in the compiled data.
-        There are two dictionaries: ``xid_int`` (going from xml to integer) and
-        ``xid_rep`` (going from integer to xml).
-        Both contain two dictionaries, one for nodes and one for edges separately.
+        
+        ``xid_int``, ``xid_rep``, group ``xmlids``:
+            Mappings going from xml to integer resp. from integer to xml.
+            Both contain two dictionaries, one for nodes and one for edges separately.
 
     ``string``:
-        Just an unicode string. Used for ``data``, the primary data.
+        Just an unicode string.
+        
+        ``data``, group ``primary``:
+            Holds the primary data as string.
 
-    ``array``, group ``common``:
+    ``array``:
         Simply tables of integer values. 
         Most of the data common to all tasks is in ``array`` s and ``double_array`` s (see below).
 
-        ``edges_from`` and ``edges_to``:
+        ``edges_from`` and ``edges_to`` group ``common``:
             At position ``i``: the source and the target of edge ``i``.
 
-    ``i_array``, group ``common``:
+        ``node_events_n``, ``node_events_k`` group ``common``:
+            For each node event, gives its node and kind.
+
+        ``node_anchor_min``, ``node_anchor_max``, group ``common``
+
+    ``i_array``:
         As ``array`` plus a generated inverse of the array, giving the array index for each value.
 
-        ``node_sort`` and ``node_sort_inv``:
+        ``node_sort``, group ``common``:
             All nodes ordered as induced by the region anchors.
             Nodes that start before others, come before them, 
             nodes that have equal start points are ordered such that the one with the later end point
@@ -64,7 +75,7 @@ class Laf(object):
             embedded objects.
             The inverse is handy for sorting subsets of nodes: it gives for each node its rank in the sort order.
 
-    ``double_array``, group ``common``: 
+    ``double_array``: 
         Twin arrays representing a list of records where records may have variable length.
         The primary array is has the name given, and contains at position ``i`` the starting
         point for record ``i`` in the secondary array.
@@ -72,17 +83,20 @@ class Laf(object):
         and then so many cells of information.
         This array has as its name the name of the primary array plus ``_items``.
 
-        ``node_anchor`` and ``node_anchor_items``:
+        ``node_anchor``, group ``primary``:
             For node ``i`` the record ``i`` consists of all anchor ranges that this node is linked to.
             The anchor range for a node is a sequence with even length of numbers that are the start and end anchors
             of primary data ranges that the node is linked to.
             The ranges have been normalized: they are maximal, non-overlapping, ordered by starting position.
 
-        ``node_out`` and ``node_out_items``:
-            For node ``i`` the record ``i`` consists of all outgoing edges from this node.
+        ``node_events``, group ``common``:
+            For anchor ``a`` gives an ordered list of node event-ids associated with ``a``.
 
-        ``node_in`` and ``node_in_items``:
-            For node ``i`` the record ``i`` consists of all incoming edges into this node.
+        ``node_out``, ``node_in``, group common:
+            For node ``i`` the record ``i`` consists of all outgoing resp. incoming edges from this node.
+
+    ``list``:
+        A list of elements having arbitrary but pickable python datastructures.
 
     ``feature_mapping``, group ``feature`` resp group ``annox``:
         Contains all the feature data of source resp annox.
@@ -247,6 +261,11 @@ class Laf(object):
 
         self.data_items_def = collections.OrderedDict((
             ('common', collections.OrderedDict([
+                    ("node_anchor_min", 'array'),
+                    ("node_anchor_max", 'array'),
+                    ("node_events", 'double_array'),
+                    ("node_events_n", 'array'),
+                    ("node_events_k", 'array'),
                     ("node_sort", 'i_array'),
                     ("node_out", 'double_array'),
                     ("node_in", 'double_array'),
@@ -816,9 +835,14 @@ class Laf(object):
                     for sub in subs:
                         lab = label + sub
                         b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-                        b_handle = gzip.open(b_path, "wb")
+                        b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
                         self.data_items[lab].tofile(b_handle)
                         b_handle.close()
+                elif data_type == 'list':
+                    b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
+                    b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
+                    pickle.dump(self.data_items[label], b_handle)
+                    b_handle.close()
         else:
             ref_lab = '_int' if data_group == 'xmlids' else ''
             target_dir = self.env['bin_dir'] if data_group == 'xmlids' else self.env['feat_dir'] if data_group == 'feature' else self.env['annox_bdir']
@@ -828,7 +852,7 @@ class Laf(object):
                     item_rep = self.format_item(data_group, item, asFile=True)
                     self.progress("writing {}: {} {} ...".format(data_group, label, item_rep))
                     b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
-                    b_handle = gzip.open(b_path, "wb")
+                    b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
                     pickle.dump(self.data_items[label + ref_lab][item], b_handle)
                     b_handle.close()
 
@@ -879,17 +903,24 @@ class Laf(object):
         if data_group == 'common':
             for (label, data_type) in self.data_items_def[data_group].items():
                 self.progress("loading {}: {} ... ".format(data_group, label))
-                subs = ('',)
-                if data_type == 'double_array':
-                    subs = ('', '_items')
-                for sub in subs:
-                    lab = label + sub
-                    self.data_items[lab] = array.array('I')
-                    b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+                if data_type == 'list':
+                    b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
                     if os.path.exists(b_path):
                         b_handle = gzip.open(b_path, "rb")
-                        self.data_items[lab].fromfile(b_handle, self.stats[lab])
+                        self.data_items[label] = pickle.load(b_handle)
                         b_handle.close()
+                else:
+                    subs = ('',)
+                    if data_type == 'double_array':
+                        subs = ('', '_items')
+                    for sub in subs:
+                        lab = label + sub
+                        self.data_items[lab] = array.array('I')
+                        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+                        if os.path.exists(b_path):
+                            b_handle = gzip.open(b_path, "rb")
+                            self.data_items[lab].fromfile(b_handle, self.stats[lab])
+                            b_handle.close()
         elif data_group == 'primary':
             for (label, data_type) in self.data_items_def[data_group].items():
                 if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):

@@ -418,7 +418,7 @@ class LafTask(Laf):
                 for node in self.data_items["node_sort"]:
                     yield node
 
-        def next_event(key=None, simplify=None):
+        def next_event(key=None, simplify=True):
             '''Iterator of all node events grouped by anchor.
 
             This iterator tries hard to achieve useful event sequences.
@@ -429,7 +429,7 @@ class LafTask(Laf):
 
             Args:
                 key (callable):
-                    The key function serves two purposes: filtering and additional ordering.
+                    The key function servers two purposes: filtering and additional ordering.
                     It is optional.
                     If not present, no filtering and additional ordering will take place.
                     The key function must be a callable with one argument, it will be called
@@ -446,19 +446,14 @@ class LafTask(Laf):
                     The opening and resuming nodes will be ordered with the key function,
                     the closing and suspending nodes will be reverse ordered with the key.
 
-                simplify (callable): 
+                simplify (bool): 
                     There may be stretches of primary data that are not covered by any
                     of the nodes that pass the key filter.
                     Nodes that have gaps corresponding these uncovered ranges, 
                     will trigger suspend and resume events around them.
                     
-                    If simplify is given, it should be a callable.
-                    It will be passed a node, and nodes that yield True will be considered
-                    in simplifying the event stream.
-                    
-                    If there are gaps which are not covered by any of the nodes for which the key()
-                    and simplify() yield a True value, all such spurious suspending and resuming
-                    of nodes around this gap will be suppressed from the node evetn stream.
+                    If simplify is True, no such spurious suspending and resuming
+                    will take place, these events will be wiped out.
 
             Returns:
                 (anchor, events) where:
@@ -472,7 +467,11 @@ class LafTask(Laf):
             '''
 
             node_anchor_min = self.data_items["node_anchor_min"]
-            node_anchor_max = self.data_items["node_anchor_max"]
+            node_anchor_max = self.data_items["node_anchor_min"]
+            nodes = self.data_items["node_events_n"]
+            kinds = self.data_items["node_events_k"]
+            node_events = self.data_items["node_events"]
+            node_events_items = self.data_items["node_events_items"]
 
             class Additional_key(object):
                 '''The initialization function of this class is a new key function for sorting events.
@@ -493,119 +492,76 @@ class LafTask(Laf):
                 
                 Hence only the lumps of nodes with equal min-max positions will be sorted. 
                 '''
-                __slots__ = ['value', 'kind', 'amin', 'amax']
-                def __init__(self, event):
-                    (node, kind) = event
-                    self.amin = node_anchor_min[node-1]
-                    self.amax = node_anchor_max[node-1]
-                    self.value = key(node) * (-1 if kind < 2 else 1)
-                    self.kind = kind
-
+                __slots__ = ['node']
+                def __init__(self, node):
+                    self.node = node
                 def __lt__(self, other):
                     return (
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind == other.kind and
-                        self.value < other.value
+                        node_anchor_min[self.node-1] == node_anchor_min[other.node-1] and
+                        node_anchor_max[self.node-1] == node_anchor_max[other.node-1] and
+                        key(self.node) < key(other.node)
                     )
                 def __gt__(self, other):
                     return (
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind == other.kind and
-                        self.value > other.value
+                        node_anchor_min[self.node-1] == node_anchor_min[other.node-1] and
+                        node_anchor_max[self.node-1] == node_anchor_max[other.node-1] and
+                        key(self.node) > key(other.node)
                     )
                 def __eq__(self, other):
                     return (
-                        self.amin != other.amin or
-                        self.amax != other.amax or
-                        self.kind != other.kind
+                        node_anchor_min[self.node-1] != node_anchor_min[other.node-1] or
+                        node_anchor_max[self.node-1] != node_anchor_max[other.node-1]
                     )
                 def __le__(self, other):
                     return ((
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind == other.kind and
-                        self.value <= other.value
+                        node_anchor_min[self.node-1] == node_anchor_min[other.node-1] and
+                        node_anchor_max[self.node-1] == node_anchor_max[other.node-1] and
+                        key(self.node) <= key(other.node)
                     ) or (
-                        self.amin != other.amin or
-                        self.amax != other.amax or
-                        self.kind != other.kind
+                        node_anchor_min[self.node-1] != node_anchor_min[other.node-1] or
+                        node_anchor_max[self.node-1] != node_anchor_max[other.node-1]
                     ))
                     return mycmp(self.node, other.node) <= 0
                 def __ge__(self, other):
                     return ((
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind == other.kind and
-                        self.value >= other.value
+                        node_anchor_min[self.node-1] == node_anchor_min[other.node-1] and
+                        node_anchor_max[self.node-1] == node_anchor_max[other.node-1] and
+                        key(self.node) >= key(other.node)
                     ) or (
-                        self.amin != other.amin or
-                        self.amax != other.amax or
-                        self.kind != other.kind
+                        node_anchor_min[self.node-1] != node_anchor_min[other.node-1] or
+                        node_anchor_max[self.node-1] != node_anchor_max[other.node-1]
                     ))
                 def __ne__(self, other):
                     return (
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind != other.kind and
-                        self.value != other.value
+                        node_anchor_min[self.node-1] == node_anchor_min[other.node-1] and
+                        node_anchor_max[self.node-1] == node_anchor_max[other.node-1] and
+                        key(self.node) != key(other.node)
                     )
                 __hash__ = None
 
-            nodes = self.data_items["node_events_n"]
-            kinds = self.data_items["node_events_k"]
-            node_events = self.data_items["node_events"]
-            node_events_items = self.data_items["node_events_items"]
-            bufferevents = collections.deque([(-1, [])], 2)
-            
-            active = {}
             for anchor in range(len(node_events)):
                 event_ids = self.getitems(node_events, node_events_items, anchor + 1)
                 if len(event_ids) == 0:
                     continue
-                eventset = []
-                for event_id in event_ids:
-                    node = nodes[event_id]
-                    if key == None or key(node) != None:
-                        eventset.append((nodes[event_id], kinds[event_id]))
-                if not eventset:
-                    continue
-                if key != None:
-                    eventset = sorted(eventset, key=Additional_key)
-                if simplify == None:
-                    yield (anchor, eventset)
-                    continue
-
-                bufferevents.append([anchor, eventset])
-                if bufferevents[0][0] == -1:
-                    continue
-                (this_anchor, these_events) = bufferevents[0]
-                (next_anchor, next_events) = bufferevents[1]
-                for (n, kind) in these_events:
-                    if simplify(n):
-                        if kind == 3:
-                            del active[n]
-                        elif kind == 2:
-                            active[n] = False
-                        elif kind == 1:
-                            active[n] = True
-                        elif kind == 0:
-                            active[n] = True
-                if True not in active.values():
-                    weed = collections.defaultdict(lambda: False)
-                    for (n, k) in these_events:
-                        if k == 2:
-                            weed[n] = None
-                    for (n, k) in next_events:
-                        if k == 1:
-                            if n in weed:
-                                weed[n] = True
-                    if True in weed.values():
-                        bufferevents[0][1] = [(n, k) for (n, k) in these_events if not (k == 2 and weed[n])] 
-                        bufferevents[1][1] = [(n, k) for (n, k) in next_events if not (k == 1 and weed[n])] 
-                yield (bufferevents[0])
-            yield (bufferevents[1])
+                if key == None:
+                        events = [[], [], [], []]
+                        for event_id in event_ids:
+                            events[kinds[event_id]].append(nodes[event_id])
+                else:
+                    for anchor in range(len(node_events)):
+                        event_ids = self.getitems(node_events, node_events_items, anchor + 1)
+                        if len(event_ids) == 0:
+                            continue
+                        pre_events = [[], [], [], []]
+                        for event_id in event_ids:
+                            pre_events[kinds[event_id]].append(nodes[event_id])
+                        events = [[], [], [], []]
+                        for kind in range(4):
+                            events[kind] = sorted(pre_events[kind], key=Additional_key, reverse=kind>1)
+                if simplify:
+                    pass
+                else:
+                    yield (anchor, events)
 
         feature_objects = {}
 

@@ -166,11 +166,11 @@ def model(data_items, temp_data_items, stamp):
         if len(links) == 0:
             node_anchor_list.append([])
             continue
-        node_linked.append(node + 1)
+        node_linked.append(node)
         ranges = []
         for r in links:
-            this_anchor_begin = region_begin[r - 1]
-            this_anchor_end = region_end[r - 1]
+            this_anchor_begin = region_begin[r]
+            this_anchor_end = region_end[r]
             ranges.append((this_anchor_begin, this_anchor_end))
         norm_ranges = normalize_ranges(ranges)
         node_anchor_list.append(norm_ranges)
@@ -196,7 +196,7 @@ def model(data_items, temp_data_items, stamp):
         Returns:
             a tuple containing the left boundary and the nagative of the right boundary
         '''
-        return (node_anchor_min[node - 1], -node_anchor_max[node - 1])
+        return (node_anchor_min[node], -node_anchor_max[node])
 
     stamp.progress("NODES SORTING BY REGIONS")
 
@@ -209,7 +209,7 @@ def model(data_items, temp_data_items, stamp):
     node_events = list([collections.deque([]) for n in range(anchor_max + 1)])
 
     for n in node_sort:
-        ranges = node_anchor_list[n - 1]
+        ranges = node_anchor_list[n]
     #for (n, ranges) in enumerate(node_anchor_list):
         for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
             is_first = r == 0
@@ -255,8 +255,8 @@ def model(data_items, temp_data_items, stamp):
     for i in range(n_edge):
         node_from = edges_from[i]
         node_to = edges_to[i]
-        edges_out[node_from - 1].append(node_to)
-        edges_in[node_to - 1].append(node_from)
+        edges_out[node_from].append(node_to)
+        edges_in[node_to].append(node_from)
 
     (node_out, node_out_items) = arrayify(edges_out)
     (node_in, node_in_items) = arrayify(edges_in)

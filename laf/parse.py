@@ -182,8 +182,8 @@ class AnnotationHandler(ContentHandler):
             global good_regions
             global id_region
             rid = attrs["xml:id"]
-            id_region += 1
             identifiers_r[rid] = id_region
+            id_region += 1
             anchors = attrs["anchors"].split(" ")
             if len(anchors) != 2:
                 faulty_regions += 1
@@ -198,8 +198,8 @@ class AnnotationHandler(ContentHandler):
         elif name == "node":
             global id_node
             nid = attrs["xml:id"]
-            id_node += 1
             identifiers_n[nid] = id_node
+            id_node += 1
             self.node_link = None
             self.nid = nid 
         elif name == "link":
@@ -209,8 +209,8 @@ class AnnotationHandler(ContentHandler):
             global good_edges
             global id_edge
             eid = attrs["xml:id"]
-            id_edge += 1
             identifiers_e[eid] = id_edge
+            id_edge += 1
             from_node = attrs["from"]
             to_node = attrs["to"]
             if not from_node or not to_node:

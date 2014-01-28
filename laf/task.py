@@ -161,12 +161,12 @@ class Connections(object):
             for (edge, fvalue) in feature_map.items():
                 if other_edges:
                     edges_seen[edge] = None
-                node_from = edges_from[edge - 1]
-                node_to = edges_to[edge - 1]
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
                 connections[feature_name][fvalue][node_from][node_to] = None
         if other_edges:
             for edge in range(len(edges_from)):
-                if edge + 1 in edges_seen:
+                if edge in edges_seen:
                     continue
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
@@ -494,8 +494,8 @@ class LafTask(Laf):
                 __slots__ = ['value', 'kind', 'amin', 'amax']
                 def __init__(self, event):
                     (node, kind) = event
-                    self.amin = node_anchor_min[node-1]
-                    self.amax = node_anchor_max[node-1]
+                    self.amin = node_anchor_min[node]
+                    self.amax = node_anchor_max[node]
                     self.value = key(node) * (-1 if kind < 2 else 1)
                     self.kind = kind
 
@@ -559,7 +559,7 @@ class LafTask(Laf):
             
             active = {}
             for anchor in range(len(node_events)):
-                event_ids = self.getitems(node_events, node_events_items, anchor + 1)
+                event_ids = self.getitems(node_events, node_events_items, anchor)
                 if len(event_ids) == 0:
                     continue
                 eventset = []
@@ -797,7 +797,7 @@ class LafTask(Laf):
         Returns:
             a dict of the related integers, with values none.
         '''
-        data_items_index = data[elem - 1]
+        data_items_index = data[elem]
         n_items = data_items[data_items_index]
         items = {}
         for i in range(n_items):
@@ -824,7 +824,7 @@ class LafTask(Laf):
         Returns:
             a list of the related integers.
         '''
-        data_items_index = data[elem - 1]
+        data_items_index = data[elem]
         n_items = data_items[data_items_index]
         return data_items[data_items_index + 1:data_items_index + 1 + n_items]
 

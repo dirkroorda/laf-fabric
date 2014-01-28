@@ -198,27 +198,35 @@ def model(data_items, temp_data_items, stamp):
         '''
         return (node_anchor_min[node - 1], -node_anchor_max[node - 1])
 
+    stamp.progress("NODES SORTING BY REGIONS")
+
+    node_sort = array.array('I', sorted(node_linked, key=interval))
+    result_items.append(("node_sort", node_sort))
+
     stamp.progress("NODES EVENTS")
 
     anchor_max = max(node_anchor_max)
     node_events = list([collections.deque([]) for n in range(anchor_max + 1)])
 
-    for (n, ranges) in enumerate(node_anchor_list):
+    for n in node_sort:
+        ranges = node_anchor_list[n - 1]
+    #for (n, ranges) in enumerate(node_anchor_list):
         for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
             is_first = r == 0
             is_last = r == (len(ranges) / 2) - 1
             start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
             end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
-            node_events[a_start].append((n + 1, start_kind))
-            node_events[a_end].appendleft((n + 1, end_kind))
+            node_events[a_start].append((n, start_kind))
+            node_events[a_end].appendleft((n, end_kind))
 
     node_events_n = array.array('I')
     node_events_k = array.array('I')
-    node_events_a = list([[] for n in range(anchor_max + 1)])
+    node_events_a = list([[] for a in range(anchor_max + 1)])
 
     e_index = 0
     for (anchor, events) in enumerate(node_events):
-        for (node, kind) in sorted(events, key=lambda e: (interval(e[0]), e[1])):
+        #for (node, kind) in sorted(events, key=lambda e: (interval(e[0]), e[1])):
+        for (node, kind) in events:
             node_events_n.append(node)
             node_events_k.append(kind)
             node_events_a[anchor].append(e_index)
@@ -234,11 +242,6 @@ def model(data_items, temp_data_items, stamp):
     result_items.append(("node_events_items", node_events_items))
 
     node_anchor_list = None
-
-    stamp.progress("NODES SORTING BY REGIONS")
-
-    node_sort = array.array('I', sorted(node_linked, key=interval))
-    result_items.append(("node_sort", node_sort))
 
     stamp.progress("NODES AND EDGES")
 

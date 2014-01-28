@@ -20,7 +20,7 @@ load = {
 }
 
 relevant_nodes = [
-    ("word", ''),
+    ("word", 'w'),
     ("subphrase", 'p'),
     ("phrase", 'P'),
     ("clause", 'C'),
@@ -65,37 +65,45 @@ def task(processor):
 
     trees = processor.add_output("trees.txt")
 
-    level = 0
-
     book = None
     chapter = None
     verse = None
     verse_label = None
-    tree = None
+    tree = ''
 
-    n = 0
     for (anchor, events) in NE(key=lambda n:select_node[F.shebanq_db_otype.v(n)], simplify=lambda n:select_node[F.shebanq_db_otype.v(n)] < split_n):
         for (node, kind) in events:
+#            print("YYY {} {}".format(F.shebanq_db_otype.v(node), kind))
             if kind == 3:
                 otype = F.shebanq_db_otype.v(node)
                 if select_node[otype] > split_n:
                     continue
                 tree += ')'
                 if otype == 'sentence':
-                    tree += '\n'
-                    trees.write(tree)
+                    trees.write(tree + "\n")
+                    tree = ""
 
             elif kind == 2:
                 otype = F.shebanq_db_otype.v(node)
                 if select_node[otype] > split_n:
                     continue
                 tree += '»{}»'.format(abbrev_node[otype])
+                if otype == 'sentence':
+                    trees.write(tree + "\n")
+                    tree = ""
 
             elif kind == 1:
                 otype = F.shebanq_db_otype.v(node)
                 if select_node[otype] > split_n:
                     continue
-                tree += '«{}« '.format(abbrev_node[otype])
+                if otype == 'sentence':
+                    if tree != '':
+                        msg("WARNING: material between two sentences in {}: [{}]".format(verse_label, tree))
+                        trees.write("*** {} ***\n".format(tree))
+                        tree = ''
+                    tree += '{:<15} «S« '.format(verse_label)
+                else:
+                    tree += '«{}« '.format(abbrev_node[otype])
 
             elif kind == 0:
                 otype = F.shebanq_db_otype.v(node)
@@ -108,7 +116,11 @@ def task(processor):
                     verse = F.shebanq_sft_verse.v(node)
                     verse_label = '{} {}:{}'.format(book, chapter, verse)
                 elif otype == 'sentence':
-                    tree = '{:<15} (S '.format(verse_label)
+                    if tree != '':
+                        msg("WARNING: material between two sentences in {}: [{}]".format(verse_label, tree))
+                        trees.write("*** {} ***\n".format(tree))
+                        tree = ''
+                    tree += '{:<15} (S '.format(verse_label)
                 elif otype == 'word':
                     pos = pos_table[F.shebanq_ft_part_of_speech.v(node)]
                     text = F.shebanq_ft_text_plain.v(node)

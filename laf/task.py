@@ -275,8 +275,6 @@ class PrimaryData(object):
             return None
         all_text = self.all_data
         result = []
-#        for i in range(len(regions) // 2):
-#            result.append((regions[2*i], all_text[regions[2*i]:regions[2*i+1]])) 
         for r in grouper(regions, 2):
             result.append((r[0], all_text[r[0]:r[1]]))
         return result
@@ -582,16 +580,20 @@ class LafTask(Laf):
                     continue
                 (this_anchor, these_events) = bufferevents[0]
                 (next_anchor, next_events) = bufferevents[1]
+                deleted = {}
                 for (n, kind) in these_events:
                     if simplify(n):
                         if kind == 3:
-                            del active[n]
+                            deleted[n] = None
                         elif kind == 2:
                             active[n] = False
                         elif kind == 1:
                             active[n] = True
                         elif kind == 0:
                             active[n] = True
+                for n in deleted:
+                    if n in active:
+                        del active[n]
                 if True not in active.values():
                     weed = collections.defaultdict(lambda: False)
                     for (n, k) in these_events:

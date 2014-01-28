@@ -2,7 +2,8 @@ Release Notes
 #############
 3.3.1
 =====
-Bugfix. Thanks to Grietje Commelin for spotting the bug so quickly.
+Bugfix. Thanks to Grietje Commelin for spotting the bug so quickly. 
+My apologies for any `tension <http://xkcd.com/859/>`_ it might have created in the meantime.
 Better code under the hood: the identifiers for nodes, edges and regions now start at 0 instead of 1.
 This reduces the need for many `` + 1`` and `` - 1`` operations, including the need to figure out
 which one is appropriate.

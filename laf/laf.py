@@ -309,7 +309,7 @@ class Laf(object):
         '''List of items currently loaded in memory, per data group 
         '''
 
-        self.clear_all()
+#        self.clear_all()
 
     def format_item(self, data_group, item, asFile=False):
         if data_group == 'common':
@@ -425,32 +425,32 @@ class Laf(object):
            ((True , False), (False, None )): (False, False, False, False, None ),
            ((True , True ), (False, None )): (False, False, False, False, None ),
 
-           ((None , None ), (True , False)): (False, False, False, False, False),
-           ((None , False), (True , False)): (False, False, False, False, False),
-           ((None , True ), (True , False)): (False, False, False, False, False),
+           ((None , None ), (True , False)): (None , None , None , False, False),
+           ((None , False), (True , False)): (None , None , False, False, False),
+           ((None , True ), (True , False)): (None , None , None , False, False),
            ((False, None ), (True , False)): (False, False, False, False, False),
            ((False, False), (True , False)): (False, False, False, False, False),
            ((False, True ), (True , False)): (False, False, False, False, False),
            ((True , None ), (True , False)): (True , None , None , None , False),
-           ((True , False), (True , False)): (True , None , None , None , False),
+           ((True , False), (True , False)): (True , None , False, None , False),
            ((True , True ), (True , False)): (True , None , None , None , False),
 
-           ((None , None ), (True , True )): (False, False, False, False, False),
-           ((None , False), (True , True )): (False, False, False, False, False),
-           ((None , True ), (True , True )): (False, False, False, False, None ),
+           ((None , None ), (True , True )): (None , None , None , None , None ),
+           ((None , False), (True , True )): (None , None , False, False, False),
+           ((None , True ), (True , True )): (None , None , None , False, None ),
            ((False, None ), (True , True )): (False, False, False, False, False),
            ((False, False), (True , True )): (False, False, False, False, False),
            ((False, True ), (True , True )): (False, False, False, False, None ),
            ((True , None ), (True , True )): (True , None , None , None , False),
-           ((True , False), (True , True )): (True , None , None , None , False),
+           ((True , False), (True , True )): (True , None , False, None , False),
            ((True , True ), (True , True )): (True , None , None , None , None ),
 
-           ((None , None ), (True , None )): (False, None , None , False, None ),
-           ((None , False), (True , None )): (False, None , None , False, None ),
-           ((None , True ), (True , None )): (False, None , None , False, None ),
-           ((False, None ), (True , None )): (False, None , None , False, None ),
-           ((False, False), (True , None )): (False, None , None , False, None ),
-           ((False, True ), (True , None )): (False, None , None , False, None ),
+           ((None , None ), (True , None )): (None , None , None , False, None ),
+           ((None , False), (True , None )): (None , None , None , False, None ),
+           ((None , True ), (True , None )): (None , None , None , False, None ),
+           ((False, None ), (True , None )): (False, False, None , False, None ),
+           ((False, False), (True , None )): (False, False, None , False, None ),
+           ((False, True ), (True , None )): (False, False, None , False, None ),
            ((True , None ), (True , None )): (True , None , None , None , None ),
            ((True , False), (True , None )): (True , None , None , None , None ),
            ((True , True ), (True , None )): (True , None , None , None , None ),
@@ -495,6 +495,15 @@ class Laf(object):
             (self.status['env']['source'], self.status['env']['annox']),
             (self.status['compile']['source'], self.status['compile']['annox'])
         )]
+#        print("ZZZ: env-src={}, env-ax={}, cmp-src={}, cmp-ax={} ==>> (common={}, primary={}, xml={}, feat={}, annox={})".format(
+#            self.status['env']['source'], self.status['env']['annox'],
+#            self.status['compile']['source'], self.status['compile']['annox'],
+#            self.status['load']['common'],
+#            self.status['load']['primary'],
+#            self.status['load']['xmlids'],
+#            self.status['load']['feature'],
+#            self.status['load']['annox'],
+#        ))
 
         self.loaded = {}
         for data_group in self.data_items_def:
@@ -511,7 +520,6 @@ class Laf(object):
                 if ref_label not in self.data_items or self.data_items[ref_label] == None:
                     self.loaded[data_group] = set()
                 else:
-#                    self.loaded[data_group] = dict([(key, None) for key in self.data_items[ref_label]])
                     self.loaded[data_group] = set(self.data_items[ref_label])
 
     def verify_all(self):
@@ -633,6 +641,7 @@ class Laf(object):
         if data_group == 'common':
             if load_status == False:
                 self.clear_data(data_group)
+            if load_status != True:
                 self.load_data(data_group)
 
         elif data_group == 'primary':
@@ -697,13 +706,13 @@ class Laf(object):
         '''
         if data_group == 'common':
             for (label, data_type) in self.data_items_def[data_group].items():
+                self.progress("clearing {}: {} ...".format(data_group, label))
                 subs = ('',)
                 if data_type == 'double_array':
                     subs = ('', '_items')
                 elif data_type == 'i_array':
                     subs = ('', '_inv')
                 if label in self.data_items:
-                    self.progress("clearing {}: {} ...".format(data_group, label))
                     for sub in subs:
                         lab = label + sub
                         del self.data_items[lab]
@@ -950,16 +959,19 @@ class Laf(object):
             for label in self.data_items_def[data_group]:
                 if items != None and len(items):
                     for item in items:
+                        self.progress("loading {}: {} {} ... ".format(data_group, label, item))
                         item_rep = self.format_item(data_group, item, asFile=True)
                         item_repm = self.format_item(data_group, item)
                         b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
+                        lab = label + ref_lab
+                        if lab not in self.data_items:
+                            self.data_items[lab] = {}
                         if os.path.exists(b_path):
                             b_handle = gzip.open(b_path, "rb")
-                            lab = label + ref_lab
-                            if lab not in self.data_items:
-                                self.data_items[lab] = {}
                             self.data_items[lab][item] = collections.defaultdict(lambda: None, pickle.load(b_handle))
                             b_handle.close()
+                        else:
+                            self.data_items[lab][item] = collections.defaultdict(lambda: None)
 
     def parse(self, data_group, xmlitems):
         '''Call the XML parser and collect the parse results.

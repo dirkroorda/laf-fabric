@@ -16,3 +16,4 @@ tasks
    objects
    plain
    proper
+   trees

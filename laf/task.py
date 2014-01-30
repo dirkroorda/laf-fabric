@@ -605,7 +605,7 @@ class LafTask(Laf):
             feature_objects[feature] = Feature(self, *feature)
         for feature in self.loaded['annox']:
             if feature in feature_objects:
-                feature_objects[feature].add_data(*feature)
+                feature_objects[feature].add_data(self, *feature)
             else:
                 feature_objects[feature] = Feature(self, *feature, extra=True)
 

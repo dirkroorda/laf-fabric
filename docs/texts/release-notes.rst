@@ -4,7 +4,7 @@ Release Notes
 =====
 
 Other
-^^^^^
+-----
 Bugfixes: Data loading, unloading, keeping data better adapted to circumstances.
 
 3.3.2
@@ -17,7 +17,7 @@ API
     See :ref:`connectivity`.
  
 Incompatible changes
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 Bugfix. The order of node events turned out wrong in the case of nodes that are linked to point regions,
 i.e. regions with zero width (e.g. ``(n, n)``, being the point between characters ``n-1`` and ``n``).
 This caused weird behaviour in the tree generating notebook
@@ -29,7 +29,7 @@ in your custom task.
 **Existing LAF resources should be recompiled**.
 
 Other
-^^^^^
+-----
 The `trees (smooth path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
 notebook is evolving to get nice syntax trees from the Hebrew database.
 
@@ -51,7 +51,7 @@ API
   There are facilities to suppress certain sets of node events.
 
 Incompatible changes
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 * Node events make use of new data structures that are created when the LAF resource is being compiled.
   **Existing LAF resources should be recompiled**.
 
@@ -68,7 +68,7 @@ API
 * New Example Notebook: `participle <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/participle.ipynb>`_.
 
 Incompatible changes
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 * :meth:`API() <laf.task.LafTask.API>` now returns a keyed dictionary instead of a 6-tuple.
     The statement where you define API is now 
 
@@ -94,7 +94,7 @@ API
     separate section for API reference.
 
 Incompatible changes
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 * :meth:`API() <laf.task.LafTask.API>` now returns a 6-tuple instead of a 5-tuple:
     C has been added.
 * nodes or edges annotated by an empty annotation will get a feature based on the annotation label.

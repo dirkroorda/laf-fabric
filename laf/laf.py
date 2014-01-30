@@ -302,7 +302,7 @@ class Laf(object):
         '''
 
         self.given = {}
-        '''List of items given in the load directives of a task, per data group
+        '''Set of items given in the load directives of a task, per data group
         '''
 
         self.loaded = {}
@@ -374,11 +374,12 @@ class Laf(object):
         self.status['compile']['annox'] = up_to_date
         
         self.given = {
-            'common': {},
-            'primary': {},
-            'xmlids': {},
-            'feature': {},
-            'annox': {},
+            'common': set(),
+            'primary': set(),
+            'xmlids': set(),
+            'feature': set(),
+            'annox': set(),
+            'other_edges': set(),
         }
 
     def check_load_status(self):
@@ -498,19 +499,20 @@ class Laf(object):
         self.loaded = {}
         for data_group in self.data_items_def:
             if data_group == 'common':
-                self.loaded[data_group] = 'node_sort' in self.data_items and self.data_items['node_sort'] != None
+                self.loaded[data_group] = set(['node_sort' in self.data_items and self.data_items['node_sort'] != None])
             elif data_group == 'primary':
-                self.loaded[data_group] = {}
+                self.loaded[data_group] = set()
                 if 'node_anchor' in self.data_items and self.data_items['node_anchor'] != None:
-                    self.loaded[data_group]['regions'] = None
+                    self.loaded[data_group].add('regions')
                 if 'data' in self.data_items and self.data_items['data'] != None:
-                    self.loaded[data_group]['data'] = None
+                    self.loaded[data_group].add('data')
             else:
                 ref_label = 'xid_int' if data_group == 'xmlids' else 'feature' if data_group == 'feature' else 'xfeature'
                 if ref_label not in self.data_items or self.data_items[ref_label] == None:
-                    self.loaded[data_group] = {}
+                    self.loaded[data_group] = set()
                 else:
-                    self.loaded[data_group] = dict([(key, None) for key in self.data_items[ref_label]])
+#                    self.loaded[data_group] = dict([(key, None) for key in self.data_items[ref_label]])
+                    self.loaded[data_group] = set(self.data_items[ref_label])
 
     def verify_all(self):
         '''After loading, verify whether everything is as desired.
@@ -541,18 +543,18 @@ class Laf(object):
                 self.progress('ERROR: {}: {} failed to unload'.format(data_group, item_rep))
                 passed = False
 
-        loaded_features = collections.defaultdict(lambda: {})
+        loaded_features = collections.defaultdict(lambda: set(()))
         for item in self.loaded['feature']:
-            loaded_features[item]['source {}'.format(self.env['source'])] = None
+            loaded_features[item].add('source {}'.format(self.env['source']))
         for item in self.loaded['annox']:
-            loaded_features[item]['annox {}'.format(self.env['annox'])] = None
+            loaded_features[item].add('annox {}'.format(self.env['annox']))
 
         for item in self.given['feature']:
             item_rep = self.format_item('feature', item)
             if item not in loaded_features:
                 self.progress('WARNING: feature: {} not present from source {} nor annox {}'.format(item_rep, self.env['source'], self.env['annox']))
             else:
-                self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item].keys())))
+                self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item])))
 
         for item in loaded_features:
             item_rep = self.format_item('feature', item)
@@ -584,29 +586,29 @@ class Laf(object):
         self.read_stats()
         self.check_load_status()
 
-        self.given['primary'] = {}
+        self.given['primary'] = set()
         if 'primary' in directives and directives['primary']:
-            self.given['primary'] = {'data': None, 'regions': None}
+            self.given['primary'] = set(['data', 'regions'])
 
-        self.given['xmlids'] = {}
+        self.given['xmlids'] = set()
         for item in [k for k in directives['xmlids'] if directives['xmlids'][k]]:
-            self.given['xmlids'][item] = None
+            self.given['xmlids'].add(item)
 
-        self.given['feature'] = {}
-        self.given['annox'] = {}
+        self.given['feature'] = set()
+        self.given['annox'] = set()
         for aspace in directives['features']:
             for kind in directives['features'][aspace]:
                 for line in directives['features'][aspace][kind]:
                     (alabel, fnamestring) = line.split('.')
                     fnames = fnamestring.split(',')
                     for fname in fnames:
-                        self.given['feature'][(aspace, alabel, fname, kind)] = None
-                        self.given['annox'][(aspace, alabel, fname, kind)] = None
+                        self.given['feature'].add((aspace, alabel, fname, kind))
+                        self.given['annox'].add((aspace, alabel, fname, kind))
 
         for data_group in self.data_items_def:
             self.adjust_data(data_group)
 
-        self.given['other_edges'] = 'other_edges' in directives and directives['other_edges']
+        self.given['other_edges'] = set(['other_edges' in directives and directives['other_edges']])
 
         self.verify_all()
 
@@ -638,21 +640,21 @@ class Laf(object):
                 self.clear_data(data_group)
                 self.load_data(data_group, items=self.given[data_group])
             elif load_status == None:
-                unload = []
-                load = []
+                unload = set()
+                load = set()
                 if 'data' in self.given[data_group] and 'data' not in self.loaded[data_group]:
-                    load.append('data')
+                    load.add('data')
                 if 'regions' in self.given[data_group] and 'regions' not in self.loaded[data_group]:
-                    load.append('regions')
+                    load.add('regions')
                 if 'data' not in self.given[data_group] and 'data' in self.loaded[data_group]:
-                    unload.append('data')
+                    unload.add('data')
                 if 'regions' not in self.given[data_group] and 'regions' in self.loaded[data_group]:
-                    unload.append('regions')
+                    unload.add('regions')
                 self.clear_data(data_group, items=unload)
                 self.load_data(data_group, items=load)
         else:
-            unload = []
-            load = []
+            unload = set()
+            load = set()
             the_givens = self.given[data_group] if items == None else items 
             all_items = {}
             for item in the_givens:
@@ -665,9 +667,9 @@ class Laf(object):
                 if item in self.loaded[data_group] and item in the_givens:
                     self.progress("keeping {}: {} ...".format(data_group, item_rep))
                 elif item in self.loaded[data_group]:
-                    unload.append(item)
+                    unload.add(item)
                 elif item in the_givens:
-                    load.append(item)
+                    load.add(item)
             if load_status == False:
                 self.clear_data(data_group)
             elif load_status == None:
@@ -687,7 +689,7 @@ class Laf(object):
         Args:
             data_group:
                 the group of data items to be cleared
-            items (iterable):
+            items (set):
                 A list of subitems.
                 Optional. If given, only the data for the subitems specified, will be cleared.
                 If not given all subitems will be cleared.

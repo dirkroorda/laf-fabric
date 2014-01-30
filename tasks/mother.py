@@ -44,7 +44,7 @@ def task(processor):
 
     for i in NN():
         otype = F.shebanq_db_otype.v(i)
-        if i in mother_c:
+        if i in other_c:
             for mother in mother_c[i]:
                 found += 1
                 motype = F.shebanq_db_otype.v(mother)

@@ -206,18 +206,22 @@ def model(data_items, temp_data_items, stamp):
     stamp.progress("NODES EVENTS")
 
     anchor_max = max(node_anchor_max)
-    node_events = list([collections.deque([]) for n in range(anchor_max + 1)])
+    node_events = list([([],[],[]) for n in range(anchor_max + 1)])
 
     for n in node_sort:
         ranges = node_anchor_list[n]
-    #for (n, ranges) in enumerate(node_anchor_list):
+        amin = ranges[0]
+        amax = ranges[len(ranges)-1] 
         for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
             is_first = r == 0
             is_last = r == (len(ranges) / 2) - 1
             start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
             end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
-            node_events[a_start].append((n, start_kind))
-            node_events[a_end].appendleft((n, end_kind))
+            if amin == amax:
+                node_events[a_start][1].extend([(n, 0), (n,3)])
+            else:
+                node_events[a_start][0].append((n, start_kind))
+                node_events[a_end][2].append((n, end_kind))
 
     node_events_n = array.array('I')
     node_events_k = array.array('I')
@@ -225,12 +229,13 @@ def model(data_items, temp_data_items, stamp):
 
     e_index = 0
     for (anchor, events) in enumerate(node_events):
-        #for (node, kind) in sorted(events, key=lambda e: (interval(e[0]), e[1])):
-        for (node, kind) in events:
-            node_events_n.append(node)
-            node_events_k.append(kind)
-            node_events_a[anchor].append(e_index)
-            e_index += 1
+        events[2].reverse()
+        for main_kind in (2, 1, 0):
+            for (node, kind) in events[main_kind]:
+                node_events_n.append(node)
+                node_events_k.append(kind)
+                node_events_a[anchor].append(e_index)
+                e_index += 1
 
     node_events = None
     (node_events, node_events_items) = arrayify(node_events_a)

@@ -1,11 +1,37 @@
 Release Notes
 #############
+3.3.2
+=====
+API
+---
+* New API element ``Ci`` for connectivity.
+    There is a new object ``Ci`` analogous to ``C`` by which you can traverse from nodes via annotated edges to other nodes.
+    The difference is that ``Ci`` uses the edges in the opposite direction.
+    See :ref:`connectivity`.
+ 
+Incompatible changes
+^^^^^^^^^^^^^^^^^^^^
+Bugfix. The order of node events turned out wrong in the case of nodes that are linked to point regions,
+i.e. regions with zero width (e.g. ``(n, n)``, being the point between characters ``n-1`` and ``n``).
+This caused weird behaviour in the tree generating notebook
+`trees (rough path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees-r.ipynb>`_.
+
+Yet it is impossible to guarantee natural behaviour in all cases.
+If there are nodes linked to empty regions in your LAF resource, you should sort the node events per anchor yourself,
+in your custom task.
+**Existing LAF resources should be recompiled**.
+
+Other
+^^^^^
+The `trees (smooth path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
+notebook is evolving to get nice syntax trees from the Hebrew database.
+
 3.3.1
 =====
 Bugfix. Thanks to Grietje Commelin for spotting the bug so quickly. 
 My apologies for any `tension <http://xkcd.com/859/>`_ it might have created in the meantime.
 Better code under the hood: the identifiers for nodes, edges and regions now start at 0 instead of 1.
-This reduces the need for many `` + 1`` and `` - 1`` operations, including the need to figure out
+This reduces the need for many ``+ 1`` and ``- 1`` operations, including the need to figure out
 which one is appropriate.
 
 3.3

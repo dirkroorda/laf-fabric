@@ -117,7 +117,7 @@ class Features(object):
             exec("self.{} = fo".format(fo.local_name))
             self.F[fo.local_name] = fo.lookup
 
-class Connections(object):
+class Conn(object):
     '''This class is responsible for making adjacency information accessible to tasks.
 
     Adjacency information is the information needed to walk from node to node.
@@ -144,39 +144,53 @@ class Connections(object):
                 feature information for the declared features.
                 This information is the combination of info found in the source
                 and in the annox.
-            edge_features(dict):
-                the set of features for edges.
         '''
          
-        connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: None))))
+        connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
+        connectionsi = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
         edges_from = laftask.data_items["edges_from"]
         edges_to = laftask.data_items["edges_to"]
-        other_edges = laftask.given['other_edges']
-        edges_seen = {}
+        other_edges = True in laftask.given['other_edges']
+        edges_seen = set()
+        self.feature_names = []
         for (feature, feature_obj) in feature_objects.items():
             if feature[3] == 'node':
                 continue
             feature_name = feature_obj.edge_name
+            self.feature_names.append(feature_name)
             feature_map = feature_obj.lookup
             for (edge, fvalue) in feature_map.items():
                 if other_edges:
-                    edges_seen[edge] = None
+                    edges_seen.add(edge)
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
-                connections[feature_name][fvalue][node_from][node_to] = None
+                connections[feature_name][fvalue][node_from].add(node_to)
+                connectionsi[feature_name][fvalue][node_to].add(node_from)
         if other_edges:
+            self.feature_names.append('')
             for edge in range(len(edges_from)):
                 if edge in edges_seen:
                     continue
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
-                connections[''][''][node_from][node_to] = None
+                connections[''][''][node_from].add(node_to)
+                connectionsi[''][''][node_to].add(node_from)
 
         self.C = connections
+        self.Ci = connectionsi
 
-        for fn in connections:
+class Connections(object):
+    def __init__(self, conn):
+        for fn in conn.feature_names:
             fnrep = fn if fn != '' else '_none_'
-            exec("self.{} = connections['{}']".format(fnrep, fn))
+            exec("self.{} = conn.C['{}']".format(fnrep, fn))
+
+class Connectionsi(object):
+    def __init__(self, conn):
+        for fn in conn.feature_names:
+            fnrep = fn if fn != '' else '_none_'
+            exec("self.{} = conn.Ci['{}']".format(fnrep, fn))
+
 
 class XMLid(object):
     '''This class is responsible for making the original XML identifiers available
@@ -336,12 +350,17 @@ class LafTask(Laf):
             corresponds to the feature ``shebanq:mother.`` and is accessible as ``F.shebanq_mother__e``
             (note the empty feature name between the two ``_``s and note the ``_e`` suffix to indicate that this is an edge feature.
 
-        C(:class:`Connections`):
-            Object containing the adjacency information for each node.
-            The adjacency information tells for each node how it is connected by outgoing edges to another node. 
+        C(:class:`Connections`), Ci(:class:`Connectionsi`):
+            Objects containing the adjacency information for each node.
+            The adjacency information tells for each node how it is connected by edges to another node. 
+
+            # ``C`` stores adjencency information on the basis of outgoing edges
+            # ``Ci`` stores adjacency information on the basis of incoming edges (it *inverts* the direction of all edges).
+
             This information is organized as a dictionary::
 
                 C.«feature_name».[«feature_value»][«node_from»][«node_to»] = None
+                Ci.«feature_name».[«feature_value»][«node_to»][«node_from»] = None
 
             For edges annotated with an empty annotation, «feature_name» has the form::
 
@@ -503,51 +522,22 @@ class LafTask(Laf):
                     return (
                         self.amin == other.amin and
                         self.amax == other.amax and
-                        self.kind == other.kind and
+                        (self.kind == other.kind or self.amin == self.amax) and
                         self.value < other.value
                     )
                 def __gt__(self, other):
                     return (
                         self.amin == other.amin and
                         self.amax == other.amax and
-                        self.kind == other.kind and
+                        (self.kind == other.kind or self.amin == self.amax) and
                         self.value > other.value
                     )
                 def __eq__(self, other):
                     return (
                         self.amin != other.amin or
                         self.amax != other.amax or
-                        self.kind != other.kind
-                    )
-                def __le__(self, other):
-                    return ((
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind == other.kind and
-                        self.value <= other.value
-                    ) or (
-                        self.amin != other.amin or
-                        self.amax != other.amax or
-                        self.kind != other.kind
-                    ))
-                    return mycmp(self.node, other.node) <= 0
-                def __ge__(self, other):
-                    return ((
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind == other.kind and
-                        self.value >= other.value
-                    ) or (
-                        self.amin != other.amin or
-                        self.amax != other.amax or
-                        self.kind != other.kind
-                    ))
-                def __ne__(self, other):
-                    return (
-                        self.amin == other.amin and
-                        self.amax == other.amax and
-                        self.kind != other.kind and
-                        self.value != other.value
+                        (self.kind != other.kind and (self.amin != self.amax or other.amin != other.amax)) or
+                        self.value == other.value
                     )
                 __hash__ = None
 
@@ -624,13 +614,15 @@ class LafTask(Laf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
+        conn = Conn(self, feature_objects)
         return {
             'msg':  self.progress,
             'P':    PrimaryData(self) if self.given['primary'] else None,
             'NN':   next_node,
             'NE':   next_event,
             'F':    Features(feature_objects),
-            'C':    Connections(self, feature_objects),
+            'C':    Connections(conn),
+            'Ci':   Connectionsi(conn),
             'X':    XMLids(xmlid_objects),
         }
 

@@ -1,5 +1,7 @@
 Release Notes
 #############
+Upcoming
+========
 3.3.3
 =====
 
@@ -7,6 +9,8 @@ Other
 -----
 Bugfixes: Data loading, unloading, keeping data better adapted to circumstances.
 
+Current
+=======
 3.3.2
 =====
 API
@@ -33,6 +37,8 @@ Other
 The `trees (smooth path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
 notebook is evolving to get nice syntax trees from the Hebrew database.
 
+Past
+====
 3.3.1
 =====
 Bugfix. Thanks to Grietje Commelin for spotting the bug so quickly. 

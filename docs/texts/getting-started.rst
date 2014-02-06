@@ -41,6 +41,11 @@ We want, however, base it on python3, so we have to take a detour.
 #. Download a *miniconda* installer from `here <http://repo.continuum.io/miniconda/index.html>`_.
    Pick the one starting with *Miniconda3* that fits your operating system.
    Install it. If asked to install for single user or all users, choose single user.
+
+#. On Windows you could get into trouble if you have another Python.
+   If you have environment variables with the name of PYTHONPATH or PYTHONHOME, you should disable
+   them. For diagnosis and remedy, see [#otherpython]_ 
+
 #. Start up a new command prompt, and say::
 
        conda install anaconda
@@ -147,3 +152,20 @@ Other options
     In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
     In interactive mode, there is a command to force recompilation of the current source.
 
+.. rubric:: Footnotes
+.. [#otherpython] To check whether you have environment variables called PYTHONPATH or PYTHONHOME,
+   go to a command prompt and say::
+
+        echo %PYTHONPATH%
+        echo %PYTHONHOME%
+   
+   If the system responds with the exact text you typed, there is nothing to worry about.
+   Otherwise, you should rename these variables to something like ``NO_PYTHONPATH`` or
+   ``NO_PYTHONHOME``.
+
+   You can do that through: Configuration (Classical View) => System => Advanced Settings => button Environment Variables.
+
+   If you have a reference to an other python in your ``PATH`` (check by ``echo %PATH%) then you should remove it.
+
+   After these operations, quit all your command prompts, start a new one, and say ``python --version``.
+   You should see something with 3.3 and Anaconda in the answer.

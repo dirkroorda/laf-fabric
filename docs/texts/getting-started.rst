@@ -71,6 +71,9 @@ In a command prompt, navigate to this directory.
 
 Install LAF-Fabric
 ==================
+Preparation: you have to unpack a ``tar.gz`` file. On Windows you may have to install a tool for that,
+such as `7-zip <http://www.7-zip.org>`_.
+
 Here are the steps, assuming you are in the command line, at the top level directory in *laf-fabric*::
 
     cd dist
@@ -165,7 +168,7 @@ Other options
 
    You can do that through: Configuration (Classical View) => System => Advanced Settings => button Environment Variables.
 
-   If you have a reference to an other python in your ``PATH`` (check by ``echo %PATH%) then you should remove it.
+   If you have a reference to an other python in your ``PATH`` (check by ``echo %PATH%``) then you should remove it.
 
    After these operations, quit all your command prompts, start a new one, and say ``python --version``.
    You should see something with 3.3 and Anaconda in the answer.

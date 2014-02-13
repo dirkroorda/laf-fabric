@@ -2,6 +2,10 @@ Release Notes
 #############
 Upcoming
 ========
+
+Current
+=======
+
 3.3.3
 =====
 
@@ -9,8 +13,6 @@ Other
 -----
 Bugfixes: Data loading, unloading, keeping data better adapted to circumstances.
 
-Current
-=======
 3.3.2
 =====
 API

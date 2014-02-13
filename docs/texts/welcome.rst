@@ -21,3 +21,6 @@ This is the LAF Fabric, and here are some examples of what you can do with it:
 * `cooccurrences notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
 * `participle notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/participle.ipynb>`_
 * `trees notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
+
+People at the Theology Department of the VU University Amsterdam are producing notebooks for their research,
+see for example `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_.

@@ -5,6 +5,14 @@ Upcoming
 
 Current
 =======
+3.3.4
+=====
+Notebook additions only.
+
+The notebook `clause_constituent_relation <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/clause_constituent_relation.ipynb>`_
+is an example how you can investigate a LAF data source and document your findings.
+
+We intend to create a separate github dedicated to notebooks that specifically analyse the Hebrew Text Database.
 
 3.3.3
 =====

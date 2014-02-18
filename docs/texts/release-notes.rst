@@ -5,6 +5,13 @@ Upcoming
 
 Current
 =======
+3.3.5
+=====
+API
+---
+New methods to find top most and bottom most nodes when traveling from a node set along annotated edges.
+See :ref:`connectivity`.
+
 3.3.4
 =====
 Notebook additions only.

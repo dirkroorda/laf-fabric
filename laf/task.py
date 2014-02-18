@@ -179,17 +179,47 @@ class Conn(object):
         self.C = connections
         self.Ci = connectionsi
 
+    def topnodes(self, feature_name, feature_value, node_set, reverse=False):
+        '''Returns set of top nodes above node set.
+        
+        From each node in node_set, all paths following edges for which *feature_name* has *feature_value*
+        are traveled until no such edges go further. The endpoints are collected in the result set.
+        
+        If *reverse* is True, the edges are traveled in opposite order. 
+        '''
+        connections_base = self.Ci if reverse else self.C
+        conn = connections_base[feature_name][feature_value]
+        visited = set()
+        result = set()
+        next_set = node_set
+        while next_set:
+            new_next_set = set()
+            for node in next_set:
+                visited.add(node)
+                next_nodes = conn[node]
+                if next_nodes:
+                    new_next_set |= next_nodes - visited
+                else:
+                    result.add(node)
+            next_set = new_next_set
+        return result
+
 class Connections(object):
     def __init__(self, conn):
+        self.conn = conn
         for fn in conn.feature_names:
             fnrep = fn if fn != '' else '_none_'
             exec("self.{} = conn.C['{}']".format(fnrep, fn))
+            method = lambda fv, ns: self.conn.topnodes(fn, fv, ns, reverse=False)
+            exec("self.{}_T = method".format(fnrep))
 
 class Connectionsi(object):
     def __init__(self, conn):
         for fn in conn.feature_names:
             fnrep = fn if fn != '' else '_none_'
             exec("self.{} = conn.Ci['{}']".format(fnrep, fn))
+            method = lambda fv, ns: self.conn.topnodes(fn, fv, ns, reverse=True)
+            exec("self.{}_T = method".format(fnrep))
 
 
 class XMLid(object):
@@ -599,6 +629,7 @@ class LafTask(Laf):
                 yield (bufferevents[0])
             yield (bufferevents[1])
 
+        self.progress("Loading API")
         feature_objects = {}
 
         for feature in self.loaded['feature']:
@@ -614,16 +645,35 @@ class LafTask(Laf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
+        msg = self.progress
+
+        self.progress("P: Primary Data")
+        P = PrimaryData(self) if self.given['primary'] else None,
+
+        self.progress("NN, NE: Next Node and Node Events")
+        NN = next_node
+        NE = next_event
+
+        self.progress("F: Features")
+        F = Features(feature_objects)
+
+        self.progress("C, Ci: Connections")
         conn = Conn(self, feature_objects)
+        C = Connections(conn)
+        Ci = Connectionsi(conn)
+
+        self.progress("X: XML ids")
+        X = XMLids(xmlid_objects)
+
         return {
-            'msg':  self.progress,
-            'P':    PrimaryData(self) if self.given['primary'] else None,
-            'NN':   next_node,
-            'NE':   next_event,
-            'F':    Features(feature_objects),
-            'C':    Connections(conn),
-            'Ci':   Connectionsi(conn),
-            'X':    XMLids(xmlid_objects),
+            'msg':  msg,
+            'P':    P,
+            'NN':   NN,
+            'NE':   NE,
+            'F':    F,
+            'C':    C,
+            'Ci':   Ci,
+            'X':    X,
         }
 
     def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None):

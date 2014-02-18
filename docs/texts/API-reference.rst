@@ -52,6 +52,7 @@ Once you have the processor, you get the API by means of a call like this::
     API = processor.API()
     F = API['F']
     C = API['C']
+    Ci = API['Ci']
     P = API['P']
     X = API['X']
     NN = API['NN']
@@ -120,11 +121,13 @@ Examples::
     source_node in C.shebanq_mother_[''][target_node]
     source_node in C._node_[''][target_node]
 
+    top_nodes = C.shebanq_parents__T('', words)
+
 This is the connectivity of nodes by edges.
 It is an object that specifies completely how you can walk from one node to another
 by means of an edge.
 
-For each *edge*-feature that you have declared, it has a member
+For each *edge*-feature that you have declared, it has a members
 with a handy name.
 
 ``C.xyz_ft_property`` is a connection table based on the
@@ -171,7 +174,31 @@ If you want to use these edges, you have to specify in your load directives::
     especially in the presence of extra annotation packages, that may annotated previously
     un-annotated edges.
 
-See the example task :mod:`mother` and :mod:`edges` for working code with connectivity.
+A common task is to find the top nodes of a given set of nodes with respect to a set of edges.
+For example, if you have a node set with all word nodes, and if you have edges labelled with the string ``parents``,
+you might be interested in following these edges from each of the words until you cannot travel further, and then
+collect all the nodes where you came to a stand still. These are the top nodes.
+You can do this as follows::
+
+    words = NN(test=F.shebanq_db_otype.v, value='word')
+    top_nodes = C.shebanq_parents__T('', words)
+
+Note the extra ``T`` after the name of the feature.
+In the Hebrew Text database, you get all *sentence* nodes in this way.
+
+.. note::
+    In this particular case, you can also get the sentences by::
+
+        sentences = NN(test=F.shebanq_db_otype.v, value='sentence')
+
+    The point is that you can check whether really all top nodes are sentences and vice versa.
+
+You can also travel backwards::
+
+    sentences = NN(test=F.shebanq_db_otype.v, value='sentence')
+    bottom_nodes = Ci.shebanq_parents__T('', sentences)
+
+See the example task :mod:`mother` and :mod:`edges` and :mod:`trees` for working code with connectivity.
 
 NN (Next Node)
 --------------

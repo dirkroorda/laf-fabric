@@ -43,3 +43,7 @@ Thumbs.db
 #####################
 _build/
 __pycache__
+
+# Config files which get locally modified
+#########################################
+laf-fabric.cfg

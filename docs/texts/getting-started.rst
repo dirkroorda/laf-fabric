@@ -83,7 +83,11 @@ Here are the steps, assuming you are in the command line, at the top level direc
 
 Configure LAF-Fabric
 ====================
-The configuration file script is *laf-fabric.cfg* in the directory *notebooks*.
+The configuration file script is *laf-fabric-sample.cfg* in the directory *notebooks*.
+You have to copy this to *laf-fabric.cfg* and make your changes there.
+The file *laf-fabric.cfg* will not be distributed. This will help you to keep your
+installation up to date.
+
 In it there is just one setting, and you have to adapt it to your local situation::
 
     [locations]

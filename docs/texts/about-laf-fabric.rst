@@ -165,7 +165,7 @@ That would also help to implement feature structures in full generality.
 API completion
 --------------
 Many reasonable candidates for an API have not yet been implemented or exposed [#api].
-Basically we have only:
+Basically we have now
 
 *node iterator*
     iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered).
@@ -173,7 +173,9 @@ Basically we have only:
     a class that gives easy access to feature data and has methods for feature value lookup and mapping of
     feature values.
 *connectivity*
-    adjacency information for nodes, by which you can travel via (annotated) edges to neighbouring nodes
+    adjacency information for nodes, by which you can travel via (annotated) edges to neighbouring nodes;
+    there are also methods to generate sets of end-points when traveling from a nodeset along featured edges until there are no
+    outgoing edges. You can also travel in the opposite direction.
 *xml identifier mapping*
     a mapping from orginal xml identifiers to integers.
 *primary data access*
@@ -182,7 +184,11 @@ Basically we have only:
 Probably it is also handy to make custom node sets so that we can use python's set methods
 to manipulate with node sets.
 
-Probably we need more traversal primitives, e.g. walking against the direction of edges.
+The *connectivity* functionality has been implemented a bit clumsily. 
+It must be computed after all feature data has been loaded.
+Currently it will be computed everytime a task starts, even if it is the same task and no features have changed.
+Hopefully I can remedy this in a future version. In the mean time, when working in *notebook* mode, you can avoid
+the constant recomputing of this data, so there you do not feel this burden.
 
 .. rubric:: Footnotes
 

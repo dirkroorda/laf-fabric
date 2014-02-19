@@ -5,6 +5,14 @@ Upcoming
 
 Current
 =======
+3.3.6
+=====
+Usability
+---------
+The configuration file, *laf-fabric.cfg* will no longer be distributed. Instead, a file *laf-fabric-sample.cfg* will be
+distributed. You have to copy it to *laf-fabric.cfg* which you can adapt to your local situation.
+Subsequent updates will not affect your local settings.
+
 3.3.5
 =====
 API

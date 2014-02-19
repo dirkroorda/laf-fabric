@@ -665,6 +665,8 @@ class LafTask(Laf):
         self.progress("X: XML ids")
         X = XMLids(xmlid_objects)
 
+        self.progress("API loaded")
+
         return {
             'msg':  msg,
             'P':    P,

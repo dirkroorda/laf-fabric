@@ -130,6 +130,17 @@ by means of an edge.
 For each *edge*-feature that you have declared, it has a members
 with a handy name.
 
+.. caution::
+    This functionality takes processing time when you load the API.
+    It takes 10-15 seconds on a Macbook Air for the Hebrew Bible.
+    If you are in *workbench mode* you incur this overhead every time you start the task.
+    I really should change the program in such a way that the connectivity information is being
+    kept between runs.
+
+    In the meanwhile, if you work in *notebook* mode, you do not suffer from this repeated overhead.
+    Once you have called the *API()* function, the data stays in memory, and you can experiment
+    without recomputing this information over and over again.
+
 ``C.xyz_ft_property`` is a connection table based on the
 edge-feature ``property`` in the annotation space ``xyz``, under annotation label ``ft``.
 Note that there is no ``_e`` behind the name, because we are only dealing with edge-features here.

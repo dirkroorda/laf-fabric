@@ -16,7 +16,7 @@ Platforms
 =========
 LAF-Fabric is being developed on **Mac OSX** Mavericks on a Macbook Air with 8 GB RAM.
 It is being used on a **Linux** virtual machine running on a laptop of respectable age,
-and it runs straight under **Windows** as well.
+and it runs straight under **Windows** as well, except for some functionality.
 
 Your python setup
 =================
@@ -108,16 +108,20 @@ inside *work_dir*.
 
 Run LAF-Fabric
 ==============
+If you are *not* on windows, you can test your installation in this way:
+
 In the command prompt, go to the directory where *laf-fabric.py* resides::
 
     cd «path_to_dir_of_laf-fabric.py»
+
+On all platforms, you can test your installation as follows:
 
 *notebook mode*, example notebooks::
 
     cd notebooks
     ipython notebook
 
-This starts a python process that communicates with a browser tab, which will pop up in fron of you.
+This starts a python process that communicates with a browser tab, which will pop up in front of you.
 This is your dashboard of notebooks.
 You can pick an existing notebook to work with, or create a new one.
 
@@ -134,14 +138,14 @@ You can pick an existing notebook to work with, or create a new one.
     notebooks.
     If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
 
-*workbench single use mode*::
+*workbench single use mode* (not on Windows)::
 
     python laf-fabric.py --source=«source» --annox=«annox» --task=«task» [--force-compile-source] [--force-compile-annox]
 
 If all of the ``«source»``, ``«annox»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
 LAF-fabric runs the specified task without asking and quits.
 
-*workbench re-use mode*::
+*workbench re-use mode* (not on Windows)::
 
     python laf-fabric.py [--source=«source» ] [--annox=«annox»] [--task=«task» ] [--force-compile-source] [--force-compile-annox]
 

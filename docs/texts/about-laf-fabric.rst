@@ -31,18 +31,24 @@ The typical workflow is:
    write your task as script and put it into LAF-Fabric.
 #. run the code cells in an `iPython notebook <http://ipython.org>`_, or run LAF-fabric from the command line.
 
-Notebook mode
--------------
+Notebook mode (Recommended)
+---------------------------
 You can write a task as a stand-alone script, importing LAF-fabric as a module, called *laf*.
 You can then break such a script up into chunks of code, and paste them in the code cells of an 
 `iPython notebook <http://ipython.org>`_.
 See the *notebooks* directory for executable examples.
 
-Workbench mode
---------------
+This is the preferred mode. 
+
+Workbench mode (Deprecated)
+---------------------------
 LAF-fabric behaves in the same pattern as the ``mysql>`` prompt for a database. You can use it as in interactive
 command interpreter that lets you select and run tasks.
 You can also invoke it to run a single task without interaction.
+
+.. note::
+    This mode does not work under Windows. There are other disadvantages when using this mode.
+    Therefore, this mode is meant for testing and debugging, not for normal use.
 
 During a prompt session you can make a selection of source and *annox* and task.
 *Annox* is shorthand for *extra annotation package*.

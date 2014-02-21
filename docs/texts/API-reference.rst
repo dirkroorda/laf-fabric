@@ -51,6 +51,9 @@ Once you have the processor, you get the API by means of a call like this::
     NN = API['NN']
     NE = API['NE']
     msg = API['msg']
+    infile = API['infile']
+    outfile = API['outfile']
+    my_file = API['my_file']
 
 Of course, you only have to give names to the elements you really use.
 And if performance is not important, you can leave out the naming altogether and just refer to 
@@ -414,8 +417,8 @@ Input and Output
 ================
 Examples::
 
-    out_handle = processor.add_output("output.txt")
-    in_handle  = processor.add_input("input.txt")
+    out_handle = outfile("output.txt")
+    in_handle  = infile("input.txt")
 
     msg(text)
     msg(text, newline=False)
@@ -423,7 +426,7 @@ Examples::
 
 
 You can create an output filehandle, open for writing, by calling the
-method :meth:`add_output() <laf.task.LafTask.add_output>`
+method :meth:`outfile <laf.task.LafTask.add_output>`
 and assigning the result to a variable, say *out_handle*.
 
 From then on you can write output simply by saying::
@@ -439,6 +442,14 @@ and read them by saying::
     text = in_handle.read()
 
 Once your task has finished, LAF-Fabric will close them all.
+
+If you want to refer in your notebook, outside the LAF-Fabric context, to files in the task-specific working directory,
+you can do so by saying::
+
+    full_path = my_file("output.csv")
+
+The method ``my_file`` prepends the full directory path in front of the file name.
+It does not check whether the file exists.
 
 You can issue progress messages while executing your task.
 These messages go to the output of a code cell.

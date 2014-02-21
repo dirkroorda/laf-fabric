@@ -5,6 +5,19 @@ Upcoming
 
 Current
 =======
+3.3.8
+-----
+API
+^^^
+Changes in the way you refer to input and output files.
+You had to call them as methods on the ``processor`` object, now they are given with the ``API()`` call,
+like the ``msg()`` method.
+
+Bugfixes
+^^^^^^^^
+Under some conditions XML identifiers got mistakenly unloaded.
+Fixed by modifying the big table with conditions in :meth:`check_load_status <laf.laf.Laf.check_load_status>`.
+
 3.3.7
 -----
 Usability

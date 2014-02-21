@@ -645,8 +645,6 @@ class LafTask(Laf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
-        msg = self.progress
-
         self.progress("P: Primary Data")
         P = PrimaryData(self) if self.given['primary'] else None
 
@@ -668,14 +666,17 @@ class LafTask(Laf):
         self.progress("API loaded")
 
         return {
-            'msg':  msg,
-            'P':    P,
-            'NN':   NN,
-            'NE':   NE,
-            'F':    F,
-            'C':    C,
-            'Ci':   Ci,
-            'X':    X,
+            'infile':  self.add_input,
+            'outfile': self.add_output,
+            'my_file': self.result,
+            'msg':     self.progress,
+            'P':       P,
+            'NN':      NN,
+            'NE':      NE,
+            'F':       F,
+            'C':       C,
+            'Ci':      Ci,
+            'X':       X,
         }
 
     def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None):

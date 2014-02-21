@@ -648,7 +648,7 @@ class LafTask(Laf):
         msg = self.progress
 
         self.progress("P: Primary Data")
-        P = PrimaryData(self) if self.given['primary'] else None,
+        P = PrimaryData(self) if self.given['primary'] else None
 
         self.progress("NN, NE: Next Node and Node Events")
         NN = next_node

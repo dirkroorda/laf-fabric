@@ -117,7 +117,7 @@ class Shell(object):
             task(str):
                 the name of the task to execute. All tasks reside in a directory specified in the main config file.
             load(dict):
-                a dictionary specifying what data to load. See :doc:`Writing Tasks </texts/taskwriting>`.
+                a dictionary specifying what data to load. See :doc:`Writing Tasks </texts/getting-started>`.
             function(callable): 
                 the function that implements the task. It should accept one argument, being the LafTask object
                 through which all data in the LAF resource can be accessed.

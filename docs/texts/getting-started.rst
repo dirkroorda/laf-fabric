@@ -5,10 +5,7 @@ About
 =====
 *LAF-Fabric* is a `github project <https://github.com/dirkroorda/laf-fabric>`_
 in which there is a Python package called :mod:`laf`.
-It is a package without extension modules,
-so it will run without installation from anywhere in your system.
-In order to run it in notebook mode (recommended), you must
-install it as a package in your current python installation.
+You must install it as a package in your current python installation.
 This can be done in the standard pythonic way,
 and the precise instructions will be spelled out below.
 
@@ -16,7 +13,7 @@ Platforms
 =========
 LAF-Fabric is being developed on **Mac OSX** Mavericks on a Macbook Air with 8 GB RAM.
 It is being used on a **Linux** virtual machine running on a laptop of respectable age,
-and it runs straight under **Windows** as well, except for some functionality.
+and it runs straight under **Windows** as well, except for some testing/debugging functionality.
 
 Your python setup
 =================
@@ -83,40 +80,43 @@ Here are the steps, assuming you are in the command line, at the top level direc
 
 Configure LAF-Fabric
 ====================
-The configuration file script is *laf-fabric-sample.cfg* in the directory *notebooks*.
+In every notebook subdirectory where you have notebooks that use LAF-Fabric,
+you need (the same) configuration file called *laf-fabric.cfg*.
+Make copies from the *laf-fabric-sample.cfg* in the *notebooks* directory and modify the one relevant setting in it.
+The files *laf-fabric.cfg* will not be distributed, so they will not be overwritten when you clone new versions.
+This will help you to keep your installation up to date.
+
+In *laf-fabric.cfg* it there are just one or two settings, and you have to adapt it to your local situation:
+
+    [locations]
+    work_dir  = /Users/you/laf-data-dir
+    #laf-dir  = /Users/you/shebanq/results/laf
+    
+*work_dir* is folder where all the data is, input, intermediate, and output.
+
+*laf_dir* is the folder where the original laf-xml data is.
+It is *optional*. LAF-Fabric can work without it.
+If you do not have the original LAF source, leave it commented out.
 You have to copy this to *laf-fabric.cfg* and make your changes there.
 The file *laf-fabric.cfg* will not be distributed. This will help you to keep your
 installation up to date.
-
-In it there is just one setting, and you have to adapt it to your local situation::
-
-    [locations]
-    work_dir  = /Users/dirk/Scratch/shebanq/results
-    
-.. _work_dir:
-
-*work_dir*
-    folder where all the data is, input, intermediate, output.
 
 Get the data
 ============
 If you have a LAF resource, create a subdirectory *laf* inside the *work_dir*, and put 
 the files of the LAF resource there.
+You can also put it elsewhere, but then you have to adapt the *laf_dir* setting in the configuration file.
 
-If you only have a compiled LAF resource, e.g. *bhs3.txt.hdr*, put it also
-inside *work_dir*.
+If you only have a compiled LAF resource, put that inside *work_dir*.
+
+If you are interested in working with the Hebrew Bible,
+go to the `ETCBC github repository <https://github.com/judithgottschalk/ETCBC-data>`_.
+You find a download link for a ready made work directory containing the binary LAF data of the ETCBC Hebrew Text database.
+(You need to ask for a password, though, to unlock the zip file).
 
 Run LAF-Fabric
 ==============
-If you are *not* on windows, you can test your installation in this way:
-
-In the command prompt, go to the directory where *laf-fabric.py* resides::
-
-    cd «path_to_dir_of_laf-fabric.py»
-
 On all platforms, you can test your installation as follows:
-
-*notebook mode*, example notebooks::
 
     cd notebooks
     ipython notebook
@@ -124,8 +124,8 @@ On all platforms, you can test your installation as follows:
 This starts a python process that communicates with a browser tab, which will pop up in front of you.
 This is your dashboard of notebooks.
 You can pick an existing notebook to work with, or create a new one.
-
-*notebook mode*, your own notebooks
+It is recommended that you write your own notebooks in a separate directory, not under the LAF-Fabric installation.
+In that way you can apply updates easily without overwriting your work.
 
 #. Create a notebook directory somewhere in your system and navigate there in a command prompt.
 #. Copy your version of *laf-fabric.cfg* in the example notebooks directory to your own notebook directory.
@@ -135,33 +135,47 @@ You can pick an existing notebook to work with, or create a new one.
 
 .. note::
     If you create a notebook that you are proud of, it would be nice to include it in the example
-    notebooks.
+    notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/judithgottschalk/ETCBC-data>`_.
     If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
 
-*workbench single use mode* (not on Windows)::
+Writing notebooks
+=================
+Here is a quick tutorial/example how to write LAF analytic tasks in an IPython notebook.
 
-    python laf-fabric.py --source=«source» --annox=«annox» --task=«task» [--force-compile-source] [--force-compile-annox]
+Our target LAF resource is the Hebrew text data base (see :ref:`data`).
+Some nodes are annotated as words, and some nodes as chapters.
+Words in Hebrew are either masculine, or feminine, or unknown.
+The names of chapters and the genders of words are coded as features inside annotations to the
+nodes that represent words and chapters.
 
-If all of the ``«source»``, ``«annox»`` and ``«task»`` arguments are present and if the ``--menu`` argument is absent
-LAF-fabric runs the specified task without asking and quits.
+We want to plot the percentage of masculine and feminine words per chapter.
 
-*workbench re-use mode* (not on Windows)::
+With the example notebook `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+we can count all words in the Hebrew bible and produce
+a table, where each row consists of the bible book plus chapter, followed
+by the percentage masculine words, followed by the percentage of feminine words in that chapter::
 
-    python laf-fabric.py [--source=«source» ] [--annox=«annox»] [--task=«task» ] [--force-compile-source] [--force-compile-annox]
+    Genesis 1	22.9	5.2
+    Genesis 2	19.2	6.48
+    Genesis 3	20.6	9.02
+    Genesis 4	32	11
+    Genesis 5	36.6	17.9
+    Genesis 6	22.7	8.7
+    Genesis 7	18.8	10.7
+    Genesis 8	16.7	8.94
+    Genesis 9	19.9	6.76
+    Genesis 10	22	4.45
 
-If some of the ``«source»``, ``«annox»`` and ``«task»`` arguments are missing or if the ``--menu`` argument is present
-it starts in interactive mode prompting you for sources and commands to run tasks.
-The ``«source»``, ``«annox»`` and ``«task»`` arguments that are given are used for initial values.
-In interactive mode you can change your ``«source»``, ``«annox»`` and ``«task»`` selection, and run tasks.
-There is a help command and the prompt is self explanatory.
+From this table we can easily make a chart, within the same notebook!
 
-Other options
--------------
-``--force-compile-source`` and ``--force-compile-annox``
-    If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
-    The detection is based on the modified dates of the GrAF header file and the compiled files.
-    In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
-    In interactive mode, there is a command to force recompilation of the current source.
+.. image:: /files/gender.png
+
+.. note::
+    If you click on the notebook link above, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
+    which shows static versions of notebooks without storing them.
+    In order to run them, you need to download them to your computer.
+
+The gender notebook is self documenting, it contains general information on how to do data analysis with LAF-Fabric.
 
 .. rubric:: Footnotes
 .. [#otherpython] To check whether you have environment variables called PYTHONPATH or PYTHONHOME,
@@ -180,3 +194,4 @@ Other options
 
    After these operations, quit all your command prompts, start a new one, and say ``python --version``.
    You should see something with 3.3 and Anaconda in the answer.
+

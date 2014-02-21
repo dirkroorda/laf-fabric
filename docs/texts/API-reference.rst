@@ -34,18 +34,11 @@ them.
 
 Calling the API
 ===============
-First you have to get a *processor* object. This is how you get it:
-
-* in notebook mode::
+First you have to get a *processor* object. This is how you get it::
 
     import laf
     from laf.notebook import Notebook
     processor = Notebook()
-
-* in workbench mode::
-
-    def task(processor):
-        '''this function executes your task'''
 
 Once you have the processor, you get the API by means of a call like this::
 
@@ -133,11 +126,8 @@ with a handy name.
 .. caution::
     This functionality takes processing time when you load the API.
     It takes 10-15 seconds on a Macbook Air for the Hebrew Bible.
-    If you are in *workbench mode* you incur this overhead every time you start the task.
-    I really should change the program in such a way that the connectivity information is being
-    kept between runs.
 
-    In the meanwhile, if you work in *notebook* mode, you do not suffer from this repeated overhead.
+    However, you do not have to suffer from this repeated overhead.
     Once you have called the *API()* function, the data stays in memory, and you can experiment
     without recomputing this information over and over again.
 
@@ -451,8 +441,7 @@ and read them by saying::
 Once your task has finished, LAF-Fabric will close them all.
 
 You can issue progress messages while executing your task.
-These messages go to the console (the terminal, or the output of a code cell,
-depending whether you are in workbench mode or notebook mode).
+These messages go to the output of a code cell.
 
 These messages get the elapsed time prepended, unless you say ``withtime=False``.
 

@@ -3,12 +3,12 @@ About
 
 Description
 ===========
-LAF-fabric is a Python tool for running Python scripts with access to the information in a LAF resource.
+LAF-fabric is a Python tool for running Python notebooks with access to the information in a LAF resource.
 It has two major components:
 
 #. a LAF compiler for transforming a LAF resource into binary data
    that can be loaded nearly instantly into Python data structures;
-#. an execution environment that gives Python scripts access to LAF data
+#. an execution environment that gives Python notebooks access to LAF data
    and is optimized for feature lookup.
 
 The selling point of LAF-fabric is performance, both in terms of speed and memory usage.
@@ -27,39 +27,15 @@ The typical workflow is:
    (or work with a compiled version [#nolaf]_).
 #. install LAF-fabric on your computer.
 #. adapt a config file to change the location of the work directory.
-#. write your own task in an `iPython notebook <http://ipython.org>`_, or
-   write your task as script and put it into LAF-Fabric.
-#. run the code cells in an `iPython notebook <http://ipython.org>`_, or run LAF-fabric from the command line.
+#. write your own task in an `iPython notebook <http://ipython.org>`_
+#. run the code cells in an `iPython notebook <http://ipython.org>`_
 
-Notebook mode (Recommended)
----------------------------
-You can write a task as a stand-alone script, importing LAF-fabric as a module, called *laf*.
-You can then break such a script up into chunks of code, and paste them in the code cells of an 
-`iPython notebook <http://ipython.org>`_.
-See the *notebooks* directory for executable examples.
+You can run your cells, modify them, run them again, ad libitum.
+While the notebook is alive, loading and unloading of data will be done only when it is really needed.
 
-This is the preferred mode. 
+So if you have to debug a notebook, you can do so without repeatedly waiting for the loading of the data.
 
-Workbench mode (Deprecated)
----------------------------
-LAF-fabric behaves in the same pattern as the ``mysql>`` prompt for a database. You can use it as in interactive
-command interpreter that lets you select and run tasks.
-You can also invoke it to run a single task without interaction.
-
-.. note::
-    This mode does not work under Windows. There are other disadvantages when using this mode.
-    Therefore, this mode is meant for testing and debugging, not for normal use.
-
-During a prompt session you can make a selection of source and *annox* and task.
-*Annox* is shorthand for *extra annotation package*.
-
-You can run your selection, modify the selection, run it again, ad libitum.
-While this session is alive, loading and unloading of data will be done only when it is really needed.
-Data that is needed for one task, will be reused for the next task.
-
-So if you have to debug a script, you can do so without repeatedly waiting for the loading of the data.
-
-The first time a source or annox is used, the LAF resource will be compiled.
+The first time a source or annox [#annox]_ is used, the LAF resource will be compiled.
 Compiling of the full Hebrew Bible source may take considerable time,
 say 10 minutes for a 2 GB XML annotations on a Macbook Air (2012).
 The compiled source will be saved to disk across runs of LAF-fabric.
@@ -67,15 +43,11 @@ Loading the compiled data takes, in the same setting with the Hebrew Bible, less
 but then the feature data is not yet loaded, only the regions, nodes and edges.
 If you need the original XML identifiers for your task, there will be 2 to 5 seconds of extra load time.
 
-And you can even cut out this loading time by running multiple tasks in a single session.
-
-After loading the data, LAF-fabric invokes your task script(s).
-
-Both modes
-----------
 You must declare the LAF-features that you use in your task, and LAF-fabric will load data for them.
 Loading a feature typically adds 0.1 to 1 second to the load time.
-It will also unload the left-over data from previous tasks for features
+Edge features may take some seconds, because of the connectivity data that will be built on the basis of edge information.
+
+LAF-Fabric will also unload the left-over data from previous tasks for features
 that the current task has not declared.
 In this way we can give each task the maximal amount of RAM.
 
@@ -137,8 +109,8 @@ Now annotation spaces are fully functional.
 
 Future directions
 =================
-LAF-Fabric has proven to function well for a small set of tasks.
-This proves that the methodology works and that we can try more challenging things.
+LAF-Fabric has proven to function well for in increasing number of tasks.
+This proves that the methodology works and we are trying more challenging things.
 The direction of the future work should be determined by your research needs.
 
 Adding new annotations
@@ -151,7 +123,7 @@ We are working on concrete tasks with real data as of January 2014.
 
 Visualization
 -------------
-If you develop tasks in notebook mode, you can invoke additional packages for
+You can invoke additional packages for
 data analysis and visualization right after your task has been completed in the notebook.
 
 The division of labour is that LAF-Fabric helps you to extract the relevant data from the resource,
@@ -192,9 +164,6 @@ to manipulate with node sets.
 
 The *connectivity* functionality has been implemented a bit clumsily. 
 It must be computed after all feature data has been loaded.
-Currently it will be computed everytime a task starts, even if it is the same task and no features have changed.
-Hopefully I can remedy this in a future version. In the mean time, when working in *notebook* mode, you can avoid
-the constant recomputing of this data, so there you do not feel this burden.
 
 .. rubric:: Footnotes
 
@@ -209,6 +178,11 @@ the constant recomputing of this data, so there you do not feel this burden.
    since the original XML identifiers are part of the compiled data.
    In case of the Hebrew Bible LAF resource: the original resource is over 2 GB on disk,
    while the compiled binary data is less than 200 MB.
+
+.. [#annox] Shorthand for *extra annotation package*. You can add an extra package of annotations in LAF format
+   to your data. When needed, this annox will be compiled into binary data and combined with the compiled data
+   of the main LAF resource. So you can integrate your own annotation work with the annotations that have been done before.
+   **You cannot add new regions, nodes, edges in this way**.
 
 .. [#api] Python does not have strict encapsulation of data structures,
    so by just inspecting the classes and objects you can reach out

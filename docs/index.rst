@@ -13,9 +13,9 @@ Contents:
     texts/release-notes
     texts/about-laf-fabric
     texts/getting-started
-    texts/taskwriting
-    texts/API-reference
     texts/background
+    texts/API-reference
+    texts/testing-debugging
     tasks/modules.rst
     laf/modules.rst
 

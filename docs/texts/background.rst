@@ -36,12 +36,17 @@ This data set is available (by request) from the national research data archive 
 by following this persistent identifier:
 `urn:nbn:nl:ui:13-ukhm-eb <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-ukhm-eb>`_.
 This data is not yet in LAF format.
+
 The `SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_ project has
 converted the database into LAF (the conversion code is in `GitHub project wivu2laf <https://github.com/dirkroorda/wivu2laf>`_),
 and the resulting LAF resource is a file set of 2.27 GB, being predominantly linguistic annotations.
 It is this LAF resource that is the reference context for LAF-Fabric.
 It is to be deposited into the DANS archive shortly, under an Open Access licence, with the
 restriction that it may not be used commercially. 
+
+A compiled version of this LAF resource, suitable for working with LAF-Fabric, is available upon request.
+You can `download <https://www.dropbox.com/s/1oqvb92sqn7vuml/laf-fabric-data.zip>`_ 
+a password protected zip file of ~ 150 MB and ask `Dirk Roorda <dirk.roorda@dans.knaw.nl>`_ for the password.
 
 Existing tools for LAF/GrAF resources
 =====================================
@@ -57,7 +62,7 @@ and not for single documents with a half million words words and gigabytes of an
 LAF-Fabric
 ==========
 This program seeks to remedy that situation.
-Its aim is to provide a framework on top of which you can write small Python scripts that
+Its aim is to provide a framework on top of which you can write Python notebooks that
 perform analytic tasks on big GrAF resources.
 It achieves this goal by compiling xml into compact binary data, both on disk and in RAM and by
 selective loading of features. The binary data loads very fast. Only selected features will be loaded,

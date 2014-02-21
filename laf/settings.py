@@ -41,8 +41,9 @@ class Settings(object):
                 self.settings[group][var] = system_settings[group][var]
         main_cfg = MAIN_CFG if context == 'nb' else 'notebooks/{}'.format(MAIN_CFG) if context == 'wb' else 'None'
         self.settings.read_file(open(main_cfg))
+        if 'laf_dir' not in self.settings['locations']:
+            self.settings['locations']['laf_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['laf_subdir'])
         self.settings['locations']['annox_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['annox_dir'])
-        self.settings['locations']['laf_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['laf_subdir'])
 
         self.get_sources()
         self.annox_choices = [self.settings['annox']['empty']] + [
@@ -58,11 +59,20 @@ class Settings(object):
 
     def get_sources(self):
         self.source_choices = []
-        for f in glob.glob("{}/*.*".format(self.settings['locations']['laf_dir'])):
-            f_handle = open(f, "r")
-            f_handle.readline()
-            if 'documentHeader' in f_handle.readline():
-                self.source_choices.append(os.path.basename(f))
+        laf_dir = self.settings['locations']['laf_dir']
+        work_dir = self.settings['locations']['work_dir']
+        annox_dir = self.settings['locations']['annox_dir']
+        annox_name = os.path.basename(annox_dir)
+        if os.path.exists(laf_dir):
+            for f in glob.glob("{}/*.*".format(laf_dir)):
+                f_handle = open(f, "r")
+                f_handle.readline()
+                if 'documentHeader' in f_handle.readline():
+                    self.source_choices.append(os.path.basename(f))
+        elif os.path.exists(work_dir):
+            for f in glob.glob("{}/*.*".format(work_dir)):
+                if os.path.basename(f) != annox_name:
+                    self.source_choices.append(os.path.basename(f))
 
         
 

@@ -8,7 +8,7 @@ from .task import LafTask
 class Notebook(object):
     '''Execute tasks, either in a single run, within a notebook
 
-    See :doc:`Writing Tasks </texts/taskwriting>` for how to run a task in an iPython notebook.
+    See :doc:`Writing Tasks </texts/getting-started>` for how to run a task in an iPython notebook.
     '''
 
     def __init__(self):
@@ -33,7 +33,7 @@ class Notebook(object):
                 a name for your task. This name will be used for a directory where the log file
                 and output files for your tasks can be created.
             load(dict):
-                a dictionary specifying what data to load. See :doc:`Writing Tasks </texts/taskwriting>`.
+                a dictionary specifying what data to load. See :doc:`Writing Tasks </texts/getting-started>`.
             force_compile_source(bool):
                 Whether to force compilation of the laf source.
                 Optional, default False.

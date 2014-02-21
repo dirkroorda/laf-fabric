@@ -15,15 +15,13 @@ You need tools. And what if you want to add your own tapestry to the fabric?
 
 You need an interactive environment where tools can be developed and data can be combined.
 
-This is the LAF Fabric, and here are some examples of what you can do with it:
+This is the LAF Fabric, and here is a simple example of what you can do with it:
 
 * `gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
-* `cooccurrences notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_
-* `participle notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/participle.ipynb>`_
-* `trees notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
 
-People at the Theology Department of the VU University Amsterdam are producing notebooks for their research,
+People at the Theology Department of the VU University Amsterdam are producing notebooks for their research
+into the text of the Hebrew Bible,
 see
 
-* `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_
 * `Judith Gottschalk's github repository <https://github.com/judithgottschalk/ETCBC-data>`_
+* `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_

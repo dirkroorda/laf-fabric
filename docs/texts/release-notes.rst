@@ -5,23 +5,47 @@ Upcoming
 
 Current
 =======
-3.3.6
-=====
+3.3.7
+-----
 Usability
----------
+^^^^^^^^^
+Configuration fix: the LAF source directory can be anywhere on the system, specified by an *optional* config setting.
+If this setting is not specified, LAF-Fabric works with a binary source only.
+
+A download link to the data is provided, it is a dropbox link to a zipped file with a password.
+You can ask `me <mailto:dirk.roorda@dans.knaw.nl>`_ for a password.
+
+Focus on working with notebooks. Command line usage only supported for testing and debugging, not on Windows.
+
+Documentation
+^^^^^^^^^^^^^
+Thoroughly reorganized and adapted to latest changes.
+
+Notebooks
+^^^^^^^^^
+This distribution only contains example tasks and notebooks.
+The real stuff can be found in the `ETCBC repository <https://github.com/judithgottschalk/ETCBC-data>`_
+maintained by Judith Gottschalk.
+
+Past
+====
+3.3.6
+-----
+Usability
+^^^^^^^^^
 The configuration file, *laf-fabric.cfg* will no longer be distributed. Instead, a file *laf-fabric-sample.cfg* will be
 distributed. You have to copy it to *laf-fabric.cfg* which you can adapt to your local situation.
 Subsequent updates will not affect your local settings.
 
 3.3.5
-=====
+-----
 API
----
+^^^
 New methods to find top most and bottom most nodes when traveling from a node set along annotated edges.
 See :ref:`connectivity`.
 
 3.3.4
-=====
+-----
 Notebook additions only.
 
 The notebook `clause_constituent_relation <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/clause_constituent_relation.ipynb>`_
@@ -30,23 +54,22 @@ is an example how you can investigate a LAF data source and document your findin
 We intend to create a separate github dedicated to notebooks that specifically analyse the Hebrew Text Database.
 
 3.3.3
-=====
-
-Other
 -----
+Other
+^^^^^
 Bugfixes: Data loading, unloading, keeping data better adapted to circumstances.
 
 3.3.2
-=====
+-----
 API
----
+^^^
 * New API element ``Ci`` for connectivity.
     There is a new object ``Ci`` analogous to ``C`` by which you can traverse from nodes via annotated edges to other nodes.
     The difference is that ``Ci`` uses the edges in the opposite direction.
     See :ref:`connectivity`.
  
 Incompatible changes
---------------------
+^^^^^^^^^^^^^^^^^^^^
 Bugfix. The order of node events turned out wrong in the case of nodes that are linked to point regions,
 i.e. regions with zero width (e.g. ``(n, n)``, being the point between characters ``n-1`` and ``n``).
 This caused weird behaviour in the tree generating notebook
@@ -58,14 +81,12 @@ in your custom task.
 **Existing LAF resources should be recompiled**.
 
 Other
------
+^^^^^
 The `trees (smooth path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
 notebook is evolving to get nice syntax trees from the Hebrew database.
 
-Past
-====
 3.3.1
-=====
+-----
 Bugfix. Thanks to Grietje Commelin for spotting the bug so quickly. 
 My apologies for any `tension <http://xkcd.com/859/>`_ it might have created in the meantime.
 Better code under the hood: the identifiers for nodes, edges and regions now start at 0 instead of 1.
@@ -73,7 +94,7 @@ This reduces the need for many ``+ 1`` and ``- 1`` operations, including the nee
 which one is appropriate.
 
 3.3
-===
+^^^
 API
 ---
 * Node events are added to the API, see :ref:`node-events`. With ``NE()`` you traverse the anchor positions in the primary data,
@@ -82,14 +103,14 @@ API
   There are facilities to suppress certain sets of node events.
 
 Incompatible changes
---------------------
+^^^^^^^^^^^^^^^^^^^^
 * Node events make use of new data structures that are created when the LAF resource is being compiled.
   **Existing LAF resources should be recompiled**.
 
 3.2.1
-=====
+-----
 API
----
+^^^
 * API elements are now returned as named entries in a dictionary, instead of a list.
     In this way, the task code that calls the API and gives names to the elements remains more stable when elements
     are added to the API.
@@ -99,7 +120,7 @@ API
 * New Example Notebook: `participle <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/participle.ipynb>`_.
 
 Incompatible changes
---------------------
+^^^^^^^^^^^^^^^^^^^^
 * :meth:`API() <laf.task.LafTask.API>` now returns a keyed dictionary instead of a 6-tuple.
     The statement where you define API is now 
 
@@ -115,9 +136,9 @@ Incompatible changes
     )
 
 3.2.0
-=====
+-----
 API
----
+^^^
 * Connectivity added to the API, see :ref:`connectivity`.
     There is an object C by which you can traverse from nodes via annotated edges to other nodes.
 
@@ -125,7 +146,7 @@ API
     separate section for API reference.
 
 Incompatible changes
---------------------
+^^^^^^^^^^^^^^^^^^^^
 * :meth:`API() <laf.task.LafTask.API>` now returns a 6-tuple instead of a 5-tuple:
     C has been added.
 * nodes or edges annotated by an empty annotation will get a feature based on the annotation label.

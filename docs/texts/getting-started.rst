@@ -116,7 +116,7 @@ You find a download link for a ready made work directory containing the binary L
 
 Run LAF-Fabric
 ==============
-On all platforms, you can test your installation as follows:
+On all platforms, you can test your installation as follows::
 
     cd notebooks
     ipython notebook

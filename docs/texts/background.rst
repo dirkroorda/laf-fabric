@@ -226,6 +226,13 @@ Thanks to Martijn Naaijer and Gino Kalkman for first experiments with LAF-Fabric
 History
 =======
 
+**2014-02-16**
+A new github repository,
+`ETCBC-data <https://github.com/judithgottschalk/ETCBC-data>`_,
+has been created by our associate programmer Judith Gottschalk.
+This repository will host the actual notebooks written for and by the ETCBC people.
+The LAF-Fabric repository will only host example/tutorial notebooks.
+
 **2014-01-17**
 Joint presentation with Martijn Naaijer at `CLIN <http://clin24.inl.nl>`_ (Computational Linguistics In the Netherlands).
 

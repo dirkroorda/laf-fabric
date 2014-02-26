@@ -346,6 +346,7 @@ class LafTask(Laf):
         '''
         Laf.__init__(self, settings)
 
+        self.verbose = False
         self.result_files = []
         '''List of handles to result files created by the task through the method :meth:`add_output`'''
 
@@ -645,22 +646,27 @@ class LafTask(Laf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
-        self.progress("P: Primary Data")
+        if self.verbose:
+            self.progress("P: Primary Data")
         P = PrimaryData(self) if self.given['primary'] else None
 
-        self.progress("NN, NE: Next Node and Node Events")
+        if self.verbose:
+            self.progress("NN, NE: Next Node and Node Events")
         NN = next_node
         NE = next_event
 
-        self.progress("F: Features")
+        if self.verbose:
+            self.progress("F: Features")
         F = Features(feature_objects)
 
-        self.progress("C, Ci: Connections")
+        if self.verbose:
+            self.progress("C, Ci: Connections")
         conn = Conn(self, feature_objects)
         C = Connections(conn)
         Ci = Connectionsi(conn)
 
-        self.progress("X: XML ids")
+        if self.verbose:
+            self.progress("X: XML ids")
         X = XMLids(xmlid_objects)
 
         self.progress("API loaded")
@@ -679,7 +685,7 @@ class LafTask(Laf):
             'X':       X,
         }
 
-    def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None):
+    def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None, verbose=False):
         '''Run a task.
 
         That is:
@@ -705,6 +711,7 @@ class LafTask(Laf):
             force_compile (dict):
                 whether to force (re)compilation of the LAF source for either 'source' or 'annox'.
         '''
+        self.verbose = verbose
         if stage == None or stage == 'init':
             self.check_status(source, annox, task)
             self.stamp.reset()

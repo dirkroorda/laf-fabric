@@ -544,7 +544,8 @@ class Laf(object):
                 self.progress('ERROR: {}: {} not present'.format(data_group, item_rep))
                 passed = False
             else:
-                self.progress("present {}: {}".format(data_group, item_rep))
+                if self.verbose:
+                    self.progress("present {}: {}".format(data_group, item_rep))
         for item in self.loaded[data_group]:
             item_rep = self.format_item(data_group, item)
             if item not in self.given[data_group]:
@@ -562,7 +563,8 @@ class Laf(object):
             if item not in loaded_features:
                 self.progress('WARNING: feature: {} not present from source {} nor annox {}'.format(item_rep, self.env['source'], self.env['annox']))
             else:
-                self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item])))
+                if self.verbose:
+                    self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item])))
 
         for item in loaded_features:
             item_rep = self.format_item('feature', item)
@@ -674,7 +676,8 @@ class Laf(object):
                 all_items[item] = item_rep
             for (item, item_rep) in sorted(all_items.items()):
                 if item in self.loaded[data_group] and item in the_givens:
-                    self.progress("keeping {}: {} ...".format(data_group, item_rep))
+                    if self.verbose:
+                        self.progress("keeping {}: {} ...".format(data_group, item_rep))
                 elif item in self.loaded[data_group]:
                     unload.add(item)
                 elif item in the_givens:
@@ -733,7 +736,8 @@ class Laf(object):
                     for item in items:
                         item_rep = self.format_item(data_group, item)
                         if item in self.data_items[label + ref_lab]:
-                            self.progress("clearing {}: {} - {} ...".format(data_group, label, item_rep))
+                            if self.verbose:
+                                self.progress("clearing {}: {} - {} ...".format(data_group, label, item_rep))
                             for sub in subs:
                                 lab = label + sub
                                 if lab in self.data_items and item in self.data_items[lab]:
@@ -744,7 +748,8 @@ class Laf(object):
                                     del self.data_items[lab][item]
                 else:
                     if label + ref_lab in self.data_items:
-                        self.progress("clearing {}: {} ...".format(data_group, label))
+                        if self.verbose:
+                            self.progress("clearing {}: {} ...".format(data_group, label))
                         for sub in subs:
                             lab = label + sub
                             if lab in self.data_items:
@@ -913,7 +918,8 @@ class Laf(object):
         '''
         if data_group == 'common':
             for (label, data_type) in self.data_items_def[data_group].items():
-                self.progress("loading {}: {} ... ".format(data_group, label))
+                if self.verbose:
+                    self.progress("loading {}: {} ... ".format(data_group, label))
                 if data_type == 'list':
                     b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
                     if os.path.exists(b_path):
@@ -935,7 +941,8 @@ class Laf(object):
         elif data_group == 'primary':
             for (label, data_type) in self.data_items_def[data_group].items():
                 if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):
-                    self.progress("loading {}: {} ... ".format(data_group, label))
+                    if self.verbose:
+                        self.progress("loading {}: {} ... ".format(data_group, label))
                     if data_type == 'string':
                         b_path = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data'])
                         b_handle = open(b_path, "r")
@@ -959,7 +966,8 @@ class Laf(object):
             for label in self.data_items_def[data_group]:
                 if items != None and len(items):
                     for item in items:
-                        self.progress("loading {}: {} {} ... ".format(data_group, label, item))
+                        if self.verbose:
+                            self.progress("loading {}: {} {} ... ".format(data_group, label, item))
                         item_rep = self.format_item(data_group, item, asFile=True)
                         item_repm = self.format_item(data_group, item)
                         b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)

@@ -122,7 +122,7 @@ class Shell(object):
                 the function that implements the task. It should accept one argument, being the LafTask object
                 through which all data in the LAF resource can be accessed.
         '''
-        self.laftask.run(source, annox, task, force_compile=force_compile, load=load, function=function, stage=stage)
+        self.laftask.run(source, annox, task, force_compile=force_compile, load=load, function=function, stage=stage, verbose=True)
         
     def processor(self):
         '''Does work. Decides to run one task or start the command prompt.

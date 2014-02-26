@@ -44,7 +44,7 @@ class Notebook(object):
         self.laftask.run(
             source, annox, task,
             force_compile={'source': force_compile_source, 'annox': force_compile_annox},
-            load=load, function=True, stage='init',
+            load=load, function=True, stage='init', verbose=False,
         )
 
     def final(self):

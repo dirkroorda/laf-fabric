@@ -5,6 +5,10 @@ Upcoming
 
 Current
 =======
+3.4.1
+-----
+When loading data in a notebook, the progress messages are far less verbose.
+
 3.4
 ---
 API

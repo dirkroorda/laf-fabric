@@ -103,6 +103,13 @@ has a defined value. For the order of nodes, see :ref:`node-order`.
 
 If a value is passed to ``s()``, only those nodes are visited that have that value for the feature in question.
 
+``F.feature_list`` is a dictionary containing all features that are loadable.
+These are the features found in the compiled current source or in the compiled current annox.
+
+The dictionary has exactly the same organization as the dictionary that you have to pass to ``processor.init()``
+when you specifiy the features to load.
+So you can copy and paste the features to load from the output of ``F.feature_list`` to the ``processor.init()`` call.
+
 .. _connectivity:
 
 C, Ci (Connectivity)

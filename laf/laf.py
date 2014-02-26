@@ -593,6 +593,7 @@ class Laf(object):
                 specification of the needs of the task at hand, in terms of
                 which features it uses and whether there is need for the orginal XML ids.
         '''
+        self.progress('LOADING DATA: please wait ...')
         self.read_stats()
         self.check_load_status()
 
@@ -621,6 +622,7 @@ class Laf(object):
         self.given['other_edges'] = set(['other_edges' in directives and directives['other_edges']])
 
         self.verify_all()
+        self.progress('LOADING DATA: DONE')
 
     def adjust_data(self, data_group, items=None):
         '''Top level data management function for adjusting data.

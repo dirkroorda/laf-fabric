@@ -2,6 +2,7 @@ import os
 import imp
 import sys
 import time
+import glob
 import subprocess
 import collections
 from .lib import grouper
@@ -103,8 +104,11 @@ class Feature(object):
 class Features(object):
     '''This class is responsible for holding a bunch of features and makes them 
     accessible by member names.
+
+    This class also contains a list of all loadable features, i.e. all features that are
+    present in the compiled data.
     '''
-    def __init__(self, feature_objects):
+    def __init__(self, laftask, feature_objects):
         '''Upon creation, a set of features is taken in,
         their *local_name* members are used to create
         member names in this class.
@@ -116,6 +120,44 @@ class Features(object):
         for (fn, fo) in feature_objects.items():
             exec("self.{} = fo".format(fo.local_name))
             self.F[fo.local_name] = fo.lookup
+
+        loadables = []
+        for feat_path in glob.glob('{}/*.bin'.format(laftask.env['feat_dir'])):
+            loadables.append(os.path.splitext(os.path.basename(feat_path))[0].replace('feature_', '', 1))
+        for feat_path in glob.glob('{}/*.bin'.format(laftask.env['annox_bdir'])):
+            loadables.append(os.path.splitext(os.path.basename(feat_path))[0].replace('xfeature_', '', 1))
+        all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
+
+        for lf in loadables:
+            lf_base = lf
+            kind = None
+            if lf.endswith('_node'):
+                kind = 'node'
+                lf_base = lf.rpartition('_node')[0]
+            elif lf.endswith('_edge'):
+                kind = 'edge'
+                lf_base = lf.rpartition('_edge')[0]
+            (namespace, label, name) = lf_base.split('_', 2)
+            all_features[namespace][kind][label].add(name)
+
+        pretty_features = {}
+        for namespace in all_features:
+            pretty_features[namespace] = {}
+            for kind in all_features[namespace]:
+                pretty_features[namespace][kind] = []
+                for label in sorted(all_features[namespace][kind]):
+                    nf = 0
+                    feats = []
+                    for name in sorted(all_features[namespace][kind][label]):
+                        if nf % 1 == 0:
+                            if feats:
+                                pretty_features[namespace][kind].append("{}.{}".format(label, ','.join(feats)))
+                                feats = []
+                        feats.append(name)
+                        nf += 1
+                    if feats:
+                        pretty_features[namespace][kind].append("{}.{}".format(label, ','.join(feats)))
+        self.feature_list = pretty_features
 
 class Conn(object):
     '''This class is responsible for making adjacency information accessible to tasks.
@@ -630,7 +672,7 @@ class LafTask(Laf):
                 yield (bufferevents[0])
             yield (bufferevents[1])
 
-        self.progress("Loading API")
+        self.progress("LOADING API: please wait ... ")
         feature_objects = {}
 
         for feature in self.loaded['feature']:
@@ -657,7 +699,7 @@ class LafTask(Laf):
 
         if self.verbose:
             self.progress("F: Features")
-        F = Features(feature_objects)
+        F = Features(self, feature_objects)
 
         if self.verbose:
             self.progress("C, Ci: Connections")
@@ -669,7 +711,7 @@ class LafTask(Laf):
             self.progress("X: XML ids")
         X = XMLids(xmlid_objects)
 
-        self.progress("API loaded")
+        self.progress("LOADING API: DONE")
 
         return {
             'infile':  self.add_input,

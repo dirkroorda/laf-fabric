@@ -7,7 +7,13 @@ Current
 =======
 3.4.1
 -----
+Usability
+^^^^^^^^^
 When loading data in a notebook, the progress messages are far less verbose.
+
+API
+^^^
+Added an introspection facility: you can ask the *F* object which features are loadable.
 
 3.4
 ---

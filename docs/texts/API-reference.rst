@@ -71,10 +71,8 @@ F (Features)
 Examples::
 
     F.shebanq_db_otype.v(node)
-    F.F['shebanq_db_otype'].lookup[node]
 
     F.shebanq_mother__e.v(edge)
-    F.F['shebanq_mother__e'].lookup[edge]
 
     F.shebanq_ft_gender.s()
 
@@ -102,8 +100,14 @@ Whether a node or edge has such an empty feature is determined by whether the va
 
 You can look up feature values by calling the method ``v(«node/edge»)`` on feature objects.
 
-**Alternatively**, you can use the slightly more verbose alternative forms with ``F.F``.
-They give exactly the same result, but the advantage here is that the feature is specified by a *string*
+**Alternatively**, you can use the slightly more verbose alternative forms:: 
+
+    F.F['shebanq_db_otype'].v(node)
+
+They give exactly the same result:
+``F.shebanq_db_otype`` is the same thing as ``F.F['shebanq_db_otype']`` provided the feature has been loaded.
+
+The advantage of the alternative form is that the feature is specified by a *string*
 instead of a *method name*.
 That means that you can work with dynamically computed feature names.
 

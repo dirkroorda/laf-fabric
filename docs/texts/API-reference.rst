@@ -71,8 +71,13 @@ F (Features)
 Examples::
 
     F.shebanq_db_otype.v(node)
+    F.F['shebanq_db_otype'].lookup[node]
+
     F.shebanq_mother__e.v(edge)
+    F.F['shebanq_mother__e'].lookup[edge]
+
     F.shebanq_ft_gender.s()
+
     F.shebanq_ft_gender.s(value='feminine')
 
 All that you want to know about features and are not afraid to ask.
@@ -96,6 +101,11 @@ The values of such annotations are always the empty string.
 Whether a node or edge has such an empty feature is determined by whether the value is ``''`` or ``None``.
 
 You can look up feature values by calling the method ``v(«node/edge»)`` on feature objects.
+
+**Alternatively**, you can use the slightly more verbose alternative forms with ``F.F``.
+They give exactly the same result, but the advantage here is that the feature is specified by a *string*
+instead of a *method name*.
+That means that you can work with dynamically computed feature names.
 
 You can use features to define sets in an easy manner.
 The ``s()`` method yields an iterator that iterates over all nodes for which the feature in question

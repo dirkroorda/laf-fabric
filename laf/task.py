@@ -119,7 +119,7 @@ class Features(object):
         self.F = {}
         for (fn, fo) in feature_objects.items():
             exec("self.{} = fo".format(fo.local_name))
-            self.F[fo.local_name] = fo.lookup
+            self.F[fo.local_name] = fo
 
         loadables = []
         for feat_path in glob.glob('{}/*.bin'.format(laftask.env['feat_dir'])):

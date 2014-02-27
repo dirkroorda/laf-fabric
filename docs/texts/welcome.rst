@@ -25,3 +25,5 @@ see
 
 * `Judith Gottschalk's github repository <https://github.com/judithgottschalk/ETCBC-data>`_
 * `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_
+
+LAF-Fabric includes a specialized module called *etcbc* to support working with the Hebrew Text Database of the ETCBC.

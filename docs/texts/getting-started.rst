@@ -4,8 +4,8 @@ Getting Started
 About
 =====
 *LAF-Fabric* is a `github project <https://github.com/dirkroorda/laf-fabric>`_
-in which there is a Python package called :mod:`laf`.
-You must install it as a package in your current python installation.
+in which there are Python packages called *laf and *etcbc*.
+You must install them as packages in your current python installation.
 This can be done in the standard pythonic way,
 and the precise instructions will be spelled out below.
 
@@ -78,6 +78,9 @@ Here are the steps, assuming you are in the command line, at the top level direc
     cd laf-*
     python setup.py install
 
+This installs the generic laf processor :mod:`laf` and the more specific ETCBC tools to work with the
+Hebrew Text Database: *etcbc*.
+
 Configure LAF-Fabric
 ====================
 In every notebook subdirectory where you have notebooks that use LAF-Fabric,
@@ -140,6 +143,9 @@ In that way you can apply updates easily without overwriting your work.
 
 Writing notebooks
 =================
+
+Tutorial
+--------
 Here is a quick tutorial/example how to write LAF analytic tasks in an IPython notebook.
 
 Our target LAF resource is the Hebrew text data base (see :ref:`data`).
@@ -176,6 +182,14 @@ From this table we can easily make a chart, within the same notebook!
     In order to run them, you need to download them to your computer.
 
 The gender notebook is self documenting, it contains general information on how to do data analysis with LAF-Fabric.
+
+Next steps
+----------
+Have a look at the notebooks in the `ETCBC-Data <https://github.com/judithgottschalk/ETCBC-data>`_ repository.
+You find notebooks by which you can study the rich feature set in the ETCBC data and notebooks that help you to add
+your own annotations to the data. Both of these tasks require the additional *etcbc* package, which comes
+with LAF-Fabric.
+
 
 .. rubric:: Footnotes
 .. [#otherpython] To check whether you have environment variables called PYTHONPATH or PYTHONHOME,

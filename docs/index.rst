@@ -18,6 +18,7 @@ Contents:
     texts/testing-debugging
     tasks/modules.rst
     laf/modules.rst
+    etcbc/modules.rst
 
 Indices and tables
 ==================

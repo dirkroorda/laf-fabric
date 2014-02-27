@@ -47,6 +47,23 @@ class Notebook(object):
             load=load, function=True, stage='init', verbose=False,
         )
 
+    def load(self, load):
+        '''Re Initialize task execution.
+
+        Run this method before executing your task code.
+
+        Args:
+            load(dict):
+                a dictionary specifying what data to load. See :doc:`Writing Tasks </texts/getting-started>`.
+        '''
+        self.laftask.run(
+            self.laftask.env['source'],
+            self.laftask.env['annox'],
+            self.laftask.env['task'],
+            force_compile={'source': False, 'annox': False},
+            load=load, function=True, stage='init', verbose=False,
+        )
+
     def final(self):
         '''Finalize task execution.
 

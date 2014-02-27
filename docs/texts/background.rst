@@ -97,6 +97,7 @@ As an example, look at the
 `gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
 notebook by which you can draw a graph of the percentage of masculine and feminine
 words in each chapter of the Hebrew Bible.
+More involved notebooks can be found at the `ETCBC-Data repository <https://github.com/judithgottschalk/ETCBC-data>`_.
 
 Rationale
 =========
@@ -111,7 +112,7 @@ LAF-Fabric is a stepping stone for teams in digital humanities to the wonderful 
 With it you extract data from your resources of interest and feed it into your other tools.
 
 See for example the notebook :mod:`cooccurrences`, also available as example
-`notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/cooccurrences.ipynb>`_,
+`notebook <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/language-variation/cooccurrences.ipynb>`_,
 which codes in less than a page an extraction of **data tables** relevant to the
 study of linguistic variation in the Hebrew Bible.
 These tables are suitable for subsequent data analysis

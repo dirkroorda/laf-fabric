@@ -40,6 +40,27 @@ First you have to get a *processor* object. This is how you get it::
     from laf.notebook import Notebook
     processor = Notebook()
 
+Then you have to *initialize* the processor, by which you direct it to a LAF source, possibly with extra annotation packages,
+and where you specify which data to load::
+
+    processor.init('bhs3.txt.hdr', '--', 'cooccurrences', {
+        "xmlids": {
+            "node": False,
+            "edge": False,
+        },
+        "features": {
+            "shebanq": {
+                "node": [
+                    "db.otype",
+                    "ft.part_of_speech,noun_type,lexeme_utf8",
+                    "sft.book",
+                ],
+                "edge": [
+                ],
+            },
+        },
+    })
+
 Once you have the processor, you get the API by means of a call like this::
 
     API = processor.API()

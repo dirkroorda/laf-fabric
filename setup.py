@@ -1,10 +1,11 @@
 # -*- coding: utf8 -*-
 from distutils.core import setup
 setup(name='laf',
-      version='3.4.1',
+      version='3.5.0',
       author='Dirk Roorda',
       author_email='dirk.roorda@dans.knaw.nl',
-      description='Tool to read LAF resources (Linguistic Annotation Framework ISO 24612:2012) and analyse them efficiently',
-      packages=['laf'],
+      description='''Tools to read LAF resources (Linguistic Annotation Framework ISO 24612:2012) and analyse them efficiently.
+With additions for the Hebrew Text Database of the ETCBC (Eep Talstra Centre for Bible and Computing''',
+      packages=['laf', 'etcbc'],
       url='http://laf-fabric.readthedocs.org',
 )

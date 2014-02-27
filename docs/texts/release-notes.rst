@@ -5,6 +5,12 @@ Upcoming
 
 Current
 =======
+3.5
+---
+Usability
+^^^^^^^^^
+Code supporting ETCBC notebooks has moved into separate package *etcbc*, included in the laf distribution.
+
 3.4.1
 -----
 Usability

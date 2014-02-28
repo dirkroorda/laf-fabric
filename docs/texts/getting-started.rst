@@ -193,10 +193,11 @@ with LAF-Fabric.
 
 .. rubric:: Footnotes
 .. [#otherpython] To check whether you have environment variables called PYTHONPATH or PYTHONHOME,
-   go to a command prompt and say::
+   go to a command prompt and say 
 
-        echo %PYTHONPATH%
-        echo %PYTHONHOME%
+   ``echo %PYTHONPATH%``
+
+   ``echo %PYTHONHOME%``
    
    If the system responds with the exact text you typed, there is nothing to worry about.
    Otherwise, you should rename these variables to something like ``NO_PYTHONPATH`` or

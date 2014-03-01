@@ -6,11 +6,13 @@ Description
 LAF-fabric is a Python tool for running Python notebooks with access to the information in a LAF resource.
 It has these major components:
 
-#. a LAF compiler for transforming a LAF resource into binary data
-   that can be loaded nearly instantly into Python data structures;
-#. an execution environment that gives Python notebooks access to LAF data
-   and is optimized for feature lookup.
-#. an extension toolkit geared to a specific LAF resource: the ETCBC Hebrew Text Database.
+* the *laf* package
+    * a LAF compiler for transforming a LAF resource into binary data
+      that can be loaded nearly instantly into Python data structures;
+    * an execution environment that gives Python notebooks access to LAF data
+      and is optimized for feature lookup.
+* the *etcbc* package
+    * an extension toolkit geared to a specific LAF resource: the ETCBC Hebrew Text Database.
 
 The selling point of LAF-fabric is performance, both in terms of speed and memory usage.
 The second goal is to make it really easy for you to write analytic tasks

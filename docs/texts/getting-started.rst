@@ -78,7 +78,7 @@ Here are the steps, assuming you are in the command line, at the top level direc
     cd laf-*
     python setup.py install
 
-This installs the generic laf processor :mod:`laf` and the more specific ETCBC tools to work with the
+This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
 Hebrew Text Database: *etcbc*.
 
 Configure LAF-Fabric

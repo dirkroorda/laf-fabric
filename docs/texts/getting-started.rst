@@ -48,7 +48,7 @@ We want, however, base it on python3, so we have to take a detour.
        conda install anaconda
     
    This will install all anaconda packages in your fresh python3 installation.
-   Now you have *ipython*, *networkx*, *mathplotlib*, *numpy* to name but a few popular
+   Now you have *ipython*, *networkx*, *matplotlib*, *numpy* to name but a few popular
    python packages for scientific computing.
  
 Get LAF-Fabric
@@ -119,7 +119,7 @@ You find a download link for a ready made work directory containing the binary L
 
 Run LAF-Fabric
 ==============
-On all platforms, you can test your installation as follows::
+On all platforms (Windows users: use Firefox or Chrome as your browser, not Internet Explorer), you can test your installation as follows::
 
     cd notebooks
     ipython notebook
@@ -187,7 +187,7 @@ Next steps
 ----------
 Have a look at the notebooks in the `ETCBC-Data <https://github.com/judithgottschalk/ETCBC-data>`_ repository.
 You find notebooks by which you can study the rich feature set in the ETCBC data and notebooks that help you to add
-your own annotations to the data. Both of these tasks require the additional *etcbc* package, which comes
+your own annotations to the data. These notebooks require the additional *etcbc* package, which comes
 with LAF-Fabric.
 
 

@@ -81,11 +81,9 @@ With this device it becomes possible for you to include a set of corrections to 
 Or alternatively, you can include the results of your own work, whether manual or algorithmic or both,
 with the original data. You can then do *what-if* research on the combination.
 
-There are two example tasks that demonstrate this workflow.
-With the :mod:`annox_create` task you can produce spreadsheets customized to the annotations that you
-want to make. The same task can then transform your input into valid LAF annotations,
-targeted at the pieces of primary data that you have specified in the spreadsheet.
-The :mod:`annox_use` task shows you how you can use your annotations in analysis. 
+The notebook
+`annox_workflow <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/annotating/annox_workflow.ipynb>`_
+demonstrates this workflow.
 
 Interactive notebooks
 =====================
@@ -111,21 +109,23 @@ has basic programming experience.
 LAF-Fabric is a stepping stone for teams in digital humanities to the wonderful world of computing.
 With it you extract data from your resources of interest and feed it into your other tools.
 
-See for example the notebook :mod:`cooccurrences`, also available as example
-`notebook <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/language-variation/cooccurrences.ipynb>`_,
+See for example the notebook 
+`cooccurrences <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/language-variation/cooccurrences.ipynb>`_,
 which codes in less than a page an extraction of **data tables** relevant to the
 study of linguistic variation in the Hebrew Bible.
 These tables are suitable for subsequent data analysis
 by means of the open source `statistics toolkit R <http://www.r-project.org>`_.
 
-An other example is the task :mod:`proper`, which outputs a **visualization** of the text of the Hebrew Bible
+An other example is the notebook
+`proper <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/text/proper.ipynb>`_,
+which outputs a **visualization** of the text of the Hebrew Bible
 in which the syntactic structure of the text is visible plus the the genders of all the proper nouns.
 With this visualization it becomes possible to discern genealogies from other genres with the unaided eye,
 even without being able to read a letter of Hebrew.
 
 The code of LAF-Fabric is on
 `github <https://github.com/dirkroorda/laf-fabric>`_,
-including example notebooks, tasks and extra annotation packages.
+including example notebooks and extra annotation packages.
 You are invited to develop your own notebooks and share them,
 either through data archives or directly through github,
 or the `notebook viewer <http://nbviewer.ipython.org>`_.
@@ -185,7 +185,7 @@ So this individual feature represents a significant chunk of data.
 
 The individual features together take up the bulk of the space.
 In our example, they take 145 MB on disk, and the rest takes only 55 MB.
-Most tasks require only a limited set of individual features.
+Most notebooks require only a limited set of individual features.
 So when we run tasks and switch between them, we want to swap feature data in
 and out.
 The design of LAF-fabric is such that feature data is neatly chunked per individual feature.

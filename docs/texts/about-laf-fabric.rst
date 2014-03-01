@@ -15,12 +15,12 @@ It has these major components:
     * an extension toolkit geared to a specific LAF resource: the ETCBC Hebrew Text Database.
 
 The selling point of LAF-fabric is performance, both in terms of speed and memory usage.
-The second goal is to make it really easy for you to write analytic tasks
+The second goal is to make it really easy for you to write analytic notebooks
 straightforwardly in terms of LAF concepts without bothering about performance.
 
-Both points go hand in hand, because if LAF-fabric needs too much time to execute your tasks,
+Both points go hand in hand, because if LAF-fabric needs too much time to execute your notebooks,
 it becomes very tedious to experiment with them.
-I wrote LAF-fabric to make the cycle of trial and error with your tasks as smooth as possible.
+I wrote LAF-fabric to make the cycle of trial and error with your notebooks as smooth as possible.
 
 Workflow
 ========
@@ -30,7 +30,7 @@ The typical workflow is:
    (or work with a compiled version [#nolaf]_).
 #. install LAF-fabric on your computer.
 #. adapt a config file to change the location of the work directory.
-#. write your own task in an `iPython notebook <http://ipython.org>`_
+#. write your own `iPython notebook <http://ipython.org>`_
 #. run the code cells in an `iPython notebook <http://ipython.org>`_
 
 You can run your cells, modify them, run them again, ad libitum.
@@ -44,15 +44,15 @@ say 10 minutes for a 2 GB XML annotations on a Macbook Air (2012).
 The compiled source will be saved to disk across runs of LAF-fabric.
 Loading the compiled data takes, in the same setting with the Hebrew Bible, less than a second,
 but then the feature data is not yet loaded, only the regions, nodes and edges.
-If you need the original XML identifiers for your task, there will be 2 to 5 seconds of extra load time.
+If you need the original XML identifiers for your notebook, there will be 2 to 5 seconds of extra load time.
 
-You must declare the LAF-features that you use in your task, and LAF-fabric will load data for them.
+You must declare the LAF-features that you use in your notebook, and LAF-fabric will load data for them.
 Loading a feature typically adds 0.1 to 1 second to the load time.
 Edge features may take some seconds, because of the connectivity data that will be built on the basis of edge information.
 
-LAF-Fabric will also unload the left-over data from previous tasks for features
-that the current task has not declared.
-In this way we can give each task the maximal amount of RAM.
+LAF-Fabric will also unload the left-over data from previous runs for features
+that the current run has not declared.
+In this way we can give each run the maximal amount of RAM.
 
 License
 =======
@@ -122,7 +122,7 @@ While LAF-Fabric supports adding an extra annotation package to the existing LAF
 and contains an example workflow to create such packages, this process has not been
 honed by practice yet.
 
-We are working on concrete tasks with real data as of January 2014.
+We are working on concrete notebooks with real data as of January 2014.
 
 Visualization
 -------------

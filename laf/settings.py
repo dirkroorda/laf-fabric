@@ -40,7 +40,7 @@ class Settings(object):
                     self.settings[group] = {}
                 self.settings[group][var] = system_settings[group][var]
         main_cfg = MAIN_CFG if context == 'nb' else 'notebooks/{}'.format(MAIN_CFG) if context == 'wb' else 'None'
-        self.settings.read_file(open(main_cfg))
+        self.settings.read_file(open(main_cfg, "r", encoding="utf-8"))
         if 'laf_dir' not in self.settings['locations']:
             self.settings['locations']['laf_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['laf_subdir'])
         self.settings['locations']['annox_dir'] = "{}/{}".format(self.settings['locations']['work_dir'], self.settings['locations']['annox_dir'])
@@ -65,7 +65,7 @@ class Settings(object):
         annox_name = os.path.basename(annox_dir)
         if os.path.exists(laf_dir):
             for f in glob.glob("{}/*.*".format(laf_dir)):
-                f_handle = open(f, "r")
+                f_handle = open(f, "r", encoding="utf-8")
                 f_handle.readline()
                 if 'documentHeader' in f_handle.readline():
                     self.source_choices.append(os.path.basename(f))

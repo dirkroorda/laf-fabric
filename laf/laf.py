@@ -879,7 +879,7 @@ class Laf(object):
 
         The compile process generates some statistics that must be read by the task that loads the compiled data.
         '''
-        handle = open(self.env['stat_file'], "w")
+        handle = open(self.env['stat_file'], "w", encoding="utf-8")
         for data_group in self.data_items_def:
             for (label, data_type) in self.data_items_def[data_group].items():
                 if data_type == 'array' or data_type == 'double_array' or data_type == 'i_array':
@@ -901,7 +901,7 @@ class Laf(object):
         And later, when we want to load new feature data on top of the existing data, we need to know
         how many distinct values features have.
         '''
-        handle = open(self.env['stat_file'], "r")
+        handle = open(self.env['stat_file'], "r", encoding="utf-8")
         self.stats = {}
         for line in handle:
             (label, count) = line.rstrip("\n").split("=")
@@ -947,7 +947,7 @@ class Laf(object):
                         self.progress("loading {}: {} ... ".format(data_group, label))
                     if data_type == 'string':
                         b_path = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data'])
-                        b_handle = open(b_path, "r")
+                        b_handle = open(b_path, "r", encoding="utf-8")
                         self.data_items[label] = b_handle.read(None)
                         b_handle.close()
                     else:
@@ -1147,7 +1147,7 @@ class Laf(object):
             )
 
         log_file = "{}/{}".format(log_dir, log_name)
-        self.log = open(log_file, "w")
+        self.log = open(log_file, "w", encoding="utf-8")
         '''Instance member holding the open log handle'''
 
         self.stamp.connect_log(self.log)

@@ -794,7 +794,7 @@ class LafTask(Laf):
             A handle to the opened file.
         '''
         result_file = "{}/{}".format(self.env['result_dir'], file_name)
-        handle = open(result_file, "w")
+        handle = open(result_file, "w", encoding="utf-8")
         self.result_files.append(handle)
         return handle
 
@@ -813,7 +813,7 @@ class LafTask(Laf):
             A handle to the opened file.
         '''
         result_file = "{}/{}".format(self.env['result_dir'], file_name)
-        handle = open(result_file, "r")
+        handle = open(result_file, "r", encoding="utf-8")
         self.result_files.append(handle)
         return handle
 

@@ -5,6 +5,17 @@ Upcoming
 
 Current
 =======
+3.5.1
+-----
+Bugfixes
+^^^^^^^^
+Opening and closing of files was done without specifying explicitly the ``utf-8`` encoding.
+Python then takes the result of ``locale.getprefferredencoding()`` which may not be ``utf-8`` on some systems,
+notably Windows ones.
+
+Remedy: every ``open()`` call for a text file is now passed the ``encoding='utf-8'`` parameter.
+``open()``calls for binary files do not get an encoding parameter of course.
+
 3.5
 ---
 Usability

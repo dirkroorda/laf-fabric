@@ -69,6 +69,7 @@ Once you have the processor, you get the API by means of a call like this::
     Ci = API['Ci']
     P = API['P']
     X = API['X']
+    BR = API['BR']
     NN = API['NN']
     NE = API['NE']
     msg = API['msg']
@@ -287,7 +288,8 @@ Examples::
     (d) for node in NN(
             test=F.shebanq_db_otype.v,
             values=['phrase', 'word'],
-            extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase'):
+            extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase',
+        ):
             pass
 
 NN() walks through nodes, not by edges, but through a predefined set, in the

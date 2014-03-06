@@ -154,6 +154,9 @@ def model(data_items, temp_data_items, stamp):
 
     stamp.progress("NODES ANCHOR BOUNDARIES")
 
+#   in node_anchor_min/max the value 0 counts as undefined.
+#   So we have to increase all real values by one in order to make the distinction.
+
     node_anchor_min = array.array('I', [0 for i in range(n_node)])
     node_anchor_max = array.array('I', [0 for i in range(n_node)])
     node_linked = array.array('I')
@@ -175,8 +178,9 @@ def model(data_items, temp_data_items, stamp):
         norm_ranges = normalize_ranges(ranges)
         node_anchor_list.append(norm_ranges)
 
-        node_anchor_min[node] = min(norm_ranges)
-        node_anchor_max[node] = max(norm_ranges)
+#       we store the true value increased by one
+        node_anchor_min[node] = min(norm_ranges) + 1
+        node_anchor_max[node] = max(norm_ranges) + 1
 
     (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
     result_items.append(("node_anchor_min", node_anchor_min))
@@ -205,7 +209,7 @@ def model(data_items, temp_data_items, stamp):
 
     stamp.progress("NODES EVENTS")
 
-    anchor_max = max(node_anchor_max)
+    anchor_max = max(node_anchor_max) - 1
     node_events = list([([],[],[]) for n in range(anchor_max + 1)])
 
     for n in node_sort:

@@ -5,6 +5,25 @@ Upcoming
 
 Current
 =======
+3.6
+---
+API
+^^^
+There is a significant addition for dealing with the order of nodes:
+
+* New function ``BF(nodea, nodeb)`` for node comparison.
+  Handy to find the nodes that cannot be ordered because they have the same start points and end points in the primary data.
+* New argument to ``NN()`` for additionally sorting those enumerated nodes that have the same start points and end points in the primary data.
+
+Incompatible changes
+^^^^^^^^^^^^^^^^^^^^
+* The representation of node anchors has changed.
+  **Existing LAF resources should be recompiled**.
+
+Usability
+^^^^^^^^^
+When LAF-Fabric starts it shows a banner indicating its version.
+
 3.5.1
 -----
 Bugfixes
@@ -14,7 +33,7 @@ Python then takes the result of ``locale.getprefferredencoding()`` which may not
 notably Windows ones.
 
 Remedy: every ``open()`` call for a text file is now passed the ``encoding='utf-8'`` parameter.
-``open()``calls for binary files do not get an encoding parameter of course.
+``open()`` calls for binary files do not get an encoding parameter of course.
 
 3.5
 ---

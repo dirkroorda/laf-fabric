@@ -248,6 +248,29 @@ See the example notebook
 `trees <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/syntax/trees.ipynb>`_
 for working code with connectivity.
 
+BF (Before)
+-----------
+Examples::
+
+    if BF(nodea, nodeb) == None:
+        # code for the case that nodea and nodeb do not have a mutual order
+    elif BF(nodea, nodeb):
+        # code for the case that nodea comes before nodeb
+    else:
+        # code for the case that nodea comes after nodeb
+
+With this function you can do an easy check on the order of nodes.
+The *BF* relation corresponds with the order used in the enumeration of nodes ``NN()`` below.
+
+Especially when two nodes have no defined mutual order, you might want to supply an order
+yourself in your tasks. 
+With ``BF`` you can quickly see when that is the case.
+
+There is no mutual order between two nodes if at least one of the following holds:
+
+* one of them is not linked to the primary data
+* both start and end at the same point in the primary data (what happens in between is immaterial).
+
 NN (Next Node)
 --------------
 Examples::
@@ -261,8 +284,16 @@ Examples::
     (c) for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
             pass
 
+    (d) for node in NN(
+            test=F.shebanq_db_otype.v,
+            values=['phrase', 'word'],
+            extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase'):
+            pass
+
 NN() walks through nodes, not by edges, but through a predefined set, in the
 natural order given by the primary data (see :ref:`node-order`).
+Only nodes that are linked to a region (one or more) of the primary data are
+being walked.
 
 It is an *iterator* that yields a new node everytime it is called.
 
@@ -277,6 +308,32 @@ the node will be skipped.
 Example (a) iterates through all nodes, (b) only through the book nodes, because *test*
 is the feature value lookup function associated with the ``shebanq_db_otype`` function,
 which gives for each node its type.
+In example (c) you can give multiple values for which you want the corresponding nodes.
+
+Example (d) passes an extra sort key. The set of nodes is sorted on the basis of how they
+are anchored to the primary data. Left comes before right, embedding comes before embedded.
+But there are many cases where this order is not defined, namely between nodes that start at the
+same point and end at the same point.
+
+If you have extra information to order these cases, you can do so by passing ``extrakey``.
+In this case the extrakey is ``False`` for nodes with carry a certain feature with value ``phrase``,
+and ``True`` for the other nodes, which carry value ``word`` for that feature.
+Because ``False`` comes before ``True``, the phrases come before the words they contain.
+
+.. note::
+    Without extrakey, all phrases that do not coincide with any of the words they contain,
+    have already the property that they are yielded before their words.
+    The difficulty is where a phrase contains just a single word.
+    It is exactly these cases that are remedied with ``extrakey``. 
+    The rest of the order remains untouched.
+
+.. note::
+    The effect of sorting is persistent until you call ``NN()`` again with an ``extrakey``.
+    If you pass the value ``True`` to ``extrakey``, the original order is restored.
+
+    So it is handy to start your task with an ``NN(extrakey=perfect_sort)`` to sort your nodes
+    perfectly for the task at hand.
+    Then all subsequent ``NN()`` calls without ``extrakey`` work as desired.
 
 .. note::
     The type of a node is not a LAF concept, but a concept in this particular LAF resource.

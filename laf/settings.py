@@ -1,8 +1,10 @@
+import sys
 import os
 import glob
 import configparser
 
 MAIN_CFG = 'laf-fabric.cfg'
+VERSION = '3.6.0'
 
 system_settings = {
     'locations': {
@@ -32,6 +34,8 @@ class Settings(object):
             context (str): either ``wb`` (workbench) or ``nb`` (notebook).
             The only difference is the path to the config file.
         '''
+
+        sys.stderr.write('This is LAF-Fabric {}\n'.format(VERSION))
 
         self.settings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         for group in system_settings:
@@ -73,6 +77,4 @@ class Settings(object):
             for f in glob.glob("{}/*.*".format(work_dir)):
                 if os.path.basename(f) != annox_name:
                     self.source_choices.append(os.path.basename(f))
-
-        
 

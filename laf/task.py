@@ -477,9 +477,38 @@ class LafTask(Laf):
 
         ''' 
 
-        def next_node(test=None, value=None, values=None):
+        node_anchor_min = self.data_items["node_anchor_min"]
+        node_anchor_max = self.data_items["node_anchor_max"]
+
+        def before(nodea, nodeb):
+            '''Compares two nodes based on its linking to the primary data.
+
+            This is the canonical order, based on *(x,-y)*, where *x* is the leftmost
+            anchor and *y* the rightmost anchor of a node.
+
+            Args:
+                nodea, nodeb(int): the nodes to compare.
+
+            Returns:
+                True:
+                    if *nodea* comes before *nodeb*
+                False:
+                    if *nodea* comes after *nodeb*
+                None
+                    if *nodea* and *nodeb* have equal leftmost and rightmost anchors
+                    (this includes the case that *nodea* == *nodeb*)
+            '''
+            if node_anchor_min[nodea] == node_anchor_max[nodea] or node_anchor_min[nodeb] == node_anchor_max[nodeb]: return None
+            if node_anchor_min[nodea] < node_anchor_min[nodeb]: return True
+            if node_anchor_min[nodea] > node_anchor_min[nodeb]: return False
+            if node_anchor_max[nodea] > node_anchor_max[nodeb]: return True
+            if node_anchor_max[nodea] < node_anchor_max[nodeb]: return False
+            return None
+
+        def next_node(test=None, value=None, values=None, extrakey=None):
             '''Iterator of all nodes in primary data order that have a
             given value for a given feature.
+            Only nodes that are linked to primary data are yielded.
 
             Args:
                 test (callable):
@@ -492,7 +521,70 @@ class LafTask(Laf):
                     The values found in *value* and *values* are collected in a dictionary.
                     All nodes node, whose *test(node)* result is in this dictionary
                     are passed on, and none of the others.
+
+                extrakey (callable):
+                    Extra key to sort nodes that do not have a defined mutual order, i.e. the nodes
+                    that have equal left most anchorsand equal right most anchors.
+                    With ``extrakey`` you can enforce an order on these cases.
+                    The existing order between all other nodes remains the same.
+
+                    If given, a copy of the sorted node array will be made.
+                    All subsequent calls of ``NN()`` work with this order, even if no ``extrakey`` is given.
+                    If the value ``True`` is given, the original order is restored.
             '''
+
+            class Extra_key(object):
+                '''The initialization function of this class is a new key function for sorting nodes.
+
+                The class wraps the node given in the initialization function into an object.
+                If two node wrapping objects are compared, the comparison methods of this class
+                are used. 
+                Hence we can compare several bits of related information of the two nodes.
+                In this case we need the minimum and maximum anchor positions associated with the nodes.
+
+                Because Python sorting is *stable*, equal elements retain their position.
+                The pre-existing order is such that nodes with equal min-max positions
+                are already lumped together. 
+
+                We only want to sort in case nodes have equal min-max anchor positions.
+                So, for the sake of additional sorting, we will deem two nodes as *unequal*
+                if both of their min-max positions are *different*!
+                
+                Hence only the lumps of nodes with equal min-max positions will be sorted. 
+                '''
+                __slots__ = ['value', 'amin', 'amax']
+                def __init__(self, node):
+                    self.amin = node_anchor_min[node] - 1
+                    self.amax = node_anchor_max[node] - 1
+                    self.value = extrakey(node)
+
+                def __lt__(self, other):
+                    return (
+                        self.amin == other.amin and
+                        self.amax == other.amax and
+                        self.value < other.value
+                    )
+                def __gt__(self, other):
+                    return (
+                        self.amin == other.amin and
+                        self.amax == other.amax and
+                        self.value > other.value
+                    )
+                def __eq__(self, other):
+                    return (
+                        self.amin != other.amin or
+                        self.amax != other.amax or
+                        self.value == other.value
+                    )
+                __hash__ = None
+
+            if extrakey == True or (extrakey == None and "node_resorted" not in self.data_items):
+                self.data_items["node_resorted"] = self.data_items["node_sort"]
+                self.progress("Sort order of nodes back to original")
+            elif extrakey != None:
+                self.progress("Resorting {} nodes...".format(len(self.data_items["node_sort"])))
+                self.data_items["node_resorted"] = sorted(self.data_items["node_sort"], key=Extra_key)
+                self.progress("Done")
 
             if test != None:
                 test_values = {}
@@ -501,11 +593,11 @@ class LafTask(Laf):
                 if values != None:
                     for val in values:
                         test_values[val] = None
-                for node in self.data_items["node_sort"]:
+                for node in self.data_items["node_resorted"]:
                     if test(node) in test_values:
                         yield node
             else:
-                for node in self.data_items["node_sort"]:
+                for node in self.data_items["node_resorted"]:
                     yield node
 
         def next_event(key=None, simplify=None):
@@ -561,9 +653,6 @@ class LafTask(Laf):
                     3 meaning *end*
             '''
 
-            node_anchor_min = self.data_items["node_anchor_min"]
-            node_anchor_max = self.data_items["node_anchor_max"]
-
             class Additional_key(object):
                 '''The initialization function of this class is a new key function for sorting events.
 
@@ -586,8 +675,8 @@ class LafTask(Laf):
                 __slots__ = ['value', 'kind', 'amin', 'amax']
                 def __init__(self, event):
                     (node, kind) = event
-                    self.amin = node_anchor_min[node]
-                    self.amax = node_anchor_max[node]
+                    self.amin = node_anchor_min[node] - 1
+                    self.amax = node_anchor_max[node] - 1
                     self.value = key(node) * (-1 if kind < 2 else 1)
                     self.kind = kind
 
@@ -693,7 +782,8 @@ class LafTask(Laf):
         P = PrimaryData(self) if self.given['primary'] else None
 
         if self.verbose:
-            self.progress("NN, NE: Next Node and Node Events")
+            self.progress("BF, NN, NE: Before, Next Node and Node Events")
+        BF = before
         NN = next_node
         NE = next_event
 
@@ -719,6 +809,7 @@ class LafTask(Laf):
             'my_file': self.result,
             'msg':     self.progress,
             'P':       P,
+            'BF':      BF,
             'NN':      NN,
             'NE':      NE,
             'F':       F,

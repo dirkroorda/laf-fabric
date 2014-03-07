@@ -3,8 +3,10 @@ import os
 import glob
 import configparser
 
+from .timestamp import Timestamp
+
 MAIN_CFG = 'laf-fabric.cfg'
-VERSION = '3.6.0'
+VERSION = '3.7.0'
 
 system_settings = {
     'locations': {
@@ -60,6 +62,7 @@ class Settings(object):
         elif context == 'nb':
             self.settings['locations']['task_dir'] = '<'
             self.task_choices = []
+        self.verbose_choices = list(Timestamp.verbose_level.keys())
 
     def get_sources(self):
         self.source_choices = []

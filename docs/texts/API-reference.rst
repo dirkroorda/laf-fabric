@@ -59,23 +59,45 @@ and where you specify which data to load::
                 ],
             },
         },
+        "primary": False,
     })
 
 Once you have the processor, you get the API by means of a call like this::
 
     API = processor.API()
+
+    # features in sofar as declared under "features"
     F = API['F']
+
+    # connectivity, only if you have declared edge features
     C = API['C']
     Ci = API['Ci']
+
+    # primary data, only if you have specified "primary": True
     P = API['P']
+
+    # XML identifiers, only in sofar as declared under "xmlids"
     X = API['X']
+
+    # The "before" ordering of nodes
     BR = API['BR']
+
+    # The "next node" iterator
     NN = API['NN']
+
+    # The "next event" iterator, only if you have specified "primary": True
     NE = API['NE']
+
+    # The function to issue messages with
     msg = API['msg']
+
+    # File handling (opening for input, output, getting full path)
     infile = API['infile']
     outfile = API['outfile']
     my_file = API['my_file']
+
+    # Preparing custom data
+    prep = API['prep']
 
 Of course, you only have to give names to the elements you really use.
 And if performance is not important, you can leave out the naming altogether and just refer to 
@@ -83,6 +105,9 @@ the elements by means of the API dictionary::
 
     for i in API['NN']():
         this_type = API['F'].shebanq_db_otype.v(i)
+
+Not all API elements contain meaningful information.
+It depends on what you have specified in the ``init()`` call.
 
 LAF API
 =======
@@ -330,12 +355,8 @@ Because ``False`` comes before ``True``, the phrases come before the words they 
     The rest of the order remains untouched.
 
 .. note::
-    The effect of sorting is persistent until you call ``NN()`` again with an ``extrakey``.
-    If you pass the value ``True`` to ``extrakey``, the original order is restored.
-
-    So it is handy to start your task with an ``NN(extrakey=perfect_sort)`` to sort your nodes
-    perfectly for the task at hand.
-    Then all subsequent ``NN()`` calls without ``extrakey`` work as desired.
+    You can invoke a supplementary module of your choice to make the ordering more complete.
+    See the API method ``prep`` below.
 
 .. note::
     The type of a node is not a LAF concept, but a concept in this particular LAF resource.
@@ -517,7 +538,7 @@ The primary data is only available if you have specified in the *load* directive
     a point between two characters.
 
 Input and Output
-================
+----------------
 Examples::
 
     out_handle = outfile("output.txt")
@@ -586,7 +607,82 @@ LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
 The only way this can happen is when *A* and *B* start and end at the same point.
 Between those points they might be very different. 
 
+If you have a LAF resource and a method to order the nodes more completely,
+you can supply that as an extra data preparation step. See below.
+
 The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
 the order specifies a walk through the nodes were enclosing nodes come first,
 and embedded children come in the order dictated by the primary data.
+
+prep Extra data preparation
+===========================
+
+LAF-Fabric admits other modules to precompute data to which it should be pointed.
+
+Currently only an additional ordering of the nodes is admitted.
+
+Here is how it works. Suppose you are working with a specific resource, say the ETCBC Hebrew Text Database.
+Probably there is already a package *etcbc* to streamline the tasks relevant to this resource.
+To this package you can add a module, say *preprocess.py* with the following structure::
+
+    import sys
+    import collections
+    import array
+
+    def node_order(API):
+        '''Creates a form based on the information passed when creating this object.
+        '''
+        msg = API['msg']
+        F = API['F']
+        NN = API['NN']
+
+        object_rank = {
+            'book': -4,
+            'chapter': -3,
+            'verse': -2,
+            'half_verse': -1,
+            'sentence': 1,
+            'sentence_atom': 2,
+            'clause': 3,
+            'clause_atom': 4,
+            'phrase': 5,
+            'phrase_atom': 6,
+            'subphrase': 7,
+            'word': 8,
+        }
+
+        def hierarchy(node):
+            return object_rank[F.shebanq_db_otype.v(node)]
+
+        return array.array('I', NN(extrakey=hierarchy))
+
+    def check(API):
+        API['prep'](node_order, 'node_resorted', __file__)
+
+Back to your notebook. Say::
+
+    form etcbc import preprocess
+
+If you call there, after having loaded the API::
+
+    preprocess.check(API)
+
+then the following will happen:
+
+* LAF-Fabric checks whether a file *node_resorted.bin* exists next to the binary compiled data, and whether this file
+   is newer than your module *preprocess.py*.
+* If so, it loads this data from disk.
+* If not, it will execute the *node_order* function, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk.
+
+The LAF-Fabric data that is affected by this action is *node_resorted*.
+This is the data that *NN()* uses when iterating over the nodes.
+
+So you have effectively supplanted LAF-Fabric's standard ordering of the nodes by your own ordering, which makes better use
+of the particular structure of this data. 
+
+This data is only loaded if you make the ``preprocess.check(API)`` call.
+So you have ways to work with the original data as well.
+
+.. note::
+    The prepared data will not be unloaded until you changes source or restart the program.
 

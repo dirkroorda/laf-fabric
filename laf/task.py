@@ -76,7 +76,7 @@ class Feature(object):
         Returns:
             the value of this feature for that node or edge.
         '''
-        return self.lookup[ne]
+        return self.lookup.get(ne)
 
     def s(self, value=None):
         '''Iterator that yields the node set that has a defined value for this feature.
@@ -388,7 +388,6 @@ class LafTask(Laf):
         '''
         Laf.__init__(self, settings)
 
-        self.verbose = False
         self.result_files = []
         '''List of handles to result files created by the task through the method :meth:`add_output`'''
 
@@ -528,9 +527,8 @@ class LafTask(Laf):
                     With ``extrakey`` you can enforce an order on these cases.
                     The existing order between all other nodes remains the same.
 
-                    If given, a copy of the sorted node array will be made.
-                    All subsequent calls of ``NN()`` work with this order, even if no ``extrakey`` is given.
-                    If the value ``True`` is given, the original order is restored.
+            If you use an extra module that has prepared another sorting of the nodes,
+            then that order will be used, instead of the order that has been created upon compiling the laf resource.
             '''
 
             class Extra_key(object):
@@ -578,12 +576,13 @@ class LafTask(Laf):
                     )
                 __hash__ = None
 
-            if extrakey == True or (extrakey == None and "node_resorted" not in self.data_items):
-                self.data_items["node_resorted"] = self.data_items["node_sort"]
-                self.progress("Sort order of nodes back to original")
-            elif extrakey != None:
-                self.progress("Resorting {} nodes...".format(len(self.data_items["node_sort"])))
-                self.data_items["node_resorted"] = sorted(self.data_items["node_sort"], key=Extra_key)
+            original = self.data_items['node_sort']
+            new = self.data_items['node_resorted'] if 'node_resorted' in self.data_items else original
+            given = new if new else original
+
+            if extrakey != None:
+                self.progress("Resorting {} nodes...".format(len(given)))
+                given = sorted(given, key=Extra_key)
                 self.progress("Done")
 
             if test != None:
@@ -593,11 +592,11 @@ class LafTask(Laf):
                 if values != None:
                     for val in values:
                         test_values[val] = None
-                for node in self.data_items["node_resorted"]:
+                for node in given:
                     if test(node) in test_values:
                         yield node
             else:
-                for node in self.data_items["node_resorted"]:
+                for node in given:
                     yield node
 
         def next_event(key=None, simplify=None):
@@ -777,33 +776,31 @@ class LafTask(Laf):
         for kind in self.given['xmlids']:
             xmlid_objects.append(XMLid(self, kind))
 
-        if self.verbose:
-            self.progress("P: Primary Data")
+        self.progress("P: Primary Data", verbose='INFO')
         P = PrimaryData(self) if self.given['primary'] else None
 
-        if self.verbose:
-            self.progress("BF, NN, NE: Before, Next Node and Node Events")
+        self.progress("BF, NN, NE: Before, Next Node and Node Events", verbose='INFO')
         BF = before
         NN = next_node
-        NE = next_event
+        NE = next_event if self.given['primary'] else None
 
-        if self.verbose:
-            self.progress("F: Features")
+        self.progress("F: Features", verbose='INFO')
         F = Features(self, feature_objects)
 
-        if self.verbose:
-            self.progress("C, Ci: Connections")
+        self.progress("C, Ci: Connections", verbose='INFO')
         conn = Conn(self, feature_objects)
         C = Connections(conn)
         Ci = Connectionsi(conn)
 
-        if self.verbose:
-            self.progress("X: XML ids")
+        self.progress("X: XML ids", verbose='INFO')
         X = XMLids(xmlid_objects)
+
+        api = {}
+        prep = lambda task, lab, myfile: self.prep_data(api, task, lab, myfile)
 
         self.progress("LOADING API: DONE")
 
-        return {
+        api.update({
             'infile':  self.add_input,
             'outfile': self.add_output,
             'my_file': self.result,
@@ -816,9 +813,11 @@ class LafTask(Laf):
             'C':       C,
             'Ci':      Ci,
             'X':       X,
-        }
+            'prep':    prep,
+        })
+        return api
 
-    def run(self, source, annox, task, force_compile={}, load=None, function=None, stage=None, verbose=False):
+    def run(self, source, annox, task, verbose, force_compile={}, load=None, function=None, stage=None):
         '''Run a task.
 
         That is:
@@ -831,22 +830,20 @@ class LafTask(Laf):
         Args:
             source (str):
                 key for the source
-
             annox (str):
                 name of the extra annotation package
-
             task (str):
                 the chosen task
-
             load (dict):
                 a dictionary specifying what to load
-
             force_compile (dict):
                 whether to force (re)compilation of the LAF source for either 'source' or 'annox'.
+            verbose (string): 
+                verbosity level
         '''
-        self.verbose = verbose
         if stage == None or stage == 'init':
             self.check_status(source, annox, task)
+            self.stamp.set_verbose(verbose)
             self.stamp.reset()
             self.compile_all(force_compile)
             self.stamp.reset()

@@ -3,6 +3,7 @@ setup.py
 etcbc/__init__.py
 etcbc/annotating.py
 etcbc/featuredoc.py
+etcbc/preprocess.py
 laf/__init__.py
 laf/laf.py
 laf/lib.py

@@ -26,6 +26,7 @@ class Shell(object):
             0, # source
             0, # annox
             0, # task
+            1, # verbose
         ]
         '''Defaults for the selectable items: *source*, *annox* and *task*.
         If the user does not pass values for them both on the command lines, these ones are used.
@@ -61,6 +62,14 @@ class Shell(object):
             help = "which task to perform",
         )
         argsparser.add_argument(
+            "--verbose",
+            dest = 'verbose',
+            type = str,
+            choices = self.settings.verbose_choices,
+            metavar = 'Verbose',
+            help = "verbosity level",
+        )
+        argsparser.add_argument(
             "--force-compile-source",
             dest = 'forcecompilesource',
             action = "store_true",
@@ -84,6 +93,7 @@ class Shell(object):
             sorted(self.settings.source_choices),
             sorted(self.settings.annox_choices),
             sorted(self.settings.task_choices),
+            self.settings.verbose_choices,
         ))
         if self.args.source:
             self.default[0] = self.iindex[0][self.args.source]
@@ -91,6 +101,8 @@ class Shell(object):
             self.default[1] = self.iindex[1][self.args.annox]
         if self.args.task:
             self.default[2] = self.iindex[2][self.args.task]
+        if self.args.verbose:
+            self.default[3] = self.iindex[3][self.args.verbose]
 
         '''Data used to build a self-explanatory prompt, based on the available options'''
         self.message = ''
@@ -102,28 +114,8 @@ class Shell(object):
         self.cur.append(self.args.forcecompileannox)
 
         self.laftask = LafTask(self.settings.settings)
+        self.verbose = self.args.verbose
 
-    def run(self, source, annox, task, force_compile, load, function=None, stage=None):
-        '''Does a single task. Useful for stand alone tasks.
-
-        If invoked after the completion of another task, it unloads data from memory that is not needed anymore,
-        and loads addtional required data.
-
-        Args:
-            source(str):
-                the name of the source data
-            annox(str):
-                the name of an additional annotation package (use ``--`` for no additional package.
-            task(str):
-                the name of the task to execute. All tasks reside in a directory specified in the main config file.
-            load(dict):
-                a dictionary specifying what data to load. See :doc:`Writing Tasks </texts/getting-started>`.
-            function(callable): 
-                the function that implements the task. It should accept one argument, being the LafTask object
-                through which all data in the LAF resource can be accessed.
-        '''
-        self.laftask.run(source, annox, task, force_compile=force_compile, load=load, function=function, stage=stage, verbose=True)
-        
     def processor(self):
         '''Does work. Decides to run one task or start the command prompt.
 
@@ -138,6 +130,7 @@ class Shell(object):
                 self.args.source,
                 self.args.annox,
                 self.args.task,
+                self.args.verbose,
                 force_compile={'source': self.args.forcecompilesource, 'annox': self.args.forcecompileannox},
             )
         else:
@@ -149,10 +142,11 @@ class Shell(object):
 
         while True:
             self.prompt()
-            command = self.do_command("laf-fabric", "satCcx", '''
+            command = self.do_command("laf-fabric", "satvCcx", '''
     s=select source
     a=select annox
     t=select task
+    v=select verbosity
     C=toggle force compile source
     c=toggle force compile annox
     x=execute selected task on selected source
@@ -187,6 +181,10 @@ class Shell(object):
             task = self.get_num("task", 1, len(self.settings.task_choices))
             if task:
                 self.cur[2] = task - 1
+        elif command == 'v':
+            verbose = self.get_num("verbose", 1, len(self.settings.verbose_choices))
+            if verbose:
+                self.cur[3] = verbose - 1
         elif command == "C":
             self.cur[len(self.index)] = not self.cur[len(self.index)]
         elif command == "c":
@@ -313,7 +311,7 @@ class Shell(object):
         '''Writes an self-explanatory prompt text to the terminal.
         '''
         os.system("clear")
-        sys.stderr.write(''' ┌─SOURCE───────────────────────────┬─ANNOX────────────────────────────┬─TASK─────────────────────────────┐
+        sys.stderr.write(''' ┌─SOURCE──────────────────────┬─ANNOX───────────────────────┬─TASK────────────────────────┬─VERBOSE─────────────────────┐
 ''')
         sepchar = '│'
         sepchar_cur = '█'
@@ -341,7 +339,7 @@ class Shell(object):
             this_f = [None for i in range(len(row))]
             this_nf = [None for i in range(len(row))]
             for i in range(len(row)):
-                this_f[i] = this[i] + (fill[i] * (30 - len(this[i])))
+                this_f[i] = this[i] + (fill[i] * (25 - len(this[i])))
                 this_nf[i] = (fill[i] * (3 - len(this_n[i]))) + this_n[i]
 
             line = ' '
@@ -349,11 +347,11 @@ class Shell(object):
                 line += sep[i] + this_nf[i] + fill[i] + this_f[i]
             sys.stderr.write(line + sep[len(row)] + "\n")
 
-        sys.stderr.write(''' └──────────────────────────────────┴──────────────────────────────────┴──────────────────────────────────┘
- ┌─SETTING──────────────────────────┬─VALUE────────────────────────────┐
- │ force compile source             │ {:<3}                              │
- │ force compile annox              │ {:<3}                              │
- └──────────────────────────────────┴──────────────────────────────────┘
+        sys.stderr.write(''' └─────────────────────────────┴─────────────────────────────┴─────────────────────────────┴─────────────────────────────┘
+ ┌─SETTING─────────────────────┬─VALUE───────────────────────┐
+ │ force compile source        │ {:<3}                         │
+ │ force compile annox         │ {:<3}                         │
+ └─────────────────────────────┴─────────────────────────────┘
 '''.format('ON' if self.cur[len(self.index)] else 'OFF', 'ON' if self.cur[len(self.index)+1] else 'OFF'))
         sys.stderr.write(self.message)
 

@@ -58,7 +58,7 @@ class Laf(object):
         ``edges_from`` and ``edges_to`` group ``common``:
             At position ``i``: the source and the target of edge ``i``.
 
-        ``node_events_n``, ``node_events_k`` group ``common``:
+        ``node_events_n``, ``node_events_k`` group ``primary``:
             For each node event, gives its node and kind.
 
         ``node_anchor_min``, ``node_anchor_max``, group ``common``
@@ -89,11 +89,8 @@ class Laf(object):
             of primary data ranges that the node is linked to.
             The ranges have been normalized: they are maximal, non-overlapping, ordered by starting position.
 
-        ``node_events``, group ``common``:
+        ``node_events``, group ``primary``:
             For anchor ``a`` gives an ordered list of node event-ids associated with ``a``.
-
-        ``node_out``, ``node_in``, group common:
-            For node ``i`` the record ``i`` consists of all outgoing resp. incoming edges from this node.
 
     ``list``:
         A list of elements having arbitrary but pickable python datastructures.
@@ -154,6 +151,9 @@ class Laf(object):
            a new directory is created Of course this means that before executing any tasks,
            the LAF resource has to be (re)compiled. 
 
+        Args:
+            settings (:py:class:`configparser.ConfigParser`):
+                entries corresponding to the main configuration file
         Returns:
             object with data structures initialized, ready to load the compiled data from disk.
         '''
@@ -162,6 +162,8 @@ class Laf(object):
         '''Instance member holding the :class:`Timestamp <laf.timestamp.Timestamp>` object.
            Useful to deliver progress messages with timing information.
         '''
+        self.progress = self.stamp.progress
+
         self.settings = settings
         '''Instance member to hold config settings etc'''
 
@@ -263,18 +265,17 @@ class Laf(object):
             ('common', collections.OrderedDict([
                     ("node_anchor_min", 'array'),
                     ("node_anchor_max", 'array'),
-                    ("node_events", 'double_array'),
-                    ("node_events_n", 'array'),
-                    ("node_events_k", 'array'),
                     ("node_sort", 'i_array'),
-                    ("node_out", 'double_array'),
-                    ("node_in", 'double_array'),
+                    ("node_resorted", 'array'),
                     ("edges_from", 'array'),
                     ("edges_to", 'array'),
                 ])),
             ('primary', collections.OrderedDict([
                     ("data", 'string'),
                     ("node_anchor", 'double_array'),
+                    ("node_events", 'double_array'),
+                    ("node_events_n", 'array'),
+                    ("node_events_k", 'array'),
                 ])),
             ('xmlids', collections.OrderedDict([
                     ("xid", 'x_mapping'),
@@ -285,6 +286,10 @@ class Laf(object):
             ('annox', collections.OrderedDict([ 
                     ("xfeature", 'feature_mapping'),
                 ])),
+        ))
+
+        self.preparables = collections.OrderedDict((
+            ("node_resorted", 'array'),
         ))
 
         self.data_items = {}
@@ -544,8 +549,7 @@ class Laf(object):
                 self.progress('ERROR: {}: {} not present'.format(data_group, item_rep))
                 passed = False
             else:
-                if self.verbose:
-                    self.progress("present {}: {}".format(data_group, item_rep))
+                self.progress("present {}: {}".format(data_group, item_rep), verbose='INFO')
         for item in self.loaded[data_group]:
             item_rep = self.format_item(data_group, item)
             if item not in self.given[data_group]:
@@ -563,8 +567,7 @@ class Laf(object):
             if item not in loaded_features:
                 self.progress('WARNING: feature: {} not present from source {} nor annox {}'.format(item_rep, self.env['source'], self.env['annox']))
             else:
-                if self.verbose:
-                    self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item])))
+                self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item])), verbose='INFO')
 
         for item in loaded_features:
             item_rep = self.format_item('feature', item)
@@ -678,8 +681,7 @@ class Laf(object):
                 all_items[item] = item_rep
             for (item, item_rep) in sorted(all_items.items()):
                 if item in self.loaded[data_group] and item in the_givens:
-                    if self.verbose:
-                        self.progress("keeping {}: {} ...".format(data_group, item_rep))
+                    self.progress("keeping {}: {} ...".format(data_group, item_rep), verbose='INFO')
                 elif item in self.loaded[data_group]:
                     unload.add(item)
                 elif item in the_givens:
@@ -738,8 +740,7 @@ class Laf(object):
                     for item in items:
                         item_rep = self.format_item(data_group, item)
                         if item in self.data_items[label + ref_lab]:
-                            if self.verbose:
-                                self.progress("clearing {}: {} - {} ...".format(data_group, label, item_rep))
+                            self.progress("clearing {}: {} - {} ...".format(data_group, label, item_rep), verbose='INFO')
                             for sub in subs:
                                 lab = label + sub
                                 if lab in self.data_items and item in self.data_items[lab]:
@@ -750,8 +751,7 @@ class Laf(object):
                                     del self.data_items[lab][item]
                 else:
                     if label + ref_lab in self.data_items:
-                        if self.verbose:
-                            self.progress("clearing {}: {} ...".format(data_group, label))
+                        self.progress("clearing {}: {} ...".format(data_group, label), verbose='INFO')
                         for sub in subs:
                             lab = label + sub
                             if lab in self.data_items:
@@ -920,8 +920,9 @@ class Laf(object):
         '''
         if data_group == 'common':
             for (label, data_type) in self.data_items_def[data_group].items():
-                if self.verbose:
-                    self.progress("loading {}: {} ... ".format(data_group, label))
+                if label in self.preparables:
+                    continue
+                self.progress("loading {}: {} ... ".format(data_group, label), verbose='INFO')
                 if data_type == 'list':
                     b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
                     if os.path.exists(b_path):
@@ -942,9 +943,10 @@ class Laf(object):
                             b_handle.close()
         elif data_group == 'primary':
             for (label, data_type) in self.data_items_def[data_group].items():
+                if label in self.preparables:
+                    continue
                 if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):
-                    if self.verbose:
-                        self.progress("loading {}: {} ... ".format(data_group, label))
+                    self.progress("loading {}: {} ... ".format(data_group, label), verbose='INFO')
                     if data_type == 'string':
                         b_path = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data'])
                         b_handle = open(b_path, "r", encoding="utf-8")
@@ -966,10 +968,11 @@ class Laf(object):
             ref_lab = '_int' if data_group == 'xmlids' else ''
             target_dir = self.env['bin_dir'] if data_group == 'xmlids' else self.env['feat_dir'] if data_group == 'feature' else self.env['annox_bdir']
             for label in self.data_items_def[data_group]:
+                if label in self.preparables:
+                    continue
                 if items != None and len(items):
                     for item in items:
-                        if self.verbose:
-                            self.progress("loading {}: {} {} ... ".format(data_group, label, item))
+                        self.progress("loading {}: {} {} ... ".format(data_group, label, item), verbose='INFO')
                         item_rep = self.format_item(data_group, item, asFile=True)
                         item_repm = self.format_item(data_group, item)
                         b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
@@ -978,10 +981,61 @@ class Laf(object):
                             self.data_items[lab] = {}
                         if os.path.exists(b_path):
                             b_handle = gzip.open(b_path, "rb")
-                            self.data_items[lab][item] = collections.defaultdict(lambda: None, pickle.load(b_handle))
+                            self.data_items[lab][item] = pickle.load(b_handle)
                             b_handle.close()
                         else:
-                            self.data_items[lab][item] = collections.defaultdict(lambda: None)
+                            self.data_items[lab][item] = {}
+
+    def prep_data(self, api, task, lab, myfile):
+        '''Loads custom data from disk, if present. If not prepares custom data and stores it on disk.
+
+        LAF-Fabric cannot precompute application specific data.
+        If an application needs to compute data over and over again, it may ask LAF-Fabric to store it alongside the compiled data.
+        For example, the order of nodes by LAF-Fabric is rather crude, an application may provide a better ordering.
+
+        Only data that is anticipated by LAF-Fabric can be stored in this way. 
+        The intention is that you can override LAF-Fabric data, not that you add arbitrary data.
+        If LAF-Fabric does not know your data, you can store it easily outside LAF-Fabric.
+
+        Args:
+            api (dict):
+                the LAF-Fabric api. Needed by *task*.
+            task (callable):
+                Custom function defined in an other application that computes the new data.
+                It will be passed the *api* parameter, so that the function has access to all LAF-Fabric's data and methods.
+            lab (string):
+                label, known by LAF-Fabric (defined in the attribute ``preparables``.
+                The custom data will be stored under this label.
+            myfile (string):
+                Full path to the file that defined the *task* function.
+                In order to decide whether the custom data is still up to date,
+                the modification times of this file and the custom data file will be compared.
+        '''
+
+        if lab not in self.preparables:
+            self.progress("WARNING: Cannot prepare data in {}.".format(lab))
+            return
+        lab_type = self.preparables[lab]
+        if lab_type == 'array':
+            self.data_items[lab] = array.array('I')
+        else:
+            self.data_items[lab] = {}
+        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+        s_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.TEXT_EXT)
+        up_to_date = os.path.exists(b_path) and os.path.exists(s_path) and os.path.getmtime(b_path) >= os.path.getmtime(myfile)
+        if up_to_date:
+            self.progress("LOADING {} (prepared)".format(lab), verbose='INFO')
+            with open(s_path, 'r', encoding="utf-8") as x: n = int(x.read())
+            b_handle = gzip.open(b_path, "rb")
+            self.data_items[lab].fromfile(b_handle, n)
+        else:
+            self.progress("PREPARING {}".format(lab), verbose='INFO')
+            self.data_items[lab] = task(api)
+            self.progress("WRITING {} (prepared)".format(lab), verbose='INFO')
+            with open(s_path, "w", encoding='utf-8') as x: x.write(str(len(self.data_items[lab])))
+            b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
+            self.data_items[lab].tofile(b_handle)
+            b_handle.close()
 
     def parse(self, data_group, xmlitems):
         '''Call the XML parser and collect the parse results.
@@ -1171,10 +1225,6 @@ class Laf(object):
             self.log.flush()
         except:
             pass
-
-    def progress(self, msg, newline=True, withtime=True):
-        '''Convenience method to call the progress of the associated stamp directly from the Laf object'''
-        self.stamp.progress(msg, newline=newline, withtime=withtime)
 
     def make_inverse(self, mapping):
         '''Creates the inverse lookup table for a data table given as a dictionary.

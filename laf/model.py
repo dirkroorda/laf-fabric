@@ -252,32 +252,5 @@ def model(data_items, temp_data_items, stamp):
 
     node_anchor_list = None
 
-    stamp.progress("NODES AND EDGES")
-
-    edges_from = data_items["edges_from"]
-    edges_to = data_items["edges_to"]
-    n_edge = len(edges_from)
-
-    edges_in = [[] for i in range(n_node)]
-    edges_out = [[] for i in range(n_node)]
-
-    for i in range(n_edge):
-        node_from = edges_from[i]
-        node_to = edges_to[i]
-        edges_out[node_from].append(node_to)
-        edges_in[node_to].append(node_from)
-
-    (node_out, node_out_items) = arrayify(edges_out)
-    (node_in, node_in_items) = arrayify(edges_in)
-    result_items.append(("node_out", node_out))
-    result_items.append(("node_out_items", node_out_items))
-    result_items.append(("node_in", node_in))
-    result_items.append(("node_in_items", node_in_items))
-
-    edges_out = None
-    edges_in = None
-
-    stamp.progress("PLAIN EDGES")
-
     return result_items
 

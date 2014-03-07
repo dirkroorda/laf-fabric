@@ -13,13 +13,12 @@ class Notebook(object):
 
     def __init__(self):
         '''Upon creation, create a :class:`LafTask <laf.task.LafTask>` object based on settings.
-
         '''
 
         self.settings = Settings(context='nb')
         self.laftask = LafTask(self.settings.settings)
 
-    def init(self, source, annox, task, load, force_compile_source=False, force_compile_annox=False):
+    def init(self, source, annox, task, load, force_compile_source=False, force_compile_annox=False, verbose=None):
         '''Initialize task execution.
 
         Run this method before executing your task code.
@@ -40,14 +39,16 @@ class Notebook(object):
             force_compile_annox(bool):
                 Whether to force compilation of the additional annotation package.
                 Optional, default False.
+            verbose (string):
+                verbosity level to pass on to :class:`Timestamp <laf.timestamp.Timestamp>`
         '''
         self.laftask.run(
-            source, annox, task,
+            source, annox, task, verbose,
             force_compile={'source': force_compile_source, 'annox': force_compile_annox},
-            load=load, function=True, stage='init', verbose=False,
+            load=load, function=True, stage='init',
         )
 
-    def load(self, load):
+    def load(self, load, verbose=None):
         '''Re Initialize task execution.
 
         Run this method before executing your task code.
@@ -60,11 +61,12 @@ class Notebook(object):
             self.laftask.env['source'],
             self.laftask.env['annox'],
             self.laftask.env['task'],
+            verbose,
             force_compile={'source': False, 'annox': False},
-            load=load, function=True, stage='init', verbose=False,
+            load=load, function=True, stage='init',
         )
 
-    def final(self):
+    def final(self, verbose=None):
         '''Finalize task execution.
 
         Run this method after executing your task code, in order to
@@ -74,6 +76,7 @@ class Notebook(object):
             self.laftask.env['source'],
             self.laftask.env['annox'],
             self.laftask.env['task'],
+            verbose,
             stage='final',
         )
 

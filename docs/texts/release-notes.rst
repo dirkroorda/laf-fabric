@@ -2,9 +2,31 @@ Release Notes
 #############
 Upcoming
 ========
+3.8
+===
+Emdros integration.
+In the *etcbc* module I want to make an addition that enables the user to run emdros queries, capture the results as a node set, and use that for
+further processing in LAF-Fabric.
 
 Current
 =======
+3.7
+---
+API
+^^^
+* You can make additional sorting persistent now, so that it becomes part of the compiled data. See the ``prep`` function in the API reference.
+
+Usability
+^^^^^^^^^
+* It is possible to set a verbosity level for messages.
+* There were chunks of time consuming data that were either completely or often unnecessary. This data has been removed, or is loadable on demand respectively.
+  Overall performance during load time is a bit better now.  
+
+Extra's
+^^^^^^^
+The *etcbc* module has a method to compute a better ordering on the nodes. 
+This module works together with the new API method to store computed results.
+
 3.6
 ---
 API

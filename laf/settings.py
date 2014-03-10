@@ -15,6 +15,8 @@ system_settings = {
         'laf_subdir': 'laf',                   # subdirectory of laf resource
         'feat_subdir': 'feat',                 # subdirectory within bin_subdir for feature data
         'annox_subdir': 'annox',               # subdirectory within bin_subdir for annox feature data
+        'prep_subdir': 'prep',                 # subdirectory within bin_subdir for prepared data
+        'xid_subdir': 'xid',                   # subdirectory within bin_subdir for xml ids
         'primary_data': 'primary_data.txt',    # name of the primary data file in the context of the compiled data
         'task_dir': 'tasks',                   # name of the directory with tasks (relative to the top-level dir of laf-fabric)
     },

@@ -1257,3 +1257,92 @@ class Laf(object):
             if handle and not handle.closed:
                 handle.close()
 
+class LafFiles(object):
+    BIN_EXT = 'bin'
+    '''extension for binary files
+    '''
+    TEXT_EXT = 'txt'
+    '''extension for text files
+    '''
+    LOG_NAME = '__log__'
+    '''log file base name for a task
+    '''
+    STAT_NAME = '__stat__'
+    '''statistics file base name for a task
+    '''
+    COMPILE_NAME = 'compile__'
+    '''name of the compile task
+    '''
+
+    load_template = '''
+node_anchor         = arr = primary  = {source}/{bin}/{{name}}.{bext}
+node_anchor_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
+node_anchor_min     = arr = common   = {source}/{bin}/{{name}}.{bext}
+node_anchor_max     = arr = common   = {source}/{bin}/{{name}}.{bext}
+node_events         = arr = primary  = {source}/{bin}/{{name}}.{bext}
+node_events_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
+node_events_k       = arr = primary  = {source}/{bin}/{{name}}.{bext}
+node_events_n       = arr = primary  = {source}/{bin}/{{name}}.{bext}
+node_sort           = arr = common   = {source}/{bin}/{{name}}.{bext}
+node_sort_inv       = dct = common   = {source}/{bin}/{{name}}.{bext}
+node_resorted       = arr = common   = {source}/{bin}/{prp}/{{name}}.{bext}
+node_resorted       = num = common   = {source}/{bin}/{prp}/{{name}}.{text}
+edges_from          = arr = common   = {source}/{bin}/{{name}}.{bext}
+edges_to            = arr = common   = {source}/{bin}/{{name}}.{bext}
+primary_data        = str = primary  = {source}/{bin}/{{name}}.{text}
+xid/{{comp}}_int    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_int.{bext}
+xid/{{comp}}_rep    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_rep.{bext}
+feat/{{comp}}       = dct = feature  = {source}/{bin}/{feat}/{{compr}}.{bext}
+feat/conn+{{comp}}  = dct = efeature = {source}/{bin}/{feat}/conn+{{compr}}.{bext}
+xfeat/{{comp}}      = dct = feature  = {source}/{bin}/{anx}/{annox}/{{compr}}.{bext}
+xfeat/conn+{{comp}} = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr}}.{bext}
+'''
+
+    def __init__(self, laf):
+        self.laf = laf
+        locations = laf.settings['locations']
+        self.bin_sd = locations['bin_subdir']
+        self.feat_sd = locations['feat_subdir']
+        self.anx_sd = locations['annox_subdir']
+        self.prp_sd = locations['prep_subdir']
+        self.xid_sd = locations['xid_subdir']
+
+    def requested_files(self, source, annox, primary, xmlids, features):
+        lines = self.load_template.split("\n")
+        newlist = []
+        for line in lines:
+            if not len(line): continue
+            xline = line.format(
+                source=source,
+                annox=annox,
+                bin=self.bin_sd,
+                bext=self.BIN_EXT,
+                text=self.TEXT_EXT,
+                prp=self.prp_sd,
+                xid=self.xid_sd,
+                feat=self.feat_sd,
+                anx=self.anx_sd,
+            )
+            (dkey, dtype, dcond, dpath) = [x.strip() for x in xline.split("=")]
+            if dcond == 'common': newlist.append((dkey, dtype, dpath.format(name=dkey)))
+            elif dcond == 'primary' and primary: newlist.append((dkey, dtype, dpath.format(name=dkey)))
+            elif dcond == 'xmlids':
+                for comp in xmlids:
+                    comprep = comp
+                    if type(comp) == type(()):
+                        comprep = '_'.join(comp)
+                    newlist.append((dkey.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+            elif dcond == 'feature':
+                for comp in features:
+                    comprep = comp
+                    if type(comp) == type(()):
+                        comprep = '_'.join(comp)
+                    newlist.append((dkey.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+            elif dcond == 'efeature':
+                for comp in features:
+                    if comp[3] != 'edge': continue
+                    comprep = comp
+                    if type(comp) == type(()):
+                        comprep = '_'.join(comp)
+                    newlist.append((dkey.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+        return newlist

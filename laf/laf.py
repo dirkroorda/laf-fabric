@@ -26,97 +26,6 @@ class Laf(object):
     The data of this class represents the compiled data on the basis of which tasks can run.
     This data is created by the method :meth:`compile_all` in this class.
 
-    The :class:`Laf` knows the structure of the data, and how to load it into memory.
-    It can also see what it loaded and what not, and it can compute conditions that require compiling and (re)loading.
-
-    There are various kinds of data, by their shape and by their function.
-    The instance member *data_items_def* contains their declarations in the
-    form of an ordered dictionary, keyed by data_group.
-
-    The instance member *data_items* contains the data itself.
-
-    The types of data are
-
-    ``x_mapping``, group ``xmlids``:
-        mappings between xml identifiers as they occur in the original LAF source
-        and the node/edge numbers in the compiled data.
-        
-        ``xid_int``, ``xid_rep``, group ``xmlids``:
-            Mappings going from xml to integer resp. from integer to xml.
-            Both contain two dictionaries, one for nodes and one for edges separately.
-
-    ``string``:
-        Just an unicode string.
-        
-        ``data``, group ``primary``:
-            Holds the primary data as string.
-
-    ``array``:
-        Simply tables of integer values. 
-        Most of the data common to all tasks is in ``array`` s and ``double_array`` s (see below).
-
-        ``edges_from`` and ``edges_to`` group ``common``:
-            At position ``i``: the source and the target of edge ``i``.
-
-        ``node_events_n``, ``node_events_k`` group ``primary``:
-            For each node event, gives its node and kind.
-
-        ``node_anchor_min``, ``node_anchor_max``, group ``common``
-
-    ``i_array``:
-        As ``array`` plus a generated inverse of the array, giving the array index for each value.
-
-        ``node_sort``, group ``common``:
-            All nodes ordered as induced by the region anchors.
-            Nodes that start before others, come before them, 
-            nodes that have equal start points are ordered such that the one with the later end point
-            comes first. If both have equal end points, the order is arbitrary.
-            If the nodes correspond to objects in a hierarchy without gaps, then embedding objects come before
-            embedded objects.
-            The inverse is handy for sorting subsets of nodes: it gives for each node its rank in the sort order.
-
-    ``double_array``: 
-        Twin arrays representing a list of records where records may have variable length.
-        The primary array is has the name given, and contains at position ``i`` the starting
-        point for record ``i`` in the secondary array.
-        The record in the second array starts with a cell containing the length of the record,
-        and then so many cells of information.
-        This array has as its name the name of the primary array plus ``_items``.
-
-        ``node_anchor``, group ``primary``:
-            For node ``i`` the record ``i`` consists of all anchor ranges that this node is linked to.
-            The anchor range for a node is a sequence with even length of numbers that are the start and end anchors
-            of primary data ranges that the node is linked to.
-            The ranges have been normalized: they are maximal, non-overlapping, ordered by starting position.
-
-        ``node_events``, group ``primary``:
-            For anchor ``a`` gives an ordered list of node event-ids associated with ``a``.
-
-    ``list``:
-        A list of elements having arbitrary but pickable python datastructures.
-
-    ``feature_mapping``, group ``feature`` resp group ``annox``:
-        Contains all the feature data of source resp annox.
-        
-        ``feature``:
-            Keyed by *annotation space*, then by *annotation label* (both referring to the annotation that 
-            contains the feature at hand), then by *feature name*, then by *kind* (``node`` or 
-            ``edge``). At this level we have a dictionary, keyed by either the nodes or the edges
-            (both as integers), and the value for each key is the value of the feature.
-        
-        .. note::
-            If a feature occurs on both nodes and edges, the feature is split into two features with the same name,
-            the one acting on nodes and the other acting on edges. In the compiled version, every feature has a kind,
-            and in order to obtain a feature value, you have to specify the feature name and the feature kind (and of course
-            the annotation space and annotation label).
-        
-        So the complete road to a value is::
-        
-            val = self.data_items['feature``][(annotation_space, annotation_label, feature_name, kind)][node_or_edge_id]
-        
-        The API will help you to lookup feature values.
-        See :mod:`task <laf.task>` for a description of the API, especially
-        :meth:`API <laf.task.LafTask.API>`
     '''
 
     BIN_EXT = 'bin'
@@ -134,6 +43,30 @@ class Laf(object):
     COMPILE_NAME = 'compile__'
     '''name of the compile task
     '''
+
+    file_list = '''
+source/node_anchor         = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_anchor_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_anchor_min     = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/node_anchor_max     = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/node_events         = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_events_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_events_k       = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_events_n       = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_sort           = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/node_sort_inv       = dct = common   = {source}/{bin}/{{name}}.{bext}
+source/node_resorted       = arr = prepared = {source}/{bin}/{prp}/{{name}}.{bext}
+source/node_resorted_inv   = arr = prepared = {source}/{bin}/{prp}/{{name}}.{bext}
+source/edges_from          = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/edges_to            = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/primary_data        = str = primary  = {source}/{bin}/{{name}}.{text}
+source/xid/{{comp}}_int    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_int.{bext}
+source/xid/{{comp}}_rep    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_rep.{bext}
+source/feat/{{comp}}       = dct = feature  = {source}/{bin}/{feat}/{{compr}}.{bext}
+source/cfeat/{{comp}}      = dct = efeature = {source}/{bin}/{feat}/conn+{{compr}}.{bext}
+annox/feat/{{comp}}        = dct = feature  = {source}/{bin}/{anx}/{annox}/{{compr}}.{bext}
+annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr}}.{bext}
+'''
 
     def __init__(self, settings):
         '''Upon creation, empty datastructures are initialized to hold the binary,
@@ -170,135 +103,14 @@ class Laf(object):
         self.env = {}
         '''Holds the context information for the current task, such as chosen source, annox and task.
         '''
+
         self.log = None
         '''handle of a log file, usually open for writing. Used for the log of the compilation process
         and of the task executions.
         '''
-        self.prev_tasks = {}
-        '''List of tasks executed in this run of LAF-Fabric, with the modification time of the task program file
-        at the time it was last run
-        '''
-        self.status = {
-            'env': {
-                'source': None,
-                'annox': None,
-                'task': None,
-            },
-            'compile': {
-                'source': False,
-                'annox': False,
-            },
-            'load' : {
-                'common': None,
-                'primary': None,
-                'xmlids': None,
-                'feature': None,
-                'annox': None,
-            }
-        }
-        '''Instance member to keep track of the status of the loaded data: does it match the task at hand?
-        Three categories:
-
-        **env**:
-            The environment is the selected source, annox and task.
-            Relevant to maintain is whether these have changed since last task execution.
-        *keys*:
-            ``source``:
-                the chosen source
-            ``annox``:
-                the chosen annox, i.e. the selected extra annotation package
-            ``task``:
-                the chosen task
-        *values*:
-            ``None``:
-                there was no previous choice
-            ``False``:
-                changed since last time
-            ``True``:
-                no change since last time
-        **compile**:
-            The source must be compiled before it can be used.
-            In addition to the source there is the additional package of annotation, annox.
-            This also has to be compiled.
-            Relevant is to maintain whether the compiled data is outdated, up to data, or just compiled.
-            In the latter case, the data is still in memory and does not have to be loaded.
-        *keys*:
-            ``source``:
-                all data originating from the chosen source, including its feature data
-            ``annox``:
-                all data originating from the chosen annox, which is *only* feature data
-        *values*:
-            ``False``:
-                compiled data is outdated.
-            ``True``:
-                compiled data is up to date, but has not recently be compiled.
-            ``None``:
-                compiled data is freshly compiled.
-        **load**:
-            Compiled data can only be used if it is loaded.
-            Because data gets selectively loaded and unloaded between tasks,
-            and because compiling may load data that is not needed for tasks,
-            we need to keep track which data has been loaded, and whether
-            the loaded data is still actual.
-        *keys*:
-            ``common``:
-                data originating from the chosen source, but not its feature data and not its xml-id data.
-            ``primary``:
-                the primary data of the chosen source, including the region information
-            ``xmlids``:
-                the xml-ids originating from the chosen source.
-            ``feature``:
-                the feature data originating from the chosen source.
-            ``annox``:
-                the feature data from the chosen annox.
-        *values*:
-            ``False``:
-                Data is no longer correct and must be loaded from scratch.
-                All data that is present must be cleared.
-            ``True``:
-                All data that is present is correct. No data needs to be unloaded or loaded.
-            ``None``:
-                All data that is present is correct. Some data may need to be unloaded or loaded.
-        '''
-
-        self.data_items_def = collections.OrderedDict((
-            ('common', collections.OrderedDict([
-                    ("node_anchor_min", 'array'),
-                    ("node_anchor_max", 'array'),
-                    ("node_sort", 'i_array'),
-                    ("node_resorted", 'array'),
-                    ("edges_from", 'array'),
-                    ("edges_to", 'array'),
-                ])),
-            ('primary', collections.OrderedDict([
-                    ("data", 'string'),
-                    ("node_anchor", 'double_array'),
-                    ("node_events", 'double_array'),
-                    ("node_events_n", 'array'),
-                    ("node_events_k", 'array'),
-                ])),
-            ('xmlids', collections.OrderedDict([
-                    ("xid", 'x_mapping'),
-                ])),
-            ('feature', collections.OrderedDict([ 
-                    ("feature", 'feature_mapping'),
-                ])),
-            ('annox', collections.OrderedDict([ 
-                    ("xfeature", 'feature_mapping'),
-                ])),
-        ))
-
-        self.preparables = collections.OrderedDict((
-            ("node_resorted", 'array'),
-        ))
 
         self.data_items = {}
-        '''Instance member holding the compiled data in the form of a dictionary of arrays and lists.
-        
-        This dictionary is keyed by the same keys as ``data_items_def`` plus a few additional ones,
-        dependent on tnd predictable from he data type and data group.
-
-        See the :mod:`model <laf.model>` modules for the way the compiled data is created.
+        '''Instance member holding the compiled data in the form of a dictionary of data chunks.
         '''
 
         self.temp_data_items = None
@@ -306,15 +118,204 @@ class Laf(object):
         The data that we must keep is stored in the object, of course.
         '''
 
-        self.given = {}
-        '''Set of items given in the load directives of a task, per data group
-        '''
+        self.source = None
+        self.annox = None
+        self.loadlist = {}
+        self.preparedlist = {}
 
-        self.loaded = {}
-        '''List of items currently loaded in memory, per data group 
-        '''
+    def requested_files(self, source, annox, primary, xmlids, features):
+        locations = self.settings['locations']
+        lines = self.file_list.split("\n")
+        newlist = []
+        preparedlist = []
+        for line in lines:
+            if not len(line): continue
+            xline = line.format(
+                source=source,
+                annox=annox,
+                bin=locations['bin_subdir'],
+                bext=self.BIN_EXT,
+                text=self.TEXT_EXT,
+                prp=self.locations['prep_subdir'],
+                xid=self.locations['xid_subdir'],
+                feat=self.locations['feat_subdir'],
+                anx=self.locations['annox_subdir'],
+            )
+            (dkey, dtype, dcond, dpath) = [x.strip() for x in xline.split("=")]
+            dkeyparts = dkey.split('/')
+            dkeypath = dkeyparts[0:len(dkeyparts)-1]
+            dkeyname = dkeyparts[-1]
+            if dcond == 'common': newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
+            if dcond == 'prepared': preparedlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
+            elif dcond == 'primary' and primary: newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
+            elif dcond == 'xmlids':
+                for comp in xmlids:
+                    comprep = comp
+                    if type(comp) == type(()):
+                        comprep = '_'.join(comp)
+                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+            elif dcond == 'feature':
+                for comp in features:
+                    comprep = comp
+                    if type(comp) == type(()):
+                        comprep = '_'.join(comp)
+                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+            elif dcond == 'efeature':
+                for comp in features:
+                    if comp[3] != 'edge': continue
+                    comprep = comp
+                    if type(comp) == type(()):
+                        comprep = '_'.join(comp)
+                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+        return (newlist, preparedlist)
 
-#        self.clear_all()
+    def adjust_all(self, source, annox, primary, xmlids, features, method_dict):
+        loadlist_old = self.loadlist
+        preparedlist_old = self.preparedloadlist
+        (loadlist_new, preparedlist_new) = self.requested_files(source, annox, primary, xmlids, features)
+
+        correct = True
+
+        for x in loadlist_old:
+            if x not in loadlist_new:
+                self.progress("clear {}".format(self.format_key(x[0], x[1]))) 
+                self.clear_file(x)
+        for x in loadlist_new:
+            if x in loadlist_old:
+                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
+            else:
+                this_correct = self.load_file(x)
+                if not this_correct: correct = False
+
+        for x in preparedlist_old:
+            if x not in preparedlist_new:
+                self.progress("clear {}".format(self.format_key(x[0], x[1]))) 
+                self.clear_file(x)
+        for x in preparedlist_new:
+            if x in preparedlist_old:
+                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
+            else:
+                this_correct = self.prepare_file(x, method_dict)
+                if not this_correct: correct = False
+
+        self.source = source
+        self.annox = annox
+        self.loadlist = loadlist_new
+        return correct
+
+    def print_file_list(self, filelist):
+        for (dkeypath, dkeyname, dtype, dpath) in filelist:
+            print("data_items[{}][{}] = {} from file {}".format(
+                ']['.join(dkeypath),
+                dkeyname,
+                "''" if dtype == 'str' else
+                0 if dtype == 'num' else
+                '{}' if dtype == 'dct' else
+                "array.array('I')" if dtype == 'arr' else
+                'None',
+                dpath,
+            ))
+
+    def clear_source(self):
+        self.data_items['source'] = {} 
+
+    def clear_annox(self):
+        self.data_items['annox'] = {} 
+
+    def clear_file(self, filespec): 
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+
+        newdata = None
+        if dtype == 'arr':
+            newdata = array.array('I')
+        elif dtype == 'dct':
+            newdata = {}
+        elif dtype == 'str':
+            newdata = ''
+
+        place = self.data_items
+        for comp in dkeypath:
+            if comp not in place: place[comp] = {}
+            place = place[comp]
+        place[dkeyname] = newdata
+
+    def load_file(self, file_spec)
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+
+        if not os.path.exists(dpath):
+            laf.progress("ERROR: Can not load data for {}: File {} does not exist.".format(self.format_key(dkeypath, dkeyname), dpath))
+            return False
+
+        newdata = None
+        if dtype == 'arr':
+            newdata = array.array('I')
+            itemsize = newdata.itemsize
+            filesize = os.path.getsize(dpath)
+            n_items = filesize / itemsize
+            handle = gzip.open(dpath, "rb")
+            newdata.fromfile(handle, n_items)
+            handle.close
+        elif dtype == 'dct':
+            handle = gzip.open(dpath, "rb")
+            newdata = pickle.load(handle)
+            handle.close()
+        elif dtype == 'str':
+            handle = open(dpath, "r", encoding="utf-8")
+            newdata = handle.read(None)
+            handle.close()
+
+        place = self.data_items
+        for comp in dkeypath:
+            if comp not in place: place[comp] = {}
+            place = place[comp]
+        place[dkeyname] = newdata
+
+        return True
+
+    def prepare_file(self, file_spec, method_dict)
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+        method_key = dkeypath + (dkeyname,)
+
+        if method_key not in method_dict:
+            self.progress("WARNING: Cannot prepare data for {}. No preparation method available.".format(self.format_key(dkeypath, dkeyname)))
+            return False
+        (method, method_source) = method_dict[method_key]
+        up_to_date = os.path.exists(dpath) and os.path.getmtime(dpath) >= os.path.getmtime(method_source)
+        if not up_to_date:
+            self.progress("PREPARING {}".format(format_key(dkeypath, dkeyname)))
+            newdata = method(api)
+            self.progress("WRITING {} (prepared)".format(format_key(dkeypath, dkeyname)))
+        return self.load_file(file_spec)
+
+    def store_file(self, filespec)
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+
+        place = self.data_items
+        for comp in dkeypath + (dkeyname,):
+            if comp not in place:
+                laf.progress("Error: Can not write data for {} to {}: Data selected by {} is not present.".format(self.format_key(dkeypath, dkeyname), dpath, comp))
+                return False
+            place = place[comp]
+        newdata = place[dkeyname]
+
+        if dtype == 'arr':
+            handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
+            newdata.tofile(handle)
+            handle.close()
+        elif dtype == 'dct':
+            handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
+            pickle.dump(newdata, handle)
+            handle.close()
+        elif dtype == 'str':
+            handle = open(dpath, "w", encoding="utf-8")
+            handle.write(newdata)
+            handle.close()
+
+        return True
+
+    def format_key(self, dpath, dkey):
+        return "{}: {}".format('/'.join(dpath), dkey)
+
 
     def format_item(self, data_group, item, asFile=False):
         if data_group == 'common':
@@ -328,441 +329,6 @@ class Laf(object):
                 return '{}_{}_{}_{}'.format(*item)
             else:
                 return '{}:{}.{} ({})'.format(*item)
-
-    def check_status(self, source, annox, task):
-        '''Updates the complete status information by inspecting the environment and
-        detecting the compile status.
-
-        This function is called at the start of each task execution, before any compiling or loading
-        has taken place.
-
-        It first detects changes in the selected source, annox and task (env), then it detects whether
-        compiled data is outdated with respect to the source.
-        data is up to the task.
-
-        The methods for compiling and loading are responsible for updating the
-        ``env`` and ``compile`` parts of the status accordingly.
-        '''
-
-#   env (compare new source, annox, task with old values in environment)
-        for (info, lab) in ((source, 'source'), (annox, 'annox'), (task, 'task')):
-            self.status['env'][lab] = None if lab not in self.env else self.env[lab] == info
-
-        this_mtime = self.get_task_mtime(task)
-        if task in self.prev_tasks:
-            prev_mtime = self.prev_tasks[task]
-            if prev_mtime < this_mtime:
-                self.prev_tasks[task] = this_mtime
-                self.status['env']['task'] = True
-        else:
-            self.prev_tasks[task] = this_mtime
-
-#   now set environment to new source, annox, task
-
-        self.set_environment(source, annox, task)
-
-#   compile
-        self.status['compile']['source'] = not os.path.exists(self.env['data_path']) or (
-                os.path.exists(self.env['stat_file']) and
-                os.path.getmtime(self.env['stat_file']) >= os.path.getmtime(self.env['data_path'])
-            )
-
-        up_to_date = True
-        for file in glob.glob('{}/*.xml'.format(self.env['annox_dir'])):
-            this_up_to_date = self.env['annox'] == self.settings['annox']['empty'] or (
-                os.path.exists(self.env['annox_check_path']) and
-                os.path.getmtime(self.env['annox_check_path']) >= os.path.getmtime(file)
-            )
-            if not this_up_to_date:
-                up_to_date = False
-                break
-        self.status['compile']['annox'] = up_to_date
-        
-        self.given = {
-            'common': set(),
-            'primary': set(),
-            'xmlids': set(),
-            'feature': set(),
-            'annox': set(),
-            'other_edges': set(),
-        }
-
-    def check_load_status(self):
-        '''Computes the ``load`` part of the status from the other parts.
-
-        The rules for the status are not easy to state and it is easy to miss out cases.
-        So I have spelled out all cases in a switchboard.
-        Given the ``env`` and ``compile`` values, the switchboard gives the ``load`` values.
-        
-        To be called just before compiling and loading.
-
-        ''' 
-        switchboard = {
-#          (env           , compile        : load                              )
-#          ((S    , A    ), (S    , A    ) : (C    , P,     X    , F    , A    ) 
-           ((None , None ), (False, False)): (False, False, False, False, False),
-           ((None , False), (False, False)): (False, False, False, False, False),
-           ((None , True ), (False, False)): (False, False, False, False, False),
-           ((False, None ), (False, False)): (False, False, False, False, False),
-           ((False, False), (False, False)): (False, False, False, False, False),
-           ((False, True ), (False, False)): (False, False, False, False, False),
-           ((True , None ), (False, False)): (False, False, False, False, False),
-           ((True , False), (False, False)): (False, False, False, False, False),
-           ((True , True ), (False, False)): (False, False, False, False, False),
-
-           ((None , None ), (False, True )): (False, False, False, False, False),
-           ((None , False), (False, True )): (False, False, False, False, False),
-           ((None , True ), (False, True )): (False, False, False, False, None ),
-           ((False, None ), (False, True )): (False, False, False, False, False),
-           ((False, False), (False, True )): (False, False, False, False, False),
-           ((False, True ), (False, True )): (False, False, False, False, None ),
-           ((True , None ), (False, True )): (False, False, False, False, False),
-           ((True , False), (False, True )): (False, False, False, False, False),
-           ((True , True ), (False, True )): (False, False, False, False, None ),
-
-           ((None , None ), (False, None )): (False, False, False, False, None ),
-           ((None , False), (False, None )): (False, False, False, False, None ),
-           ((None , True ), (False, None )): (False, False, False, False, None ),
-           ((False, None ), (False, None )): (False, False, False, False, None ),
-           ((False, False), (False, None )): (False, False, False, False, None ),
-           ((False, True ), (False, None )): (False, False, False, False, None ),
-           ((True , None ), (False, None )): (False, False, False, False, None ),
-           ((True , False), (False, None )): (False, False, False, False, None ),
-           ((True , True ), (False, None )): (False, False, False, False, None ),
-
-           ((None , None ), (True , False)): (None , None , None , False, False),
-           ((None , False), (True , False)): (None , None , None , False, False),
-           ((None , True ), (True , False)): (None , None , None , False, False),
-           ((False, None ), (True , False)): (False, False, False, False, False),
-           ((False, False), (True , False)): (False, False, False, False, False),
-           ((False, True ), (True , False)): (False, False, False, False, False),
-           ((True , None ), (True , False)): (True , None , None , None , False),
-           ((True , False), (True , False)): (True , None , None , None , False),
-           ((True , True ), (True , False)): (True , None , None , None , False),
-
-           ((None , None ), (True , True )): (None , None , None , None , None ),
-           ((None , False), (True , True )): (None , None , None , False, False),
-           ((None , True ), (True , True )): (None , None , None , False, None ),
-           ((False, None ), (True , True )): (False, False, False, False, False),
-           ((False, False), (True , True )): (False, False, False, False, False),
-           ((False, True ), (True , True )): (False, False, False, False, None ),
-           ((True , None ), (True , True )): (True , None , None , None , False),
-           ((True , False), (True , True )): (True , None , None , None , False),
-           ((True , True ), (True , True )): (True , None , None , None , None ),
-
-           ((None , None ), (True , None )): (None , None , None , False, None ),
-           ((None , False), (True , None )): (None , None , None , False, None ),
-           ((None , True ), (True , None )): (None , None , None , False, None ),
-           ((False, None ), (True , None )): (False, False, False, False, None ),
-           ((False, False), (True , None )): (False, False, False, False, None ),
-           ((False, True ), (True , None )): (False, False, False, False, None ),
-           ((True , None ), (True , None )): (True , None , None , None , None ),
-           ((True , False), (True , None )): (True , None , None , None , None ),
-           ((True , True ), (True , None )): (True , None , None , None , None ),
-
-           ((None , None ), (None , False)): (True , None , None , None , False),
-           ((None , False), (None , False)): (True , None , None , None , False),
-           ((None , True ), (None , False)): (True , None , None , None , False),
-           ((False, None ), (None , False)): (True , None , None , None , False),
-           ((False, False), (None , False)): (True , None , None , None , False),
-           ((False, True ), (None , False)): (True , None , None , None , False),
-           ((True , None ), (None , False)): (True , None , None , None , False),
-           ((True , False), (None , False)): (True , None , None , None , False),
-           ((True , True ), (None , False)): (True , None , None , None , False),
-
-           ((None , None ), (None , True )): (True , None , None , None , False),
-           ((None , False), (None , True )): (True , None , None , None , False),
-           ((None , True ), (None , True )): (True , None , None , None , None ),
-           ((False, None ), (None , True )): (True , None , None , None , False),
-           ((False, False), (None , True )): (True , None , None , None , False),
-           ((False, True ), (None , True )): (True , None , None , None , None ),
-           ((True , None ), (None , True )): (True , None , None , None , False),
-           ((True , False), (None , True )): (True , None , None , None , False),
-           ((True , True ), (None , True )): (True , None , None , None , None ),
-
-           ((None , None ), (None , None )): (True , None , None , None , None ),
-           ((None , False), (None , None )): (True , None , None , None , None ),
-           ((None , True ), (None , None )): (True , None , None , None , None ),
-           ((False, None ), (None , None )): (True , None , None , None , None ),
-           ((False, False), (None , None )): (True , None , None , None , None ),
-           ((False, True ), (None , None )): (True , None , None , None , None ),
-           ((True , None ), (None , None )): (True , None , None , None , None ),
-           ((True , False), (None , None )): (True , None , None , None , None ),
-           ((True , True ), (None , None )): (True , None , None , None , None ),
-        }
-        (
-            self.status['load']['common'],
-            self.status['load']['primary'],
-            self.status['load']['xmlids'],
-            self.status['load']['feature'],
-            self.status['load']['annox']
-        ) = switchboard[(
-            (self.status['env']['source'], self.status['env']['annox']),
-            (self.status['compile']['source'], self.status['compile']['annox'])
-        )]
-#        print("ZZZ: env-src={}, env-ax={}, cmp-src={}, cmp-ax={} ==>> (common={}, primary={}, xml={}, feat={}, annox={})".format(
-#            self.status['env']['source'], self.status['env']['annox'],
-#            self.status['compile']['source'], self.status['compile']['annox'],
-#            self.status['load']['common'],
-#            self.status['load']['primary'],
-#            self.status['load']['xmlids'],
-#            self.status['load']['feature'],
-#            self.status['load']['annox'],
-#        ))
-
-        self.loaded = {}
-        for data_group in self.data_items_def:
-            if data_group == 'common':
-                self.loaded[data_group] = set(['node_sort' in self.data_items and self.data_items['node_sort'] != None])
-            elif data_group == 'primary':
-                self.loaded[data_group] = set()
-                if 'node_anchor' in self.data_items and self.data_items['node_anchor'] != None:
-                    self.loaded[data_group].add('regions')
-                if 'data' in self.data_items and self.data_items['data'] != None:
-                    self.loaded[data_group].add('data')
-            else:
-                ref_label = 'xid_int' if data_group == 'xmlids' else 'feature' if data_group == 'feature' else 'xfeature'
-                if ref_label not in self.data_items or self.data_items[ref_label] == None:
-                    self.loaded[data_group] = set()
-                else:
-                    self.loaded[data_group] = set(self.data_items[ref_label])
-
-    def verify_all(self):
-        '''After loading, verify whether everything is as desired.
-
-        Loading of features may have failed if the task has declared non-existent features!
-        This will be spotted here.
-
-        '''
-        self.check_load_status()
-        passed = True
-
-        data_group = 'common'
-        for label in self.data_items_def[data_group]:
-            if self.data_items_def[data_group][label] == 'i_array':
-                self.data_items[label + '_inv'] = self.make_array_inverse(self.data_items[label])
-
-        data_group = 'xmlids'
-        for item in self.given[data_group]:
-            item_rep = self.format_item(data_group, item)
-            if item not in self.loaded[data_group]:
-                self.progress('ERROR: {}: {} not present'.format(data_group, item_rep))
-                passed = False
-            else:
-                self.progress("present {}: {}".format(data_group, item_rep), verbose='INFO')
-        for item in self.loaded[data_group]:
-            item_rep = self.format_item(data_group, item)
-            if item not in self.given[data_group]:
-                self.progress('ERROR: {}: {} failed to unload'.format(data_group, item_rep))
-                passed = False
-
-        loaded_features = collections.defaultdict(lambda: set(()))
-        for item in self.loaded['feature']:
-            loaded_features[item].add('source {}'.format(self.env['source']))
-        for item in self.loaded['annox']:
-            loaded_features[item].add('annox {}'.format(self.env['annox']))
-
-        for item in self.given['feature']:
-            item_rep = self.format_item('feature', item)
-            if item not in loaded_features:
-                self.progress('WARNING: feature: {} not present from source {} nor annox {}'.format(item_rep, self.env['source'], self.env['annox']))
-            else:
-                self.progress('present feature: {} from {}'.format(item_rep, ', '.join(loaded_features[item])), verbose='INFO')
-
-        for item in loaded_features:
-            item_rep = self.format_item('feature', item)
-            if item not in self.given['feature']:
-                self.progress('WARNING: feature: {} failed to unload'.format(item_rep))
-
-        if not passed:
-            raise
-
-        labels = list(self.data_items.keys())
-        for label in labels:
-            if label.endswith('_int'):
-                label_rep = label[0:len(label)-4]+'_rep'
-                for item in self.data_items[label]:
-                    if label_rep not in self.data_items:
-                        self.data_items[label_rep] = {}
-                    if item not in self.data_items[label_rep]:
-                        self.data_items[label_rep][item] = self.make_inverse(self.data_items[label][item])
-
-    def adjust_all(self, directives):
-        '''Top level data management function: adjust the data to the task at hand.
-        Load what is needed, discard what is no longer need, leave alone what does not to be changed.
-
-        Args:
-            directives (dict):
-                specification of the needs of the task at hand, in terms of
-                which features it uses and whether there is need for the orginal XML ids.
-        '''
-        self.progress('LOADING DATA: please wait ...')
-        self.read_stats()
-        self.check_load_status()
-
-        self.given['primary'] = set()
-        if 'primary' in directives and directives['primary']:
-            self.given['primary'] = set(['data', 'regions'])
-
-        self.given['xmlids'] = set()
-        for item in [k for k in directives['xmlids'] if directives['xmlids'][k]]:
-            self.given['xmlids'].add(item)
-
-        self.given['feature'] = set()
-        self.given['annox'] = set()
-        for aspace in directives['features']:
-            for kind in directives['features'][aspace]:
-                for line in directives['features'][aspace][kind]:
-                    (alabel, fnamestring) = line.split('.')
-                    fnames = fnamestring.split(',')
-                    for fname in fnames:
-                        self.given['feature'].add((aspace, alabel, fname, kind))
-                        self.given['annox'].add((aspace, alabel, fname, kind))
-
-        for data_group in self.data_items_def:
-            self.adjust_data(data_group)
-
-        self.given['other_edges'] = set(['other_edges' in directives and directives['other_edges']])
-
-        self.verify_all()
-        self.progress('LOADING DATA: DONE')
-
-    def adjust_data(self, data_group, items=None):
-        '''Top level data management function for adjusting data.
-        Now per key in the ``data_items_def`` dictionary.
-
-        Args:
-            key (str):
-                key in ``data_items_def``, indicating the portion of data that has to be adjusted.
-            items (dict):
-                If given, will ensure that these items are loaded and the rest unloaded.
-                If not given, looks at ``self.given[data_group]``.
-
-        It calls :meth:`check_load_status` to see whether there is a change affecting the data under this ``label``.
-
-        Clearance of data is deferred to :meth:`clear_data`, loading to :meth:`load_data`.
-        '''
-
-        load_status = self.status['load'][data_group]
-
-        if data_group == 'common':
-            if load_status == False:
-                self.clear_data(data_group)
-            if load_status != True:
-                self.load_data(data_group)
-
-        elif data_group == 'primary':
-            if load_status == False:
-                self.clear_data(data_group)
-                self.load_data(data_group, items=self.given[data_group])
-            elif load_status == None:
-                unload = set()
-                load = set()
-                if 'data' in self.given[data_group] and 'data' not in self.loaded[data_group]:
-                    load.add('data')
-                if 'regions' in self.given[data_group] and 'regions' not in self.loaded[data_group]:
-                    load.add('regions')
-                if 'data' not in self.given[data_group] and 'data' in self.loaded[data_group]:
-                    unload.add('data')
-                if 'regions' not in self.given[data_group] and 'regions' in self.loaded[data_group]:
-                    unload.add('regions')
-                self.clear_data(data_group, items=unload)
-                self.load_data(data_group, items=load)
-        else:
-            unload = set()
-            load = set()
-            the_givens = self.given[data_group] if items == None else items 
-            all_items = {}
-            for item in the_givens:
-                item_rep = self.format_item(data_group, item)
-                all_items[item] = item_rep
-            for item in self.loaded[data_group]:
-                item_rep = self.format_item(data_group, item)
-                all_items[item] = item_rep
-            for (item, item_rep) in sorted(all_items.items()):
-                if item in self.loaded[data_group] and item in the_givens:
-                    self.progress("keeping {}: {} ...".format(data_group, item_rep), verbose='INFO')
-                elif item in self.loaded[data_group]:
-                    unload.add(item)
-                elif item in the_givens:
-                    load.add(item)
-            if load_status == False:
-                self.clear_data(data_group)
-            elif load_status == None:
-                self.clear_data(data_group, items=unload)
-            self.load_data(data_group, items=load) 
-
-    def clear_all(self):
-        '''Low level data management function to clear all data.
-        '''
-        for data_group in self.data_items_def:
-            self.clear_data(data_group)
-
-    def clear_data(self, data_group, items=None):
-        '''Low level data management function to clear all data.
-        Now per key in the ``data_items_def`` dictionary.
-
-        Args:
-            data_group:
-                the group of data items to be cleared
-            items (set):
-                A list of subitems.
-                Optional. If given, only the data for the subitems specified, will be cleared.
-                If not given all subitems will be cleared.
-
-        '''
-        if data_group == 'common':
-            for (label, data_type) in self.data_items_def[data_group].items():
-                self.progress("clearing {}: {} ...".format(data_group, label))
-                subs = ('',)
-                if data_type == 'double_array':
-                    subs = ('', '_items')
-                elif data_type == 'i_array':
-                    subs = ('', '_inv')
-                if label in self.data_items:
-                    for sub in subs:
-                        lab = label + sub
-                        del self.data_items[lab]
-
-        elif data_group == 'primary':
-            for (label, data_type) in self.data_items_def[data_group].items():
-                if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):
-                    if label in self.data_items:
-                        self.progress("clearing {}: {} ...".format(data_group, label))
-                        del self.data_items[label]
-
-        else:
-            sub_rep = '_rep' if data_group == 'xmlids' else None
-            subs = ('_int',) if data_group == 'xmlids' else ('',)
-            ref_lab = '_int' if data_group == 'xmlids' else ''
-            for label in self.data_items_def[data_group]:
-                if items != None:
-                    for item in items:
-                        item_rep = self.format_item(data_group, item)
-                        if item in self.data_items[label + ref_lab]:
-                            self.progress("clearing {}: {} - {} ...".format(data_group, label, item_rep), verbose='INFO')
-                            for sub in subs:
-                                lab = label + sub
-                                if lab in self.data_items and item in self.data_items[lab]:
-                                    del self.data_items[lab][item]
-                            if sub_rep != None:
-                                lab = label + sub_rep
-                                if lab in self.data_items and item in self.data_items[lab]:
-                                    del self.data_items[lab][item]
-                else:
-                    if label + ref_lab in self.data_items:
-                        self.progress("clearing {}: {} ...".format(data_group, label), verbose='INFO')
-                        for sub in subs:
-                            lab = label + sub
-                            if lab in self.data_items:
-                                del self.data_items[lab]
-                        if sub_rep != None:
-                            lab = label + sub_rep
-                            if lab in self.data_items:
-                                del self.data_items[lab]
-                    for sub in subs:
-                        lab = label + sub
-                        self.data_items[lab] = collections.defaultdict(lambda: None)
 
     def compile_all(self, force):
         '''Manages the complete compilation process.
@@ -803,239 +369,6 @@ class Laf(object):
             self.status['compile'][data_group] = None
         else:
             self.progress("COMPILING {}: UP TO DATE".format(data_group))
-
-    def write_data(self, data_group):
-        '''Writes compiled data to disk.
-
-        Args:
-            data_group (str):
-                what to write: source data (``source``) or an extra annotation package (``annox``)
-        '''
-        self.progress("WRITING RESULT FILES for {}".format(data_group))
-        target_dir = self.env['feat_dir'] if data_group == 'source' else self.env['annox_bdir']
-        shutil.rmtree(target_dir)
-        os.mkdir(target_dir)
-
-        if data_group == 'source':
-            self.write_stats()
-        self.store_all(data_group)
-
-        self.progress("FINALIZATION")
-
-
-    def store_all(self, compile_data_group):
-        '''Top level data management function: write data from memory to disk.
-
-        This function is typically invoked at the end of compilation. 
-        When in the business of running user tasks, there is no need for this function, 
-        since tasks do not modify the data.
-        '''
-        for data_group in self.data_items_def:
-            if (compile_data_group == 'source' and data_group != 'annox') or (compile_data_group == 'annox' and data_group == 'annox'):
-                self.store_data(data_group)
-
-    def store_data(self, data_group):
-        '''Top level data management function for writing data to disk.
-        Now per key in the ``data_items_def`` dictionary.
-
-        Args:
-            data_group (str):
-                key in ``data_items_def``, indicating the portion of data that has to be adjusted.
-        '''
-
-        if data_group == 'common' or data_group == 'primary':
-            for (label, data_type) in self.data_items_def[data_group].items():
-                self.progress("writing {}: {} ...".format(data_group, label))
-                if data_type == 'array' or data_type == 'double_array' or data_type == 'i_array':
-                    subs = ('',)
-                    if data_type == 'double_array':
-                        subs = ('', '_items')
-                    for sub in subs:
-                        lab = label + sub
-                        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-                        b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
-                        self.data_items[lab].tofile(b_handle)
-                        b_handle.close()
-                elif data_type == 'list':
-                    b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
-                    b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
-                    pickle.dump(self.data_items[label], b_handle)
-                    b_handle.close()
-        else:
-            ref_lab = '_int' if data_group == 'xmlids' else ''
-            target_dir = self.env['bin_dir'] if data_group == 'xmlids' else self.env['feat_dir'] if data_group == 'feature' else self.env['annox_bdir']
-            for label in self.data_items_def[data_group]:
-                self.progress("writing {}: {} ...".format(data_group, label))
-                for item in self.data_items[label + ref_lab]:
-                    item_rep = self.format_item(data_group, item, asFile=True)
-                    self.progress("writing {}: {} {} ...".format(data_group, label, item_rep))
-                    b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
-                    b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
-                    pickle.dump(self.data_items[label + ref_lab][item], b_handle)
-                    b_handle.close()
-
-    def write_stats(self):
-        '''Write compilation statistics to file
-
-        The compile process generates some statistics that must be read by the task that loads the compiled data.
-        '''
-        handle = open(self.env['stat_file'], "w", encoding="utf-8")
-        for data_group in self.data_items_def:
-            for (label, data_type) in self.data_items_def[data_group].items():
-                if data_type == 'array' or data_type == 'double_array' or data_type == 'i_array':
-                    subs = ('',)
-                    if data_type == 'double_array':
-                        subs = ('', '_items')
-                    for sub in subs:
-                        lab = label + sub
-                        handle.write("{}={}\n".format(lab, len(self.data_items[lab])))
-        handle.close()
-
-    def read_stats(self):
-        '''Read compilation statistics from file
-
-        The compile process generates some statistics that must be read by the task that loads the compiled data.
-        In order to read an :py:mod:`array` by means of its :py:meth:`array.array.fromfile` method,
-        we need to know the length of it on beforehand.
-        
-        And later, when we want to load new feature data on top of the existing data, we need to know
-        how many distinct values features have.
-        '''
-        handle = open(self.env['stat_file'], "r", encoding="utf-8")
-        self.stats = {}
-        for line in handle:
-            (label, count) = line.rstrip("\n").split("=")
-            self.stats[label] = int(count)
-        handle.close()
-
-    def load_data(self, data_group, items=None):
-        '''Low level data management function to load data from disk into memory.
-
-        Args:
-            data_group:
-                the kind of data to load
-            items (iterable):
-                A list of subitems in the data group to be loaded.
-                Only relevant if ``data_group != common``
-        '''
-        if data_group == 'common':
-            for (label, data_type) in self.data_items_def[data_group].items():
-                if label in self.preparables:
-                    continue
-                self.progress("loading {}: {} ... ".format(data_group, label), verbose='INFO')
-                if data_type == 'list':
-                    b_path = "{}/{}.{}".format(self.env['bin_dir'], label, self.BIN_EXT)
-                    if os.path.exists(b_path):
-                        b_handle = gzip.open(b_path, "rb")
-                        self.data_items[label] = pickle.load(b_handle)
-                        b_handle.close()
-                else:
-                    subs = ('',)
-                    if data_type == 'double_array':
-                        subs = ('', '_items')
-                    for sub in subs:
-                        lab = label + sub
-                        self.data_items[lab] = array.array('I')
-                        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-                        if os.path.exists(b_path):
-                            b_handle = gzip.open(b_path, "rb")
-                            self.data_items[lab].fromfile(b_handle, self.stats[lab])
-                            b_handle.close()
-        elif data_group == 'primary':
-            for (label, data_type) in self.data_items_def[data_group].items():
-                if label in self.preparables:
-                    continue
-                if items == None or (label != 'data' and 'regions' in items) or (label == 'data' and 'data' in items):
-                    self.progress("loading {}: {} ... ".format(data_group, label), verbose='INFO')
-                    if data_type == 'string':
-                        b_path = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data'])
-                        b_handle = open(b_path, "r", encoding="utf-8")
-                        self.data_items[label] = b_handle.read(None)
-                        b_handle.close()
-                    else:
-                        subs = ('',)
-                        if data_type == 'double_array':
-                            subs = ('', '_items')
-                        for sub in subs:
-                            lab = label + sub
-                            self.data_items[lab] = array.array('I')
-                            b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-                            if os.path.exists(b_path):
-                                b_handle = gzip.open(b_path, "rb")
-                                self.data_items[lab].fromfile(b_handle, self.stats[lab])
-                                b_handle.close()
-        else:
-            ref_lab = '_int' if data_group == 'xmlids' else ''
-            target_dir = self.env['bin_dir'] if data_group == 'xmlids' else self.env['feat_dir'] if data_group == 'feature' else self.env['annox_bdir']
-            for label in self.data_items_def[data_group]:
-                if label in self.preparables:
-                    continue
-                if items != None and len(items):
-                    for item in items:
-                        self.progress("loading {}: {} {} ... ".format(data_group, label, item), verbose='INFO')
-                        item_rep = self.format_item(data_group, item, asFile=True)
-                        item_repm = self.format_item(data_group, item)
-                        b_path = "{}/{}_{}.{}".format(target_dir, label, item_rep, self.BIN_EXT)
-                        lab = label + ref_lab
-                        if lab not in self.data_items:
-                            self.data_items[lab] = {}
-                        if os.path.exists(b_path):
-                            b_handle = gzip.open(b_path, "rb")
-                            self.data_items[lab][item] = pickle.load(b_handle)
-                            b_handle.close()
-                        else:
-                            self.data_items[lab][item] = {}
-
-    def prep_data(self, api, task, lab, myfile):
-        '''Loads custom data from disk, if present. If not prepares custom data and stores it on disk.
-
-        LAF-Fabric cannot precompute application specific data.
-        If an application needs to compute data over and over again, it may ask LAF-Fabric to store it alongside the compiled data.
-        For example, the order of nodes by LAF-Fabric is rather crude, an application may provide a better ordering.
-
-        Only data that is anticipated by LAF-Fabric can be stored in this way. 
-        The intention is that you can override LAF-Fabric data, not that you add arbitrary data.
-        If LAF-Fabric does not know your data, you can store it easily outside LAF-Fabric.
-
-        Args:
-            api (dict):
-                the LAF-Fabric api. Needed by *task*.
-            task (callable):
-                Custom function defined in an other application that computes the new data.
-                It will be passed the *api* parameter, so that the function has access to all LAF-Fabric's data and methods.
-            lab (string):
-                label, known by LAF-Fabric (defined in the attribute ``preparables``.
-                The custom data will be stored under this label.
-            myfile (string):
-                Full path to the file that defined the *task* function.
-                In order to decide whether the custom data is still up to date,
-                the modification times of this file and the custom data file will be compared.
-        '''
-
-        if lab not in self.preparables:
-            self.progress("WARNING: Cannot prepare data in {}.".format(lab))
-            return
-        lab_type = self.preparables[lab]
-        if lab_type == 'array':
-            self.data_items[lab] = array.array('I')
-        else:
-            self.data_items[lab] = {}
-        b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
-        s_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.TEXT_EXT)
-        up_to_date = os.path.exists(b_path) and os.path.exists(s_path) and os.path.getmtime(b_path) >= os.path.getmtime(myfile)
-        if up_to_date:
-            self.progress("LOADING {} (prepared)".format(lab), verbose='INFO')
-            with open(s_path, 'r', encoding="utf-8") as x: n = int(x.read())
-            b_handle = gzip.open(b_path, "rb")
-            self.data_items[lab].fromfile(b_handle, n)
-        else:
-            self.progress("PREPARING {}".format(lab), verbose='INFO')
-            self.data_items[lab] = task(api)
-            self.progress("WRITING {} (prepared)".format(lab), verbose='INFO')
-            with open(s_path, "w", encoding='utf-8') as x: x.write(str(len(self.data_items[lab])))
-            b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
-            self.data_items[lab].tofile(b_handle)
-            b_handle.close()
 
     def parse(self, data_group, xmlitems):
         '''Call the XML parser and collect the parse results.
@@ -1256,202 +589,4 @@ class Laf(object):
         ):
             if handle and not handle.closed:
                 handle.close()
-
-class LafFiles(object):
-    BIN_EXT = 'bin'
-    '''extension for binary files
-    '''
-    TEXT_EXT = 'txt'
-    '''extension for text files
-    '''
-    LOG_NAME = '__log__'
-    '''log file base name for a task
-    '''
-    STAT_NAME = '__stat__'
-    '''statistics file base name for a task
-    '''
-    COMPILE_NAME = 'compile__'
-    '''name of the compile task
-    '''
-
-    file_list = '''
-source/node_anchor         = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_anchor_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_anchor_min     = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/node_anchor_max     = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/node_events         = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_events_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_events_k       = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_events_n       = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_sort           = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/node_sort_inv       = dct = common   = {source}/{bin}/{{name}}.{bext}
-source/node_resorted       = arr = common   = {source}/{bin}/{prp}/{{name}}.{bext}
-source/edges_from          = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/edges_to            = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/primary_data        = str = primary  = {source}/{bin}/{{name}}.{text}
-source/xid/{{comp}}_int    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_int.{bext}
-source/xid/{{comp}}_rep    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_rep.{bext}
-source/feat/{{comp}}       = dct = feature  = {source}/{bin}/{feat}/{{compr}}.{bext}
-source/cfeat/{{comp}}      = dct = efeature = {source}/{bin}/{feat}/conn+{{compr}}.{bext}
-annox/feat/{{comp}}        = dct = feature  = {source}/{bin}/{anx}/{annox}/{{compr}}.{bext}
-annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr}}.{bext}
-'''
-
-    def __init__(self, laf):
-        self.laf = laf
-        locations = laf.settings['locations']
-        self.bin_sd = locations['bin_subdir']
-        self.feat_sd = locations['feat_subdir']
-        self.anx_sd = locations['annox_subdir']
-        self.prp_sd = locations['prep_subdir']
-        self.xid_sd = locations['xid_subdir']
-        self.source = None
-        self.annox = None
-        self.loadlist = {}
-
-    def requested_files(self, source, annox, primary, xmlids, features):
-        lines = self.file_list.split("\n")
-        newlist = []
-        for line in lines:
-            if not len(line): continue
-            xline = line.format(
-                source=source,
-                annox=annox,
-                bin=self.bin_sd,
-                bext=self.BIN_EXT,
-                text=self.TEXT_EXT,
-                prp=self.prp_sd,
-                xid=self.xid_sd,
-                feat=self.feat_sd,
-                anx=self.anx_sd,
-            )
-            (dkey, dtype, dcond, dpath) = [x.strip() for x in xline.split("=")]
-            dkeyparts = dkey.split('/')
-            dkeypath = dkeyparts[0:len(dkeyparts)-1]
-            dkeyname = dkeyparts[-1]
-            if dcond == 'common': newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
-            elif dcond == 'primary' and primary: newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
-            elif dcond == 'xmlids':
-                for comp in xmlids:
-                    comprep = comp
-                    if type(comp) == type(()):
-                        comprep = '_'.join(comp)
-                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
-            elif dcond == 'feature':
-                for comp in features:
-                    comprep = comp
-                    if type(comp) == type(()):
-                        comprep = '_'.join(comp)
-                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
-            elif dcond == 'efeature':
-                for comp in features:
-                    if comp[3] != 'edge': continue
-                    comprep = comp
-                    if type(comp) == type(()):
-                        comprep = '_'.join(comp)
-                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
-        return newlist
-
-    def adjust_all(self, source, annox, primary, xmlids, features):
-        source_old = self.source
-        annox_old = self.annox
-        loadlist_old = self.load_list
-        loadlist_new = self.requested_files(source, annox, primary, xmlids, features):
-
-
-
-    def print_file_list(self, filelist):
-        for (dkeypath, dkeyname, dtype, dpath) in filelist:
-            print("data_items[{}][{}] = {} from file {}".format(
-                ']['.join(dkeypath),
-                dkeyname,
-                "''" if dtype == 'str' else
-                0 if dtype == 'num' else
-                '{}' if dtype == 'dct' else
-                "array.array('I')" if dtype == 'arr' else
-                'None',
-                dpath,
-            ))
-
-    def clear_source(self):
-        self.laf.data_items['source'] = {} 
-
-    def clear_annox(self):
-        self.laf.data_items['annox'] = {} 
-
-    def clear_file(self, filespec): 
-        (dkeypath, dkeyname, dtype, dpath) = filespec
-
-        newdata = None
-        if dtype == 'arr':
-            newdata = array.array('I')
-        elif dtype == 'dct':
-            newdata = {}
-        elif dtype == 'str':
-            newdata = ''
-
-        place = self.laf.data_items
-        for comp in dkeypath:
-            if comp not in place: place[comp] = {}
-            place = place[comp]
-        place[dkeyname] = newdata
-
-    def load_file(self, file_spec)
-        (dkeypath, dkeyname, dtype, dpath) = filespec
-
-        if not os.path.exists(dpath):
-            laf.progress("ERROR: Can not load data for {} / {}: File {} does not exist.".format(dkeypath, dkeyname, dpath))
-            return False
-        newdata = None
-        if dtype == 'arr':
-            newdata = array.array('I')
-            itemsize = newdata.itemsize
-            filesize = os.path.getsize(dpath)
-            n_items = filesize / itemsize
-            handle = gzip.open(dpath, "rb")
-            newdata.fromfile(handle, n_items)
-            handle.close
-        elif dtype == 'dct':
-            handle = gzip.open(dpath, "rb")
-            newdata = pickle.load(handle)
-            handle.close()
-        elif dtype == 'str':
-            handle = open(dpath, "r", encoding="utf-8")
-            newdata = handle.read(None)
-            handle.close()
-
-        place = self.laf.data_items
-        for comp in dkeypath:
-            if comp not in place: place[comp] = {}
-            place = place[comp]
-        place[dkeyname] = newdata
-
-        return True
-
-    def store_file(self, filespec)
-        (dkeypath, dkeyname, dtype, dpath) = filespec
-
-        place = self.laf.data_items
-        for comp in dkeypath + (dkeyname,):
-            if comp not in place:
-                laf.progress("Error: Can not write data for {} / {} to {}: Data selected by {} is not present.".format(dkeypath, dkeyname, dpath, comp))
-                return False
-            place = place[comp]
-        newdata = place[dkeyname]
-
-        if dtype == 'arr':
-            handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
-            newdata.tofile(handle)
-            handle.close()
-        elif dtype == 'dct':
-            handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
-            pickle.dump(newdata, handle)
-            handle.close()
-        elif dtype == 'str':
-            handle = open(dpath, "w", encoding="utf-8")
-            handle.write(newdata)
-            handle.close()
-
-        return True
-
 

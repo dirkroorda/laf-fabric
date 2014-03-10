@@ -1274,28 +1274,27 @@ class LafFiles(object):
     '''name of the compile task
     '''
 
-    load_template = '''
-node_anchor         = arr = primary  = {source}/{bin}/{{name}}.{bext}
-node_anchor_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
-node_anchor_min     = arr = common   = {source}/{bin}/{{name}}.{bext}
-node_anchor_max     = arr = common   = {source}/{bin}/{{name}}.{bext}
-node_events         = arr = primary  = {source}/{bin}/{{name}}.{bext}
-node_events_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
-node_events_k       = arr = primary  = {source}/{bin}/{{name}}.{bext}
-node_events_n       = arr = primary  = {source}/{bin}/{{name}}.{bext}
-node_sort           = arr = common   = {source}/{bin}/{{name}}.{bext}
-node_sort_inv       = dct = common   = {source}/{bin}/{{name}}.{bext}
-node_resorted       = arr = common   = {source}/{bin}/{prp}/{{name}}.{bext}
-node_resorted       = num = common   = {source}/{bin}/{prp}/{{name}}.{text}
-edges_from          = arr = common   = {source}/{bin}/{{name}}.{bext}
-edges_to            = arr = common   = {source}/{bin}/{{name}}.{bext}
-primary_data        = str = primary  = {source}/{bin}/{{name}}.{text}
-xid/{{comp}}_int    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_int.{bext}
-xid/{{comp}}_rep    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_rep.{bext}
-feat/{{comp}}       = dct = feature  = {source}/{bin}/{feat}/{{compr}}.{bext}
-feat/conn+{{comp}}  = dct = efeature = {source}/{bin}/{feat}/conn+{{compr}}.{bext}
-xfeat/{{comp}}      = dct = feature  = {source}/{bin}/{anx}/{annox}/{{compr}}.{bext}
-xfeat/conn+{{comp}} = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr}}.{bext}
+    file_list = '''
+source/node_anchor         = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_anchor_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_anchor_min     = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/node_anchor_max     = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/node_events         = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_events_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_events_k       = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_events_n       = arr = primary  = {source}/{bin}/{{name}}.{bext}
+source/node_sort           = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/node_sort_inv       = dct = common   = {source}/{bin}/{{name}}.{bext}
+source/node_resorted       = arr = common   = {source}/{bin}/{prp}/{{name}}.{bext}
+source/edges_from          = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/edges_to            = arr = common   = {source}/{bin}/{{name}}.{bext}
+source/primary_data        = str = primary  = {source}/{bin}/{{name}}.{text}
+source/xid/{{comp}}_int    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_int.{bext}
+source/xid/{{comp}}_rep    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_rep.{bext}
+source/feat/{{comp}}       = dct = feature  = {source}/{bin}/{feat}/{{compr}}.{bext}
+source/cfeat/{{comp}}      = dct = efeature = {source}/{bin}/{feat}/conn+{{compr}}.{bext}
+annox/feat/{{comp}}        = dct = feature  = {source}/{bin}/{anx}/{annox}/{{compr}}.{bext}
+annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr}}.{bext}
 '''
 
     def __init__(self, laf):
@@ -1306,9 +1305,12 @@ xfeat/conn+{{comp}} = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr
         self.anx_sd = locations['annox_subdir']
         self.prp_sd = locations['prep_subdir']
         self.xid_sd = locations['xid_subdir']
+        self.source = None
+        self.annox = None
+        self.loadlist = {}
 
     def requested_files(self, source, annox, primary, xmlids, features):
-        lines = self.load_template.split("\n")
+        lines = self.file_list.split("\n")
         newlist = []
         for line in lines:
             if not len(line): continue
@@ -1324,25 +1326,132 @@ xfeat/conn+{{comp}} = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr
                 anx=self.anx_sd,
             )
             (dkey, dtype, dcond, dpath) = [x.strip() for x in xline.split("=")]
-            if dcond == 'common': newlist.append((dkey, dtype, dpath.format(name=dkey)))
-            elif dcond == 'primary' and primary: newlist.append((dkey, dtype, dpath.format(name=dkey)))
+            dkeyparts = dkey.split('/')
+            dkeypath = dkeyparts[0:len(dkeyparts)-1]
+            dkeyname = dkeyparts[-1]
+            if dcond == 'common': newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
+            elif dcond == 'primary' and primary: newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
             elif dcond == 'xmlids':
                 for comp in xmlids:
                     comprep = comp
                     if type(comp) == type(()):
                         comprep = '_'.join(comp)
-                    newlist.append((dkey.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
             elif dcond == 'feature':
                 for comp in features:
                     comprep = comp
                     if type(comp) == type(()):
                         comprep = '_'.join(comp)
-                    newlist.append((dkey.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
             elif dcond == 'efeature':
                 for comp in features:
                     if comp[3] != 'edge': continue
                     comprep = comp
                     if type(comp) == type(()):
                         comprep = '_'.join(comp)
-                    newlist.append((dkey.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
+                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
         return newlist
+
+    def adjust_all(self, source, annox, primary, xmlids, features):
+        source_old = self.source
+        annox_old = self.annox
+        loadlist_old = self.load_list
+        loadlist_new = self.requested_files(source, annox, primary, xmlids, features):
+
+
+
+    def print_file_list(self, filelist):
+        for (dkeypath, dkeyname, dtype, dpath) in filelist:
+            print("data_items[{}][{}] = {} from file {}".format(
+                ']['.join(dkeypath),
+                dkeyname,
+                "''" if dtype == 'str' else
+                0 if dtype == 'num' else
+                '{}' if dtype == 'dct' else
+                "array.array('I')" if dtype == 'arr' else
+                'None',
+                dpath,
+            ))
+
+    def clear_source(self):
+        self.laf.data_items['source'] = {} 
+
+    def clear_annox(self):
+        self.laf.data_items['annox'] = {} 
+
+    def clear_file(self, filespec): 
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+
+        newdata = None
+        if dtype == 'arr':
+            newdata = array.array('I')
+        elif dtype == 'dct':
+            newdata = {}
+        elif dtype == 'str':
+            newdata = ''
+
+        place = self.laf.data_items
+        for comp in dkeypath:
+            if comp not in place: place[comp] = {}
+            place = place[comp]
+        place[dkeyname] = newdata
+
+    def load_file(self, file_spec)
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+
+        if not os.path.exists(dpath):
+            laf.progress("ERROR: Can not load data for {} / {}: File {} does not exist.".format(dkeypath, dkeyname, dpath))
+            return False
+        newdata = None
+        if dtype == 'arr':
+            newdata = array.array('I')
+            itemsize = newdata.itemsize
+            filesize = os.path.getsize(dpath)
+            n_items = filesize / itemsize
+            handle = gzip.open(dpath, "rb")
+            newdata.fromfile(handle, n_items)
+            handle.close
+        elif dtype == 'dct':
+            handle = gzip.open(dpath, "rb")
+            newdata = pickle.load(handle)
+            handle.close()
+        elif dtype == 'str':
+            handle = open(dpath, "r", encoding="utf-8")
+            newdata = handle.read(None)
+            handle.close()
+
+        place = self.laf.data_items
+        for comp in dkeypath:
+            if comp not in place: place[comp] = {}
+            place = place[comp]
+        place[dkeyname] = newdata
+
+        return True
+
+    def store_file(self, filespec)
+        (dkeypath, dkeyname, dtype, dpath) = filespec
+
+        place = self.laf.data_items
+        for comp in dkeypath + (dkeyname,):
+            if comp not in place:
+                laf.progress("Error: Can not write data for {} / {} to {}: Data selected by {} is not present.".format(dkeypath, dkeyname, dpath, comp))
+                return False
+            place = place[comp]
+        newdata = place[dkeyname]
+
+        if dtype == 'arr':
+            handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
+            newdata.tofile(handle)
+            handle.close()
+        elif dtype == 'dct':
+            handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
+            pickle.dump(newdata, handle)
+            handle.close()
+        elif dtype == 'str':
+            handle = open(dpath, "w", encoding="utf-8")
+            handle.write(newdata)
+            handle.close()
+
+        return True
+
+

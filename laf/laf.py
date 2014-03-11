@@ -28,46 +28,6 @@ class Laf(object):
 
     '''
 
-    BIN_EXT = 'bin'
-    '''extension for binary files
-    '''
-    TEXT_EXT = 'txt'
-    '''extension for text files
-    '''
-    LOG_NAME = '__log__'
-    '''log file base name for a task
-    '''
-    STAT_NAME = '__stat__'
-    '''statistics file base name for a task
-    '''
-    COMPILE_NAME = 'compile__'
-    '''name of the compile task
-    '''
-
-    file_list = '''
-source/node_anchor         = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_anchor_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_anchor_min     = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/node_anchor_max     = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/node_events         = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_events_items   = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_events_k       = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_events_n       = arr = primary  = {source}/{bin}/{{name}}.{bext}
-source/node_sort           = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/node_sort_inv       = dct = common   = {source}/{bin}/{{name}}.{bext}
-source/node_resorted       = arr = prepared = {source}/{bin}/{prp}/{{name}}.{bext}
-source/node_resorted_inv   = arr = prepared = {source}/{bin}/{prp}/{{name}}.{bext}
-source/edges_from          = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/edges_to            = arr = common   = {source}/{bin}/{{name}}.{bext}
-source/primary_data        = str = primary  = {source}/{bin}/{{name}}.{text}
-source/xid/{{comp}}_int    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_int.{bext}
-source/xid/{{comp}}_rep    = dct = xmlids   = {source}/{bin}/{xid}/{{comp}}_rep.{bext}
-source/feat/{{comp}}       = dct = feature  = {source}/{bin}/{feat}/{{compr}}.{bext}
-source/cfeat/{{comp}}      = dct = efeature = {source}/{bin}/{feat}/conn+{{compr}}.{bext}
-annox/feat/{{comp}}        = dct = feature  = {source}/{bin}/{anx}/{annox}/{{compr}}.{bext}
-annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+{{compr}}.{bext}
-'''
-
     def __init__(self, settings):
         '''Upon creation, empty datastructures are initialized to hold the binary,
         compiled LAF data and create a directory for their serializations on disk.
@@ -100,10 +60,6 @@ annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+
         self.settings = settings
         '''Instance member to hold config settings etc'''
 
-        self.env = {}
-        '''Holds the context information for the current task, such as chosen source, annox and task.
-        '''
-
         self.log = None
         '''handle of a log file, usually open for writing. Used for the log of the compilation process
         and of the task executions.
@@ -118,89 +74,132 @@ annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+
         The data that we must keep is stored in the object, of course.
         '''
 
-        self.source = None
-        self.annox = None
-        self.loadlist = {}
-        self.preparedlist = {}
+    def adjust_all(self, source, annox, task, req_items, method_dict, force):
+        self.settings.set_env(source, annox, task)
+        env = self.settings['env']
 
-    def requested_files(self, source, annox, primary, xmlids, features):
-        locations = self.settings['locations']
-        lines = self.file_list.split("\n")
-        newlist = []
-        preparedlist = []
-        for line in lines:
-            if not len(line): continue
-            xline = line.format(
-                source=source,
-                annox=annox,
-                bin=locations['bin_subdir'],
-                bext=self.BIN_EXT,
-                text=self.TEXT_EXT,
-                prp=self.locations['prep_subdir'],
-                xid=self.locations['xid_subdir'],
-                feat=self.locations['feat_subdir'],
-                anx=self.locations['annox_subdir'],
+        try:
+            if not os.path.exists(env['main_compiled_dir']):
+                os.makedirs(env['main_compiled_dir'])
+        except os.error:
+            raise LafException(
+                "ERROR: could not create bin directory {}".format(env['main_compiled_dir']),
+                self.stamp, os.error
             )
-            (dkey, dtype, dcond, dpath) = [x.strip() for x in xline.split("=")]
-            dkeyparts = dkey.split('/')
-            dkeypath = dkeyparts[0:len(dkeyparts)-1]
-            dkeyname = dkeyparts[-1]
-            if dcond == 'common': newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
-            if dcond == 'prepared': preparedlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
-            elif dcond == 'primary' and primary: newlist.append((dkeypath, dkeyname, dtype, dpath.format(name=dkeyname)))
-            elif dcond == 'xmlids':
-                for comp in xmlids:
-                    comprep = comp
-                    if type(comp) == type(()):
-                        comprep = '_'.join(comp)
-                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
-            elif dcond == 'feature':
-                for comp in features:
-                    comprep = comp
-                    if type(comp) == type(()):
-                        comprep = '_'.join(comp)
-                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
-            elif dcond == 'efeature':
-                for comp in features:
-                    if comp[3] != 'edge': continue
-                    comprep = comp
-                    if type(comp) == type(()):
-                        comprep = '_'.join(comp)
-                    newlist.append((dkeypath, dkeyname.format(comp=comp), dtype, dpath.format(comp=comp, compr=comprep)))
-        return (newlist, preparedlist)
+        if annox != env['empty']:
+            try:
+                if not os.path.exists(env['annox_compiled_dir']):
+                    os.makedirs(env['annox_compiled_dir'])
+            except os.error:
+                raise LafException(
+                    "ERROR: could not create bin directory {}".format(env['annox_compiled_dir']),
+                    self.stamp, os.error
+                )
+        try:
+            if not os.path.exists(env['task_dir']):
+                os.makedirs(env['task_dir'])
+        except os.error:
+            raise LafException(
+                "ERROR: could not create result directory {}".format(env['task_dir']),
+                self.stamp, os.error
+            )
 
-    def adjust_all(self, source, annox, primary, xmlids, features, method_dict):
-        loadlist_old = self.loadlist
-        preparedlist_old = self.preparedloadlist
-        (loadlist_new, preparedlist_new) = self.requested_files(source, annox, primary, xmlids, features)
+        correct = True
+        if not self.compile_all(force):
+            correct = False
+        if not self.load_all(req_items, method_dict):
+            correct = False
+
+        return correct
+
+    def compile_all(self, force):
+        '''Manages the complete compilation process.
+        '''
+        env = self.settings['env']
+        compile_uptodate['source'] = not os.path.exists(env['main_source_file']) or (
+                os.path.exists(env['main_compiled_file']) and
+                os.path.getmtime(env['main_compiled_file']) >= os.path.getmtime(env['main_source_file'])
+            )
+
+        uptodate = True
+        for afile in glob.glob('{}/*.xml'.format(env['annox_source_dir'])):
+            this_uptodate = env['annox'] == env['empty'] or (
+                os.path.exists(env['annox_compiled_file']) and
+                os.path.getmtime(env['annox_compiled_file']) >= os.path.getmtime(afile)
+            )
+            if not this_uptodate:
+                uptodate = False
+                break
+        compile_uptodate['annox'] = uptodate
+        
+        for data in ['source', 'annox']:
+            if data == 'annox':
+                self.ensure_loaded({'X': ['node', 'edge']}, {})
+            if not compile_uptodate[data] or force[data]:
+                self.progress("BEGIN COMPILE {}: {}".format(data_group, self.source if data == 'source' else self.annox))
+                self.compile_data(data)
+                self.progress("END   COMPILE {}: {}".format(data_group, self.source if data == 'source' else self.annox))
+            else:
+                self.progress("COMPILING {}: UP TO DATE".format(data_group))
+
+    def load_all(self, req_items, method_dict):
+        self.request_files(req_items)
 
         correct = True
 
-        for x in loadlist_old:
-            if x not in loadlist_new:
+        for x in self.settings.old_data_items:
+            if x not in self.settings.data_items:
                 self.progress("clear {}".format(self.format_key(x[0], x[1]))) 
                 self.clear_file(x)
-        for x in loadlist_new:
-            if x in loadlist_old:
+        for x in self.settings.data_items:
+            if x in self.settings.old_data_items:
                 self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
             else:
                 this_correct = self.load_file(x)
                 if not this_correct: correct = False
 
-        for x in preparedlist_old:
-            if x not in preparedlist_new:
+        for x in self.settings.old_prep_list:
+            if x not in self.settings.prep_list:
                 self.progress("clear {}".format(self.format_key(x[0], x[1]))) 
                 self.clear_file(x)
-        for x in preparedlist_new:
-            if x in preparedlist_old:
+        for x in self.settings.prep_list:
+            if x in preplist_old:
                 self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
             else:
                 this_correct = self.prepare_file(x, method_dict)
                 if not this_correct: correct = False
-
-        self.source = source
-        self.annox = annox
         self.loadlist = loadlist_new
+
+        return correct
+
+    def ensure_loaded(self, req_items, method_dict):
+        loadlist_old = self.loadlist
+        preplist_old = self.preplist
+        (loadlist_new, preplist_new) = self.request_files(primary, xmlids, features)
+
+        correct = True
+
+        new_updates = []
+        prep_updates = []
+
+        for x in loadlist_new:
+            if x in loadlist_old:
+                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
+            else:
+                this_correct = self.load_file(x)
+                new_updates.append(x)
+                if not this_correct: correct = False
+
+        for x in preplist_new:
+            if x in preplist_old:
+                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
+            else:
+                this_correct = self.prepare_file(x, method_dict)
+                prep_updates.append(x)
+                if not this_correct: correct = False
+        self.loadlist = loadlist_new + new_updates
+        self.preplist = preplist_new + prep_updates
+
         return correct
 
     def print_file_list(self, filelist):
@@ -330,45 +329,21 @@ annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+
             else:
                 return '{}:{}.{} ({})'.format(*item)
 
-    def compile_all(self, force):
-        '''Manages the complete compilation process.
-        '''
-        self.compile_data('source', force['source'])
-        self.compile_data('annox', force['annox'])
-
-    def compile_data(self, data_group, force):
+    def compile_data(self, data_group):
         '''Manages the compilation process for either the source data or extra annotation files.
-
-        Detects the need for compiling, responds to the *force* argument. Then parses, remodels and writes.
 
         Args:
             data_group (str):
                 whether to parse source data (``source``) or an extra annotation package (``annox``)
-            force (bool):
-                whether to compile even if the binary data looks up to date.
         '''
-        if force or self.status['compile'][data_group] == False:
-            xmlitems = None
-            if data_group == 'annox':
-                self.check_load_status()
-                self.adjust_data('xmlids', items=['node', 'edge'])
-                xmlitems = self.data_items['xid_int']
+        the_log_file = self.COMPILE_NAME
+        the_log_dir = self.main_compiled_dir if data_group == 'source' else self.annox_compiled_dir
 
-            the_what = self.env['source'] if data_group == 'source' else self.env['annox']
-            the_log_file = self.COMPILE_NAME + the_what
-            the_log_dir = self.env['bin_dir'] if data_group == 'source' else self.env['annox_base_bdir']
-            the_data_file = self.env['source'] if data_group == 'source' else self.env['annox_file']
-
-            self.progress("BEGIN COMPILE {}: {}".format(data_group, the_what))
-            self.add_logfile(the_log_dir, the_log_file)
-            self.parse(data_group, xmlitems)
-            self.model(data_group)
-            self.write_data(data_group)
-            self.progress("END COMPILE {}: {}".format(data_group, the_what))
-            self.finish_logfile()
-            self.status['compile'][data_group] = None
-        else:
-            self.progress("COMPILING {}: UP TO DATE".format(data_group))
+        self.add_logfile(the_log_dir, the_log_file)
+        self.parse(data_group)
+        self.model(data_group)
+        self.write_data(data_group)
+        self.finish_logfile()
 
     def parse(self, data_group, xmlitems):
         '''Call the XML parser and collect the parse results.
@@ -384,45 +359,42 @@ annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+
                 whether to parse source data (``source``) or an extra annotation package (``annox``)
         '''
         self.progress("PARSING ANNOTATION FILES")
+
+        source_file = self.main_source_path if data_group == 'source' else self.annox_source_path
+        source_dir = self.main_source_dir if data_group == 'source' else self.annox_source_dir
+        compiled_dir = self.main_compiled_dir if data_group == 'source' else self.annox_compiled_dir
+        feature_dir = self.main_feature_dir if data_group == 'source' else self.annox_feature_dir
         self.cur_dir = os.getcwd()
 
-        the_data_file = self.env['source'] if data_group == 'source' else self.env['annox_file']
-        the_laf_dir = self.env['laf_dir'] if data_group == 'source' else self.env['annox_dir']
-        the_bin_dir = self.env['feat_dir'] if data_group == 'source' else self.env['annox_bdir']
-
         try:
-            os.chdir(the_laf_dir)
+            os.chdir(source_dir)
         except os.error:
-            raise LafException("ERROR: could not change to LAF data directory {}".format(the_laf_dir),
+            raise LafException("ERROR: could not change to LAF data directory {}".format(source_dir),
                 self.stamp, os.error
             )
         try:
-            if not os.path.exists(the_bin_dir):
-                os.makedirs(the_bin_dir)
+            if not os.path.exists(feature_dir):
+                os.makedirs(feature_dir)
         except os.error:
             os.chdir(self.cur_dir)
             raise LafException("ERROR: could not create directory for compiled data {}".format(the_bin_dir),
                 self.stamp, os.error,
             )
         
-        prim_bin_file = "{}/{}".format(self.env['bin_dir'], self.settings['locations']['primary_data']) if data_group == 'source' else None
+        prim_bin_file = "{}/{}".format(self.main_compiled_dir, self.settings['locations']['primary_data']) if data_group == 'source' else None
 
-        parsed_data_items = xmlparse(the_data_file, prim_bin_file, self.stamp, xmlitems)
+        parsed_data_items = xmlparse(source_file, prim_bin_file, self.stamp, self.data_items['xid'])
 
         self.temp_data_items = {}
 
         for parsed_data_item in parsed_data_items:
-            (label, data, keep) = parsed_data_item
-            if data_group == 'source':
-                if keep:
-                    self.data_items[label] = data
-                else:
-                    self.temp_data_items[label] = data
-            else:
-                use_label = label
-                if label.startswith('feature'):
-                    use_label = 'x' + label
-                    self.data_items[use_label] = data
+            (keypath, keyname, data, keep) = parsed_data_item
+            dest = self.data_items if keep else self.temp_data_items
+            for comp in keypath:
+                if comp not in dest:
+                    dest[comp] = {}
+                    dest = dest[comp]
+            dest[keyname] = data
 
         os.chdir(self.cur_dir)
 
@@ -441,73 +413,6 @@ annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+
                 self.data_items[label] = data
             self.temp_data_items = None
 
-    def set_environment(self, source, annox, task):
-        '''Set the source and result locations for a task execution.
-
-        Args:
-            source (str):
-                key for the source
-            annox (str):
-                name of the extra annotation package
-            task:
-                the chosen task
-
-        Sets *self.env*, a dictionary containg:
-
-        * source: *source*
-        * annox: *annox*
-        * task: *task*
-        * compile (bool): whether to force (re)compilation
-        * settings (:py:class:`configparser.ConfigParser`): entries corresponding to the main configuration file
-        * additional computed settings adapt to the current source and task
-
-        '''
-        settings = self.settings
-        work_dir = settings['locations']['work_dir']
-        laf_dir = settings['locations']['laf_dir']
-        annox_file = settings['annox']['header']
-        annox_root = settings['locations']['annox_dir']
-        bin_subdir = settings['locations']['bin_subdir']
-        task_dir = settings['locations']['task_dir']
-        feat_subdir = settings['locations']['feat_subdir']
-        annox_subdir = settings['locations']['annox_subdir']
-
-        self.env = {
-            'source': source,
-            'annox': annox,
-            'task': task,
-            'task_dir': task_dir,
-            'laf_dir': laf_dir,
-            'data_path': '{}/{}'.format(laf_dir, source),
-            'annox_file': annox_file,
-            'annox_dir': '{}/{}'.format(annox_root, annox),
-            'annox_path': '{}/{}/{}'.format(annox_root, annox, annox_file),
-            'bin_dir': '{}/{}/{}'.format(work_dir, source, bin_subdir),
-            'feat_dir': '{}/{}/{}/{}'.format(work_dir, source, bin_subdir, feat_subdir),
-            'annox_base_bdir': '{}/{}/{}/{}'.format(work_dir, source, bin_subdir, annox_subdir),
-            'annox_bdir': '{}/{}/{}/{}/{}'.format(work_dir, source, bin_subdir, annox_subdir, annox),
-            'result_dir': '{}/{}/{}'.format(work_dir, source, task),
-        }
-        try:
-            if not os.path.exists(self.env['bin_dir']):
-                os.makedirs(self.env['bin_dir'])
-        except os.error:
-            raise LafException(
-                "ERROR: could not create bin directory {}".format(self.env['bin_dir']),
-                self.stamp, os.error
-            )
-        try:
-            if not os.path.exists(self.env['result_dir']):
-                os.makedirs(self.env['result_dir'])
-        except os.error:
-            raise LafException(
-                "ERROR: could not create result directory {}".format(self.env['result_dir']),
-                self.stamp, os.error
-            )
-        self.env['stat_file'] = "{}/{}{}.{}".format(self.env['bin_dir'], self.STAT_NAME, self.COMPILE_NAME, self.TEXT_EXT)
-        '''Instance member holding name and location of the statistics file that describes the compiled data'''
-        self.env['annox_check_path'] = "{}/{}{}{}.{}".format(self.env['annox_base_bdir'], self.LOG_NAME, self.COMPILE_NAME, annox, self.TEXT_EXT)
-
     def add_logfile(self, location=None, name=None):
         '''Create and open a log file for a given task.
 
@@ -521,8 +426,8 @@ annox/cfeat/{{comp}}       = dct = efeature = {source}/{bin}/{anx}/{annox}/conn+
             name (str):
                 override default name for log file
         '''
-        log_dir = self.env['result_dir'] if not location else location
-        log_name = "{}{}.{}".format(self.LOG_NAME, self.env['task'] if not name else name, self.TEXT_EXT)
+        log_dir = self.result_dir if not location else location
+        log_name = "{}{}.{}".format(self.LOG_NAME, self.task if not name else name, self.TEXT_EXT)
 
         try:
             if not os.path.exists(log_dir):

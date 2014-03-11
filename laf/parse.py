@@ -292,36 +292,24 @@ class AnnotationHandler(ContentHandler):
     def characters(self, ch):
         pass
 
-def parse(graf_header_file, prim_bin_file, stamp, xmlitems):
+def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label):
     '''Parse a GrAF resource.
-    
-    Parses a GrAF resource, starting by SAX parsing its header file and subsequently parsing all
-    files mentioned in that header file.
-
-    Args:
-        graf_header_file (str):
-            path to the GrAF header file
-        xmlitems (dict):
-            dictionary mapping the xml identifiers of nodes and edges of the common data to integers.
-            Needed when compiling additional annotations on top of an already compiled source.
-
-    Returns:
-        a tuple of items which comprise the parse results.
-
-    Every member of the returned tuple is itself a tuple of 3 pieces of information:
-
-    #. A *key* which acts as a name for this part of the result data
-    #. The data itself, as described in :class:`AnnotationHandler`
-    #. A boolean indicating whether this data is a temporary result or a permanent result
-
-    Temporary results will be discarded after the remodeling step, permanent results will be incorporated in 
-    the task-executing object.
     '''
 
     init()
     saxparse(graf_header_file, HeaderHandler(stamp))
 
-    if xmlitems != None:
+    result_items = []
+
+    def deliver(dkey, item, parse_data):
+        data_items["{}{}".format(dkey, item)] = parse_data
+        result_items.append((dkey, item))
+
+    xmlitems = {}
+    for item in ('node', 'edge'):
+        xlabel = 'X_int_{}'.format(item)
+        xmlitems[item] = data_items[xlabel] if xlabel in data_items else None
+    if xmlitems['node'] != None and xmlitems['edge'] != None:
         global identifiers_n
         global identifiers_e
         identifiers_n = xmlitems['node']
@@ -351,14 +339,15 @@ def parse(graf_header_file, prim_bin_file, stamp, xmlitems):
         id_region + id_node + id_edge + id_annot
     )
     stamp.progress(msg)
-    return (
-        ("xid_int", collections.defaultdict(lambda:{}, (('node', identifiers_n), ('edge', identifiers_e))), True),
-        ("region_begin", region_begin, False),
-        ("region_end", region_end, False),
-        ("node_region_list", node_region_list, False),
-        ("edges_from", edges_from, True),
-        ("edges_to", edges_to, True),
-        ("feature", feature, True),
-    )
+    deliver("X_int_", "node", identifiers_n) 
+    deliver("X_int_", "edge", identifiers_e)
+    deliver("region_begin", '', region_begin)
+    deliver("region_end", '', region_end)
+    deliver("node_region_list", '', node_region_list)
+    deliver("edges_from", '', edges_from)
+    deliver("edges_to", '', edges_to)
+    for f in feature:
+        deliver(feature_label, f, feature[f])
+    return result_items
 
 

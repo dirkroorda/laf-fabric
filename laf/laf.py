@@ -8,6 +8,7 @@ import array
 import pickle
 import gzip
 
+from .settings import Settings
 from .timestamp import Timestamp
 from .parse import parse as xmlparse
 from .model import model as remodel
@@ -69,14 +70,10 @@ class Laf(object):
         '''Instance member holding the compiled data in the form of a dictionary of data chunks.
         '''
 
-        self.temp_data_items = None
-        '''Holds some data delivered by the parsed that can be thrown away later.
-        The data that we must keep is stored in the object, of course.
-        '''
-
     def adjust_all(self, source, annox, task, req_items, method_dict, force):
-        self.settings.set_env(source, annox, task)
-        env = self.settings['env']
+        settings = self.settings
+        settings.set_env(source, annox, task)
+        env = settings['env']
 
         try:
             if not os.path.exists(env['main_compiled_dir']):
@@ -113,136 +110,112 @@ class Laf(object):
         return correct
 
     def compile_all(self, force):
-        '''Manages the complete compilation process.
-        '''
-        env = self.settings['env']
-        compile_uptodate['source'] = not os.path.exists(env['main_source_file']) or (
-                os.path.exists(env['main_compiled_file']) and
-                os.path.getmtime(env['main_compiled_file']) >= os.path.getmtime(env['main_source_file'])
+        settings = self.settings
+        env = settings['env']
+
+        compile_uptodate['main'] = not os.path.exists(env['main_source_path']) or (
+                os.path.exists(env['main_compiled_path']) and
+                os.path.getmtime(env['main_compiled_path']) >= os.path.getmtime(env['main_source_path'])
             )
 
         uptodate = True
         for afile in glob.glob('{}/*.xml'.format(env['annox_source_dir'])):
             this_uptodate = env['annox'] == env['empty'] or (
-                os.path.exists(env['annox_compiled_file']) and
-                os.path.getmtime(env['annox_compiled_file']) >= os.path.getmtime(afile)
+                os.path.exists(env['annox_compiled_path']) and
+                os.path.getmtime(env['annox_compiled_path']) >= os.path.getmtime(afile)
             )
             if not this_uptodate:
                 uptodate = False
                 break
         compile_uptodate['annox'] = uptodate
         
-        for data in ['source', 'annox']:
-            if data == 'annox':
-                self.ensure_loaded({'X': ['node', 'edge']}, {})
+        has_compiled = False
+        for data in ['main', 'annox']:
             if not compile_uptodate[data] or force[data]:
-                self.progress("BEGIN COMPILE {}: {}".format(data_group, self.source if data == 'source' else self.annox))
+                self.progress("BEGIN COMPILE {}: {}".format(data, env['source'] if data == 'main' else env['annox']))
+                self.clear_data(data)
+                if data == 'annox':
+                    self.load_all({'X': ['node', 'edge']}, {}, extra=True)
                 self.compile_data(data)
-                self.progress("END   COMPILE {}: {}".format(data_group, self.source if data == 'source' else self.annox))
+                has_compiled = True
+                self.progress("END   COMPILE {}: {}".format(data, env['source'] if data == 'main' else env['annox']))
             else:
-                self.progress("COMPILING {}: UP TO DATE".format(data_group))
+                self.progress("COMPILING {}: UP TO DATE".format(data))
+        if has_compiled:
+            self.clear_data(data)
+            settings.set_env(source, annox, task)
 
-    def load_all(self, req_items, method_dict):
-        self.request_files(req_items)
+    def compile_data(self, data):
+        '''Manages the compilation process for either the main data or extra annotation files.
+
+        Args:
+            data (str):
+                whether to parse main data (``main``) or an extra annotation package (``annox``)
+        '''
+        settings = self.settings
+        env = settings['env']
+        the_log_file = env['compiled_file']
+        the_log_dir = env['{}_compiled_dir'.format(data)]
+
+        self.add_logfile(the_log_dir, the_log_file)
+        self.parse(data)
+        self.model(data)
+        self.store_data(data)
+        self.finish_logfile()
+
+    def clear_data(self, data):
+        for dkey in self.data_items:
+            if (data == 'main' and not dkey.startswith('A')) or (data == 'annox' and dkey.startswith('A')):
+                self.clear_file(dkey)
+
+    def clear_file(self, dkey): 
+        if dkey in self.data_items[dkey]: del self.data_items[dkey]
+
+    def load_all(self, req_items, method_dict, extra=False):
+        settings = self.settings
+        self.request_files(req_items, extra=extra)
+
+        old_data_items = settings.old_data_items
+        new_data_items = settings.data_items
 
         correct = True
 
-        for x in self.settings.old_data_items:
-            if x not in self.settings.data_items:
-                self.progress("clear {}".format(self.format_key(x[0], x[1]))) 
-                self.clear_file(x)
-        for x in self.settings.data_items:
-            if x in self.settings.old_data_items:
-                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
+        for dkey in old_data_items:
+            if dkey not in new_data_items or new_data_items[dkey][0] != old_data_items[dkey][0]:
+                self.progress("clear {}".format(settings.format_item(dkey))) 
+                self.clear_file(dkey)
+        for dkey in new_data_items:
+            if dkey in old_data_items and new_data_items[dkey][0] == old_data_items[dkey][0]:
+                self.progress("keep {}".format(settings.format_item(dkey))) 
             else:
-                this_correct = self.load_file(x)
+                this_correct = self.load_file(dkey, method_dict)
                 if not this_correct: correct = False
-
-        for x in self.settings.old_prep_list:
-            if x not in self.settings.prep_list:
-                self.progress("clear {}".format(self.format_key(x[0], x[1]))) 
-                self.clear_file(x)
-        for x in self.settings.prep_list:
-            if x in preplist_old:
-                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
-            else:
-                this_correct = self.prepare_file(x, method_dict)
-                if not this_correct: correct = False
-        self.loadlist = loadlist_new
 
         return correct
 
-    def ensure_loaded(self, req_items, method_dict):
-        loadlist_old = self.loadlist
-        preplist_old = self.preplist
-        (loadlist_new, preplist_new) = self.request_files(primary, xmlids, features)
+    def load_file(self, dkey)
+        settings = self.settings
+        data_items = settings.data_items
+        (dpath, dtype, dprep) = data_items[dkey]
 
-        correct = True
-
-        new_updates = []
-        prep_updates = []
-
-        for x in loadlist_new:
-            if x in loadlist_old:
-                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
-            else:
-                this_correct = self.load_file(x)
-                new_updates.append(x)
-                if not this_correct: correct = False
-
-        for x in preplist_new:
-            if x in preplist_old:
-                self.progress("keep {}".format(self.format_key(x[0], x[1]))) 
-            else:
-                this_correct = self.prepare_file(x, method_dict)
-                prep_updates.append(x)
-                if not this_correct: correct = False
-        self.loadlist = loadlist_new + new_updates
-        self.preplist = preplist_new + prep_updates
-
-        return correct
-
-    def print_file_list(self, filelist):
-        for (dkeypath, dkeyname, dtype, dpath) in filelist:
-            print("data_items[{}][{}] = {} from file {}".format(
-                ']['.join(dkeypath),
-                dkeyname,
-                "''" if dtype == 'str' else
-                0 if dtype == 'num' else
-                '{}' if dtype == 'dct' else
-                "array.array('I')" if dtype == 'arr' else
-                'None',
-                dpath,
-            ))
-
-    def clear_source(self):
-        self.data_items['source'] = {} 
-
-    def clear_annox(self):
-        self.data_items['annox'] = {} 
-
-    def clear_file(self, filespec): 
-        (dkeypath, dkeyname, dtype, dpath) = filespec
-
-        newdata = None
-        if dtype == 'arr':
-            newdata = array.array('I')
-        elif dtype == 'dct':
-            newdata = {}
-        elif dtype == 'str':
-            newdata = ''
-
-        place = self.data_items
-        for comp in dkeypath:
-            if comp not in place: place[comp] = {}
-            place = place[comp]
-        place[dkeyname] = newdata
-
-    def load_file(self, file_spec)
-        (dkeypath, dkeyname, dtype, dpath) = filespec
+        if dprep:
+            if dkey not in method_dict:
+                self.progress("WARNING: Cannot prepare data for {}. No preparation method available.".format(
+                    settings.format_item(dkey)
+                ))
+                return False
+            (method, method_source) = method_dict[dkey]
+            up_to_date = os.path.exists(dpath) and os.path.getmtime(dpath) >= os.path.getmtime(method_source)
+            if not up_to_date:
+                self.progress("PREPARING {}".format(settings.format_item(dkey)))
+                newdata = method(api)
+                self.progress("WRITING {}".format(settings.format_item(dkey)))
+                self.data_items[dkey] = newdata
+                self.store_file(dkey)
+                return True
 
         if not os.path.exists(dpath):
-            laf.progress("ERROR: Can not load data for {}: File {} does not exist.".format(self.format_key(dkeypath, dkeyname), dpath))
+            self.progress("ERROR: Can not load data for {}: File does not exist.".format(self.format_item(dkey))
             return False
 
         newdata = None
@@ -259,93 +232,46 @@ class Laf(object):
             newdata = pickle.load(handle)
             handle.close()
         elif dtype == 'str':
-            handle = open(dpath, "r", encoding="utf-8")
+            handle = gzip.open(dpath, "rt", encoding="utf-8")
             newdata = handle.read(None)
             handle.close()
-
-        place = self.data_items
-        for comp in dkeypath:
-            if comp not in place: place[comp] = {}
-            place = place[comp]
-        place[dkeyname] = newdata
+        self.data_items[dkey] = newdata
 
         return True
 
-    def prepare_file(self, file_spec, method_dict)
-        (dkeypath, dkeyname, dtype, dpath) = filespec
-        method_key = dkeypath + (dkeyname,)
+    def store_data(self, data):
+        self.progress("WRITING RESULT FILES for {}".format(data))
 
-        if method_key not in method_dict:
-            self.progress("WARNING: Cannot prepare data for {}. No preparation method available.".format(self.format_key(dkeypath, dkeyname)))
-            return False
-        (method, method_source) = method_dict[method_key]
-        up_to_date = os.path.exists(dpath) and os.path.getmtime(dpath) >= os.path.getmtime(method_source)
-        if not up_to_date:
-            self.progress("PREPARING {}".format(format_key(dkeypath, dkeyname)))
-            newdata = method(api)
-            self.progress("WRITING {} (prepared)".format(format_key(dkeypath, dkeyname)))
-        return self.load_file(file_spec)
+        settings = self.settings
+        data_items = settings.data_items
 
-    def store_file(self, filespec)
-        (dkeypath, dkeyname, dtype, dpath) = filespec
+        for dkey in data_items:
+            if (data == 'main' and not dkey.startswith('A')) or (data == 'annox' and dkey.startswith('A')):
+                self.store_file(dkey)
 
-        place = self.data_items
-        for comp in dkeypath + (dkeyname,):
-            if comp not in place:
-                laf.progress("Error: Can not write data for {} to {}: Data selected by {} is not present.".format(self.format_key(dkeypath, dkeyname), dpath, comp))
-                return False
-            place = place[comp]
-        newdata = place[dkeyname]
+    def store_file(self, dkey)
+        settings = self.settings
+        data_items = settings.data_items
+        (dpath, dtype, dprep) = data_items[dkey]
+
+        thedata = self.data_items[dkey]
 
         if dtype == 'arr':
             handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
-            newdata.tofile(handle)
+            thedata.tofile(handle)
             handle.close()
         elif dtype == 'dct':
             handle = gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL)
-            pickle.dump(newdata, handle)
+            pickle.dump(thedata, handle)
             handle.close()
         elif dtype == 'str':
-            handle = open(dpath, "w", encoding="utf-8")
-            handle.write(newdata)
+            handle = gzip.open(dpath, "wt", encoding="utf-8")
+            handle.write(thedata)
             handle.close()
 
         return True
 
-    def format_key(self, dpath, dkey):
-        return "{}: {}".format('/'.join(dpath), dkey)
-
-
-    def format_item(self, data_group, item, asFile=False):
-        if data_group == 'common':
-            return item
-        if data_group == 'xmlids':
-            return item
-        if data_group == 'primary':
-            return item
-        if data_group == 'feature' or data_group == 'annox':
-            if asFile:
-                return '{}_{}_{}_{}'.format(*item)
-            else:
-                return '{}:{}.{} ({})'.format(*item)
-
-    def compile_data(self, data_group):
-        '''Manages the compilation process for either the source data or extra annotation files.
-
-        Args:
-            data_group (str):
-                whether to parse source data (``source``) or an extra annotation package (``annox``)
-        '''
-        the_log_file = self.COMPILE_NAME
-        the_log_dir = self.main_compiled_dir if data_group == 'source' else self.annox_compiled_dir
-
-        self.add_logfile(the_log_dir, the_log_file)
-        self.parse(data_group)
-        self.model(data_group)
-        self.write_data(data_group)
-        self.finish_logfile()
-
-    def parse(self, data_group, xmlitems):
+    def parse(self, data):
         '''Call the XML parser and collect the parse results.
 
         Some parse results must be remodelled afterwards.
@@ -355,15 +281,16 @@ class Laf(object):
         The actual parsing is done in the module :mod:`parse <laf.parse>`.
 
         Args:
-            data_group (str):
-                whether to parse source data (``source``) or an extra annotation package (``annox``)
+            data (str):
+                whether to parse main data (``main``) or an extra annotation package (``annox``)
         '''
         self.progress("PARSING ANNOTATION FILES")
 
-        source_file = self.main_source_path if data_group == 'source' else self.annox_source_path
-        source_dir = self.main_source_dir if data_group == 'source' else self.annox_source_dir
-        compiled_dir = self.main_compiled_dir if data_group == 'source' else self.annox_compiled_dir
-        feature_dir = self.main_feature_dir if data_group == 'source' else self.annox_feature_dir
+        settings = self.settings
+        env = settings['env']
+
+        source_dir = env['{}_source_dir'.format(data)]
+        compiled_dir = env['{}_compiled_dir'format(data)]
         self.cur_dir = os.getcwd()
 
         try:
@@ -373,45 +300,49 @@ class Laf(object):
                 self.stamp, os.error
             )
         try:
-            if not os.path.exists(feature_dir):
-                os.makedirs(feature_dir)
+            if not os.path.exists(compiled_dir):
+                os.makedirs(compiled_dir)
         except os.error:
             os.chdir(self.cur_dir)
-            raise LafException("ERROR: could not create directory for compiled data {}".format(the_bin_dir),
+            raise LafException("ERROR: could not create directory for compiled data {}".format(compiled_dir),
                 self.stamp, os.error,
             )
         
-        prim_bin_file = "{}/{}".format(self.main_compiled_dir, self.settings['locations']['primary_data']) if data_group == 'source' else None
-
-        parsed_data_items = xmlparse(source_file, prim_bin_file, self.stamp, self.data_items['xid'])
-
-        self.temp_data_items = {}
-
-        for parsed_data_item in parsed_data_items:
-            (keypath, keyname, data, keep) = parsed_data_item
-            dest = self.data_items if keep else self.temp_data_items
-            for comp in keypath:
-                if comp not in dest:
-                    dest[comp] = {}
-                    dest = dest[comp]
-            dest[keyname] = data
+        parsed_items = xmlparse(
+            env['{}_source_path'.format(data)],
+            env['primary_data_path'],
+            self.stamp,
+            self.data_items,
+            'F_' if data == 'main' else 'AF_',
+        )
+        for (label, item, data) in parsed_items:
+            if label not in data_items_def:
+                continue
+            (bpath, btype, bprep) = data_items_def[label]
+            data_items["{}{}".format(label, item)] = ("{}{}".format(bpath, item), btype, bprep)
 
         os.chdir(self.cur_dir)
 
-    def model(self, data_group):
+    def model(self, data):
         '''Call the remodeler and store the remodeled data in the object.
 
         Args:
-            data_group (str):
+            data (str):
                 whether to parse source data (``source``) or an extra annotation package (``annox``)
         '''
-        if data_group == 'source':
-            self.progress("MODELING RESULT FILES")
-            modeled_data_items = remodel(self.data_items, self.temp_data_items, self.stamp)
-            for modeled_data_item in modeled_data_items:
-                (label, data) = modeled_data_item
-                self.data_items[label] = data
-            self.temp_data_items = None
+        self.progress("MODELING RESULT FILES")
+
+        settings = self.settings
+        data_items = settings.data_items
+        data_items_def = settings.data_items_def
+
+        modeled_items = remodel(data, self.data_items, self.stamp)
+        for (label, item) in modeled_data_items:
+            if label not in data_items_def:
+                self.progress('discarding temp data {}'.format(label))
+                continue
+            (bpath, btype, bprep) = data_items_def[label]
+            data_items["{}{}".format(label, item)] = ("{}{}".format(bpath, item), btype, bprep)
 
     def add_logfile(self, location=None, name=None):
         '''Create and open a log file for a given task.
@@ -464,24 +395,6 @@ class Laf(object):
         except:
             pass
 
-    def make_inverse(self, mapping):
-        '''Creates the inverse lookup table for a data table given as a dictionary.
-
-        This is a low level function for creating inverse mappings.
-        When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.
-        Upon loading, the inverse mapping is generated by means of this function.
-        '''
-        return dict([(y,x) for (x,y) in mapping.items()])
-
-    def make_array_inverse(self, arraylist):
-        '''Creates the inverse lookup table for a data table given as a Python array.
-
-        This is a low level function for creating inverse mappings.
-        When mappings (such as from xml-ids to integers vv.) are stored to disk, the inverse mapping is not stored.
-        Upon loading, the inverse mapping is generated by means of this function.
-        '''
-        return dict([(x,n) for (n,x) in enumerate(arraylist)])
-
     def __del__(self):
         '''Clean up
 
@@ -495,3 +408,23 @@ class Laf(object):
             if handle and not handle.closed:
                 handle.close()
 
+def fabric(
+        source=None, annox=None, task=None, verbose=None,
+        load=None,
+        force_compile_source=False, force_compile_annox=False,
+    ):
+    settings = Settings()
+    laf = Laf(settings.settings)
+    laf.stamp.set_verbose(verbose)
+    laf.stamp.reset()
+
+    if load == None:
+        load = {}
+    self.adjust_all(load)
+
+    if function == None:
+        function = eval("{}.task".format(task))
+
+    self.stamp.reset()
+
+    self.init_task()

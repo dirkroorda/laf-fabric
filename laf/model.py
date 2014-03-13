@@ -113,13 +113,13 @@ def model(data, data_items, stamp):
 
     Args:
         data_items:
-            data structures coming from :mod:`parse <laf.parse>`, that are here to stay
+            data structures coming from :mod:`parse <laf.parse>`
 
         stamp (:class:`Timestamp <laf.timestamp.Timestamp>`):
             object for issuing progress messages
 
     Returns:
-        The resulting permanent remodelled data structures.
+        The resulting remodelled data structures.
 
     The transformations are:
 
@@ -275,6 +275,38 @@ def model(data, data_items, stamp):
     deliver("node_events_items", '', node_events_items))
 
     node_anchor_list = None
+
+    stamp.progress("CONNECTIVITY")
+
+    connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
+    connectionsi = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
+    edges_from = lafapi.data_items["edges_from"]
+    edges_to = lafapi.data_items["edges_to"]
+    other_edges = True in lafapi.given['other_edges']
+    edges_seen = set()
+    self.feature_names = []
+    for (feature, feature_obj) in feature_objects.items():
+        if feature[3] == 'node':
+            continue
+        feature_name = feature_obj.edge_name
+        self.feature_names.append(feature_name)
+        feature_map = feature_obj.lookup
+        for (edge, fvalue) in feature_map.items():
+            if other_edges:
+                edges_seen.add(edge)
+            node_from = edges_from[edge]
+            node_to = edges_to[edge]
+            connections[feature_name][fvalue][node_from].add(node_to)
+            connectionsi[feature_name][fvalue][node_to].add(node_from)
+    if other_edges:
+        self.feature_names.append('')
+        for edge in range(len(edges_from)):
+            if edge in edges_seen:
+                continue
+            node_from = edges_from[edge]
+            node_to = edges_to[edge]
+            connections[''][''][node_from].add(node_to)
+            connectionsi[''][''][node_to].add(node_from)
 
     return result_items
 

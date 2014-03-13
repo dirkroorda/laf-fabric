@@ -59,7 +59,8 @@ system_settings = {
         'primary_data_path':   '{work_dir}/{bin_subdir}/{source}/{primary_data}',
         'annox_compiled_dir':  '{work_dir}/{bin_subdir}/{source}/A/{annox}',
         'annox_compiled_path': '{work_dir}/{bin_subdir}/{source}/A/{annox}/{log_name}{compile_name}.{text_ext}',
-        'task_dir':            '{work_dir}/{task_subdir}/{source}',
+        'task_dir':            '{work_dir}/{task_subdir}/{source}/{task}',
+        'log_path':            '{work_dir}/{task_subdir}/{source}/{task}/{log_name}{task}.{text_ext}',
     },
 }
 

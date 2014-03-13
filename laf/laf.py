@@ -157,7 +157,7 @@ class Laf(object):
         the_log_file = env['compiled_file']
         the_log_dir = env['{}_compiled_dir'.format(data)]
 
-        self.add_logfile(the_log_dir, the_log_file)
+        self.add_logfile(compile=data)
         self.parse(data)
         self.model(data)
         self.store_data(data)
@@ -188,12 +188,12 @@ class Laf(object):
             if dkey in old_data_items and new_data_items[dkey][0] == old_data_items[dkey][0]:
                 self.progress("keep {}".format(settings.format_item(dkey))) 
             else:
-                this_correct = self.load_file(dkey, method_dict)
+                this_correct = self.load_file(dkey, method_dict, accept_missing=dkey.startswith('A'))
                 if not this_correct: correct = False
 
         return correct
 
-    def load_file(self, dkey)
+    def load_file(self, dkey, accept_missing=False)
         settings = self.settings
         data_items = settings.data_items
         (dpath, dtype, dprep) = data_items[dkey]
@@ -215,8 +215,9 @@ class Laf(object):
                 return True
 
         if not os.path.exists(dpath):
-            self.progress("ERROR: Can not load data for {}: File does not exist.".format(self.format_item(dkey))
-            return False
+            if not accept_missing:
+                self.progress("ERROR: Can not load data for {}: File does not exist.".format(self.format_item(dkey))
+            return accept_missing
 
         newdata = None
         if dtype == 'arr':
@@ -344,7 +345,7 @@ class Laf(object):
             (bpath, btype, bprep) = data_items_def[label]
             data_items["{}{}".format(label, item)] = ("{}{}".format(bpath, item), btype, bprep)
 
-    def add_logfile(self, location=None, name=None):
+    def add_logfile(self, compile=None):
         '''Create and open a log file for a given task.
 
         When tasks run, they generate progress messages with timing information in them.
@@ -352,13 +353,13 @@ class Laf(object):
         The log file is placed in the result directory of the task at hand.
 
         Args:
-            location (str):
-                override default directory for log file
-            name (str):
-                override default name for log file
+            compile (str):
+                if it is a log file for compiling, indicate whether it is compiling the main source
+                or an annox. Values: ``main``, ``annox``.
         '''
-        log_dir = self.result_dir if not location else location
-        log_name = "{}{}.{}".format(self.LOG_NAME, self.task if not name else name, self.TEXT_EXT)
+        env = self.settings['env']
+        log_dir = env['task_dir'] if compile == None else env["{}_compile_dir".format(compile)]
+        log_path = env['log_path'] if compile == None else env["{}_compile_path".format(compile)]
 
         try:
             if not os.path.exists(log_dir):
@@ -369,12 +370,11 @@ class Laf(object):
                 self.stamp, os.error
             )
 
-        log_file = "{}/{}".format(log_dir, log_name)
-        self.log = open(log_file, "w", encoding="utf-8")
+        self.log = open(log_path, "w", encoding="utf-8")
         '''Instance member holding the open log handle'''
 
         self.stamp.connect_log(self.log)
-        self.stamp.progress("LOGFILE={}".format(log_file))
+        self.stamp.progress("LOGFILE={}".format(log_path))
 
     def finish_logfile(self):
         '''Explicitly close log file.
@@ -411,20 +411,50 @@ class Laf(object):
 def fabric(
         source=None, annox=None, task=None, verbose=None,
         load=None,
-        force_compile_source=False, force_compile_annox=False,
+        force_compile = {'main': False, 'annox': False},
     ):
     settings = Settings()
-    laf = Laf(settings.settings)
-    laf.stamp.set_verbose(verbose)
-    laf.stamp.reset()
+    lafapi = LafAPI(settings.settings)
+    lafapi.stamp.set_verbose(verbose)
+    lafapi.stamp.reset()
 
-    if load == None:
-        load = {}
-    self.adjust_all(load)
+    req_items = {
+        'c': [''],
+        'P': [],
+        'X': [],
+        'F': [],
+        'C': [],
+        'AF': [],
+        'AC': [],
+    }
+    req_items['c'] = ['']
+    if load != None:
+        if 'primary' in load and load['primary']:
+            req_items['P'] = ['']
 
-    if function == None:
-        function = eval("{}.task".format(task))
+        if 'xmlids' in load:
+            for item in [k for k in load['xmlids'] if load['xmlids'][k]]:
+                req_items['X'].append(item)
 
-    self.stamp.reset()
+        if 'features' in load:
+        for aspace in load['features']:
+            for kind in load['features'][aspace]:
+                for line in load['features'][aspace][kind]:
+                    (alabel, fnamestring) = line.split('.')
+                    fnames = fnamestring.split(',')
+                    for fname in fnames:
+                        the_feature = (aspace, alabel, fname, kind)
+                        req_items['F'].append(the_feature)
+                        req_items['AF'].append(the_feature)
+                        if kind == 'edge':
+                            req_items['C'].append(the_feature)
+                            req_items['AC'].append(the_feature)
 
-    self.init_task()
+    method_dict = {}
+    lafapi.adjust_all(source, annox, task, req_items, method_dict, force_compile)
+
+    lafapi.add_logfile()
+    lafapi.progress("BEGIN TASK={} SOURCE={}".format(self.env['task'], self.env['source']))
+    api = lafapi.API()
+    lafapi.stamp.reset()
+    return api

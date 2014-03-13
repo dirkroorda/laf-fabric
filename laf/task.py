@@ -31,11 +31,11 @@ class Feature(object):
     annotation spaces.
 
     '''
-    def __init__(self, laftask, aspace, alabel, fname, kind, extra=False):
+    def __init__(self, lafapi, aspace, alabel, fname, kind, extra=False):
         '''Upon creation, makes references to the feature data corresponding to the feature specified.
 
         Args:
-            laftask(:class:`LafTask <laf.task.LafTask>`):
+            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
                 The task executing object that has all the data.
             aspace, alabel, fname, kind:
                 The annotation space, annotation label, feature name, feature kind (node or edge)
@@ -44,25 +44,25 @@ class Feature(object):
                 indication of where to look for the feature data, because up till now annox feature data
                 sits in another dictionary than source feature data.
         '''
-        self.source = laftask
+        self.source = lafapi
         self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind)
         self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
         self.edge_name = "{}_{}_{}".format(aspace, alabel, fname)
         self.kind = kind
         ref_label = 'xfeature' if extra else 'feature'
-        self.lookup = collections.defaultdict(lambda: None, laftask.data_items[ref_label][(aspace, alabel, fname, kind)])
+        self.lookup = collections.defaultdict(lambda: None, lafapi.data_items[ref_label][(aspace, alabel, fname, kind)])
 
-    def add_data(self, laftask, aspace, alabel, fname, kind):
+    def add_data(self, lafapi, aspace, alabel, fname, kind):
         '''Upon creation, makes references to the feature data corresponding to the feature specified.
 
         Args:
-            laftask(:class:`LafTask <laf.task.LafTask>`):
+            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
                 The task executing object that has all the data.
             aspace, alabel, fname, kind:
                 The annotation space, annotation label, feature name, feature kind (node or edge)
                 that together identify a single feature.
         '''
-        lookup = laftask.data_items['xfeature'][(aspace, alabel, fname, kind)]
+        lookup = lafapi.data_items['xfeature'][(aspace, alabel, fname, kind)]
         for ne in lookup:
             self.lookup[ne] = lookup[ne]
 
@@ -108,7 +108,7 @@ class Features(object):
     This class also contains a list of all loadable features, i.e. all features that are
     present in the compiled data.
     '''
-    def __init__(self, laftask, feature_objects):
+    def __init__(self, lafapi, feature_objects):
         '''Upon creation, a set of features is taken in,
         their *local_name* members are used to create
         member names in this class.
@@ -122,9 +122,9 @@ class Features(object):
             self.F[fo.local_name] = fo
 
         loadables = []
-        for feat_path in glob.glob('{}/*.bin'.format(laftask.env['feat_dir'])):
+        for feat_path in glob.glob('{}/*.bin'.format(lafapi.env['feat_dir'])):
             loadables.append(os.path.splitext(os.path.basename(feat_path))[0].replace('feature_', '', 1))
-        for feat_path in glob.glob('{}/*.bin'.format(laftask.env['annox_bdir'])):
+        for feat_path in glob.glob('{}/*.bin'.format(lafapi.env['annox_bdir'])):
             loadables.append(os.path.splitext(os.path.basename(feat_path))[0].replace('xfeature_', '', 1))
         all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
 
@@ -175,12 +175,12 @@ class Conn(object):
         C.«edge_feature_name»[«edge_feature_value»][«node_from»][«node_to»] = None
 
     '''
-    def __init__(self, laftask, feature_objects):
+    def __init__(self, lafapi, feature_objects):
         '''Upon creation, from the edge features the adjacency information will
         be gathered.
 
         Args:
-            laftask(:class:`LafTask <laf.task.LafTask>`):
+            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
                 The task executing object that has all the data.
             feature_objects(dict):
                 feature information for the declared features.
@@ -190,9 +190,9 @@ class Conn(object):
          
         connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
         connectionsi = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
-        edges_from = laftask.data_items["edges_from"]
-        edges_to = laftask.data_items["edges_to"]
-        other_edges = True in laftask.given['other_edges']
+        edges_from = lafapi.data_items["edges_from"]
+        edges_to = lafapi.data_items["edges_to"]
+        other_edges = True in lafapi.given['other_edges']
         edges_seen = set()
         self.feature_names = []
         for (feature, feature_obj) in feature_objects.items():
@@ -271,11 +271,11 @@ class XMLid(object):
     It has a reference to the relevant tables organized by *kind*
     (node or edge). There are methods to map and inverse map.
     '''
-    def __init__(self, laftask, kind):
+    def __init__(self, lafapi, kind):
         '''Upon creation, makes a reference to the XMLid data corresponding to the kind specified.
 
         Args:
-            laftask(:class:`LafTask <laf.task.LafTask>`):
+            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
                 The task executing object that has all the data.
             kind:
                 The kind (node or edge)
@@ -283,8 +283,8 @@ class XMLid(object):
         '''
         self.local_name = kind
         self.kind = kind
-        self.code = laftask.data_items['xid_int'][kind]
-        self.rep = laftask.data_items['xid_rep'][kind]
+        self.code = lafapi.data_items['xid_int'][kind]
+        self.rep = lafapi.data_items['xid_rep'][kind]
 
     def r(self, int_code):
         '''Get the XML identifier corresponding to an integer.
@@ -326,17 +326,17 @@ class XMLids(object):
 class PrimaryData(object):
     '''This class is responsible for giving access to the primary data.
     '''
-    def __init__(self, laftask):
+    def __init__(self, lafapi):
         '''Upon creation, the primary data is pointed to.
 
         Args:
-            laftask(:class:`LafTask <laf.task.LafTask>`):
+            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
                 The task executing object that has all the data.
         '''
-        self.all_data = laftask.data_items['data']
+        self.all_data = lafapi.data_items['data']
         '''Member that holds the primary data as a single UNICODE string.
         '''
-        self.laftask = laftask
+        self.lafapi = lafapi
 
     def data(self, node):
         '''Gets the primary data to which a node is linked.
@@ -355,8 +355,8 @@ class PrimaryData(object):
                 The list is normalized: all stretches are maximal, non overlapping and occur
                 in the order of the primary data (ascending *N*). 
         '''
-        laftask = self.laftask
-        regions = laftask.getitems(laftask.data_items['node_anchor'], laftask.data_items['node_anchor_items'], node)
+        lafapi = self.lafapi
+        regions = lafapi.getitems(lafapi.data_items['node_anchor'], lafapi.data_items['node_anchor_items'], node)
         if not regions:
             return None
         all_text = self.all_data
@@ -365,7 +365,7 @@ class PrimaryData(object):
             result.append((r[0], all_text[r[0]:r[1]]))
         return result
 
-class LafTask(Laf):
+class LafAPI(Laf):
     '''Task processor.
 
     This class is responsible for running user tasks.
@@ -407,7 +407,7 @@ class LafTask(Laf):
         in end user tasks.
         You can give convenient, local names to these methods, e.g::
 
-            API = laftask.API()
+            API = lafapi.API()
             F = API['F']
             XMLids = API['X']
 

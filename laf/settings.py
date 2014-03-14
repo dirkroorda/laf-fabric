@@ -40,10 +40,14 @@ system_settings = {
         ('primary_data',      '{source}/primary_data'        , 'P', 'str'),
         ('X_int_',            '{source}/X_int_'              , 'X', 'dct'),
         ('X_rep_',            '{source}/X_rep_'              , 'X', 'dct'),
-        ('F_',                '{source}/F_'                  , 'F', 'dct'),
-        ('C_',                '{source}/C_'                  , 'C', 'dct'),
-        ('AF_',               '{source}/A/{annox}/F_'        , 'AF', 'dct'),
-        ('AC_',               '{source}/A/{annox}/C_'        , 'AC', 'dct'),
+        ('F,',                '{source}/F,'                  , 'F', 'dct'),
+        ('FE,',               '{source}/FE,'                 , 'E', 'dct'),
+        ('C,',                '{source}/C,'                  , 'E', 'dct'),
+        ('Ci,',               '{source}/Ci,'                 , 'E', 'dct'),
+        ('AF,',               '{source}/A/{annox}/F,'        , 'AF', 'dct'),
+        ('AFE,',              '{source}/A/{annox}/FE,'       , 'AE', 'dct'),
+        ('AC,',               '{source}/A/{annox}/C,'        , 'AE', 'dct'),
+        ('ACi,',              '{source}/A/{annox}/Ci,'       , 'AE', 'dct'),
     ),
     'env_def': {
         'source': '{source}',
@@ -63,6 +67,73 @@ system_settings = {
         'log_path':            '{work_dir}/{task_subdir}/{source}/{task}/{log_name}{task}.{text_ext}',
     },
 }
+
+class Names(object):
+    def id2p(inv, data):
+        return "{}C{}".format(
+            'A' if data == 'annox' else '',
+            'i' if inv else '',
+        )
+
+    def isf(fstr):
+        if ',' not in fstr:
+            return None
+        else:
+            return fstr.split(',')
+
+    def kd2p(kind, data):
+        return "{}F{}".format(
+            'A' if data == 'annox' else '',
+            'E' if kind == 'edge' else '',
+        )
+
+    def p2kd(pref):
+        kind = 'edge' if pref.endswith('E') else 'node'
+        data = 'annox' if pref.startswith('A') else 'main'
+        return (kind, data)
+
+    def f2api(feature):
+        return "_".join(*feature)
+
+    def f2con(feature, kind, data):
+        return "{}: {} ({})".format(
+            data,
+            "_".join(*feature),
+            kind,
+        )
+
+    def f2key(feature, kind, data):
+        return "{}{}".format(
+            Names.kd2p(kind, data),
+            ','.join(*feature),
+        )
+
+    def c2key(feature, inv, data):
+        return "{}{}".format(
+            Names.id2p(inv, data),
+            ','.join(*feature),
+        )
+
+    def x2key(code, kind):
+        return "X_{}_{}".format(code, key)
+
+    def f2file(feature, kind, data):
+        return "{}{}".format(
+            Names.kd2p(kind, data),
+            ','.join(*feature),
+        )
+
+    def key2f(fstr):
+        comps = Names.isf(fstr)
+        if comps == None:
+            return None
+        return (comps[1:],) + Names.p2kd(comps[0])
+
+    def file2f(fstr):
+        comps = Names.isf(fstr)
+        if comps == None:
+            return None
+        return (comps[1:],) + Names.p2kd(comps[0])
 
 class Settings(object):
     '''Reads and maintains program settings.
@@ -119,9 +190,5 @@ class Settings(object):
     def print_all(self):
         data_items = self.data_items
         for dkey in data_items:
-            print(self.format_item(dkey))
-
-    def format_item(self, dkey):
-        (dpath, dtype, dprep) = self.data_items[dkey]
-        return "{}: ({}) in file {} {}".format(dkey, dtype, dpath, '(prepared)' if dprep else '')
+            print(Names.f2con(dkey))
 

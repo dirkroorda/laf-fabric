@@ -2,6 +2,7 @@ import os
 import collections
 import array
 from .lib import grouper
+from .settings import Names
 
 def arrayify(source_list):
     '''Efficient storage of a list of lists of integers in two Python :py:mod:`array`.
@@ -166,147 +167,175 @@ def model(data, data_items, stamp):
         data_items["{}{}".format(dkey, item)] = mod_data
         result_items.append((dkey, item))
 
-    stamp.progress("XML-IDS (inverse mapping)")
-    for item in ('node', 'edge'):
-        deliver("X_rep_", item, make_inverse(data_items['X_int_{}'.format(item)]))
+    def model_x():
+        stamp.progress("XML-IDS (inverse mapping)")
+        for item in ('node', 'edge'):
+            deliver("X_rep_", item, make_inverse(data_items['X_int_{}'.format(item)]))
 
-    stamp.progress("NODES AND REGIONS")
+    def model_regions():
+        stamp.progress("NODES AND REGIONS")
 
-    node_region_list = data_items["node_region_list"]
-    n_node = len(node_region_list)
+        node_region_list = data_items["node_region_list"]
+        n_node = len(node_region_list)
 
-    stamp.progress("NODES ANCHOR BOUNDARIES")
+        stamp.progress("NODES ANCHOR BOUNDARIES")
 
 #   in node_anchor_min/max the value 0 counts as undefined.
 #   So we have to increase all real values by one in order to make the distinction.
 
-    node_anchor_min = array.array('I', [0 for i in range(n_node)])
-    node_anchor_max = array.array('I', [0 for i in range(n_node)])
-    node_linked = array.array('I')
-    region_begin = data_items["region_begin"]
-    region_end = data_items["region_end"]
+        node_anchor_min = array.array('I', [0 for i in range(n_node)])
+        node_anchor_max = array.array('I', [0 for i in range(n_node)])
+        node_linked = array.array('I')
+        region_begin = data_items["region_begin"]
+        region_end = data_items["region_end"]
 
-    node_anchor_list = []
-    for node in range(n_node):
-        links = node_region_list[node]
-        if len(links) == 0:
-            node_anchor_list.append([])
-            continue
-        node_linked.append(node)
-        ranges = []
-        for r in links:
-            this_anchor_begin = region_begin[r]
-            this_anchor_end = region_end[r]
-            ranges.append((this_anchor_begin, this_anchor_end))
-        norm_ranges = normalize_ranges(ranges)
-        node_anchor_list.append(norm_ranges)
+        node_anchor_list = []
+        for node in range(n_node):
+            links = node_region_list[node]
+            if len(links) == 0:
+                node_anchor_list.append([])
+                continue
+            node_linked.append(node)
+            ranges = []
+            for r in links:
+                this_anchor_begin = region_begin[r]
+                this_anchor_end = region_end[r]
+                ranges.append((this_anchor_begin, this_anchor_end))
+            norm_ranges = normalize_ranges(ranges)
+            node_anchor_list.append(norm_ranges)
 
 #       we store the true value increased by one
-        node_anchor_min[node] = min(norm_ranges) + 1
-        node_anchor_max[node] = max(norm_ranges) + 1
+            node_anchor_min[node] = min(norm_ranges) + 1
+            node_anchor_max[node] = max(norm_ranges) + 1
 
-    (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
-    deliver("node_anchor_min", '', node_anchor_min))
-    deliver("node_anchor_max", '', node_anchor_max))
-    deliver("node_anchor", '', node_anchor))
-    deliver("node_anchor_items", '', node_anchor_items))
-    node_region_list = None
-    del data_items["node_region_list"]
+        (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
+        deliver("node_anchor_min", '', node_anchor_min))
+        deliver("node_anchor_max", '', node_anchor_max))
+        deliver("node_anchor", '', node_anchor))
+        deliver("node_anchor_items", '', node_anchor_items))
+        node_region_list = None
+        del data_items["node_region_list"]
 
-    def interval(node):
-        ''' Key function used when sorting objects according to embedding and left right.
+        def interval(node):
+            ''' Key function used when sorting objects according to embedding and left right.
 
-        Args:
-            node (int):
-                interval
+            Args:
+                node (int):
+                    interval
 
-        Returns:
-            a tuple containing the left boundary and the nagative of the right boundary
-        '''
-        return (node_anchor_min[node], -node_anchor_max[node])
+            Returns:
+                a tuple containing the left boundary and the nagative of the right boundary
+            '''
+            return (node_anchor_min[node], -node_anchor_max[node])
 
-    stamp.progress("NODES SORTING BY REGIONS")
+        stamp.progress("NODES SORTING BY REGIONS")
 
-    node_sort = array.array('I', sorted(node_linked, key=interval))
-    deliver("node_sort", '', node_sort))
-    deliver("node_sort_inv", '', make_array_inverse(data_items['node_sort']))
+        node_sort = array.array('I', sorted(node_linked, key=interval))
+        deliver("node_sort", '', node_sort))
+        deliver("node_sort_inv", '', make_array_inverse(data_items['node_sort']))
 
-    stamp.progress("NODES EVENTS")
+        stamp.progress("NODES EVENTS")
 
-    anchor_max = max(node_anchor_max) - 1
-    node_events = list([([],[],[]) for n in range(anchor_max + 1)])
+        anchor_max = max(node_anchor_max) - 1
+        node_events = list([([],[],[]) for n in range(anchor_max + 1)])
 
-    for n in node_sort:
-        ranges = node_anchor_list[n]
-        amin = ranges[0]
-        amax = ranges[len(ranges)-1] 
-        for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
-            is_first = r == 0
-            is_last = r == (len(ranges) / 2) - 1
-            start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
-            end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
-            if amin == amax:
-                node_events[a_start][1].extend([(n, 0), (n,3)])
-            else:
-                node_events[a_start][0].append((n, start_kind))
-                node_events[a_end][2].append((n, end_kind))
+        for n in node_sort:
+            ranges = node_anchor_list[n]
+            amin = ranges[0]
+            amax = ranges[len(ranges)-1] 
+            for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
+                is_first = r == 0
+                is_last = r == (len(ranges) / 2) - 1
+                start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
+                end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
+                if amin == amax:
+                    node_events[a_start][1].extend([(n, 0), (n,3)])
+                else:
+                    node_events[a_start][0].append((n, start_kind))
+                    node_events[a_end][2].append((n, end_kind))
 
-    node_events_n = array.array('I')
-    node_events_k = array.array('I')
-    node_events_a = list([[] for a in range(anchor_max + 1)])
+        node_events_n = array.array('I')
+        node_events_k = array.array('I')
+        node_events_a = list([[] for a in range(anchor_max + 1)])
 
-    e_index = 0
-    for (anchor, events) in enumerate(node_events):
-        events[2].reverse()
-        for main_kind in (2, 1, 0):
-            for (node, kind) in events[main_kind]:
-                node_events_n.append(node)
-                node_events_k.append(kind)
-                node_events_a[anchor].append(e_index)
-                e_index += 1
+        e_index = 0
+        for (anchor, events) in enumerate(node_events):
+            events[2].reverse()
+            for main_kind in (2, 1, 0):
+                for (node, kind) in events[main_kind]:
+                    node_events_n.append(node)
+                    node_events_k.append(kind)
+                    node_events_a[anchor].append(e_index)
+                    e_index += 1
 
-    node_events = None
-    (node_events, node_events_items) = arrayify(node_events_a)
-    node_events_a = None
+        node_events = None
+        (node_events, node_events_items) = arrayify(node_events_a)
+        node_events_a = None
 
-    deliver("node_events_n", '', node_events_n))
-    deliver("node_events_k", '', node_events_k))
-    deliver("node_events", '', node_events))
-    deliver("node_events_items", '', node_events_items))
+        deliver("node_events_n", '', node_events_n))
+        deliver("node_events_k", '', node_events_k))
+        deliver("node_events", '', node_events))
+        deliver("node_events_items", '', node_events_items))
 
-    node_anchor_list = None
+        node_anchor_list = None
 
-    stamp.progress("CONNECTIVITY")
+    def model_conn():
+        stamp.progress("CONNECTIVITY")
 
-    connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
-    connectionsi = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
-    edges_from = lafapi.data_items["edges_from"]
-    edges_to = lafapi.data_items["edges_to"]
-    other_edges = True in lafapi.given['other_edges']
-    edges_seen = set()
-    self.feature_names = []
-    for (feature, feature_obj) in feature_objects.items():
-        if feature[3] == 'node':
-            continue
-        feature_name = feature_obj.edge_name
-        self.feature_names.append(feature_name)
-        feature_map = feature_obj.lookup
-        for (edge, fvalue) in feature_map.items():
-            if other_edges:
-                edges_seen.add(edge)
-            node_from = edges_from[edge]
-            node_to = edges_to[edge]
-            connections[feature_name][fvalue][node_from].add(node_to)
-            connectionsi[feature_name][fvalue][node_to].add(node_from)
-    if other_edges:
-        self.feature_names.append('')
-        for edge in range(len(edges_from)):
-            if edge in edges_seen:
-                continue
-            node_from = edges_from[edge]
-            node_to = edges_to[edge]
-            connections[''][''][node_from].add(node_to)
-            connectionsi[''][''][node_to].add(node_from)
+        edges_from = data_items["edges_from"]
+        edges_to = data_items["edges_to"]
+        labeled_edges = set()
+        efeatures = {'main': set(), 'annox': set()}
+        connection_key = Names.id2p(False, data)
+        connectioni_key = Names.id2p(True, data)
+
+        for dkey in data_items:
+            comps = Names.key2f(dkey)
+            if comps == None: continue
+            (feature, kind, data) = comps
+            if kind != 'edge': continue
+            efeatures[kind][data].add(dkey)
+
+        for feature_key in efeatures[data]:
+            feature_map = data_items[feature_key]
+
+            connections = collections.defaultdict(lambda: set())
+            connectionsi = collections.defaultdict(lambda: set())
+            for (edge, fvalue) in feature_map.items():
+                labeled_edges.add(edge)
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
+                connections[feature_key][node_from].add((node_to, fvalue))
+                connectionsi[feature_key][node_to].add((node_from, fvalue))
+            deliver(connection_key, feature, connections)
+            deliver(connectioni_key, feature, connectionsi)
+
+        connections = {}
+        connectionsi = {}
+        if data == 'main':
+            for edge in range(len(edges_from)):
+                if edge in labeled_edges:
+                    continue
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
+                connections[node_from].add((node_to, ''))
+                connectionsi[node_to].add((node_from, ''))
+            deliver(connection_key, ('','','-','edge'), connections)
+            deliver(connectioni_key, ('','','-','edge'), connectionsi)
+        elif data == 'annox':
+            for edge in range(len(edges_from)):
+                if edge in labeled_edges:
+                    node_from = edges_from[edge]
+                    node_to = edges_to[edge]
+                    connections[node_from].add((node_to, ''))
+                    connectionsi[node_to].add((node_from, ''))
+            deliver(connection_key, ('','','+','edge'), connections)
+            deliver(connectioni_key, ('','','+','edge'), connectionsi)
+
+    if data == 'main':
+        model_x()
+        model_regions()
+    model_conn()
 
     return result_items
 

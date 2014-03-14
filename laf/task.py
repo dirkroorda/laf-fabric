@@ -10,227 +10,50 @@ from .lib import grouper
 import array
 import pickle
 
+from .settings import Names
 from .laf import Laf
 
 class Feature(object):
-    '''This class is responsible for making the information in a single feature accessible to 
-    tasks.
-
-    It has a reference to the underlying information of the feature, it stores its *kind*
-    (node or edge) as string (``node`` or ``edge``).
-
-    It also gives a feature a fully qualified name that can act as an identifier.
-    In fact, these names will be used as member names of the :class:`Features` class, when its objects
-    store sets of features. 
-
-    A feature's data may come from the source or the annox or both. They get merged here, and from 
-    then on it is impossible to see where a feature value comes from.
-
-    If you want to separate features from annox and source, give features in the annox other names,
-    or give their containing annotations other labels, or put them in other
-    annotation spaces.
-
-    '''
-    def __init__(self, lafapi, aspace, alabel, fname, kind, extra=False):
-        '''Upon creation, makes references to the feature data corresponding to the feature specified.
-
-        Args:
-            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
-                The task executing object that has all the data.
-            aspace, alabel, fname, kind:
-                The annotation space, annotation label, feature name, feature kind (node or edge)
-                that together identify a single feature.
-            extra (bool):
-                indication of where to look for the feature data, because up till now annox feature data
-                sits in another dictionary than source feature data.
-        '''
+    def __init__(self, lafapi, feature, kind):
         self.source = lafapi
-        self.fspec = "{}:{}.{} ({})".format(aspace, alabel, fname, kind)
-        self.local_name = "{}_{}_{}{}".format(aspace, alabel, fname, '' if kind == 'node' else '_e')
-        self.edge_name = "{}_{}_{}".format(aspace, alabel, fname)
         self.kind = kind
-        ref_label = 'xfeature' if extra else 'feature'
-        self.lookup = collections.defaultdict(lambda: None, lafapi.data_items[ref_label][(aspace, alabel, fname, kind)])
-
-    def add_data(self, lafapi, aspace, alabel, fname, kind):
-        '''Upon creation, makes references to the feature data corresponding to the feature specified.
-
-        Args:
-            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
-                The task executing object that has all the data.
-            aspace, alabel, fname, kind:
-                The annotation space, annotation label, feature name, feature kind (node or edge)
-                that together identify a single feature.
-        '''
-        lookup = lafapi.data_items['xfeature'][(aspace, alabel, fname, kind)]
-        for ne in lookup:
-            self.lookup[ne] = lookup[ne]
+        self.lookup = lafapi.data_items[Names.f2key(feature, kind, 'main')]
+        self.alookup = lafapi.data_items[Names.f2key(feature, kind, 'annox')]
 
     def v(self, ne):
-        '''Look the feature value up for a node or edge.
-
-        Args:
-            ne (int):
-                node or edge, identified by an integer.
-
-        Returns:
-            the value of this feature for that node or edge.
-        '''
-        return self.lookup.get(ne)
+        return self.alookup.get(ne, self.lookup(ne))
 
     def s(self, value=None):
-        '''Iterator that yields the node set that has a defined value for this feature.
-
-        The node set is given in the canonical node set order.
-
-        Args:
-            value (str):
-                if given, yields only nodes whose feature value for this feature
-                is equal to it.
-
-        Returns:
-            the next node that has a defined value for this feature.
-        '''
         order = self.source.data_items['node_sort_inv']
-        domain = sorted(self.lookup, key=lambda x:order[x])
+        domain = sorted(set(self.lookup) + set(self.alookup), key=lambda x:order[x])
         if value == None:
             for n in domain:
                 yield n
         else:
             for n in domain:
-                if self.lookup[n] == value:
+                if self.alookup.get(n, self.lookup.get(n)) == value:
                     yield n
 
-class Features(object):
-    '''This class is responsible for holding a bunch of features and makes them 
-    accessible by member names.
+class Connection(object):
+    def __init__(self, lafapi, feature, inv):
+        self.source = lafapi
+        self.inv = inv
+        self.lookup = lafapi.data_items[Names.c2key(feature, inv, 'main')]
+        self.alookup = lafapi.data_items[Names.f2key(feature, inv, 'annox')]
 
-    This class also contains a list of all loadable features, i.e. all features that are
-    present in the compiled data.
-    '''
-    def __init__(self, lafapi, feature_objects):
-        '''Upon creation, a set of features is taken in,
-        their *local_name* members are used to create
-        member names in this class.
+    def v(self, n):
+        lookup = self.lookup
+        alookup = self.alookup
+        for m in set(lookup.get(n, {})) | set(alookup.get(n, {})):
+            yield m
 
-        Args:
-            feature_objects (iterable of :class:`Feature`)
-        '''
-        self.F = {}
-        for (fn, fo) in feature_objects.items():
-            exec("self.{} = fo".format(fo.local_name))
-            self.F[fo.local_name] = fo
+    def vv(self, n):
+        lookup = self.lookup
+        alookup = self.alookup
+        for m in set(lookup.get(n, {})) | set(alookup.get(n, {})):
+            yield (m, alookup.get(n, lookup.get(n)).get(m, lookup.get(n).get(m)))
 
-        loadables = []
-        for feat_path in glob.glob('{}/*.bin'.format(lafapi.env['feat_dir'])):
-            loadables.append(os.path.splitext(os.path.basename(feat_path))[0].replace('feature_', '', 1))
-        for feat_path in glob.glob('{}/*.bin'.format(lafapi.env['annox_bdir'])):
-            loadables.append(os.path.splitext(os.path.basename(feat_path))[0].replace('xfeature_', '', 1))
-        all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
-
-        for lf in loadables:
-            lf_base = lf
-            kind = None
-            if lf.endswith('_node'):
-                kind = 'node'
-                lf_base = lf.rpartition('_node')[0]
-            elif lf.endswith('_edge'):
-                kind = 'edge'
-                lf_base = lf.rpartition('_edge')[0]
-            (namespace, label, name) = lf_base.split('_', 2)
-            all_features[namespace][kind][label].add(name)
-
-        pretty_features = {}
-        for namespace in all_features:
-            pretty_features[namespace] = {}
-            for kind in all_features[namespace]:
-                pretty_features[namespace][kind] = []
-                for label in sorted(all_features[namespace][kind]):
-                    nf = 0
-                    feats = []
-                    for name in sorted(all_features[namespace][kind][label]):
-                        if nf % 1 == 0:
-                            if feats:
-                                pretty_features[namespace][kind].append("{}.{}".format(label, ','.join(feats)))
-                                feats = []
-                        feats.append(name)
-                        nf += 1
-                    if feats:
-                        pretty_features[namespace][kind].append("{}.{}".format(label, ','.join(feats)))
-        self.feature_list = pretty_features
-
-class Conn(object):
-    '''This class is responsible for making adjacency information accessible to tasks.
-
-    Adjacency information is the information needed to walk from node to node.
-    Laf-Fabric organizes adjacency information in a *connections* dictionary::
-
-        connections[«edge_feature_name»][«edge_feature_value»][«node_from»][«node_to»] = None
-
-    for every ``«node_from»`` from which there is an edge to ``«node_to»``
-    having the feature named ``«edge_feature_name»`` with value ``«edge_feature_value»``.
-
-    The adjacency information will also be made available by member names::
-
-        C.«edge_feature_name»[«edge_feature_value»][«node_from»][«node_to»] = None
-
-    '''
-    def __init__(self, lafapi, feature_objects):
-        '''Upon creation, from the edge features the adjacency information will
-        be gathered.
-
-        Args:
-            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
-                The task executing object that has all the data.
-            feature_objects(dict):
-                feature information for the declared features.
-                This information is the combination of info found in the source
-                and in the annox.
-        '''
-         
-        connections = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
-        connectionsi = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: set())))
-        edges_from = lafapi.data_items["edges_from"]
-        edges_to = lafapi.data_items["edges_to"]
-        other_edges = True in lafapi.given['other_edges']
-        edges_seen = set()
-        self.feature_names = []
-        for (feature, feature_obj) in feature_objects.items():
-            if feature[3] == 'node':
-                continue
-            feature_name = feature_obj.edge_name
-            self.feature_names.append(feature_name)
-            feature_map = feature_obj.lookup
-            for (edge, fvalue) in feature_map.items():
-                if other_edges:
-                    edges_seen.add(edge)
-                node_from = edges_from[edge]
-                node_to = edges_to[edge]
-                connections[feature_name][fvalue][node_from].add(node_to)
-                connectionsi[feature_name][fvalue][node_to].add(node_from)
-        if other_edges:
-            self.feature_names.append('')
-            for edge in range(len(edges_from)):
-                if edge in edges_seen:
-                    continue
-                node_from = edges_from[edge]
-                node_to = edges_to[edge]
-                connections[''][''][node_from].add(node_to)
-                connectionsi[''][''][node_to].add(node_from)
-
-        self.C = connections
-        self.Ci = connectionsi
-
-    def topnodes(self, feature_name, feature_value, node_set, reverse=False):
-        '''Returns set of top nodes above node set.
-        
-        From each node in node_set, all paths following edges for which *feature_name* has *feature_value*
-        are traveled until no such edges go further. The endpoints are collected in the result set.
-        
-        If *reverse* is True, the edges are traveled in opposite order. 
-        '''
-        connections_base = self.Ci if reverse else self.C
-        conn = connections_base[feature_name][feature_value]
+    def endnodes(self, value=None, node_set):
         visited = set()
         result = set()
         next_set = node_set
@@ -238,7 +61,7 @@ class Conn(object):
             new_next_set = set()
             for node in next_set:
                 visited.add(node)
-                next_nodes = conn[node]
+                next_nodes = set(self.v(node)) if value == None else set([n[0] for n in self.vv(node) if n[1] == value])
                 if next_nodes:
                     new_next_set |= next_nodes - visited
                 else:
@@ -246,69 +69,21 @@ class Conn(object):
             next_set = new_next_set
         return result
 
-class Connections(object):
-    def __init__(self, conn):
-        self.conn = conn
-        for fn in conn.feature_names:
-            fnrep = fn if fn != '' else '_none_'
-            exec("self.{} = conn.C['{}']".format(fnrep, fn))
-            method = lambda fv, ns: self.conn.topnodes(fn, fv, ns, reverse=False)
-            exec("self.{}_T = method".format(fnrep))
-
-class Connectionsi(object):
-    def __init__(self, conn):
-        for fn in conn.feature_names:
-            fnrep = fn if fn != '' else '_none_'
-            exec("self.{} = conn.Ci['{}']".format(fnrep, fn))
-            method = lambda fv, ns: self.conn.topnodes(fn, fv, ns, reverse=True)
-            exec("self.{}_T = method".format(fnrep))
-
-
 class XMLid(object):
-    '''This class is responsible for making the original XML identifiers available
-    to tasks.
-
-    It has a reference to the relevant tables organized by *kind*
-    (node or edge). There are methods to map and inverse map.
-    '''
     def __init__(self, lafapi, kind):
-        '''Upon creation, makes a reference to the XMLid data corresponding to the kind specified.
-
-        Args:
-            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
-                The task executing object that has all the data.
-            kind:
-                The kind (node or edge)
-                for which to make available the identifiers.
-        '''
-        self.local_name = kind
         self.kind = kind
-        self.code = lafapi.data_items['xid_int'][kind]
-        self.rep = lafapi.data_items['xid_rep'][kind]
+        self.code = lafapi.data_items[Names.x2key('inv', kind)]
+        self.rep = lafapi.data_items[Names.x2key('rep', kind)]
 
     def r(self, int_code):
-        '''Get the XML identifier corresponding to an integer.
-
-        Args:
-            int_code (int):
-                an integer code for an XML identifier in the LAF source
-
-        Returns:
-            the XML identifier that the integer stands for
-        '''
         return self.rep[int_code]
 
     def i(self, xml_id):
-        '''Get the integer code of an XML identifier.
-
-        Args:
-            xml_id (int):
-                an XML identifier in the LAF source
-
-        Returns:
-            the integer code of the XML identifier
-        '''
         return self.code[xml_id]
+
+class Bunch(object)
+    def __init__(self):
+        self.item = {}
 
 class XMLids(object):
     '''This class is responsible for holding a bunch of XML mappings (node and or edge) and makes them 
@@ -366,31 +141,9 @@ class PrimaryData(object):
         return result
 
 class LafAPI(Laf):
-    '''Task processor.
-
-    This class is responsible for running user tasks.
-    It will import a user task, read directives for data pre-loading, and it will generate an
-    API for the task, in the form of data structures for nodes and edges and 
-    objects that can do feature lookups.
-
-    A task processor must know where the source data is and where the result is going to.
-    And it must be able to *import*: and :py:func:`imp.reload`: the tasks.
-    To that end the search path for modules will be adapted according to the *task_dir* setting
-    in the main configuration file.
-    '''
-
     def __init__(self, settings):
-        '''Upon creation, the configuration settings are stored in the object as is.
-
-        Args:
-            settings (:py:class:`configparser.ConfigParser`):
-                entries corresponding to the main configuration file
-        '''
         Laf.__init__(self, settings)
-
         self.result_files = []
-        '''List of handles to result files created by the task through the method :meth:`add_output`'''
-
         cur_dir = os.getcwd()
         task_dir = self.settings['locations']['task_dir']
         task_include_dir = None if task_dir == '<' else task_dir if task_dir.startswith('/') else '{}/{}'.format(cur_dir, task_dir)
@@ -398,86 +151,55 @@ class LafAPI(Laf):
             sys.path.append(task_include_dir)
 
     def API(self):
-        '''Return a dictionary of references to API data structures and methods of this class.
+        data_items = self.data_items
 
-        
-        The following elements are returned.
-        The names given are the keys of the elements in the result dictionary.
-        They are not necessarily the names the end user will give to them
-        in end user tasks.
-        You can give convenient, local names to these methods, e.g::
+        api = {
+            'F': Bunch(),
+            'FE': Bunch(),
+            'C': Bunch(),
+            'Ci': Bunch(),
+            'X': Bunch(),
+        }
 
-            API = lafapi.API()
-            F = API['F']
-            XMLids = API['X']
+#   FEATURES AND CONNECTIVITY
+        features = {'node': set(), 'edge': set()}
+        for dkey in data_items:
+            comps = Names.key2f(dkey)
+            if comps:
+                (feat, fkind, fdata) = comps
+                features[fkind].add(feat)
+                (namespace, label, name) = feat
 
-        Using these names, here is the API specification (but see also :doc:`/texts/API-reference`):
+        for kind in features:
+            for feat in features[kind]:
+                name = Names.f2api(feat) 
+                obj = Feature(self, feat, kind)
+                dest = api['F'] if kind == 'node' else api['FE']
+                dest.item[name] = obj
+                setattr(dest, name, obj)
 
-        F(:class:`Features`):
-            Object containing all features declared in the task as a member. For example, the feature ``shebanq:ft.suffix`` is
-            accessible as ``F.shebanq_ft_suffix`` if it is a node feature, or ``F.shebanq_ft_suffix_e`` if it is an edge feature.
-            These feature objects in turn have a method to look features up. See :class:`Feature`.
-            Empty annotations correspond with a feature with an empty name, having the value ``''`` (empty string) for each node
-            or edge in its domain. For example, an empty edge annotation in the annotation space ``shebanq`` having label ``mother``,
-            corresponds to the feature ``shebanq:mother.`` and is accessible as ``F.shebanq_mother__e``
-            (note the empty feature name between the two ``_``s and note the ``_e`` suffix to indicate that this is an edge feature.
+        for feat in features['edge']:
+            name = Names.f2api(feat) 
+            for inv in (False, True):
+                obj = Connection(self, feat, inv)
+                dest = api['Ci'] if inv else api['C']
+                dest.item[name] = obj
+                setattr(dest, name, obj)
 
-        C(:class:`Connections`), Ci(:class:`Connectionsi`):
-            Objects containing the adjacency information for each node.
-            The adjacency information tells for each node how it is connected by edges to another node. 
+        all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
 
-            # ``C`` stores adjencency information on the basis of outgoing edges
-            # ``Ci`` stores adjacency information on the basis of incoming edges (it *inverts* the direction of all edges).
+                all_features[fkind][namespace].add("{}.}".format(label, name))
+        def feature_list(kind):
+            result = []
+            for namespace in sorted(all_features[kind]):
+                result.append((namespace, sorted(all_features[kind][namespace])))
+            
+# XML IDS
 
-            This information is organized as a dictionary::
 
-                C.«feature_name».[«feature_value»][«node_from»][«node_to»] = None
-                Ci.«feature_name».[«feature_value»][«node_to»][«node_from»] = None
 
-            For edges annotated with an empty annotation, «feature_name» has the form::
-
-                «annotation space»_«annotation label»__
-
-            and the «feature_value» is ``''`` (the empty string).
-
-            For edges that have not been annotated by one of the
-            loaded edge features the «feature_name» is completely empty (``''``) and the «feature_value» as well.
-            This only works if you declare the empty edge feature.
-
-        P(:class:`PrimaryData`):
-            Object containing the primary data and the information to which portions of it nodes are linked.
-            ``P.all_data`` is the primary datastring itself, and ``P.data(n)`` gives the data that is attached to node ``n``.
-            In this case, the data is returned as a tuple of pairs *(p, text)*, where *text* is a piece of text from
-            the primary data and *p* its starting point in the text. The fragments come in the order in which they appear in the
-            primary data and the fragments are maximal. They do not overlap, and there are no duplicates.
-            A fragment can be empty.
-            This happens when a region is merely a pointer and not an interval.
-
-        X(:class:`XMLids`):
-            Object containg members for XML identifier mappings for nodes and or edges, depending on what the task
-            has specified. ``X.node`` contains mappings for nodes, ``X.edge`` for edges. These objects in turn have methods to 
-            perform the mappings in individual cases. See :class:`XMLid`.
-
-        NN(test=function, value=something):
-            An iterator that delivers nodes in the canonical order described in :func:`model <laf.model.model>`.
-
-            *test* must be a callable with one argument of type integer. Only nodes for which *test* delivers *something*
-            are passed through, all others are skipped.
-
-        NE():
-            An iterator that delivers node events, for every anchor position in the primary data.
-
-        Ev(anchor):
-            An iterator that delivers the node events for a given anchor.
-
-        msg(text, newline=True, withtime=True):
-            For delivering console output, such as progress messages.
-            See :meth:`progress <laf.timestamp.Timestamp.progress>`.
-
-        ''' 
-
-        node_anchor_min = self.data_items["node_anchor_min"]
-        node_anchor_max = self.data_items["node_anchor_max"]
+        node_anchor_min = data_items["node_anchor_min"]
+        node_anchor_max = data_items["node_anchor_max"]
 
         def before(nodea, nodeb):
             '''Compares two nodes based on its linking to the primary data.
@@ -576,8 +298,8 @@ class LafAPI(Laf):
                     )
                 __hash__ = None
 
-            original = self.data_items['node_sort']
-            new = self.data_items['node_resorted'] if 'node_resorted' in self.data_items else original
+            original = data_items['node_sort']
+            new = data_items['node_resorted'] if 'node_resorted' in data_items else original
             given = new if new else original
 
             if extrakey != None:
@@ -702,10 +424,10 @@ class LafAPI(Laf):
                     )
                 __hash__ = None
 
-            nodes = self.data_items["node_events_n"]
-            kinds = self.data_items["node_events_k"]
-            node_events = self.data_items["node_events"]
-            node_events_items = self.data_items["node_events_items"]
+            nodes = data_items["node_events_n"]
+            kinds = data_items["node_events_k"]
+            node_events = data_items["node_events"]
+            node_events_items = data_items["node_events_items"]
             bufferevents = collections.deque([(-1, [])], 2)
             
             active = {}
@@ -761,15 +483,6 @@ class LafAPI(Laf):
             yield (bufferevents[1])
 
         self.progress("LOADING API: please wait ... ")
-        feature_objects = {}
-
-        for feature in self.loaded['feature']:
-            feature_objects[feature] = Feature(self, *feature)
-        for feature in self.loaded['annox']:
-            if feature in feature_objects:
-                feature_objects[feature].add_data(self, *feature)
-            else:
-                feature_objects[feature] = Feature(self, *feature, extra=True)
 
         xmlid_objects = []
 
@@ -785,10 +498,10 @@ class LafAPI(Laf):
         NE = next_event if self.given['primary'] else None
 
         self.progress("F: Features", verbose='INFO')
-        F = Features(self, feature_objects)
+        F = Features(self)
 
         self.progress("C, Ci: Connections", verbose='INFO')
-        conn = Conn(self, feature_objects)
+        conn = Conn(self)
         C = Connections(conn)
         Ci = Connectionsi(conn)
 
@@ -806,14 +519,16 @@ class LafAPI(Laf):
             'my_file': self.result,
             'msg':     self.progress,
             'P':       P,
-            'BF':      BF,
             'NN':      NN,
             'NE':      NE,
-            'F':       F,
-            'C':       C,
-            'Ci':      Ci,
             'X':       X,
             'prep':    prep,
+        })
+
+        api.update({
+            'Fall_node': feature_list['node'],
+            'Fall_edge': feature_list['node'],
+            'BF'       : before
         })
         return api
 
@@ -1078,6 +793,5 @@ class LafAPI(Laf):
             if handle and not handle.closed:
                 handle.close()
         Laf.__del__(self)
-
 
 

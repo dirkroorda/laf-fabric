@@ -6,6 +6,7 @@ etcbc/featuredoc.py
 etcbc/preprocess.py
 laf/__init__.py
 laf/laf.py
+laf/laf_old.py
 laf/lib.py
 laf/model.py
 laf/notebook.py

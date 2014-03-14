@@ -66,6 +66,8 @@ def init():
     edges_to = array.array('I')
     global feature
     feature = collections.defaultdict(lambda:{})
+    global efeature
+    efeature = collections.defaultdict(lambda:{})
 
 class HeaderHandler(ContentHandler):
     '''Handlers used by SAX parsing the GrAF header file.
@@ -269,7 +271,8 @@ class AnnotationHandler(ContentHandler):
             else:
                 good_feats += 1
                 value = attrs["value"]
-                feature[(self.aspace, self.alabel, fname, self.atype)][self.aref] = value
+                dest = feature if self.atype == 'node' else efeature
+                dest[(self.aspace, self.alabel, fname)][self.aref] = value
 
     def endElement(self, name):
         if name == "node":
@@ -285,14 +288,15 @@ class AnnotationHandler(ContentHandler):
             if self.aempty:
                 fname = ''
                 value = ''
-                feature[(self.aspace, self.alabel, fname, self.atype)][self.aref] = value
+                dest = feature if self.atype == 'node' else efeature
+                dest[(self.aspace, self.alabel, fname)][self.aref] = value
 
         self._tag_stack.pop()
 
     def characters(self, ch):
         pass
 
-def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label):
+def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label, efeature_label):
     '''Parse a GrAF resource.
     '''
 
@@ -348,6 +352,8 @@ def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label):
     deliver("edges_to", '', edges_to)
     for f in feature:
         deliver(feature_label, f, feature[f])
+    for f in efeature:
+        deliver(efeature_label, f, efeature[f])
     return result_items
 
 

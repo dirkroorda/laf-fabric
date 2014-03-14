@@ -17,8 +17,11 @@ class Feature(object):
     def __init__(self, lafapi, feature, kind):
         self.source = lafapi
         self.kind = kind
-        self.lookup = lafapi.data_items[Names.f2key(feature, kind, 'main')]
-        self.alookup = lafapi.data_items[Names.f2key(feature, kind, 'annox')]
+        data_items = lafapi.data_items
+        label = Names.comp('F', 'main', kind, feature)
+        alabel = Names.comp('F', 'annox', kind, feature)
+        self.lookup = data_items[label] if label in data_items else {}
+        self.alookup = data_items[alabel] if alabel in data_items else {}
 
     def v(self, ne):
         return self.alookup.get(ne, self.lookup(ne))
@@ -38,8 +41,11 @@ class Connection(object):
     def __init__(self, lafapi, feature, inv):
         self.source = lafapi
         self.inv = inv
-        self.lookup = lafapi.data_items[Names.c2key(feature, inv, 'main')]
-        self.alookup = lafapi.data_items[Names.f2key(feature, inv, 'annox')]
+        data_items = lafapi.data_items
+        label = Names.comp('C', 'main', inv, feature)
+        alabel = Names.comp('C', 'annox', inv, feature)
+        self.lookup = data_items[label] if label in data_items else {}
+        self.alookup = data_items[alabel] if alabel in data_items else {}
 
     def v(self, n):
         lookup = self.lookup
@@ -72,66 +78,26 @@ class Connection(object):
 class XMLid(object):
     def __init__(self, lafapi, kind):
         self.kind = kind
-        self.code = lafapi.data_items[Names.x2key('inv', kind)]
-        self.rep = lafapi.data_items[Names.x2key('rep', kind)]
+        data_items = lafapi.data_items
+        label = Names.comp('X', 'int', kind, ())
+        rlabel = Names.comp('X', 'rep', kind, ())
+        self.lookup = data_items[label] if label in data_items else {}
+        self.rlookup = data_items[rlabel] if rlabel in data_items else {}
 
     def r(self, int_code):
-        return self.rep[int_code]
+        return self.rlookup[int_code]
 
     def i(self, xml_id):
-        return self.code[xml_id]
-
-class Bunch(object)
-    def __init__(self):
-        self.item = {}
-
-class XMLids(object):
-    '''This class is responsible for holding a bunch of XML mappings (node and or edge) and makes them 
-    accessible by member names.
-    '''
-    def __init__(self, xmlid_objects):
-        '''Upon creation, a set of xmlid objects (node and or edge) is taken in,
-
-        Args:
-            xmlid_objects (iterable of :class:`XMLid`)
-        '''
-        for xo in xmlid_objects:
-            exec("self.{} = xo".format(xo.local_name))
+        return self.lookup[xml_id]
 
 class PrimaryData(object):
-    '''This class is responsible for giving access to the primary data.
-    '''
     def __init__(self, lafapi):
-        '''Upon creation, the primary data is pointed to.
-
-        Args:
-            lafapi(:class:`LafAPI <laf.task.LafAPI>`):
-                The task executing object that has all the data.
-        '''
-        self.all_data = lafapi.data_items['data']
-        '''Member that holds the primary data as a single UNICODE string.
-        '''
+        self.all_data = lafapi.data_items['primary_data']
         self.lafapi = lafapi
 
     def data(self, node):
-        '''Gets the primary data to which a node is linked.
-
-        Args:
-            node(int):
-                The node in question
-
-        Returns:
-            None:
-                if the node is not linked to regions of primary data
-            List of (N, text):
-                all positions *N* to which the node is linked, where *text* is the primary data
-                stretch starting at position *N* that is linked to the node.
-                *text* may be empty.
-                The list is normalized: all stretches are maximal, non overlapping and occur
-                in the order of the primary data (ascending *N*). 
-        '''
         lafapi = self.lafapi
-        regions = lafapi.getitems(lafapi.data_items['node_anchor'], lafapi.data_items['node_anchor_items'], node)
+        regions = lafapi._getitems(lafapi.data_items['node_anchor'], lafapi.data_items['node_anchor_items'], node)
         if not regions:
             return None
         all_text = self.all_data
@@ -139,6 +105,10 @@ class PrimaryData(object):
         for r in grouper(regions, 2):
             result.append((r[0], all_text[r[0]:r[1]]))
         return result
+
+class Bunch(object)
+    def __init__(self):
+        self.item = {}
 
 class LafAPI(Laf):
     def __init__(self, settings):
@@ -151,6 +121,15 @@ class LafAPI(Laf):
             sys.path.append(task_include_dir)
 
     def API(self):
+        api = {}
+        api.update(self._api_fcxp())
+        api.update(self._api_nodes())
+        api.update(self._api_io())
+        self._api_prep(api)
+        return api
+
+    def_api_fcxp(self):
+        env = self.settings.env
         data_items = self.data_items
 
         api = {
@@ -158,67 +137,120 @@ class LafAPI(Laf):
             'FE': Bunch(),
             'C': Bunch(),
             'Ci': Bunch(),
-            'X': Bunch(),
         }
 
-#   FEATURES AND CONNECTIVITY
         features = {'node': set(), 'edge': set()}
+        connections = {False: set(), True: set()}
+
         for dkey in data_items:
-            comps = Names.key2f(dkey)
-            if comps:
-                (feat, fkind, fdata) = comps
-                features[fkind].add(feat)
-                (namespace, label, name) = feat
+            (d, start, end, comps) = Names.decomp(dkey)
+            if d == 'F':
+                features[end].add(comps)
+            elif d == 'C':
+                connections[end].add(comps)
+            elif d == 'X':
+                api[dkey] = XMLid(self, end)
+            elif d == 'primary_data':
+                api['P'] = PrimaryData(self)
 
         for kind in features:
             for feat in features[kind]:
-                name = Names.f2api(feat) 
+                name = Names.apiname(feat) 
                 obj = Feature(self, feat, kind)
-                dest = api['F'] if kind == 'node' else api['FE']
+                dest = api['FE'] if kind == 'edge' else api['F']
                 dest.item[name] = obj
                 setattr(dest, name, obj)
 
-        for feat in features['edge']:
-            name = Names.f2api(feat) 
-            for inv in (False, True):
-                obj = Connection(self, feat, inv)
+        for inv in connections:
+            for conn in connections[inv]:
+                name = Names.apiname(conn) 
+                obj = Connection(self, conn, inv)
                 dest = api['Ci'] if inv else api['C']
                 dest.item[name] = obj
                 setattr(dest, name, obj)
 
-        all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
+        loadables = set()
+        for data in ('main', 'annox')
+            for feat_path in glob.glob('{}/*'.format(env['{}_compiled_dir'.format(data)])):
+                loadables.add(os.path.basename(feat_path))
 
-                all_features[fkind][namespace].add("{}.}".format(label, name))
+        all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
+        for filename in loadables:
+            (d, start, end, comps) = Names.decomp(filename)
+            if d != 'F': continue
+            (namespace, label, name) = comps
+            all_features[end][namespace].add("{}.}".format(label, name))
+
         def feature_list(kind):
             result = []
             for namespace in sorted(all_features[kind]):
                 result.append((namespace, sorted(all_features[kind][namespace])))
-            
-# XML IDS
 
+        prep = lambda task, lab, myfile: self.prep_data(api, task, lab, myfile)
 
+        api.update({
+            'Fall_node': feature_list['node'],
+            'Fall_edge': feature_list['node'],
+        })
 
+    def _api_prep(self, api):
+        def prep_data(method, lab, myfile):
+            '''Loads custom data from disk, if present. If not prepares custom data and stores it on disk.
+
+            LAF-Fabric cannot precompute application specific data.
+            If an application needs to compute data over and over again, it may ask LAF-Fabric to store it alongside the compiled data.
+            For example, the order of nodes by LAF-Fabric is rather crude, an application may provide a better ordering.
+
+            Only data that is anticipated by LAF-Fabric can be stored in this way. 
+            The intention is that you can override LAF-Fabric data, not that you add arbitrary data.
+            If LAF-Fabric does not know your data, you can store it easily outside LAF-Fabric.
+
+            Args:
+                api (dict):
+                    the LAF-Fabric api. Needed by *method*.
+                method (callable):
+                    Custom function defined in an other application that computes the new data.
+                    It will be passed the *api* parameter, so that the function has access to all LAF-Fabric's data and methods.
+                lab (string):
+                    label, known by LAF-Fabric (defined in the attribute ``preparables``.
+                    The custom data will be stored under this label.
+                myfile (string):
+                    Full path to the file that defined the *method* function.
+                    In order to decide whether the custom data is still up to date,
+                    the modification times of this file and the custom data file will be compared.
+            '''
+
+            if lab not in self.preparables:
+                self.progress("WARNING: Cannot prepare data in {}.".format(lab))
+                return
+            lab_type = self.preparables[lab]
+            if lab_type == 'array':
+                self.data_items[lab] = array.array('I')
+            else:
+                self.data_items[lab] = {}
+            b_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.BIN_EXT)
+            s_path = "{}/{}.{}".format(self.env['bin_dir'], lab, self.TEXT_EXT)
+            up_to_date = os.path.exists(b_path) and os.path.exists(s_path) and os.path.getmtime(b_path) >= os.path.getmtime(myfile)
+            if up_to_date:
+                self.progress("LOADING {} (prepared)".format(lab), verbose='INFO')
+                with open(s_path, 'r', encoding="utf-8") as x: n = int(x.read())
+                b_handle = gzip.open(b_path, "rb")
+                self.data_items[lab].fromfile(b_handle, n)
+            else:
+                self.progress("PREPARING {}".format(lab), verbose='INFO')
+                self.data_items[lab] = method(api)
+                self.progress("WRITING {} (prepared)".format(lab), verbose='INFO')
+                with open(s_path, "w", encoding='utf-8') as x: x.write(str(len(self.data_items[lab])))
+                b_handle = gzip.open(b_path, "wb", compresslevel=GZIP_LEVEL)
+                self.data_items[lab].tofile(b_handle)
+                b_handle.close()
+
+    def _api_nodes(self):
+        data_items = self.data_items
         node_anchor_min = data_items["node_anchor_min"]
         node_anchor_max = data_items["node_anchor_max"]
 
         def before(nodea, nodeb):
-            '''Compares two nodes based on its linking to the primary data.
-
-            This is the canonical order, based on *(x,-y)*, where *x* is the leftmost
-            anchor and *y* the rightmost anchor of a node.
-
-            Args:
-                nodea, nodeb(int): the nodes to compare.
-
-            Returns:
-                True:
-                    if *nodea* comes before *nodeb*
-                False:
-                    if *nodea* comes after *nodeb*
-                None
-                    if *nodea* and *nodeb* have equal leftmost and rightmost anchors
-                    (this includes the case that *nodea* == *nodeb*)
-            '''
             if node_anchor_min[nodea] == node_anchor_max[nodea] or node_anchor_min[nodeb] == node_anchor_max[nodeb]: return None
             if node_anchor_min[nodea] < node_anchor_min[nodeb]: return True
             if node_anchor_min[nodea] > node_anchor_min[nodeb]: return False
@@ -227,51 +259,7 @@ class LafAPI(Laf):
             return None
 
         def next_node(test=None, value=None, values=None, extrakey=None):
-            '''Iterator of all nodes in primary data order that have a
-            given value for a given feature.
-            Only nodes that are linked to primary data are yielded.
-
-            Args:
-                test (callable):
-                    Function to test whether a node should be passed on.
-                    Optional. If not present, all nodes will be passed on and the parameters
-                    *value* and *values* do not have effect.
-
-                value, values (any type, list(any type)):
-                    Only effective if the parameter *test* is present.
-                    The values found in *value* and *values* are collected in a dictionary.
-                    All nodes node, whose *test(node)* result is in this dictionary
-                    are passed on, and none of the others.
-
-                extrakey (callable):
-                    Extra key to sort nodes that do not have a defined mutual order, i.e. the nodes
-                    that have equal left most anchorsand equal right most anchors.
-                    With ``extrakey`` you can enforce an order on these cases.
-                    The existing order between all other nodes remains the same.
-
-            If you use an extra module that has prepared another sorting of the nodes,
-            then that order will be used, instead of the order that has been created upon compiling the laf resource.
-            '''
-
             class Extra_key(object):
-                '''The initialization function of this class is a new key function for sorting nodes.
-
-                The class wraps the node given in the initialization function into an object.
-                If two node wrapping objects are compared, the comparison methods of this class
-                are used. 
-                Hence we can compare several bits of related information of the two nodes.
-                In this case we need the minimum and maximum anchor positions associated with the nodes.
-
-                Because Python sorting is *stable*, equal elements retain their position.
-                The pre-existing order is such that nodes with equal min-max positions
-                are already lumped together. 
-
-                We only want to sort in case nodes have equal min-max anchor positions.
-                So, for the sake of additional sorting, we will deem two nodes as *unequal*
-                if both of their min-max positions are *different*!
-                
-                Hence only the lumps of nodes with equal min-max positions will be sorted. 
-                '''
                 __slots__ = ['value', 'amin', 'amax']
                 def __init__(self, node):
                     self.amin = node_anchor_min[node] - 1
@@ -321,78 +309,12 @@ class LafAPI(Laf):
                 for node in given:
                     yield node
 
+        def no_next_event(key=None, simplify=None):
+            self.progress("ERROR: Node events not available because primary data is not loaded.")
+            return None
+
         def next_event(key=None, simplify=None):
-            '''Iterator of all node events grouped by anchor.
-
-            This iterator tries hard to achieve useful event sequences.
-            The sequences coming out of this iterator can be used to
-            generate open/close/suspend/resume tags corresponding to nodes.
-            There are several problems to be solved concerning order and discontinuity.
-            See the argument description below.
-
-            Args:
-                key (callable):
-                    The key function serves two purposes: filtering and additional ordering.
-                    It is optional.
-                    If not present, no filtering and additional ordering will take place.
-                    The key function must be a callable with one argument, it will be called
-                    with a node argument.
-
-                    If the key function returns ``None`` for a node, no node events for that
-                    node will be yielded.
-
-                    The node events are already ordered in a natural order, such that embedding
-                    nodes open before embedded nodes and close after them.
-                    But if two nodes have the same minimal and maximal anchor positions, the
-                    order of their events is arbitrary.
-                    Those node events will be sorted on the basis of the given key function.
-                    The opening and resuming nodes will be ordered with the key function,
-                    the closing and suspending nodes will be reverse ordered with the key.
-
-                simplify (callable): 
-                    There may be stretches of primary data that are not covered by any
-                    of the nodes that pass the key filter.
-                    Nodes that have gaps corresponding these uncovered ranges, 
-                    will trigger suspend and resume events around them.
-                    
-                    If simplify is given, it should be a callable.
-                    It will be passed a node, and nodes that yield True will be considered
-                    in simplifying the event stream.
-                    
-                    If there are gaps which are not covered by any of the nodes for which the key()
-                    and simplify() yield a True value, all such spurious suspending and resuming
-                    of nodes around this gap will be suppressed from the node evetn stream.
-
-            Returns:
-                (anchor, events) where:
-                    * anchor is the anchor position of the set of events returned
-                    * events is a dictionary, keyed by event kind and valued by node lists
-                where *kind* is:
-                    0 meaning *start*
-                    1 meaning *resume*
-                    2 meaning *suspend*
-                    3 meaning *end*
-            '''
-
             class Additional_key(object):
-                '''The initialization function of this class is a new key function for sorting events.
-
-                The class wraps the node given in the initialization function into an object.
-                If two node wrapping objects are compared, the comparison methods of this class
-                are used. 
-                Hence we can compare several bits of related information of the two nodes.
-                In this case we need the minimum and maximum anchor positions associated with the nodes.
-
-                Because Python sorting is *stable*, equal elements retain their position.
-                The pre-existing order is such that nodes with equal min-max positions
-                are already lumped together. 
-
-                We only want to sort in case nodes have equal min-max anchor positions.
-                So, for the sake of additional sorting, we will deem two nodes as *unequal*
-                if both of their min-max positions are *different*!
-                
-                Hence only the lumps of nodes with equal min-max positions will be sorted. 
-                '''
                 __slots__ = ['value', 'kind', 'amin', 'amax']
                 def __init__(self, event):
                     (node, kind) = event
@@ -432,7 +354,7 @@ class LafAPI(Laf):
             
             active = {}
             for anchor in range(len(node_events)):
-                event_ids = self.getitems(node_events, node_events_items, anchor)
+                event_ids = self._getitems(node_events, node_events_items, anchor)
                 if len(event_ids) == 0:
                     continue
                 eventset = []
@@ -482,313 +404,66 @@ class LafAPI(Laf):
                 yield (bufferevents[0])
             yield (bufferevents[1])
 
-        self.progress("LOADING API: please wait ... ")
-
-        xmlid_objects = []
-
-        for kind in self.given['xmlids']:
-            xmlid_objects.append(XMLid(self, kind))
-
-        self.progress("P: Primary Data", verbose='INFO')
-        P = PrimaryData(self) if self.given['primary'] else None
-
-        self.progress("BF, NN, NE: Before, Next Node and Node Events", verbose='INFO')
-        BF = before
-        NN = next_node
-        NE = next_event if self.given['primary'] else None
-
-        self.progress("F: Features", verbose='INFO')
-        F = Features(self)
-
-        self.progress("C, Ci: Connections", verbose='INFO')
-        conn = Conn(self)
-        C = Connections(conn)
-        Ci = Connectionsi(conn)
-
-        self.progress("X: XML ids", verbose='INFO')
-        X = XMLids(xmlid_objects)
-
-        api = {}
-        prep = lambda task, lab, myfile: self.prep_data(api, task, lab, myfile)
-
-        self.progress("LOADING API: DONE")
-
         api.update({
-            'infile':  self.add_input,
-            'outfile': self.add_output,
-            'my_file': self.result,
-            'msg':     self.progress,
-            'P':       P,
-            'NN':      NN,
-            'NE':      NE,
-            'X':       X,
+            'BF':      before
+            'NN':      next_node,
+            'NE':      next_event if 'node_events' in data_items else no_next_event,
             'prep':    prep,
         })
 
-        api.update({
-            'Fall_node': feature_list['node'],
-            'Fall_edge': feature_list['node'],
-            'BF'       : before
-        })
+    def _api_io(self):
+        env = self.settings.env
+        task_dir = env['task_dir']
+
+        def add_output(file_name):
+            result_file = "{}/{}".format(task_dir, file_name)
+            handle = open(result_file, "w", encoding="utf-8")
+            self.result_files.append(handle)
+            return handle
+
+        def add_input(file_name):
+            result_file = "{}/{}".format(task_dir, file_name)
+            handle = open(result_file, "r", encoding="utf-8")
+            self.result_files.append(handle)
+            return handle
+
+        def result(file_name=None):
+            if file_name == None:
+                return task_dir
+            else:
+                return "{}/{}".format(task_dir, file_name)
+
+        def finish_task():
+            for handle in self.result_files:
+                if handle and not handle.closed:
+                    handle.close()
+            self.result_files = []
+            self.flush_logfile()
+
+            msg = []
+            self.progress("Results directory:\n{}".format(task_dir))
+            for name in sorted(os.listdir(path=task_dir)):
+                path = "{}/{}".format(task_dir, name) 
+                size = os.path.getsize(path)
+                mtime = time.ctime(os.path.getmtime(path))
+                msg.append("{:<30} {:>12} {}".format(name, size, mtime))
+            self.progress("\n".join(msg), withtime=False)
+            self.finish_logfile()
+
+        api = {
+            'infile':  add_input,
+            'outfile': add_output,
+            'my_file': result,
+            'msg':     self.progress,
+        }
         return api
 
-    def run(self, source, annox, task, verbose, force_compile={}, load=None, function=None, stage=None):
-        '''Run a task.
-
-        That is:
-        * Load the data
-        * (Re)load the task code
-        * Initialize the task
-        * Run the task code
-        * Finalize the task
-
-        Args:
-            source (str):
-                key for the source
-            annox (str):
-                name of the extra annotation package
-            task (str):
-                the chosen task
-            load (dict):
-                a dictionary specifying what to load
-            force_compile (dict):
-                whether to force (re)compilation of the LAF source for either 'source' or 'annox'.
-            verbose (string): 
-                verbosity level
-        '''
-        if stage == None or stage == 'init':
-            self.check_status(source, annox, task)
-            self.stamp.set_verbose(verbose)
-            self.stamp.reset()
-            self.compile_all(force_compile)
-            self.stamp.reset()
-
-            if load == None:
-                exec("import {}".format(task))
-                exec("imp.reload({})".format(task))
-                load = eval("{}.load".format(task))
-            self.adjust_all(load)
-
-            if function == None:
-                function = eval("{}.task".format(task))
-
-            self.stamp.reset()
-
-            self.init_task()
-
-        if stage == None or stage == 'execute':
-            function(self) 
-
-        if stage == None or stage == 'final':
-            self.finish_task()
-
-    def add_output(self, file_name):
-        '''Opens a file for writing and stores the handle.
-
-        Every task is advised to use this method for opening files for its output.
-        The file will be closed by LAF-Fabric when the task terminates.
-
-        Args:
-            file_name (str):
-                name of the output file.
-                Its location is the result directory for this task and this source.
-
-        Returns:
-            A handle to the opened file.
-        '''
-        result_file = "{}/{}".format(self.env['result_dir'], file_name)
-        handle = open(result_file, "w", encoding="utf-8")
-        self.result_files.append(handle)
-        return handle
-
-    def add_input(self, file_name):
-        '''Opens a file for reading and stores the handle.
-
-        Every task is advised to use this method for opening files for its input.
-        The file will be closed by LAF-Fabric when the task terminates.
-
-        Args:
-            file_name (str):
-                name of the input file.
-                Its location is the result directory for this task and this source.
-
-        Returns:
-            A handle to the opened file.
-        '''
-        result_file = "{}/{}".format(self.env['result_dir'], file_name)
-        handle = open(result_file, "r", encoding="utf-8")
-        self.result_files.append(handle)
-        return handle
-
-    def result(self, file_name=None):
-        '''The location where the files of this task can be found
-
-        Args:
-            file_name (str):
-                the name of the file, without path information.
-                Optional. If not present, returns the path to the output directory.
-
-        Returns:
-            the path to *file_name* or the directory of the output files.
-        '''
-        if file_name == None:
-            return self.env['result_dir']
-        else:
-            return "{}/{}".format(self.env['result_dir'], file_name)
-
-    def init_task(self):
-        '''Initializes the current task.
-
-        Provide a log file, reset the timer, and issue a progress message.
-        '''
-        self.add_logfile()
-        self.stamp.reset()
-        self.progress("BEGIN TASK={} SOURCE={}".format(self.env['task'], self.env['source']))
-
-    def finish_task(self):
-        '''Finalizes the current task.
-
-        Open result files will be closed.
-
-        There will be a progress message, and a directory listing of the result directory,
-        for the convenience of the user.
-        '''
-
-        for handle in self.result_files:
-            if handle and not handle.closed:
-                handle.close()
-        self.result_files = []
-
-        self.progress("END TASK {}".format(self.env['task']))
-        self.flush_logfile()
-
-        msg = []
-        result_dir = self.env['result_dir']
-        self.progress("Results directory:\n{}".format(result_dir))
-        for name in sorted(os.listdir(path=result_dir)):
-            path = "{}/{}".format(result_dir, name) 
-            size = os.path.getsize(path)
-            mtime = time.ctime(os.path.getmtime(path))
-            msg.append("{:<30} {:>12} {}".format(name, size, mtime))
-        self.progress("\n".join(msg), withtime=False)
-
-        self.finish_logfile()
-
-    def getitems_dict(self, data, data_items, elem):
-        '''Get related items from an arrayified data structure.
-
-        If a relation between integers and sets of integers has been stored as a double array
-        by the :func:`arrayify() <laf.model.arrayify>` function,
-        this is the way to look up the set of related integers for each integer.
-
-        Args:
-            data (array):
-                see next
-
-            data_items (array):
-                together with *data* the arrayified data
-
-            elem (int):
-                the integer for which we want its related set of integers.
-
-        Returns:
-            a dict of the related integers, with values none.
-        '''
-        data_items_index = data[elem]
-        n_items = data_items[data_items_index]
-        items = {}
-        for i in range(n_items):
-            items[data_items[data_items_index + 1 + i]] = None
-        return items
-
-    def getitems(self, data, data_items, elem):
-        '''Get related items from an arrayified data structure.
-
-        If a relation between integers and sets of integers has been stored as a double array
-        by the :func:`arrayify() <laf.model.arrayify>` function,
-        this is the way to look up the set of related integers for each integer.
-
-        Args:
-            data (array):
-                see next
-
-            data_items (array):
-                together with *data* the arrayified data
-
-            elem (int):
-                the integer for which we want its related set of integers.
-
-        Returns:
-            a list of the related integers.
-        '''
+    def _getitems(self, data, data_items, elem):
         data_items_index = data[elem]
         n_items = data_items[data_items_index]
         return data_items[data_items_index + 1:data_items_index + 1 + n_items]
 
-    def hasitem(self, data, data_items, elem, item):
-        '''Check whether an integer is in the set of related items
-        with respect to an arrayified data structure (see also :meth:`getitems_dict`).
-
-        Args:
-            data (array):
-                see next
-
-            data_items (array):
-                together with *data* the arrayified data
-
-            elem (int):
-                the integer for which we want its related set of integers.
-
-            item (int):
-                the integer whose presence in the related items set is to be tested.
-
-        Returns:
-            bool: whether the integer is in the related set or not.
-        '''
-        return item in self.getitems_dict(data, data_items, elem) 
-
-    def hasitems(self, data, data_items, elem, items):
-        '''Check whether a set of integers intersects with the set of related items
-        with respect to an arrayified data structure (see also :meth:`getitems_dict`).
-
-        Args:
-            data (array):
-                see next
-
-            data_items (array):
-                together with *data* the arrayified data
-
-            elem (int):
-                the integer for which we want its related set of integers.
-
-            items (array or list of integers):
-                the set of integers
-                whose presence in the related items set is to be tested.
-
-        Returns:
-            bool:
-                whether one of the integers is in the related set or not.
-        '''
-        these_items = self.getitems_dict(data, data_items, elem) 
-        found = None
-        for item in items:
-            if item in these_items:
-                found = item
-                break
-        return found
-
-    def get_task_mtime(self, task):
-        '''Get the last modification date of the file that contains the task code
-        '''
-        task_dir = self.settings['locations']['task_dir']
-        if task_dir == '<':
-            return time.time()
-        else:
-            return os.path.getmtime('{}/{}.py'.format(task_dir, task))
-
     def __del__(self):
-        '''Upon destruction, all file handles used by the task will be closed.
-        '''
         for handle in self.result_files:
             if handle and not handle.closed:
                 handle.close()

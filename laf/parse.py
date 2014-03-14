@@ -296,7 +296,7 @@ class AnnotationHandler(ContentHandler):
     def characters(self, ch):
         pass
 
-def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label, efeature_label):
+def parse(graf_header_file, stamp, data_items, feature_label, efeature_label, xml_label, exml_label):
     '''Parse a GrAF resource.
     '''
 
@@ -309,6 +309,11 @@ def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label, efe
         data_items["{}{}".format(dkey, item)] = parse_data
         result_items.append((dkey, item))
 
+    handle = open(primary_data_file, "r", encoding="utf-8")
+    primary_data = handle.read(None)
+    handle.close()
+    deliver('primary_data', '', primary_data)
+
     xmlitems = {}
     for item in ('node', 'edge'):
         xlabel = 'X_int_{}'.format(item)
@@ -318,9 +323,6 @@ def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label, efe
         global identifiers_e
         identifiers_n = xmlitems['node']
         identifiers_e = xmlitems['edge']
-
-    if prim_bin_file != None:
-        shutil.copy2(primary_data_file, prim_bin_file)
 
     for annotation_file in annotation_files:
         msg = "parsing {}".format(annotation_file)
@@ -343,8 +345,8 @@ def parse(graf_header_file, prim_bin_file, stamp, data_items, feature_label, efe
         id_region + id_node + id_edge + id_annot
     )
     stamp.progress(msg)
-    deliver("X_int_", "node", identifiers_n) 
-    deliver("X_int_", "edge", identifiers_e)
+    deliver(xml_label, "node", identifiers_n) 
+    deliver(exml_label, "edge", identifiers_e)
     deliver("region_begin", '', region_begin)
     deliver("region_end", '', region_end)
     deliver("node_region_list", '', node_region_list)

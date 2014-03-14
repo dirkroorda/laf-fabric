@@ -12,6 +12,7 @@ from .settings import Settings, Names
 from .timestamp import Timestamp
 from .parse import parse as xmlparse
 from .model import model as remodel
+from .task import LafAPI
 
 GZIP_LEVEL = 2
 
@@ -165,8 +166,8 @@ class Laf(object):
 
     def clear_data(self, data):
         for dkey in self.data_items:
-            (feat, fkind, fdata) = Names.key2f(dkey)
-            if (data == fdata):
+            (d, start, end, comps) = Names.decomp(dkey)
+            if (data == annox and start == annox) or data != annox:
                 self.clear_file(dkey)
 
     def clear_file(self, dkey): 
@@ -183,18 +184,14 @@ class Laf(object):
 
         for dkey in old_data_items:
             if dkey not in new_data_items or new_data_items[dkey][0] != old_data_items[dkey][0]:
-                self.progress("clear {}".format(Names.f2con(dkey))) 
+                self.progress("clear {}".format(Names.msg(dkey))) 
                 self.clear_file(dkey)
         for dkey in new_data_items:
             if dkey in old_data_items and new_data_items[dkey][0] == old_data_items[dkey][0]:
-                self.progress("keep {}".format(Names.f2con(dkey))) 
+                self.progress("keep {}".format(Names.msg(dkey))) 
             else:
-                is_annox = False
-                comps = Names.key2f(dkey)
-                if comps != None:
-                    (feat, fkind, fdata) = Names.key2f(dkey)
-                    if fdata == 'annox': is_annox = True
-                this_correct = self.load_file(dkey, method_dict, accept_missing=is_annox)
+                (d, start, end, comps) = Names.decomp(dkey)
+                this_correct = self.load_file(dkey, method_dict, accept_missing=start=='annox')
                 if not this_correct: correct = False
 
         return correct
@@ -207,22 +204,22 @@ class Laf(object):
         if dprep:
             if dkey not in method_dict:
                 self.progress("WARNING: Cannot prepare data for {}. No preparation method available.".format(
-                    Names.f2con(dkey)
+                    Names.msg(dkey)
                 ))
                 return False
             (method, method_source) = method_dict[dkey]
             up_to_date = os.path.exists(dpath) and os.path.getmtime(dpath) >= os.path.getmtime(method_source)
             if not up_to_date:
-                self.progress("PREPARING {}".format(Names.f2con(dkey)))
+                self.progress("PREPARING {}".format(Names.msg(dkey)))
                 newdata = method(api)
-                self.progress("WRITING {}".format(Names.f2con(dkey)))
+                self.progress("WRITING {}".format(Names.msg(dkey)))
                 self.data_items[dkey] = newdata
                 self.store_file(dkey)
                 return True
 
         if not os.path.exists(dpath):
             if not accept_missing:
-                self.progress("ERROR: Can not load data for {}: File does not exist.".format(Names.f2con(dkey))
+                self.progress("ERROR: Can not load data for {}: File does not exist.".format(Names.msg(dkey))
             return accept_missing
 
         newdata = None
@@ -253,8 +250,8 @@ class Laf(object):
         data_items = settings.data_items
 
         for dkey in data_items:
-            (feat, fkind, fdata) = Names.key2f(dkey)
-            if (data == fdata):
+            (d, start, end, comps) = Names.decomp(dkey)
+            if (data == annox and start == annox) or data != annox:
                 self.store_file(dkey)
 
     def store_file(self, dkey)
@@ -318,11 +315,12 @@ class Laf(object):
         
         parsed_items = xmlparse(
             env['{}_source_path'.format(data)],
-            env['primary_data_path'],
             self.stamp,
             self.data_items,
-            Names.kd2p(data, 'node'),
-            Names.kd2p(data, 'edge'),
+            Names.comp(('F', data, 'node'), ())
+            Names.comp(('F', data, 'edge'), ())
+            Names.comp(('X', 'int', 'node'), ())
+            Names.comp(('X', 'int', 'edge'), ())
         )
         for (label, item, data) in parsed_items:
             if label not in data_items_def:
@@ -421,10 +419,11 @@ def fabric(
         load=None,
         force_compile = {'main': False, 'annox': False},
     ):
-    settings = Settings()
-    lafapi = LafAPI(settings.settings)
+    lafapi = LafAPI(Settings().settings)
     lafapi.stamp.set_verbose(verbose)
     lafapi.stamp.reset()
+    lafapi.progress("LOADING API: please wait ... ")
+    env = lafapi.settings.env
 
     req_items = {
         'c': [''],
@@ -460,9 +459,8 @@ def fabric(
 
     method_dict = {}
     lafapi.adjust_all(source, annox, task, req_items, method_dict, force_compile)
-
     lafapi.add_logfile()
-    lafapi.progress("BEGIN TASK={} SOURCE={}".format(self.env['task'], self.env['source']))
     api = lafapi.API()
     lafapi.stamp.reset()
+    lafapi.progress("DATA LOADED FROM SOURCE {} AND ANNOX{} FOR TASK {}".format(env['source'], env['annox'], env['task']))
     return api

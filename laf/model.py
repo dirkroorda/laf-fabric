@@ -286,12 +286,12 @@ def model(data, data_items, stamp):
         edges_to = data_items["edges_to"]
         labeled_edges = set()
         efeatures = {'main': set(), 'annox': set()}
-        connection_key = Names.id2p(False, data)
-        connectioni_key = Names.id2p(True, data)
+        connection_key = Names.comp(('C', data, False), ())
+        connectioni_key = Names.comp(('C', data, True), ())
 
         for dkey in data_items:
-            comps = Names.key2f(dkey)
-            if comps == None: continue
+            (d, start, end, comps) = Names.decomp(dkey)
+            if d != 'F': continue
             (feature, kind, data) = comps
             if kind != 'edge': continue
             efeatures[kind][data].add(dkey)

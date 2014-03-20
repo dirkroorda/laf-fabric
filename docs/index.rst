@@ -15,8 +15,6 @@ Contents:
     texts/getting-started
     texts/background
     texts/API-reference
-    texts/testing-debugging
-    tasks/modules.rst
     laf/modules.rst
     etcbc/modules.rst
 

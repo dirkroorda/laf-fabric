@@ -4,6 +4,14 @@ etcbc |release|
 Submodules
 ----------
 
+etcbc.preprocess module
+-----------------------
+
+.. automodule:: etcbc.preprocess
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 etcbc.annotating module
 -----------------------
 

@@ -4,18 +4,26 @@ laf |release|
 Submodules
 ----------
 
-laf.laf module
---------------
+laf.fabric module
+-----------------
 
-.. automodule:: laf.laf
+.. automodule:: laf.fabric
     :members:
     :undoc-members:
     :show-inheritance:
 
-laf.lib module
---------------
+laf.elements module
+-------------------
 
-.. automodule:: laf.lib
+.. automodule:: laf.elements
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+laf.data module
+---------------
+
+.. automodule:: laf.data
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,14 +36,6 @@ laf.model module
     :undoc-members:
     :show-inheritance:
 
-laf.notebook module
--------------------
-
-.. automodule:: laf.notebook
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 laf.parse module
 ----------------
 
@@ -44,18 +44,18 @@ laf.parse module
     :undoc-members:
     :show-inheritance:
 
-laf.shell module
+laf.names module
 ----------------
 
-.. automodule:: laf.shell
+.. automodule:: laf.names
     :members:
     :undoc-members:
     :show-inheritance:
 
-laf.task module
----------------
+laf.settings module
+-------------------
 
-.. automodule:: laf.task
+.. automodule:: laf.settings
     :members:
     :undoc-members:
     :show-inheritance:
@@ -64,6 +64,14 @@ laf.timestamp module
 --------------------
 
 .. automodule:: laf.timestamp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+laf.lib module
+--------------
+
+.. automodule:: laf.lib
     :members:
     :undoc-members:
     :show-inheritance:

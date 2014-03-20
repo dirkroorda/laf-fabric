@@ -1,180 +1,97 @@
 import sys
 import os
-import glob
 import configparser
-
-from .timestamp import Timestamp
 
 MAIN_CFG = 'laf-fabric.cfg'
 VERSION = '3.7.0'
 
-system_settings = {
-    'locations': {
-        'main_source_subdir': 'laf',           # subdirectory of main laf resource
-        'annox_source_subdir': 'annotations',  # subdirectory of annotation add-ons
-        'bin_subdir': 'bin',                   # subdirectory of compiled data
-        'task_subdir': 'tasks',                # subdirectory of task results
-        'bin_ext': 'bin'                       # file extension for binary files
-        'text_ext': 'txt'                      # file extension for text files
-        'log_name': '__log__'                  # base name for log files
-        'compile_name': 'compile__'            # extension name for log files of compile process
-        'primary_data': 'primary_data',        # name of the primary data file in the compiled data
-        'empty': '--',
-        'header': '_header_.xml',
-    },
-    'data_items_template': ( 
-        ('node_anchor',          '{source}/node_anchor'         , 'P', 'arr'),
-        ('node_anchor_items',    '{source}/node_anchor_items'   , 'P', 'arr'),
-        ('node_anchor_min',      '{source}/node_anchor_min'     , 'c', 'arr'),
-        ('node_anchor_max',      '{source}/node_anchor_max'     , 'c', 'arr'),
-        ('node_events',          '{source}/node_events'         , 'P', 'arr'),
-        ('node_events_items',    '{source}/node_events_items'   , 'P', 'arr'),
-        ('node_events_k',        '{source}/node_events_k'       , 'P', 'arr'),
-        ('node_events_n',        '{source}/node_events_n'       , 'P', 'arr'),
-        ('node_sort',            '{source}/node_sort'           , 'c', 'arr'),
-        ('node_sort_inv',        '{source}/node_sort_inv'       , 'c', 'dct'),
-        ('node_resorted',        '{source}/node_resorted'       , 'R', 'arr'),
-        ('node_resorted_inv',    '{source}/node_resorted_inv'   , 'R', 'arr'),
-        ('edges_from',           '{source}/edges_from'          , 'c', 'arr'),
-        ('edges_to',             '{source}/edges_to'            , 'c', 'arr'),
-        ('primary_data',         '{source}/primary_data'        , 'P', 'str'),
-        ('X,',                   '{source}/X,'                  , 'X', 'dct'),
-        ('XE,',                  '{source}/XE,'                 , 'X', 'dct'),
-        ('RX,',                  '{source}/RX,'                 , 'X', 'dct'),
-        ('RXE,',                 '{source}/RXE,'                , 'X', 'dct'),
-        ('F,',                   '{source}/F,'                  , 'F', 'dct'),
-        ('FE,',                  '{source}/FE,'                 , 'E', 'dct'),
-        ('C,',                   '{source}/C,'                  , 'E', 'dct'),
-        ('Ci,',                  '{source}/Ci,'                 , 'E', 'dct'),
-        ('AF,',                  '{source}/A/{annox}/F,'        , 'AF', 'dct'),
-        ('AFE,',                 '{source}/A/{annox}/FE,'       , 'AE', 'dct'),
-        ('AC,',                  '{source}/A/{annox}/C,'        , 'AE', 'dct'),
-        ('ACi,',                 '{source}/A/{annox}/Ci,'       , 'AE', 'dct'),
-    ),
-    'env_def': {
+class Settings(object):
+    '''Manage the configuration.
+
+    The directory structure is built as a set of names in an environment dictionary. 
+    The method ``setenv`` builds a new structure based on user choices.
+    Local settings can be passed as arguments to object creation, or in a config file in the current directory,
+    or in a config file in the user's home directory.
+    It is possible to save these settings in the latter config file.
+    '''
+    _myconfig = {
+        'work_dir': None,                  # working directory (containing compiled laf, task results)
+        'm_source_dir': None,              # directory containing original, uncompiled laf resource
+        'm_source_subdir': 'laf',          # subdirectory of main laf resource
+        'a_source_subdir': 'annotations',  # subdirectory of annotation add-ons
+        'bin_subdir': 'bin',               # subdirectory of compiled data
+        'task_subdir': 'tasks',            # subdirectory of task results
+        'bin_ext': 'bin',                  # file extension for binary files
+        'text_ext': 'txt',                 # file extension for text files
+        'log_name': '__log__',             # base name for log files
+        'compile_name': 'compile__',       # extension name for log files of compile process
+        'primary_data': 'primary_data',    # name of the primary data file in the compiled data
+        'empty': '--',                     # name of empty annox
+        'header': '_header_.xml',          # name of laf header file in annox
+    }
+    _env_def = {
         'source':                '{source}',
         'annox':                 '{annox}',
+        'task':                  '{task}',
         'empty':                 '{empty}',
-        'main_source_dir':       '{main_source_dir}',
-        'main_source_path':      '{main_source_dir}/{source}',
-        'annox_source_dir':      '{main_source_dir}/{annox_source_base_dir}/{annox}',
-        'annox_source_path':     '{main_source_dir}/{annox_source_base_dir}/{annox}/{header}',
+        'work_dir':              '{work_dir}',
+        'bin_dir':               '{work_dir}/{bin_subdir}',
+        'm_source_dir':          '{m_source_dir}',
+        'm_source_path':         '{m_source_dir}/{source}',
+        'a_source_dir':          '{m_source_dir}/{a_source_subdir}/{annox}',
+        'a_source_path':         '{m_source_dir}/{a_source_subdir}/{annox}/{header}',
         'compiled_file':         '{log_name}{compile_name}.{text_ext}',
-        'main_compiled_dir':     '{work_dir}/{bin_subdir}/{source}',
-        'main_compiled_path':    '{work_dir}/{bin_subdir}/{source}/{log_name}{compile_name}.{text_ext}',
+        'm_compiled_dir':        '{work_dir}/{bin_subdir}/{source}',
+        'm_compiled_path':       '{work_dir}/{bin_subdir}/{source}/{log_name}{compile_name}.{text_ext}',
         'primary_compiled_path': '{work_dir}/{bin_subdir}/{source}/{primary_data}',
-        'annox_compiled_dir':    '{work_dir}/{bin_subdir}/{source}/A/{annox}',
-        'annox_compiled_path':   '{work_dir}/{bin_subdir}/{source}/A/{annox}/{log_name}{compile_name}.{text_ext}',
+        'a_compiled_dir':        '{work_dir}/{bin_subdir}/{source}/A/{annox}',
+        'a_compiled_path':       '{work_dir}/{bin_subdir}/{source}/A/{annox}/{log_name}{compile_name}.{text_ext}',
         'task_dir':              '{work_dir}/{task_subdir}/{source}/{task}',
         'log_path':              '{work_dir}/{task_subdir}/{source}/{task}/{log_name}{task}.{text_ext}',
-    },
-}
-
-class Names(object):
-    trans = {
-        'X': ('X', 'int', 'node'),
-        'XE': ('X', 'int', 'edge'),
-        'RX': ('X', 'rep', 'node'),
-        'RXE': ('X', 'rep', 'edge'),
-        'F': ('F', 'main', 'node'),
-        'FE': ('F', 'main', 'edge'),
-        'AF': ('F', 'annox', 'node'),
-        'AFE': ('F', 'annox', 'edge'),
-        'C': ('C', 'main', False),
-        'Ci': ('C', 'main', True),
-        'AC': ('C', 'annox', False),
-        'ACi': ('C', 'annox', True),
     }
-    transback = dict([(i[1], i[0]) for i in trans.items()]) 
 
-    def comp(d, things):
-        return ",".join([self.transback[d]] + things)
-
-    def decomp(s):
-        if ',' not in s: return (s, None, None, ())
-        comps = s.split(',')
-        return self.trans(comps[0]) + (tuple(comps[1:]),)
-
-    def msg(s):
-        (d, start, end, comps) = Names.decomp(s) 
-        return "{}{}{}{}".format(
-            "{}:".format(start) if start else '',
-            d,
-            "({})".format(end) if end else '',
-            '_'.join(comps),
-        )
-
-    def apiname(feature): return "_".join(*feature)
-
-    def id2p(inv, data): return "{}C{}".format('A' if data == 'annox' else '', 'i' if inv else '')
-    def kd2p(kind, data): return "{}F{}".format('A' if data == 'annox' else '', 'E' if kind == 'edge' else '')
-    def k2p(kind): return "F{}".format('E' if kind == 'edge' else '')
-    def p2kd(pref): return ('edge' if pref.endswith('E') else 'node', 'annox' if pref.startswith('A') else 'main')
-    def p2kc(pref): return ('edge' if pref.endswith('E') else 'node', 'annox' if pref.startswith('A') else 'main')
-    def p2k(pref): return 'edge' if pref.endswith('E') else 'node' 
-    def f2con(feature, kind, data): return "{}: {} ({})".format(data, "_".join(*feature), kind)
-    def f2file(feature, kind): return "{}{}".format(Names.k2p(kind), ','.join(*feature))
-    def f2key(feature, kind, data): return "{}{}".format(Names.kd2p(kind, data), ','.join(*feature))
-    def c2key(feature, inv, data): return "{}{}".format(Names.id2p(inv, data), ','.join(*feature))
-    def x2key(code, kind): return "X_{}_{}".format(code, key)
-    def key2f(s): return _decomp(s, Names.isf, Names.p2kd)
-    def key2x(s): return _decomp(s, Names.isx, Names.p2kc)
-    def file2f(s): return _decomp(s, Names.isf, Names.p2k)
-
-class Settings(object):
-    '''Reads and maintains program settings.
-
-    '''
-
-    def __init__(self):
+    def __init__(self, work_dir, laf_dir, save):
         sys.stderr.write('This is LAF-Fabric {}\n'.format(VERSION))
+        config_path = None
+        home_config_path = "{}/{}".format(os.path.expanduser('~'), MAIN_CFG)
+        cwd_path = os.getcwd()
+        if os.path.exists(MAIN_CFG): config_path = MAIN_CFG
+        else:
+            if os.path.exists(home_config_path): config_path = home_config_path
+        strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
+        strings.read_file(open(config_path, "r", encoding="utf-8"))
+        config_work_dir = None
+        config_laf_dir = None
+        if 'locations' in strings:
+            if 'work_dir' in strings['locations']: config_work_dir = strings['locations']['work_dir']
+            if 'laf_dir' in strings['locations']: config_laf_dir = strings['locations']['laf_dir']
+        if work_dir == None: work_dir = config_work_dir
+        if laf_dir == None: laf_dir = config_laf_dir
+        if work_dir == None:
+            print("ERROR: No data directory given (looked for arguments, {}, and {}.".format(MAIN_CFG, home_config_dir))
+            sys.exit(1)
+        work_dir = work_dir.replace('.', cwd_path, 1) if work_dir.startswith('.') else work_dir
+        laf_dir = laf_dir.replace('.', cwd_path, 1) if laf_dir.startswith('.') else laf_dir
+        if not os.path.exists(work_dir):
+            print("ERROR: Given data directory {} does not exist.".format(work_dir))
+            work_dir = None
+        if work_dir == None: sys.exit(1)
+        if laf_dir == None:
+            print("WARNING: No original laf directory given (looked for arguments, {}, and {}.".format(MAIN_CFG, home_config_dir))
+        elif not os.path.exists(laf_dir):
+            print("WARNING: Given original laf directory {} does not exist.".format(laf_dir))
+            laf_dir = None
+        self._myconfig['work_dir'] = work_dir
+        self._myconfig['m_source_dir'] = laf_dir
+        if save and work_dir != None:
+            strings['locations'] = {
+                'work_dir': work_dir,
+                'laf_dir': laf_dir,
+            }
+            config_path = home_config_path
+            strings.write(open(home_config_path, 'w', encoding= 'utf-8'))
+        self.env = {}
 
-        self.settings = configparser.ConfigParser(inline_comment_prefixes=('#'))
-        self.settings.update(system_settings)
-        self.settings.read_file(open(MAIN_CFG, "r", encoding="utf-8"))
-        locs = self.settings['locations']
-        work_dir = self.settings['work_dir']
-        locs['main_source_dir'] = locs['laf_dir'] if 'laf_dir' in locs else "{}/{}".format(work_dir, locs['main_source_subdir']
-        self.data_items = {}
-        self.old_data_items = {}
-
-    def set_env(self, source, annox, task):
-        locs = self.settings['locations']
-
-        env = {}
-        env_def = self.settings['env_def']
-        for e in env_def:
-            env[e] = env_def[e].format(**locs)
-        self.env = env
-
-        data_items_def = {}
-        data_items_template = self.settings['data_items_template']
-        for t in data_items_template:
-            data_items_def[t[0]] = (t[1].format(**env), t[2], t[3]))
-        self.data_items_def = data_items_def
-        
-    def request_files(self, req_items, extra=False):
-        self.old_data_items = self.data_items
-
-        env = self.settings.env
-        data_items_def = self.settings.data_items_def
-        self.data_items = {}
-        if extra:
-            self.data_items.update(self.old_data_items)
-        for dkey in data_items_def:
-            (dpath, docc, dtype) = data_items_def[dkey]
-            self.data_items.update(self.multiply_req(dkey, dpath, dtype, docc, req_items))
-
-    def multiply_req(self, dkey, dpath, dtype, docc, req_items):
-        if docc not in req_items:
-            return {}
-        result = {}
-        for item in req_items[docc]:
-            result["{}{}".format(dkey, item)] = ("{}{}".format(dpath, item), dtype, docc == 'R')
-        return result
-
-    def print_all(self):
-        data_items = self.data_items
-        for dkey in data_items:
-            print(Names.f2con(dkey))
+    def setenv(self, source, annox, task):
+        for e in self._env_def: self.env[e] = self._env_def[e].format(source=source, annox=annox, task=task, **self._myconfig)
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl>
+            <labelUsage        label="mother" occurs="12528"       />
+            <labelUsage        label="parents" occurs="269638"      />
+            <labelUsage        label="ft" occurs="269638"      />
+        </labelsDecl>
+        <dependencies><!--
+            <dependsOn f.id="f_lingo"/>-->
+        </dependencies>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="yes"/>
+        </annotationSpaces>
+    </graphHeader>
+<a xml:id="alf435558" label="ft" ref="n40767"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="1"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="PP"/>
+</fs></a>
+<edge xml:id="el511117" from="n40767" to="n59556"/>
+<a xml:id="ale511117" label="parents" ref="el511117"/>
+
+<a xml:id="alf435559" label="ft" ref="n40768"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="2"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="VP"/>
+</fs></a>
+<edge xml:id="el511118" from="n40768" to="n59557"/>
+<a xml:id="ale511118" label="parents" ref="el511118"/>
+
+<a xml:id="alf435560" label="ft" ref="n40769"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="3"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="NP"/>
+</fs></a>
+<edge xml:id="el511119" from="n40769" to="n59558"/>
+<a xml:id="ale511119" label="parents" ref="el511119"/>
+
+<a xml:id="alf435561" label="ft" ref="n40770"><fs>
+	<f name="determination" value="determined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="4"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="PP"/>
+</fs></a>
+<edge xml:id="el511120" from="n40770" to="n59559"/>
+<a xml:id="ale511120" label="parents" ref="el511120"/>
+
+</graph>

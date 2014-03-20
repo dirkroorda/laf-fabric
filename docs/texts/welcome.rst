@@ -20,8 +20,7 @@ This is the LAF Fabric, and here is a simple example of what you can do with it:
 * `gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
 
 People at the Theology Department of the VU University Amsterdam are producing notebooks for their research
-into the text of the Hebrew Bible,
-see
+into the text of the Hebrew Bible, see
 
 * `Judith Gottschalk's github repository <https://github.com/judithgottschalk/ETCBC-data>`_
 * `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_

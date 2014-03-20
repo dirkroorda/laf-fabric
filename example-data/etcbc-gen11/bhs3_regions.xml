@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl/>
+        <dependencies>
+        </dependencies>
+    </graphHeader>
+<region xml:id="w_1" anchors="0 3"/>
+<region xml:id="w_2" anchors="3 12"/>
+<region xml:id="p_1" anchors="12 13"/>
+<region xml:id="w_3" anchors="13 20"/>
+<region xml:id="p_2" anchors="20 21"/>
+<region xml:id="w_4" anchors="21 30"/>
+<region xml:id="p_3" anchors="30 31"/>
+<region xml:id="w_5" anchors="31 35"/>
+<region xml:id="p_4" anchors="35 36"/>
+<region xml:id="w_6" anchors="36 38"/>
+<region xml:id="w_7" anchors="38 48"/>
+<region xml:id="p_5" anchors="48 49"/>
+<region xml:id="w_8" anchors="49 51"/>
+<region xml:id="w_9" anchors="51 55"/>
+<region xml:id="p_6" anchors="55 56"/>
+<region xml:id="w_10" anchors="56 58"/>
+<region xml:id="w_11" anchors="58 64"/>
+<region xml:id="p_7" anchors="64 65"/>
+
+</graph>

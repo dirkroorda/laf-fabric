@@ -166,7 +166,7 @@ we need to be more tricky, because we cannot store sets of numbers as integers.
 What we do instead is: we build two arrays, the first array points to data records in the second array.
 A data record in the second array consists of a number giving the length of the record,
 followed by that number of integers.
-The function :func:`arrayify() <laf.model.arrayify>` takes a list of items and turns it in a double array. 
+The function ``arrayify()`` in ``laf.lib`` takes a list of items and turns it in a double array. 
 
 **Keep individual features separate**
 A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
@@ -202,11 +202,10 @@ The design of LAF-fabric is such that feature data is neatly chunked per individ
     before the you can touch them in tasks.
     This merging occurs late in the process, even after the loading of features by LAF-fabric.
     Only at the point in time when a task declares the names of the API methods
-    (see :meth:`API <laf.task.LafTask.API>`)
+    (see ``API()`` in ``laf.fabric``)
     the features will be assembled into objects.
-    At this point the source features and annox features finally get merged.
-    When a task no longer uses a merged feature, or want to merge with a different package,
-    the feature data involved will be cleared, so that a fresh merger can take place.
+    Yet the underlying tables will not mixed, so that features do not have to be unloaded and reloaded
+    when you change your annox.
 
 .. _author:
 

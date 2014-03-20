@@ -1,11 +1,7 @@
-import os
-
 from xml.sax import parse as saxparse, SAXException
 from xml.sax.handler import ContentHandler
-
 import array
-import collections
-import shutil
+from .names import Names
 
 aspace_not_given = "_original_"
 
@@ -65,81 +61,21 @@ def init():
     global edges_to
     edges_to = array.array('I')
     global feature
-    feature = collections.defaultdict(lambda:{})
+    feature = {}
     global efeature
-    efeature = collections.defaultdict(lambda:{})
+    efeature = {}
 
 class HeaderHandler(ContentHandler):
-    '''Handlers used by SAX parsing the GrAF header file.
-
-    We just collect the contents of the *loc* attributes of the *annotation* elements.
-    These are the annotation files that we have to fetch and compile.
-    '''
-    stamp = None
-
-    def __init__(self, stamp):
-        self._tag_stack = []
-        self.stamp = stamp
-        pass
-
+    def __init__(self): self._tag_stack = []
     def startElement(self, name, attrs):
         global primary_data_file
         self._tag_stack.append(name)
-        if name == "annotation":
-            annotation_files.append(attrs["loc"])
-        elif name == "primaryData":
-            primary_data_file = attrs["loc"]
-
-    def endElement(self, name):
-        self._tag_stack.pop()
-
-    def characters(self, ch):
-        name = self._tag_stack[-1]
+        if name == "annotation": annotation_files.append(attrs["loc"])
+        elif name == "primaryData": primary_data_file = attrs["loc"]
+    def endElement(self, name): self._tag_stack.pop()
+    def characters(self, ch): name = self._tag_stack[-1]
 
 class AnnotationHandler(ContentHandler):
-    '''Handlers used by SAX parsing the annotation files themselves
-
-    We have to collect all elements *region*, *node* and subelement *link*, *edge*, *annotationSpace*, *a* (annotation) and *f* (feature).
-    From these elements we retrieve identifiers and other attributes.
-    We map all identifiers to integers.
-    When we have to associate one piece of data to other pieces, we create arrays of those integers.
-
-    .. note::
-        The parse process is presupposes that regions are encountered before nodes that link to them,
-        nodes before edges that connect them, nodes and edges before annotations that target them.
-        The creator of the LAF resource can organize the files that way. The parser reads the annotation file in the
-        order specified in the GrAF header file.
-
-    Here is a description of the arrays we create:
-
-    *region_begin*, *region_end*
-        Every region has an *anchors* attribute specifying a point or interval in the primary data. We consider a point *i* as the interval *i .. i*.
-        *region_begin* contains the start anchor of region *i* for each *i*, and *region_end* the end anchor.
-
-    *edges_from*, *edges_to*
-        Every edge goes from one node to an other. *edges_from* contains the from node of edge *i* for each *i*, and *edges_end* the to node.
-
-    There is also a list of arrays:
-
-    *node_region_list*
-        Element *i* of this list contains an array with the regions attached to node *i*.
-
-    And finally, two dictionaries:
-
-    *feature*
-        All feature values, keyed by annotation space, annotation label, feature name, kind (node or edge),
-        and finally reference (id of target node or edge).
-
-    .. note::
-        Empty annotations correspond with a feature with empty name within the annotation space and annotation label.
-        This feature has value ``''`` (the empty string) for each node or edge in its domain.
-
-    .. note::
-        We work with annotation spaces and annotation labels and we distinguish between features in
-        annotations that are targeted at nodes or at edges.
-        Features for nodes and features for edges occupy separate name spaces.
-    '''
-
     file_name = None
     nid = None
     aid = None
@@ -175,10 +111,8 @@ class AnnotationHandler(ContentHandler):
                 self.aspace = attrs["as.id"]
                 if "default" in attrs:
                     is_default = attrs["default"].casefold()
-                    if is_default in self.truth and self.truth[is_default]:
-                        self.aspace_default = self.aspace
-            if self.aspace == None:
-                self.aspace = self.aspace_default
+                    if is_default in self.truth and self.truth[is_default]: self.aspace_default = self.aspace
+            if self.aspace == None: self.aspace = self.aspace_default
         elif name == "region":
             global faulty_regions
             global good_regions
@@ -189,8 +123,7 @@ class AnnotationHandler(ContentHandler):
             anchors = attrs["anchors"].split(" ")
             if len(anchors) != 2:
                 faulty_regions += 1
-                msg = "ERROR: invalid anchor spec '{}' for region {} in {}".format(attrs["anchors"], rid, self.file_name)
-                self.stamp.progress(msg)
+                self.stamp.Emsg("invalid anchor spec '{}' for region {} in {}".format(attrs["anchors"], rid, self.file_name))
                 region_begin.append(0)
                 region_end.append(0)
             else:
@@ -204,8 +137,7 @@ class AnnotationHandler(ContentHandler):
             id_node += 1
             self.node_link = None
             self.nid = nid 
-        elif name == "link":
-            self.node_link = attrs["targets"].split(" ")
+        elif name == "link": self.node_link = attrs["targets"].split(" ")
         elif name == "edge":
             global faulty_edges
             global good_edges
@@ -217,8 +149,7 @@ class AnnotationHandler(ContentHandler):
             to_node = attrs["to"]
             if not from_node or not to_node:
                 faulty_edges += 1
-                msg = "ERROR: invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name)
-                self.stamp.progress(msg)
+                self.stamp.Emsg("invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name))
             else:
                 good_edges += 1
                 edges_from.append(identifiers_n[from_node])
@@ -231,31 +162,27 @@ class AnnotationHandler(ContentHandler):
             id_annot += 1
             self.aid = aid
             self.aempty = True
-            if "as" in attrs:
-                self.aspace = attrs["as"]
-            else:
-                self.aspace = self.aspace_default
+            if "as" in attrs: self.aspace = attrs["as"]
+            else: self.aspace = self.aspace_default
             self.alabel = attrs["label"]
             node_or_edge = attrs["ref"]
             if not self.alabel or not node_or_edge:
                 faulty_annots += 1
-                msg = "ERROR: invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(self.alabel, node_or_edge, self.aid, self.file_name)
-                self.stamp.progress(msg)
+                self.stamp.Emsg("invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(self.alabel, node_or_edge, self.aid, self.file_name))
             else:
                 self.aref = None
                 self.atype = None
                 if node_or_edge in identifiers_n:
                     self.aref = identifiers_n[node_or_edge]
-                    self.atype = 'node'
+                    self.atype = 'n'
                     good_annots += 1
                 elif node_or_edge in identifiers_e:
                     self.aref = identifiers_e[node_or_edge]
-                    self.atype = 'edge'
+                    self.atype = 'e'
                     good_annots += 1
                 else:
                     faulty_annots += 1
-                    msg = "ERROR: invalid annotation target ref='{}' (no node, no edge) for annotation {} in {}".format(node_or_edge, self.aid, self.file_name)
-                    self.stamp.progress(msg)
+                    self.stamp.Emsg("invalid annotation target ref='{}' (no node, no edge) for annotation {} in {}".format(node_or_edge, self.aid, self.file_name))
         elif name == "f":
             global faulty_feats
             global good_feats
@@ -263,16 +190,15 @@ class AnnotationHandler(ContentHandler):
             fname = attrs["name"]
             if not fname:
                 faulty_feats += 1
-                msg = "ERROR: invalid feature spec name='{}' value='{}' for feature in annotation {} in file {}".format(fname, value, self.aid, self.file_name)
-                self.stamp.progress(msg)
+                self.stamp.Emsg("invalid feature spec name='{}' value='{}' for feature in annotation {} in file {}".format(fname, value, self.aid, self.file_name))
             elif self.aref == None:
                 faulty_feats += 1
-                msg = "ERROR: undetermined feature kind (node/edge) for feature {} in annotation {} in {}".format(fname, self.aid, self.file_name)
+                self.stamp.Emsg("undetermined feature kind (node/edge) for feature {} in annotation {} in {}".format(fname, self.aid, self.file_name))
             else:
                 good_feats += 1
                 value = attrs["value"]
-                dest = feature if self.atype == 'node' else efeature
-                dest[(self.aspace, self.alabel, fname)][self.aref] = value
+                dest = feature if self.atype == 'n' else efeature
+                dest.setdefault((self.aspace, self.alabel, fname), {})[self.aref] = value
 
     def endElement(self, name):
         if name == "node":
@@ -288,48 +214,37 @@ class AnnotationHandler(ContentHandler):
             if self.aempty:
                 fname = ''
                 value = ''
-                dest = feature if self.atype == 'node' else efeature
-                dest[(self.aspace, self.alabel, fname)][self.aref] = value
-
+                dest = feature if self.atype == 'n' else efeature
+                dest.setdefault((self.aspace, self.alabel, fname), {})[self.aref] = value
         self._tag_stack.pop()
 
-    def characters(self, ch):
-        pass
+    def characters(self, ch): pass
 
-def parse(graf_header_file, stamp, data_items, feature_label, efeature_label, xml_label, exml_label):
-    '''Parse a GrAF resource.
-    '''
-
+def parse(origin, graf_header_file, stamp, data_items):
+    '''Parse a LAF/GrAF resource and deliver results.'''
     init()
-    saxparse(graf_header_file, HeaderHandler(stamp))
-
-    result_items = []
-
-    def deliver(dkey, item, parse_data):
-        data_items["{}{}".format(dkey, item)] = parse_data
-        result_items.append((dkey, item))
+    saxparse(graf_header_file, HeaderHandler())
 
     handle = open(primary_data_file, "r", encoding="utf-8")
     primary_data = handle.read(None)
     handle.close()
-    deliver('primary_data', '', primary_data)
+    Names.deliver(primary_data, (origin + 'P00', ('primary_data',)), data_items)
 
-    xmlitems = {}
-    for item in ('node', 'edge'):
-        xlabel = 'X_int_{}'.format(item)
-        xmlitems[item] = data_items[xlabel] if xlabel in data_items else None
-    if xmlitems['node'] != None and xmlitems['edge'] != None:
-        global identifiers_n
-        global identifiers_e
-        identifiers_n = xmlitems['node']
-        identifiers_e = xmlitems['edge']
+    for kind in ('n', 'e'):
+        xi_key = Names.comp('mX' + kind + 'f', ())
+        xmlitems = data_items[xi_key] if xi_key in data_items else {}
+        if kind == 'n':
+            global identifiers_n
+            identifiers_n = xmlitems
+        else:
+            global identifiers_e
+            identifiers_e = xmlitems
 
     for annotation_file in annotation_files:
-        msg = "parsing {}".format(annotation_file)
-        stamp.progress(msg)
+        stamp.Imsg("parsing {}".format(annotation_file))
         saxparse(annotation_file, AnnotationHandler(annotation_file, stamp))
 
-    msg = '''END PARSING
+    mg = '''END PARSING
 {:>10} good   regions  and {:>5} faulty ones
 {:>10} linked nodes    and {:>5} unlinked ones
 {:>10} good   edges    and {:>5} faulty ones
@@ -342,20 +257,16 @@ def parse(graf_header_file, stamp, data_items, feature_label, efeature_label, xm
         good_edges, faulty_edges,
         good_annots, faulty_annots,
         good_feats, faulty_feats,  
-        id_region + id_node + id_edge + id_annot
+        id_region + id_node + id_edge + id_annot,
     )
-    stamp.progress(msg)
-    deliver(xml_label, "node", identifiers_n) 
-    deliver(exml_label, "edge", identifiers_e)
-    deliver("region_begin", '', region_begin)
-    deliver("region_end", '', region_end)
-    deliver("node_region_list", '', node_region_list)
-    deliver("edges_from", '', edges_from)
-    deliver("edges_to", '', edges_to)
-    for f in feature:
-        deliver(feature_label, f, feature[f])
-    for f in efeature:
-        deliver(efeature_label, f, efeature[f])
-    return result_items
+    stamp.Imsg(mg)
+    Names.deliver(identifiers_n, (origin + 'Xnf', ()), data_items)
+    Names.deliver(identifiers_e, (origin + 'Xef', ()), data_items)
+    Names.deliver(region_begin, (origin + 'T00', ('region_begin',)), data_items)
+    Names.deliver(region_end, (origin + 'T00', ('region_end',)), data_items)
+    Names.deliver(node_region_list, (origin + 'T00', ('node_region_list',)), data_items)
+    Names.deliver(edges_from, (origin + 'G00', ('edges_from',)), data_items)
+    Names.deliver(edges_from, (origin + 'G00', ('edges_to',)), data_items)
 
-
+    for f in feature: Names.deliver(feature[f], (origin + 'Fn0', f), data_items)
+    for f in efeature: Names.deliver(efeature[f], (origin + 'Fe0', f), data_items)

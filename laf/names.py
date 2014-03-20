@@ -1,0 +1,172 @@
+import collections
+from .settings import Settings
+
+class Names(Settings):
+    '''Manage the names of compiled LAF data items.
+
+    Data items are stored in a dictionary with keys that tell a lot about the kind of data stored under that key.
+    Keys have the following format::
+
+        origin group kind direction <space> item
+
+    and **item** is a space separated list of a variable number of components, possibly zero.
+
+    **Group**:
+
+    * ``P``: primary data items,
+    * ``G``: items for regions, nodes, edges, 
+    * ``X``: xml identifiers,
+    * ``F``: features,
+    * ``C``: connectivity,
+    * ``Z``: not prepared by Laf-Fabric but by auxiliary modules,
+    * ``T``: temporary during compiling.
+
+    **Origin**: ``m`` or ``a`` meaning *main* and *annox* resp. Indicates the source data.
+
+    **Kind**: ``n`` or ``e`` meaning *node* and *edge* resp.
+
+    **Direction**: ``f`` or ``b`` meaning *forward* and *backward* resp.
+
+    The direction can mean the direction in which edges are followed, or the direction in which a mapping goes.
+
+    **Components**:
+
+    Features are items, with three components: (*namespace*, *label*, *name*).
+
+    In group ``P``, ``G``, ``Z``, ``T`` there are one-component items, such as (``edges_from``,) and (``edges_to``).
+
+    In group ``X`` there is only one item, and it has no components: ().
+
+    For each data item we have to know the conditions under which it has to be loaded and its data type.
+
+    The **condition** is a key in a dictionary of conditions.
+    The loader determines the condition dictionary by filling in its slots with relevant components.
+    
+    The **data type** is either array, or dict, or string.
+
+    **Class methods**
+    The class methods ``comp`` and ``decomp`` and ``decompfull`` take care of the composition and decomposition of keys in meaningful bits.
+
+    **Instance data and methods**
+    The instance data contains a list of datakeys, adapted to the present environment, which is based
+    on the source, annox and task chosen by the user.
+    The previous list is also remembered, so that the loader can load/unload the difference.
+
+    The instance method ``request_files`` determines the difference between previously and presently requested data items.
+    It uses an instance method ``dinfo`` that provides all relevant information associated with a datakey,
+    including the location and name of the corresponding data file on disk. This method is an instance method because it 
+    needs values from the current environment.
+    '''
+    _data_items_tpl = (( 
+        ('mP00 node_anchor',        (False, 'arr')),
+        ('mP00 node_anchor_items',  (False, 'arr')),
+        ('mG00 node_anchor_min',    (True,  'arr')),
+        ('mG00 node_anchor_max',    (True,  'arr')),
+        ('mP00 node_events',        (False, 'arr')),
+        ('mP00 node_events_items',  (False, 'arr')),
+        ('mP00 node_events_k',      (False, 'arr')),
+        ('mP00 node_events_n',      (False, 'arr')),
+        ('mG00 node_sort',          (True,  'arr')),
+        ('mG00 node_sort_inv',      (True,  'dct')),
+        ('mG00 edges_from',         (True,  'arr')),
+        ('mG00 edges_to',           (True,  'arr')),
+        ('mP00 primary_data',       (False, 'str')),
+        ('mXnf ',                   ([],    'dct')),
+        ('mXef ',                   ([],    'dct')),
+        ('mXnb ',                   ([],    'dct')),
+        ('mXeb ',                   ([],    'dct')),
+        ('mFn0',                    ([],    'dct')),
+        ('mFe0',                    ([],    'dct')),
+        ('mC0f',                    ([],    'dct')),
+        ('mC0b',                    ([],    'dct')),
+        ('aFn0',                    ([],    'dct')),
+        ('aFe0',                    ([],    'dct')),
+        ('aC0f',                    ([],    'dct')),
+        ('aC0b',                    ([],    'dct')),
+        ('mZ00 node_resorted',      (False, 'arr')),
+        ('mZ00 node_resorted_inv',  (False, 'dct')),
+    ))
+    _data_items_def = collections.OrderedDict()
+
+    E_ANNOT_YES = ('-','-','y')
+    E_ANNOT_NON = ('-','-','x')
+    DCOMP_SEP = ','
+
+    def __init__(self, work_dir, laf_dir, save):
+        Settings.__init__(self, work_dir, laf_dir, save)
+        self._data_items = collections.OrderedDict()
+        self._old_data_items = collections.OrderedDict()
+        for ((dkey_raw, dbits)) in Names._data_items_tpl:
+            parts = dkey_raw.split(' ')
+            dkey = '{}({})'.format(parts[0], Names.DCOMP_SEP.join(parts[1:])) if len(parts) > 1 else dkey_raw
+            Names._data_items_def[dkey] = dbits
+
+    def comp(dkeymin, dcomps): return '{}({})'.format(dkeymin, Names.DCOMP_SEP.join(dcomps))
+    def comp_file(dgroup, dkind, ddir, dcomps):
+        return'{}{}{}({})'.format(dgroup, dkind, ddir, Names.DCOMP_SEP.join(dcomps))
+
+    def decomp(dkey):
+        parts = dkey.split('(', 1)
+        return (parts[0], '({}'.format(parts[1])) if len(parts) == 2 else (dkey, '')
+
+    def decomp_full(dkey):
+        parts = dkey.split('(')
+        return tuple(parts[0]) + (tuple(parts[1].rstrip(')').split(Names.DCOMP_SEP)),)
+        
+    def apiname(dcomps): return "_".join(dcomps)
+    def deliver(computed_data, dest, data_items): data_items[Names.comp(*dest)] = computed_data
+
+    def dmsg(dkey):
+        (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
+        return '{}: {}{}{}{}'.format(
+            'main' if dorigin == 'm' else 'annox',
+            dgroup,
+            '.' + Names.apiname(dcomps) if len(dcomps) else '',
+            ' [' + ('node' if dkind == 'n' else 'e') + '] ' if dkind != '0' else '',
+            ' ' + ('->' if ddir == 'f' else '<-') + ' ' if ddir != '0' else '',
+        )
+
+    def request_init(self, req_items):
+        req_items.clear()
+        for dkey in Names._data_items_def:
+            (docc_def, dtype) = Names._data_items_def[dkey]
+            docc = Names.decomp(dkey)[0]
+            req_items[docc] = docc_def.copy() if type(docc_def) == list or type(docc_def) == dict else docc_def
+
+    def request_files(self, req_items):
+        self._old_data_items = self._data_items
+        self._data_items = collections.OrderedDict()
+        for dkey in Names._data_items_def:
+            (docc_def, dtype) = Names._data_items_def[dkey]
+            docc = Names.decomp(dkey)[0]
+            if docc not in req_items: continue
+            if req_items[docc] == True:
+                self._data_items[dkey] = self.dinfo(dkey)
+            elif req_items[docc] == False: continue
+            else:
+                for dcomps in req_items[docc]:
+                    dkeyfull = Names.comp(dkey, dcomps)
+                    self._data_items[dkeyfull] = self.dinfo(dkeyfull)
+        dkeys = {'clear': [], 'keep': [], 'load': [], 'prep': []}
+        old_data_items = self._old_data_items
+        new_data_items = self._data_items
+        for dkey in old_data_items:
+            if dkey not in new_data_items or new_data_items[dkey] != old_data_items[dkey]: dkeys['clear'].append(dkey)
+        for dkey in new_data_items:
+            if dkey in old_data_items and new_data_items[dkey] == old_data_items[dkey]: dkeys['keep'].append(dkey)
+            else:
+                if new_data_items[dkey][-1]: dkeys['prep'].append(dkey)
+                else: dkeys['load'].append(dkey)
+        return dkeys
+
+    def dinfo(self, dkey):
+        if dkey in Names._data_items_def: (docc_def, dtype) = Names._data_items_def[dkey]
+        else:
+            dkeymin = Names.decomp(dkey)[0]
+            (docc_def, dtype) = Names._data_items_def[dkeymin]
+        (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
+        if dgroup == 'T': return (None, None, None, None, None)
+        dloc = self.env['{}_compiled_dir'.format(dorigin)]
+        dfile = Names.comp_file(dgroup, dkind, ddir, dcomps)
+        return (dorigin == 'm', dloc, dfile, dtype, 'Z' == dgroup)
+

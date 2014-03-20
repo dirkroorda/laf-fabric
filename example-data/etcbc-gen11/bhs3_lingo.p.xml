@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl>
+            <labelUsage        label="mother" occurs="0"           />
+            <labelUsage        label="parents" occurs="257346"      />
+            <labelUsage        label="ft" occurs="257109"      />
+        </labelsDecl>
+        <dependencies><!--
+            <dependsOn f.id="f_lingo"/>-->
+        </dependencies>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="yes"/>
+        </annotationSpaces>
+    </graphHeader>
+<a xml:id="alf178449" label="ft" ref="n59556"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="1"/>
+	<f name="phrase_function" value="Time"/>
+	<f name="phrase_type" value="PP"/>
+</fs></a>
+<edge xml:id="el253771" from="n59556" to="n34680"/>
+<a xml:id="ale253771" label="parents" ref="el253771"/>
+
+<a xml:id="alf178450" label="ft" ref="n59557"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="2"/>
+	<f name="phrase_function" value="Pred"/>
+	<f name="phrase_type" value="VP"/>
+</fs></a>
+<edge xml:id="el253772" from="n59557" to="n34680"/>
+<a xml:id="ale253772" label="parents" ref="el253772"/>
+
+<a xml:id="alf178451" label="ft" ref="n59558"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="3"/>
+	<f name="phrase_function" value="Subj"/>
+	<f name="phrase_type" value="NP"/>
+</fs></a>
+<edge xml:id="el253773" from="n59558" to="n34680"/>
+<a xml:id="ale253773" label="parents" ref="el253773"/>
+
+<a xml:id="alf178452" label="ft" ref="n59559"><fs>
+	<f name="determination" value="determined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="4"/>
+	<f name="phrase_function" value="Objc"/>
+	<f name="phrase_type" value="PP"/>
+</fs></a>
+<edge xml:id="el253774" from="n59559" to="n34680"/>
+<a xml:id="ale253774" label="parents" ref="el253774"/>
+
+</graph>

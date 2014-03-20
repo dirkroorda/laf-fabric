@@ -5,13 +5,10 @@ etcbc/annotating.py
 etcbc/featuredoc.py
 etcbc/preprocess.py
 laf/__init__.py
-laf/laf.py
-laf/laf_old.py
+laf/data.py
+laf/fabric.py
 laf/lib.py
 laf/model.py
-laf/notebook.py
 laf/parse.py
 laf/settings.py
-laf/shell.py
-laf/task.py
 laf/timestamp.py

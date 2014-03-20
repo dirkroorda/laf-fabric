@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl>
+            <labelUsage        label="mother" occurs="0"           />
+            <labelUsage        label="parents" occurs="426499"      />
+            <labelUsage        label="ft" occurs="426499"      />
+        </labelsDecl>
+        <dependencies><!--
+            <dependsOn f.id="f_lingo"/>-->
+        </dependencies>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="yes"/>
+        </annotationSpaces>
+    </graphHeader>
+<edge xml:id="el1029314" from="n2" to="n40767"/>
+<a xml:id="ale1029314" label="parents" ref="el1029314"/>
+
+<edge xml:id="el1029315" from="n3" to="n40767"/>
+<a xml:id="ale1029315" label="parents" ref="el1029315"/>
+
+<edge xml:id="el1029316" from="n4" to="n40768"/>
+<a xml:id="ale1029316" label="parents" ref="el1029316"/>
+
+<edge xml:id="el1029317" from="n5" to="n40769"/>
+<a xml:id="ale1029317" label="parents" ref="el1029317"/>
+
+<edge xml:id="el1029318" from="n6" to="n77637"/>
+<a xml:id="ale1029318" label="parents" ref="el1029318"/>
+
+<edge xml:id="el1029319" from="n7" to="n77637"/>
+<a xml:id="ale1029319" label="parents" ref="el1029319"/>
+
+<edge xml:id="el1029320" from="n8" to="n77637"/>
+<a xml:id="ale1029320" label="parents" ref="el1029320"/>
+
+<edge xml:id="el1029321" from="n9" to="n40770"/>
+<a xml:id="ale1029321" label="parents" ref="el1029321"/>
+
+<edge xml:id="el1029322" from="n10" to="n77638"/>
+<a xml:id="ale1029322" label="parents" ref="el1029322"/>
+
+<edge xml:id="el1029323" from="n11" to="n77638"/>
+<a xml:id="ale1029323" label="parents" ref="el1029323"/>
+
+<edge xml:id="el1029324" from="n12" to="n77638"/>
+<a xml:id="ale1029324" label="parents" ref="el1029324"/>
+
+</graph>

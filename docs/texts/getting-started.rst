@@ -83,13 +83,13 @@ Hebrew Text Database: *etcbc*.
 
 Configure LAF-Fabric
 ====================
-In every notebook subdirectory where you have notebooks that use LAF-Fabric,
-you need (the same) configuration file called *laf-fabric.cfg*.
-Make copies from the *laf-fabric-sample.cfg* in the *notebooks* directory and modify the one relevant setting in it.
-The files *laf-fabric.cfg* will not be distributed, so they will not be overwritten when you clone new versions.
-This will help you to keep your installation up to date.
+LAF-Fabric needs to know where the LAF data is.
+You can tell it every time by entering the locations in your scripts, but you can also use a configuration file.
+This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in your home directory.
+Make a copy of the *laf-fabric-sample.cfg* in the top-level directory to *laf-fabric.cfg* in your home directory
+and modify the one relevant setting in it.
 
-In *laf-fabric.cfg* it there are just one or two settings, and you have to adapt it to your local situation:
+There are just one or two settings, and you have to adapt it to your local situation:
 
     [locations]
     work_dir  = /Users/you/laf-data-dir
@@ -100,9 +100,6 @@ In *laf-fabric.cfg* it there are just one or two settings, and you have to adapt
 *laf_dir* is the folder where the original laf-xml data is.
 It is *optional*. LAF-Fabric can work without it.
 If you do not have the original LAF source, leave it commented out.
-You have to copy this to *laf-fabric.cfg* and make your changes there.
-The file *laf-fabric.cfg* will not be distributed. This will help you to keep your
-installation up to date.
 
 Get the data
 ============
@@ -131,7 +128,6 @@ It is recommended that you write your own notebooks in a separate directory, not
 In that way you can apply updates easily without overwriting your work.
 
 #. Create a notebook directory somewhere in your system and navigate there in a command prompt.
-#. Copy your version of *laf-fabric.cfg* in the example notebooks directory to your own notebook directory.
 #. Then::
 
     ipython notebook

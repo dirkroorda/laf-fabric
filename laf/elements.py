@@ -23,10 +23,7 @@ class Feature(object):
 
     def s(self, value=None):
         data_items = self.source.data_items
-        order_pkey = Names.comp('mZ00', ('node_resorted_inv',))
-        order_dkey = Names.comp('mG00', ('node_sort_inv',))
-        order_key = order_pkey if order_pkey in data_items else order_dkey
-        order = data_items[order_key]
+        order = data_items[Names.comp('mG00', ('node_sort_inv',))]
         domain = sorted(set(self.lookup) | set(self.alookup), key=lambda x:order[x])
         if value == None:
             for n in domain: yield n

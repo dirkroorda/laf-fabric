@@ -6,9 +6,11 @@ etcbc/featuredoc.py
 etcbc/preprocess.py
 laf/__init__.py
 laf/data.py
+laf/elements.py
 laf/fabric.py
 laf/lib.py
 laf/model.py
+laf/names.py
 laf/parse.py
 laf/settings.py
 laf/timestamp.py

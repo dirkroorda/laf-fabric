@@ -1,8 +1,8 @@
-  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/tasks/bhs3-tiny.txt.hdr/plain/__log__plain.txt
+  0.00s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/tasks/bhs3-tiny.txt.hdr/plain/__log__plain.txt
   0.01s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX -- FOR TASK plain
   0.00s Get the words ... 
   0.00s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/tasks/bhs3-tiny.txt.hdr/plain
 
-__log__plain.txt                        244 Thu Mar 20 10:23:08 2014
-unicode_utf8.txt                        125 Thu Mar 20 10:23:08 2014
+__log__plain.txt                        244 Thu Mar 20 12:11:46 2014
+unicode_utf8.txt                        125 Thu Mar 20 12:11:46 2014

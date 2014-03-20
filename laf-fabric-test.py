@@ -7,7 +7,7 @@ testmodes = {
         'work_dir': './example-data',
         'laf_dir': './example-data/etcbc-gen11',
         'source_file': 'bhs3-tiny.txt.hdr',
-        'verbose': 'NORMAL',
+        'verbose': 'DEBUG',
         'compile': False,
     },
     'full': {
@@ -85,7 +85,7 @@ processor.load(test['source_file'], '--', 'objects',
                 ],
             },
         },
-#        'prepare': prepare,
+        'prepare': prepare,
     }
 )
 

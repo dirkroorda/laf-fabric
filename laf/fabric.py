@@ -65,7 +65,7 @@ class LafAPI(LafData):
         for origin in ('m', 'a'):
             for feat_path in glob.glob('{}/*'.format(self.names.env['{}_compiled_dir'.format(origin)])):
                 filename = os.path.basename(feat_path)
-                if filename.startswith('_'): continue
+                if filename.startswith(('_', 'A', 'Z')): continue
                 loadables.add('{}{}'.format(origin, filename))
         all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
         for filename in loadables:
@@ -88,7 +88,6 @@ class LafAPI(LafData):
     def _api_prep(self):
         data_items = self.data_items
         api = self.api
-        api['prep'] = lambda method, dkey, myfile: self.prep_data(method, dkey, myfile)
         api['make_array_inverse'] = make_array_inverse
         api['data_items'] = data_items
 
@@ -132,12 +131,7 @@ class LafAPI(LafData):
                     )
                 __hash__ = None
 
-            order_pkey = Names.comp('mZ00', ('node_resorted_inv',))
-            order_dkey = Names.comp('mG00', ('node_sort_inv',))
-            order_key = order_pkey if order_pkey in data_items else order_dkey
-            order = data_items[order_key]
-            print("XXX: order_key={} order_len={} order={}".format(order_key, len(order), order))
-            print(','.join([str(order[i]) for i in sorted(order.keys())]))
+            order = data_items[Names.comp('mG00', ('node_sort',))]
 
             if extrakey != None:
                 self.stamp.Imsg("Resorting {} nodes...".format(len(order)))
@@ -296,7 +290,7 @@ class LafFabric(object):
         self.api.clear()
         lafapi = self.lafapi
         lafapi.stamp.Nmsg("LOADING API: please wait ... ")
-        lafapi.names.setenv(source, annox, task)
+        lafapi.names.setenv(source=source, annox=annox, task=task)
         env = lafapi.names.env
         req_items = {}
         lafapi.names.request_init(req_items)
@@ -305,7 +299,6 @@ class LafFabric(object):
             for item in [k[0] for k in load_dict['xmlids'] if load_dict['xmlids'][k]]:
                 for ddir in ('f', 'b'): req_items['mX{}{}'.format(kind, ddir)].append(())
         if 'features' in load_dict: LafFabric._request_features(load_dict['features'], req_items)
-        if 'prepare' in load_dict: req_items['mZ00'] = True
         lafapi.adjust_all(source, annox, task, req_items, {'m': compile_main, 'a': compile_annox})
         self.api.update(lafapi.API())
         if 'prepare' in load_dict: lafapi.prepare_all(self.api, load_dict['prepare'])

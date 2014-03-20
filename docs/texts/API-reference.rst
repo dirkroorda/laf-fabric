@@ -126,9 +126,6 @@ After loading, you get the individuela API methods as follows::
     close = API['close']
     my_file = API['my_file']
 
-    # Preparing custom data
-    prep = API['prep']
-
 Of course, you only have to give names to the elements you really use.
 And if performance is not important, you can leave out the naming altogether and just refer to 
 the elements by means of the API dictionary::
@@ -374,7 +371,7 @@ Because ``False`` comes before ``True``, the phrases come before the words they 
 
 .. note::
     You can invoke a supplementary module of your choice to make the ordering more complete.
-    See the API method ``prep`` below.
+    See the section on extra data preparation below.
 
 See ``next_node()`` in ``laf.fabric``.
 
@@ -628,16 +625,21 @@ The nice property of this ordering is that if a set of nodes consists of a prope
 the order specifies a walk through the nodes were enclosing nodes come first,
 and embedded children come in the order dictated by the primary data.
 
-prep Extra data preparation
-===========================
+Extra data preparation
+======================
+.. caution::
+    This section is meant for developers of extra modules on top of LAF-Fabric
 
 LAF-Fabric admits other modules to precompute data to which it should be pointed.
 
-Currently only an additional ordering of the nodes is admitted.
+Here is how it works. The example is that of adding additional order to the nodes
+based on the informal embedding levels between books, chapters, sentences, clauses etc.
 
-Here is how it works. Suppose you are working with a specific resource, say the ETCBC Hebrew Text Database.
+Suppose you are working with a specific resource, say the ETCBC Hebrew Text Database.
 Probably there is already a package *etcbc* to streamline the tasks relevant to this resource.
-To this package you can add a module, say *preprocess.py* with the following structure::
+To this package you can add a module, say *preprocess.py* in which you can define
+an additional sort order on nodes.
+Here is the actual contents of *etcbc.preprocess* in this distribution::
 
     import collections
     import array
@@ -667,11 +669,11 @@ To this package you can add a module, say *preprocess.py* with the following str
     def node_order_inv(API):
         make_array_inverse = API['make_array_inverse']
         data_items = API['data_items']
-        return make_array_inv(data_items['Q,node_resorted'])
+        return make_array_inverse(data_items['zG00(node_sort)'])
 
     prepare = collections.OrderedDict((
-        ('Q,node_resorted', node_order, __file__),
-        ('Q,node_resorted_inv', node_order_inv, __file__),
+        ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
+        ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
     ))
 
 Back to your notebook. Say::
@@ -680,15 +682,35 @@ Back to your notebook. Say::
 
 then the following will happen:
 
-* LAF-Fabric checks whether a file *Q,node_resorted.bin* exists next to the binary compiled data, and whether this file
-   is newer than your module *preprocess.py*.
+* LAF-Fabric checks whether file *Z/etcbc/zG00(node_sort)* and *Z/etcbc/zG00(node_sort_inv)* exist next to the binary compiled data, and whether these files
+  are newer than your module *preprocess.py*.
 * If so, it loads this data from disk.
-* If not, it will execute the *node_order* function, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk.
+* If not, it will execute the *node_order* function, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk
+  in *Z/etcbc/zG00(node_sort)* and it also computes *node_order_inv* in order to get an inverse: *Z/etcbc/zG00(node_sort_inv)*.
 
-The LAF-Fabric data that is affected by this action is *Q,node_resorted*.
-This is the data that *NN()* uses when iterating over the nodes.
+Note that these functions can be programmed using the API of LAF-Fabric itself. Preparing data always takes place after full loading.
+The prepared data will be subsequently loaded.
 
+The *True* component in the dictionary *prepare* tells LAF-Fabric to use this data **instead of previously compiled data**.
+In this case, there should be a data item keyed with ``mG00(node_sort)`` in the already loaded data (otherwise you get an error).
+In fact, LAF-Fabric uses a data item with this name to help *NN()* iterate over its nodes in a convenient order.
 So you have effectively supplanted LAF-Fabric's standard ordering of the nodes by your own ordering, which makes better use
 of the particular structure of this data. 
 
-This data is only loaded if you have ``'prepare': True`` in your load instructions.
+If you had said ``False`` instead, no attempt of overriding existing data would have been made. If you want to use this data,
+you can refer to it by:: 
+
+        API['data_items']['zG00(node_sort)']
+
+The *etcbc* directory corresponds to the ``etcbc`` component in the dictionary *prepare*.
+In this way, different modules may keep their computed data separate from each other.
+Computed data is always separated from the previously compiled data.
+
+This data is only loaded if you have ``'prepare': etcbc.preprocess.prepare`` in your load instructions,
+or if you have done an import like this::
+
+    from etcbc.preprocess import prepare
+
+then ``'prepare': prepare`` suffices.
+
+In order to know the data that LAF-Fabric uses natively, look at the list in the ``names`` module.

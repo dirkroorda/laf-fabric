@@ -150,14 +150,14 @@ def model(origin, data_items, stamp):
                 node_to = edges_to[edge]
                 connections.setdefault(node_from, set()).add((node_to, ''))
                 connectionsi.setdefault(node_to, set()).add((node_from, ''))
-        else:
+        elif origin == 'a':
             for edge in range(len(edges_from)):
                 if edge not in labeled_edges: continue
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
                 connections.setdefault(node_from, set()).add((node_to, ''))
                 connectionsi.setdefault(node_to, set()).add((node_from, ''))
-        sfeature = Names.E_ANNOT_NON if origin == 'm' else Names.E_ANNOT_YES
+        sfeature = Names.E_ANNOT_NON if origin == 'm' else Names.E_ANNOT_YES if origin == 'a' else ''
         Names.deliver(connections, (origin + 'C0f', sfeature), data_items)
         Names.deliver(connections, (origin + 'C0b', sfeature), data_items)
 

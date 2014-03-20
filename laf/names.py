@@ -18,10 +18,10 @@ class Names(Settings):
     * ``X``: xml identifiers,
     * ``F``: features,
     * ``C``: connectivity,
-    * ``Z``: not prepared by Laf-Fabric but by auxiliary modules,
     * ``T``: temporary during compiling.
 
     **Origin**: ``m`` or ``a`` meaning *main* and *annox* resp. Indicates the source data.
+    The value ``z`` indicates that this data is not prepared by Laf-Fabric but by auxiliary modules.
 
     **Kind**: ``n`` or ``e`` meaning *node* and *edge* resp.
 
@@ -33,7 +33,7 @@ class Names(Settings):
 
     Features are items, with three components: (*namespace*, *label*, *name*).
 
-    In group ``P``, ``G``, ``Z``, ``T`` there are one-component items, such as (``edges_from``,) and (``edges_to``).
+    In group ``P``, ``G``, ``T`` there are one-component items, such as (``edges_from``,) and (``edges_to``).
 
     In group ``X`` there is only one item, and it has no components: ().
 
@@ -58,33 +58,33 @@ class Names(Settings):
     needs values from the current environment.
     '''
     _data_items_tpl = (( 
-        ('mP00 node_anchor',        (False, 'arr')),
-        ('mP00 node_anchor_items',  (False, 'arr')),
-        ('mG00 node_anchor_min',    (True,  'arr')),
-        ('mG00 node_anchor_max',    (True,  'arr')),
-        ('mP00 node_events',        (False, 'arr')),
-        ('mP00 node_events_items',  (False, 'arr')),
-        ('mP00 node_events_k',      (False, 'arr')),
-        ('mP00 node_events_n',      (False, 'arr')),
-        ('mG00 node_sort',          (True,  'arr')),
-        ('mG00 node_sort_inv',      (True,  'dct')),
-        ('mG00 edges_from',         (True,  'arr')),
-        ('mG00 edges_to',           (True,  'arr')),
-        ('mP00 primary_data',       (False, 'str')),
-        ('mXnf ',                   ([],    'dct')),
-        ('mXef ',                   ([],    'dct')),
-        ('mXnb ',                   ([],    'dct')),
-        ('mXeb ',                   ([],    'dct')),
-        ('mFn0',                    ([],    'dct')),
-        ('mFe0',                    ([],    'dct')),
-        ('mC0f',                    ([],    'dct')),
-        ('mC0b',                    ([],    'dct')),
-        ('aFn0',                    ([],    'dct')),
-        ('aFe0',                    ([],    'dct')),
-        ('aC0f',                    ([],    'dct')),
-        ('aC0b',                    ([],    'dct')),
-        ('mZ00 node_resorted',      (False, 'arr')),
-        ('mZ00 node_resorted_inv',  (False, 'dct')),
+        ('mP00 node_anchor',       (False, 'arr')),
+        ('mP00 node_anchor_items', (False, 'arr')),
+        ('mG00 node_anchor_min',   (True,  'arr')),
+        ('mG00 node_anchor_max',   (True,  'arr')),
+        ('mP00 node_events',       (False, 'arr')),
+        ('mP00 node_events_items', (False, 'arr')),
+        ('mP00 node_events_k',     (False, 'arr')),
+        ('mP00 node_events_n',     (False, 'arr')),
+        ('mG00 node_sort',         (True,  'arr')),
+        ('mG00 node_sort_inv',     (True,  'dct')),
+        ('mG00 edges_from',        (True,  'arr')),
+        ('mG00 edges_to',          (True,  'arr')),
+        ('mP00 primary_data',      (False, 'str')),
+        ('mXnf ',                  ([],    'dct')),
+        ('mXef ',                  ([],    'dct')),
+        ('mXnb ',                  ([],    'dct')),
+        ('mXeb ',                  ([],    'dct')),
+        ('mFn0',                   ([],    'dct')),
+        ('mFe0',                   ([],    'dct')),
+        ('mC0f',                   ([],    'dct')),
+        ('mC0b',                   ([],    'dct')),
+        ('aFn0',                   ([],    'dct')),
+        ('aFe0',                   ([],    'dct')),
+        ('aC0f',                   ([],    'dct')),
+        ('aC0b',                   ([],    'dct')),
+        ('zG00 node_sort',         (None,  'arr')),
+        ('zG00 node_sort_inv',     (None,  'dct')),
     ))
     _data_items_def = collections.OrderedDict()
 
@@ -114,12 +114,13 @@ class Names(Settings):
         return tuple(parts[0]) + (tuple(parts[1].rstrip(')').split(Names.DCOMP_SEP)),)
         
     def apiname(dcomps): return "_".join(dcomps)
+    def orig_key(dkey): return dkey.replace('z', 'm', 1) if dkey.startswith('z') else dkey
     def deliver(computed_data, dest, data_items): data_items[Names.comp(*dest)] = computed_data
 
     def dmsg(dkey):
         (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
         return '{}: {}{}{}{}'.format(
-            'main' if dorigin == 'm' else 'annox',
+            'main' if dorigin == 'm' else 'annox' if dorigin == 'a' else 'prep',
             dgroup,
             '.' + Names.apiname(dcomps) if len(dcomps) else '',
             ' [' + ('node' if dkind == 'n' else 'e') + '] ' if dkind != '0' else '',
@@ -142,12 +143,12 @@ class Names(Settings):
             if docc not in req_items: continue
             if req_items[docc] == True:
                 self._data_items[dkey] = self.dinfo(dkey)
-            elif req_items[docc] == False: continue
+            elif req_items[docc] == False or req_items[docc] == None: continue
             else:
                 for dcomps in req_items[docc]:
                     dkeyfull = Names.comp(dkey, dcomps)
                     self._data_items[dkeyfull] = self.dinfo(dkeyfull)
-        dkeys = {'clear': [], 'keep': [], 'load': [], 'prep': []}
+        dkeys = {'clear': [], 'keep': [], 'load': []}
         old_data_items = self._old_data_items
         new_data_items = self._data_items
         for dkey in old_data_items:
@@ -155,8 +156,7 @@ class Names(Settings):
         for dkey in new_data_items:
             if dkey in old_data_items and new_data_items[dkey] == old_data_items[dkey]: dkeys['keep'].append(dkey)
             else:
-                if new_data_items[dkey][-1]: dkeys['prep'].append(dkey)
-                else: dkeys['load'].append(dkey)
+                if not new_data_items[dkey][-1]: dkeys['load'].append(dkey)
         return dkeys
 
     def dinfo(self, dkey):
@@ -168,5 +168,5 @@ class Names(Settings):
         if dgroup == 'T': return (None, None, None, None, None)
         dloc = self.env['{}_compiled_dir'.format(dorigin)]
         dfile = Names.comp_file(dgroup, dkind, ddir, dcomps)
-        return (dorigin == 'm', dloc, dfile, dtype, 'Z' == dgroup)
+        return (dorigin == 'm', dloc, dfile, dtype, dorigin == 'z')
 

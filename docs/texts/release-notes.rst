@@ -17,6 +17,12 @@ API
 The API has changed for initializing the processor and for working with connectivity (``C`` and ``Ci``).
 Please consult :doc:`API-reference`.
 
+Usability
+^^^^^^^^^
+* There is an example dataset included: Genesis 1:1 according to the ETCBC database.
+* Configuration is easier: a global config file in your home directory.
+* There is a *laf-fabric-test.py* script for a basic test.
+
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^
 More data has been precompiled. This reduces the load time when working with LAF-Fabric.
@@ -27,8 +33,7 @@ There are also other ways, including a config file next to your notebook.
 
 Changes under the hood
 ^^^^^^^^^^^^^^^^^^^^^^
-The mechanism to store and load LAF data now has a hook by which auxiliary modules that compute auxiliary data can register
-that data with LAF Fabric.
+The mechanism to store and load LAF data now has a hook by which auxiliary modules can register new data with LAF Fabric.
 Currently, this mechanism is used by the ``etcbc`` module to inject a better ordering of the nodes than LAF Fabric can generate on its own.
 In future versions we will use this mechanism to load compute and load extra indices needed for working with the EMDROS database.
 

@@ -33,6 +33,7 @@ class Settings(object):
         'source':                '{source}',
         'annox':                 '{annox}',
         'task':                  '{task}',
+        'zspace':                '{zspace}',
         'empty':                 '{empty}',
         'work_dir':              '{work_dir}',
         'bin_dir':               '{work_dir}/{bin_subdir}',
@@ -46,6 +47,7 @@ class Settings(object):
         'primary_compiled_path': '{work_dir}/{bin_subdir}/{source}/{primary_data}',
         'a_compiled_dir':        '{work_dir}/{bin_subdir}/{source}/A/{annox}',
         'a_compiled_path':       '{work_dir}/{bin_subdir}/{source}/A/{annox}/{log_name}{compile_name}.{text_ext}',
+        'z_compiled_dir':        '{work_dir}/{bin_subdir}/{source}/Z/{zspace}',
         'task_dir':              '{work_dir}/{task_subdir}/{source}/{task}',
         'log_path':              '{work_dir}/{task_subdir}/{source}/{task}/{log_name}{task}.{text_ext}',
     }
@@ -91,7 +93,13 @@ class Settings(object):
             config_path = home_config_path
             strings.write(open(home_config_path, 'w', encoding= 'utf-8'))
         self.env = {}
+        self.zspace = ''
 
-    def setenv(self, source, annox, task):
-        for e in self._env_def: self.env[e] = self._env_def[e].format(source=source, annox=annox, task=task, **self._myconfig)
+    def setenv(self, source=None, annox=None, task=None, zspace=None):
+        if source == None: source = self.env.get('source')
+        if annox == None: annox = self.env.get('annox')
+        if task == None: task = self.env.get('task')
+        if zspace == None: zspace = self.env.get('zspace')
+        for e in self._env_def: self.env[e] = self._env_def[e].format(source=source, annox=annox, task=task, zspace=zspace, **self._myconfig)
+
 

@@ -29,7 +29,7 @@ class LafData(object):
         Load and clear data so that the current task has all it needs and no more.
         Compile outdated binary data just before loading.
         '''
-        self.names.setenv(source, annox, task)
+        self.names.setenv(source=source, annox=annox, task=task)
         env = self.names.env
         try:
             if not os.path.exists(env['m_compiled_dir']): os.makedirs(env['m_compiled_dir'])
@@ -109,7 +109,7 @@ class LafData(object):
                 break
         compile_uptodate['a'] = uptodate
         has_compiled = False
-        for origin in ['m', 'a']:
+        for origin in ('m', 'a'):
             if not compile_uptodate[origin] or force[origin] or (has_compiled and env['annox'] != env['empty']):
                 self.stamp.Nmsg("BEGIN COMPILE {}: {}".format(origin, env['source'] if origin == 'm' else env['annox']))
                 self._clear_origin(origin)
@@ -119,9 +119,9 @@ class LafData(object):
                 self.stamp.Nmsg("END   COMPILE {}: {}".format(origin, env['source'] if origin == 'm' else env['annox']))
             else: self.stamp.Dmsg("COMPILING {}: UP TO DATE".format(origin))
         if has_compiled:
-            for origin in ['m', 'a']:
+            for origin in ('m', 'a'):
                 self._clear_origin(origin)
-            self.names.setenv(env['source'], env['annox'], env['task'])
+            self.names.setenv()
 
     def _compile_origin(self, origin):
         env = self.names.env
@@ -134,7 +134,8 @@ class LafData(object):
         self._finish_logfile()
 
     def _clear_origin(self, origin):
-        for dkey in self.data_items:
+        dkeys = list(self.data_items.keys())
+        for dkey in dkeys:
             (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
             if dorigin == origin: self._clear_file(dkey)
 
@@ -144,7 +145,6 @@ class LafData(object):
     def _load_all(self, req_items):
         correct = True
         dkeys = self.names.request_files(req_items)
-        self.prep_items = []
         for dkey in dkeys['keep']: self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
         for dkey in dkeys['clear']:
             self.stamp.Dmsg("clear {}".format(Names.dmsg(dkey))) 
@@ -154,7 +154,6 @@ class LafData(object):
             ism = self.names.dinfo(dkey)[0]
             this_correct = self._load_file(dkey, accept_missing=not ism)
             if not this_correct: correct = False
-        for dkey in dkeys['prep']: self.prep_items.append(dkey)
         return correct
 
     def _load_extra(self, dkeys):
@@ -170,7 +169,7 @@ class LafData(object):
         correct = True
         self.api = api
         self.prepare_dict = prepare_dict
-        for dkey in self.prep_items:
+        for dkey in prepare_dict:
             self.stamp.Dmsg("prep {}".format(Names.dmsg(dkey))) 
             this_correct = self._load_file(dkey, accept_missing=False)
             if not this_correct: correct = False
@@ -178,41 +177,58 @@ class LafData(object):
 
     def _load_file(self, dkey, accept_missing=False):
         self.stamp.Dmsg("load {}".format(Names.dmsg(dkey))) 
-        (ism, dloc, dfile, dtype, dprep) = self.names.dinfo(dkey)
-        dpath = "{}/{}".format(dloc, dfile)
+        dprep = self.names.dinfo(dkey)[-1]
         if dprep:
             if dkey not in self.prepare_dict:
                 self.stamp.Wmsg("Cannot prepare data for {}. No preparation method available.".format(Names.dmsg(dkey)))
                 return False
-            (method, method_source) = self.prepare_dict[dkey]
+            self.names.setenv(zspace=self.prepare_dict[dkey][-1])
+        (ism, dloc, dfile, dtype, dprep) = self.names.dinfo(dkey)
+        dpath = "{}/{}".format(dloc, dfile)
+        prep_done = False
+        if dprep:
+            (method, method_source, replace, zspace) = self.prepare_dict[dkey] 
             up_to_date = os.path.exists(dpath) and os.path.getmtime(dpath) >= os.path.getmtime(method_source)
             if not up_to_date:
                 self.stamp.Dmsg("PREPARING {}".format(Names.dmsg(dkey)))
+                compiled_dir = self.names.env['{}_compiled_dir'.format('z')]
+                if not os.path.exists(compiled_dir): os.makedirs(compiled_dir)
                 newdata = method(self.api)
                 self.stamp.Dmsg("WRITING {}".format(Names.dmsg(dkey)))
                 self.data_items[dkey] = newdata
                 self._store_file(dkey)
-                return True
+                prep_done = True
         if not os.path.exists(dpath):
             if not accept_missing:
                 self.stamp.Emsg("Cannot load data for {}: File does not exist: {}.".format(Names.dmsg(dkey), dpath))
             return accept_missing
-        newdata = None
-        if dtype == 'arr':
-            newdata = array.array('I')
-            handle = gzip.open(dpath, "rb")
-            contents = handle.read()
-            handle.close
-            newdata.frombytes(contents)
-        elif dtype == 'dct':
-            handle = gzip.open(dpath, "rb")
-            newdata = pickle.load(handle)
-            handle.close()
-        elif dtype == 'str':
-            handle = gzip.open(dpath, "rt", encoding="utf-8")
-            newdata = handle.read(None)
-            handle.close()
-        self.data_items[dkey] = newdata
+        if not prep_done:
+            newdata = None
+            if dtype == 'arr':
+                newdata = array.array('I')
+                handle = gzip.open(dpath, "rb")
+                contents = handle.read()
+                handle.close
+                newdata.frombytes(contents)
+            elif dtype == 'dct':
+                handle = gzip.open(dpath, "rb")
+                newdata = pickle.load(handle)
+                handle.close()
+            elif dtype == 'str':
+                handle = gzip.open(dpath, "rt", encoding="utf-8")
+                newdata = handle.read(None)
+                handle.close()
+            self.data_items[dkey] = newdata
+        if dprep:
+            if replace:
+                okey = Names.orig_key(dkey)
+                if okey not in self.data_items:
+                    self.stamp.Emsg("There is no orginal {} to be replaced by {}".format(Names.dmsg(okey), Names.dmsg(dkey)))
+                    return False
+                if okey == dkey:
+                    self.stamp.Wmsg("Data to be replaced {} is identical to replacement".format(Names.dmsg(okey)))
+                else:
+                    self.data_items[okey] = self.data_items[dkey]
         return True
 
     def _store_origin(self, origin):

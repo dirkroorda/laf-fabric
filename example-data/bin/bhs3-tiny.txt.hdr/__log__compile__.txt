@@ -1,17 +1,17 @@
   0.00s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bin/bhs3-tiny.txt.hdr/__log__compile__.txt
   0.00s PARSING ANNOTATION FILES
   0.09s INFO: parsing bhs3_regions.xml
-  0.10s INFO: parsing bhs3_monads.xml
-  0.10s INFO: parsing bhs3_lingo.xml
-  0.10s INFO: parsing bhs3_sections.xml
-  0.10s INFO: parsing bhs3_monads.bhs.xml
+  0.09s INFO: parsing bhs3_monads.xml
+  0.09s INFO: parsing bhs3_lingo.xml
+  0.09s INFO: parsing bhs3_sections.xml
+  0.09s INFO: parsing bhs3_monads.bhs.xml
   0.10s INFO: parsing bhs3_lingo.c.xml
   0.10s INFO: parsing bhs3_lingo.p.xml
   0.10s INFO: parsing bhs3_lingo.pa.xml
   0.10s INFO: parsing bhs3_lingo.s.xml
-  0.11s INFO: parsing bhs3_lingo.subp.xml
-  0.11s INFO: parsing bhs3_lingo.w.xml
-  0.11s INFO: END PARSING
+  0.10s INFO: parsing bhs3_lingo.subp.xml
+  0.10s INFO: parsing bhs3_lingo.w.xml
+  0.10s INFO: END PARSING
         23 good   regions  and     0 faulty ones
         30 linked nodes    and     0 unlinked ones
         29 good   edges    and     0 faulty ones
@@ -19,75 +19,75 @@
        242 good   features and     0 faulty ones
        167 distinct xml identifiers
 
-  0.11s MODELING RESULT FILES
-  0.11s INFO: XML-IDS (inverse mapping)
-  0.11s INFO: NODES AND REGIONS
-  0.11s INFO: NODES ANCHOR BOUNDARIES
-  0.23s INFO: NODES SORTING BY REGIONS
-  0.23s INFO: NODES EVENTS
-  1.26s INFO: CONNECTIVITY
-  1.26s WRITING RESULT FILES for m
-  1.26s DETAIL: write main: P.node_events
-  1.35s DETAIL: write main: C.shebanq_parents_ <- 
-  1.35s DETAIL: write main: F.shebanq_ft_phrase_atom_relation [node] 
-  1.35s DETAIL: write main: P.node_events_items
-  1.37s DETAIL: write main: F.shebanq_ft_clause_atom_relation_kind [node] 
-  1.37s DETAIL: write main: F.shebanq_ft_clause_atom_relation_preposition_class [node] 
-  1.37s DETAIL: write main: C.-_-_x -> 
-  1.37s DETAIL: write main: G.node_sort_inv
-  1.37s DETAIL: write main: F.shebanq_ft_text_type [node] 
-  1.37s DETAIL: write main: G.node_sort
-  1.37s DETAIL: write main: P.node_anchor
-  1.37s DETAIL: write main: F.shebanq_ft_phrase_function [node] 
-  1.37s DETAIL: write main: F.shebanq_sft_book [node] 
-  1.37s DETAIL: write main: F.shebanq_db_otype [node] 
-  1.37s DETAIL: write main: F.shebanq_ft_determination [node] 
-  1.37s DETAIL: write main: F.shebanq_mother_ [e] 
-  1.37s DETAIL: write main: F.shebanq_ft_phrase_atom_type [node] 
-  1.37s DETAIL: write main: F.shebanq_ft_number_within_sentence [node] 
-  1.37s DETAIL: write main: P.node_anchor_items
-  1.38s DETAIL: write main: F.shebanq_sft_chapter [node] 
-  1.38s DETAIL: write main: C.shebanq_parents_ -> 
-  1.38s DETAIL: write main: F.shebanq_ft_number_within_clause [node] 
-  1.38s DETAIL: write main: C.shebanq_mother_ <- 
-  1.38s DETAIL: write main: F.shebanq_ft_sentence_atom_number [node] 
-  1.38s DETAIL: write main: F.shebanq_ft_clause_atom_number [node] 
-  1.39s DETAIL: write main: X. [e]  -> 
-  1.39s DETAIL: write main: F.shebanq_ft_clause_atom_relation [node] 
-  1.39s DETAIL: write main: F.shebanq_ft_embedding_domain [node] 
-  1.39s DETAIL: write main: F.shebanq_ft_suffix [node] 
-  1.39s DETAIL: write main: C.-_-_x <- 
-  1.39s DETAIL: write main: F.shebanq_ft_clause_type [node] 
-  1.39s DETAIL: write main: F.shebanq_db_monads [node] 
-  1.40s DETAIL: write main: F.shebanq_ft_clause_atom_type [node] 
-  1.40s DETAIL: write main: F.shebanq_parents_ [e] 
-  1.40s DETAIL: write main: F.shebanq_ft_levels_of_embedding [node] 
-  1.40s DETAIL: write main: G.node_anchor_min
-  1.40s DETAIL: write main: F.shebanq_ft_domain [node] 
-  1.40s DETAIL: write main: F.shebanq_ft_phrase_type [node] 
-  1.40s DETAIL: write main: F.shebanq_ft_subphrase_type [node] 
-  1.40s DETAIL: write main: F.shebanq_ft_phrase_atom_number [node] 
-  1.40s DETAIL: write main: F.shebanq_db_maxmonad [node] 
-  1.40s DETAIL: write main: F.shebanq_ft_clause_atom_relation_daughter_tense [node] 
-  1.40s DETAIL: write main: F.shebanq_ft_clause_atom_relation_mother_tense [node] 
-  1.40s DETAIL: write main: X. [e]  <- 
-  1.41s DETAIL: write main: F.shebanq_sft_verse [node] 
-  1.41s DETAIL: write main: F.shebanq_ft_text [node] 
-  1.41s DETAIL: write main: F.shebanq_sft_half_verse [node] 
-  1.41s DETAIL: write main: F.shebanq_ft_subphrase_kind [node] 
-  1.41s DETAIL: write main: P.primary_data
-  1.41s DETAIL: write main: F.shebanq_db_minmonad [node] 
-  1.41s DETAIL: write main: F.shebanq_ft_is_apposition [node] 
-  1.42s DETAIL: write main: P.node_events_k
-  1.42s DETAIL: write main: X. [node]  -> 
-  1.42s DETAIL: write main: F.shebanq_ft_number_within_chapter [node] 
-  1.42s DETAIL: write main: P.node_events_n
-  1.42s DETAIL: write main: G.edges_to
-  1.42s DETAIL: write main: X. [node]  <- 
-  1.42s DETAIL: write main: F.shebanq_ft_indentation [node] 
-  1.42s DETAIL: write main: C.shebanq_mother_ -> 
-  1.42s DETAIL: write main: F.shebanq_ft_clause_constituent_relation [node] 
-  1.42s DETAIL: write main: G.edges_from
-  1.42s DETAIL: write main: F.shebanq_db_oid [node] 
-  1.42s DETAIL: write main: G.node_anchor_max
-  1.42s DETAIL: write main: F.shebanq_sft_verse_label [node] 
+  0.10s MODELING RESULT FILES
+  0.10s INFO: XML-IDS (inverse mapping)
+  0.10s INFO: NODES AND REGIONS
+  0.10s INFO: NODES ANCHOR BOUNDARIES
+  0.20s INFO: NODES SORTING BY REGIONS
+  0.20s INFO: NODES EVENTS
+  1.16s INFO: CONNECTIVITY
+  1.16s WRITING RESULT FILES for m
+  1.16s DETAIL: write main: P.node_events_n
+  1.16s DETAIL: write main: F.shebanq_sft_book [node] 
+  1.16s DETAIL: write main: F.shebanq_ft_clause_constituent_relation [node] 
+  1.16s DETAIL: write main: X. [e]  <- 
+  1.16s DETAIL: write main: C.shebanq_mother_ <- 
+  1.16s DETAIL: write main: F.shebanq_ft_clause_atom_relation_daughter_tense [node] 
+  1.16s DETAIL: write main: F.shebanq_ft_determination [node] 
+  1.16s DETAIL: write main: F.shebanq_ft_clause_type [node] 
+  1.16s DETAIL: write main: F.shebanq_db_monads [node] 
+  1.16s DETAIL: write main: G.node_anchor_max
+  1.17s DETAIL: write main: C.-_-_x -> 
+  1.17s DETAIL: write main: P.node_events
+  1.25s DETAIL: write main: F.shebanq_ft_number_within_clause [node] 
+  1.25s DETAIL: write main: F.shebanq_ft_is_apposition [node] 
+  1.25s DETAIL: write main: F.shebanq_ft_phrase_atom_type [node] 
+  1.25s DETAIL: write main: P.primary_data
+  1.25s DETAIL: write main: G.node_sort
+  1.25s DETAIL: write main: F.shebanq_ft_phrase_function [node] 
+  1.25s DETAIL: write main: P.node_events_items
+  1.27s DETAIL: write main: C.-_-_x <- 
+  1.27s DETAIL: write main: F.shebanq_sft_chapter [node] 
+  1.27s DETAIL: write main: F.shebanq_ft_embedding_domain [node] 
+  1.27s DETAIL: write main: F.shebanq_ft_number_within_sentence [node] 
+  1.27s DETAIL: write main: G.node_sort_inv
+  1.27s DETAIL: write main: F.shebanq_db_oid [node] 
+  1.27s DETAIL: write main: F.shebanq_ft_domain [node] 
+  1.27s DETAIL: write main: C.shebanq_parents_ <- 
+  1.27s DETAIL: write main: F.shebanq_ft_levels_of_embedding [node] 
+  1.27s DETAIL: write main: F.shebanq_ft_subphrase_kind [node] 
+  1.27s DETAIL: write main: F.shebanq_parents_ [e] 
+  1.27s DETAIL: write main: X. [e]  -> 
+  1.27s DETAIL: write main: F.shebanq_ft_clause_atom_relation_mother_tense [node] 
+  1.27s DETAIL: write main: F.shebanq_ft_clause_atom_relation_preposition_class [node] 
+  1.27s DETAIL: write main: F.shebanq_db_minmonad [node] 
+  1.28s DETAIL: write main: F.shebanq_ft_indentation [node] 
+  1.28s DETAIL: write main: F.shebanq_db_maxmonad [node] 
+  1.28s DETAIL: write main: F.shebanq_sft_half_verse [node] 
+  1.28s DETAIL: write main: F.shebanq_db_otype [node] 
+  1.28s DETAIL: write main: C.shebanq_parents_ -> 
+  1.28s DETAIL: write main: F.shebanq_ft_subphrase_type [node] 
+  1.28s DETAIL: write main: G.node_anchor_min
+  1.28s DETAIL: write main: F.shebanq_ft_phrase_atom_relation [node] 
+  1.28s DETAIL: write main: F.shebanq_ft_text_type [node] 
+  1.28s DETAIL: write main: F.shebanq_sft_verse_label [node] 
+  1.28s DETAIL: write main: P.node_events_k
+  1.28s DETAIL: write main: F.shebanq_ft_number_within_chapter [node] 
+  1.28s DETAIL: write main: F.shebanq_ft_clause_atom_relation_kind [node] 
+  1.28s DETAIL: write main: F.shebanq_ft_phrase_atom_number [node] 
+  1.28s DETAIL: write main: C.shebanq_mother_ -> 
+  1.28s DETAIL: write main: G.edges_to
+  1.28s DETAIL: write main: P.node_anchor
+  1.28s DETAIL: write main: X. [node]  <- 
+  1.29s DETAIL: write main: F.shebanq_ft_sentence_atom_number [node] 
+  1.29s DETAIL: write main: G.edges_from
+  1.29s DETAIL: write main: F.shebanq_ft_clause_atom_relation [node] 
+  1.29s DETAIL: write main: F.shebanq_ft_phrase_type [node] 
+  1.29s DETAIL: write main: F.shebanq_ft_text [node] 
+  1.29s DETAIL: write main: P.node_anchor_items
+  1.29s DETAIL: write main: F.shebanq_sft_verse [node] 
+  1.29s DETAIL: write main: F.shebanq_ft_clause_atom_type [node] 
+  1.29s DETAIL: write main: X. [node]  -> 
+  1.29s DETAIL: write main: F.shebanq_ft_suffix [node] 
+  1.29s DETAIL: write main: F.shebanq_ft_clause_atom_number [node] 
+  1.29s DETAIL: write main: F.shebanq_mother_ [e] 

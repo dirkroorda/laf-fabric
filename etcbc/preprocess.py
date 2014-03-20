@@ -26,9 +26,9 @@ def node_order(API):
 def node_order_inv(API):
     make_array_inverse = API['make_array_inverse']
     data_items = API['data_items']
-    return make_array_inverse(data_items['mZ00(node_resorted)'])
+    return make_array_inverse(data_items['zG00(node_sort)'])
 
 prepare = collections.OrderedDict((
-    ('mZ00(node_resorted)', (node_order, __file__)),
-    ('mZ00(node_resorted_inv)', (node_order_inv, __file__)),
+    ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
+    ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
 ))

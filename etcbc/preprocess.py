@@ -1,14 +1,11 @@
-import sys
 import collections
 import array
 
 def node_order(API):
-    '''Creates a form based on the information passed when creating this object.
-    '''
+    '''Creates a form based on the information passed when creating this object.'''
     msg = API['msg']
     F = API['F']
     NN = API['NN']
-
     object_rank = {
         'book': -4,
         'chapter': -3,
@@ -23,11 +20,15 @@ def node_order(API):
         'subphrase': 7,
         'word': 8,
     }
-
-    def hierarchy(node):
-        return object_rank[F.shebanq_db_otype.v(node)]
-
+    def hierarchy(node): return object_rank[F.shebanq_db_otype.v(node)]
     return array.array('I', NN(extrakey=hierarchy))
 
-def check(API):
-    API['prep'](node_order, 'node_resorted', __file__)
+def node_order_inv(API):
+    make_array_inverse = API['make_array_inverse']
+    data_items = API['data_items']
+    return make_array_inverse(data_items['zG00(node_sort)'])
+
+prepare = collections.OrderedDict((
+    ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
+    ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
+))

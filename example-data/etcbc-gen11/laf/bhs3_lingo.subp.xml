@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl>
+            <labelUsage        label="mother" occurs="54768"       />
+            <labelUsage        label="parents" occurs="109536"      />
+            <labelUsage        label="ft" occurs="109536"      />
+        </labelsDecl>
+        <dependencies><!--
+            <dependsOn f.id="f_lingo"/>-->
+        </dependencies>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="yes"/>
+        </annotationSpaces>
+    </graphHeader>
+<a xml:id="alf848277" label="ft" ref="n77637"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="PAR"/>
+</fs></a>
+<edge xml:id="el865010" from="n77637" to="n40770"/>
+<a xml:id="ale865010" label="parents" ref="el865010"/>
+
+<a xml:id="alf848278" label="ft" ref="n77638"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="par"/>
+</fs></a>
+<edge xml:id="el865011" from="n77638" to="n77637"/>
+<a xml:id="ale865011" label="mother" ref="el865011"/>
+<edge xml:id="el865012" from="n77638" to="n40770"/>
+<a xml:id="ale865012" label="parents" ref="el865012"/>
+
+</graph>

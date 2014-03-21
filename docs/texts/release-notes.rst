@@ -2,14 +2,43 @@ Release Notes
 #############
 Upcoming
 ========
-3.8
-===
+4.1
+---
 Emdros integration.
 In the *etcbc* module I want to make an addition that enables the user to run emdros queries, capture the results as a node set, and use that for
 further processing in LAF-Fabric.
 
 Current
 =======
+4.0
+---
+API
+^^^
+The API has changed for initializing the processor and for working with connectivity (``C`` and ``Ci``).
+Please consult :doc:`API-reference`.
+
+Usability
+^^^^^^^^^
+* There is an example dataset included: Genesis 1:1 according to the ETCBC database.
+* Configuration is easier: a global config file in your home directory.
+* There is a *laf-fabric-test.py* script for a basic test.
+
+Incompatible changes
+^^^^^^^^^^^^^^^^^^^^
+More data has been precompiled. This reduces the load time when working with LAF-Fabric.
+The data organization has changed. Please download a new version of the data.
+
+Configuration is easier now. A single config file in your home directory is sufficient.
+There are also other ways, including a config file next to your notebook.
+
+Changes under the hood
+^^^^^^^^^^^^^^^^^^^^^^
+* The mechanism to store and load LAF data now has a hook by which auxiliary modules can register new data with LAF Fabric.
+  Currently, this mechanism is used by the ``etcbc`` module to inject a better ordering of the nodes than LAF Fabric can generate on its own.
+  In future versions we will use this mechanism to load compute and load extra indices needed for working with the EMDROS database.
+* Unit tests. In the file *lf-unittest.py* there are now several unit tests. If they pass most things in LAF-Fabric are working as expected.
+  However, the set needs to be enlarged before new changes are undertaken.
+
 3.7
 ---
 API
@@ -84,7 +113,7 @@ like the ``msg()`` method.
 Bugfixes
 ^^^^^^^^
 Under some conditions XML identifiers got mistakenly unloaded.
-Fixed by modifying the big table with conditions in :meth:`check_load_status <laf.laf.Laf.check_load_status>`.
+Fixed by modifying the big table with conditions in ``check_load_status`` in ``laf.laf``.
 
 3.3.7
 -----
@@ -154,7 +183,7 @@ Incompatible changes
 Bugfix. The order of node events turned out wrong in the case of nodes that are linked to point regions,
 i.e. regions with zero width (e.g. ``(n, n)``, being the point between characters ``n-1`` and ``n``).
 This caused weird behaviour in the tree generating notebook
-`trees (rough path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees-r.ipynb>`_.
+`trees (rough path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/trees-r.ipynb>`_.
 
 Yet it is impossible to guarantee natural behaviour in all cases.
 If there are nodes linked to empty regions in your LAF resource, you should sort the node events per anchor yourself,
@@ -202,7 +231,7 @@ API
 
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^
-* :meth:`API() <laf.task.LafTask.API>` now returns a keyed dictionary instead of a 6-tuple.
+* ``API()`` in  ``laf.task`` now returns a keyed dictionary instead of a 6-tuple.
     The statement where you define API is now 
 
         API = processor.API()
@@ -228,7 +257,7 @@ API
 
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^
-* :meth:`API() <laf.task.LafTask.API>` now returns a 6-tuple instead of a 5-tuple:
+* ``API()`` in  ``laf.task`` now returns a 6-tuple instead of a 5-tuple:
     C has been added.
 * nodes or edges annotated by an empty annotation will get a feature based on the annotation label.
     This feature yields value ``''`` (empty string) for all nodes or edges for which it is defined. Was ``1``.

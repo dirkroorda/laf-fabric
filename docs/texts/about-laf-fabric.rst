@@ -30,8 +30,8 @@ The typical workflow is:
    (or work with a compiled version [#nolaf]_).
 #. install LAF-fabric on your computer.
 #. adapt a config file to change the location of the work directory.
-#. write your own `iPython notebook <http://ipython.org>`_
-#. run the code cells in an `iPython notebook <http://ipython.org>`_
+#. write your own `iPython notebook <http://ipython.org>`_ or script
+#. run the code cells in an `iPython notebook <http://ipython.org>`_ or your script
 
 You can run your cells, modify them, run them again, ad libitum.
 While the notebook is alive, loading and unloading of data will be done only when it is really needed.
@@ -161,12 +161,9 @@ Basically we have now
     a mapping from orginal xml identifiers to integers.
 *primary data access*
     The primary data can be accessed through nodes that are linked to regions of primary data.
-
-Probably it is also handy to make custom node sets so that we can use python's set methods
-to manipulate with node sets.
-
-The *connectivity* functionality has been implemented a bit clumsily. 
-It must be computed after all feature data has been loaded.
+*hooks for custom pre-computed data*
+    Third party modules geared to a particular LAF resource may perform additional computations and store the result
+    alongside the complied data.
 
 .. rubric:: Footnotes
 

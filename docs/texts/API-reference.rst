@@ -14,7 +14,7 @@ e.g. the sort order of nodes.
 Where is the API?
 =================
 
-The API is a method of the task processor: :meth:`API() <laf.task.LafTask.API>`.
+The API is a method of the task processor: ``API()`` in ``laf.fabric``.
 This method returns you a set of *API elements*: objects and/or methods that you can use to retrieve
 information about the LAF resource: its features, nodes, edges, primary data and
 even some of the XML identifiers used.
@@ -36,35 +36,65 @@ Calling the API
 ===============
 First you have to get a *processor* object. This is how you get it::
 
-    import laf
-    from laf.notebook import Notebook
-    processor = Notebook()
+    from laf.fabric import LafFabric
+    processor = LafFabric(
+        work_dir="/Users/you/laf-fabric-data",
+        laf_dir="/Users/you/laf-fabric_data/laf",
+        save=True,
+        verbose='NORMAL',
+    )
 
-Then you have to *initialize* the processor, by which you direct it to a LAF source, possibly with extra annotation packages,
-and where you specify which data to load::
+All arguments to ``LafFabric()`` are optional. 
+If you have a config file in your home directory, you can leave out ``work_dir=...`` and ``laf_dir=...`` and ``save=...``.
+If you have not, or if you want to modify that file, you can pass the desired values to ``work_dir`` and ``laf_dir`` and say ``save=True``.
+You have to do that once, after that you can leave out this stuff again.
 
-    processor.init('bhs3.txt.hdr', '--', 'cooccurrences', {
-        "xmlids": {
-            "node": False,
-            "edge": False,
-        },
-        "features": {
-            "shebanq": {
-                "node": [
-                    "db.otype",
-                    "ft.part_of_speech,noun_type,lexeme_utf8",
-                    "sft.book",
-                ],
-                "edge": [
-                ],
+The ``verbose`` argument tells LAF-Fabric how much feedback it should give you.
+Possible values in increasing level of verbosity:: 
+
+    SILENT      after initialization absolutely no messages
+    ERROR       only error messages
+    WARNING     only error and warning messages
+    INFO        important information, warnings and errors
+    NORMAL      normal progress messages and everything above (default)
+    DETAIL      detailed messages and above
+    DEBUG       absolutely everything
+
+Then you have the processor to load data, according to the source you choose::
+
+    API= processor.load('bhs3.txt.hdr', '--', 'cooccurrences',
+        {
+            "xmlids": {
+                "node": False,
+                "edge": False,
             },
+            "features": {
+                "shebanq": {
+                    "node": [
+                        "db.otype",
+                        "ft.part_of_speech,noun_type,lexeme_utf8",
+                        "sft.book",
+                    ],
+                    "edge": [
+                    ],
+                },
+            },
+            "primary": False,
         },
-        "primary": False,
-    })
+        compile_main=False, compile_annox=False,
+        verbose='NORMAL',
+    )
 
-Once you have the processor, you get the API by means of a call like this::
+If you want to do other tasks in your script, you can repeat calls to ``API()``.
+LAF-Fabric will figure out which data can be kept in memory, which data has to be cleared, and which data
+needs to be loaded.
 
-    API = processor.API()
+**``compile-source`` and ``compile-annox``**
+If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
+The detection is based on the modified dates of the GrAF header file and the compiled files.
+In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
+
+After loading, you get the individuela API methods as follows::
 
     # features in sofar as declared under "features"
     F = API['F']
@@ -91,13 +121,11 @@ Once you have the processor, you get the API by means of a call like this::
     # The function to issue messages with
     msg = API['msg']
 
-    # File handling (opening for input, output, getting full path)
+    # File handling (opening for input, output, , closing, getting full path)
     infile = API['infile']
     outfile = API['outfile']
+    close = API['close']
     my_file = API['my_file']
-
-    # Preparing custom data
-    prep = API['prep']
 
 Of course, you only have to give names to the elements you really use.
 And if performance is not important, you can leave out the naming altogether and just refer to 
@@ -106,53 +134,93 @@ the elements by means of the API dictionary::
     for i in API['NN']():
         this_type = API['F'].shebanq_db_otype.v(i)
 
+Remember that if you have 10 million nodes, you may incur an appreciable performance difference
+compared to::
+
+    NN = API['NN']
+    for i in NN():
+        this_type = API['F'].shebanq_db_otype.v(i)
+
 Not all API elements contain meaningful information.
 It depends on what you have specified in the ``init()`` call.
 
+.. _node-order:
+
+Node order
+==========
+There is an implicit partial order on nodes, derived from their attachment to *regions*
+which are stretches of primary data, and the primary data is totally ordered.
+The order we use in LAF-Fabric is defined as follows.
+
+Suppose we compare node *A* and node *B*.
+Look up all regions for *A* and for *B* and determine the first point of the first region
+and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
+
+Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
+
+In other words: if *A* starts before *B*, then *A* becomes before *B*.
+If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
+
+If neither *A* < *B* nor *B* < *A* then the order is not specified.
+LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
+The only way this can happen is when *A* and *B* start and end at the same point.
+Between those points they might be very different. 
+
+Based on the formal information in a LAF resource, LAF-Fabric is not able to order
+the nodes according to all of your intuitions.
+However, if you have a particular LAF resource and a method to order the nodes in a more satisfying manner,
+you can supply a module in which you implement that order. See :ref:`data-prep`.
+
+The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
+the order specifies a walk through the nodes were enclosing nodes come first,
+and embedded children come in the order dictated by the primary data.
+
 LAF API
 =======
-Here is a description of the API elements as returned by the API() call, except ``msg``.
+Here is a description of the API elements as returned by the API() call.
 
-F (Features)
-------------
+F, FE, F_all, FE_all (Features)
+-------------------------------
 Examples::
 
     F.shebanq_db_otype.v(node)
 
-    F.shebanq_mother__e.v(edge)
+    FE.shebanq_mother_.v(edge)
 
     F.shebanq_ft_gender.s()
 
     F.shebanq_ft_gender.s(value='feminine')
 
+    all_node_features = API['F_all']
+    all_edge_features = API['FE_all']
+
 All that you want to know about features and are not afraid to ask.
 
-*F* is an object, and for each feature that you have declared, it has a member
-with a handy name.
+*F* is an object, and for each *node* feature that you have declared, it has a member
+with a handy name. Likewise for *FE*, but now for *edge* features.
 
 ``F.shebanq_db_otype`` is a feature object
 that corresponds with the LAF feature given in an annotation in the annotation space ``shebanq``,
 with label ``db`` and name ``otype``.
 It is a node feature.
 
-``F.shebanq_mother__e`` is also a feature object, but now on an edge, and corresponding
+``FE.shebanq_mother_`` is also a feature object, but now on an edge, and corresponding
 with an empty annotation.
-Note the extra ``_e`` appended to the name, because this is an *edge* feature.
 
 If a node or edge is annotated by an empty annotation, we do not have real features, but still there
 is an annotation label and an annotation space.
 In such cases we leave the feature name empty.
 The values of such annotations are always the empty string.
-Whether a node or edge has such an empty feature is determined by whether the value is ``''`` or ``None``.
 
 You can look up feature values by calling the method ``v(«node/edge»)`` on feature objects.
 
 **Alternatively**, you can use the slightly more verbose alternative forms:: 
 
-    F.F['shebanq_db_otype'].v(node)
+    F.item['shebanq_db_otype'].v(node)
+    FE.item['shebanq_mother_'].v(edge)
 
 They give exactly the same result:
-``F.shebanq_db_otype`` is the same thing as ``F.F['shebanq_db_otype']`` provided the feature has been loaded.
+``F.shebanq_db_otype`` is the same thing as ``F.item['shebanq_db_otype']`` provided the feature has been loaded.
 
 The advantage of the alternative form is that the feature is specified by a *string*
 instead of a *method name*.
@@ -164,111 +232,96 @@ has a defined value. For the order of nodes, see :ref:`node-order`.
 
 If a value is passed to ``s()``, only those nodes are visited that have that value for the feature in question.
 
-``F.feature_list`` is a dictionary containing all features that are loadable.
+The ``F_all`` and ``FE_all`` list all features that are loadable.
 These are the features found in the compiled current source or in the compiled current annox.
 
-The dictionary has exactly the same organization as the dictionary that you have to pass to ``processor.init()``
-when you specifiy the features to load.
-So you can copy and paste the features to load from the output of ``F.feature_list`` to the ``processor.init()`` call.
+**Main source and annox**
+
+If you have loaded an extra annotation package (*annox*), each feature value is looked up first according to the
+data of the *annox*, and only if that fails, according to the main source. The ``s()`` method
+combines all relevant information.
 
 .. _connectivity:
 
 C, Ci (Connectivity)
 --------------------
-Examples::
+Examples:
 
-    target_node in C.xyz_ft_property['myvalue'][source_node]
-    target_node in C.shebanq_mother_[''][source_node]
-    target_node in C._node_[''][source_node]
+**A. Normal edge features**::
 
-    source_node in C.xyz_ft_property['myvalue'][target_node]
-    source_node in C.shebanq_mother_[''][target_node]
-    source_node in C._node_[''][target_node]
+    target_node in C.xyz_ft_property.v(source_node)
+    (target_node, value) in C.xyz_ft_property.vv(source_node)
+    target_nodes in C.xyz_ft_property.endnodes(source_nodes, value='val')
 
-    top_nodes = C.shebanq_parents__T('', words)
+    source_node in Ci.xyz_ft_property.v(target_node)
+    (source_node, value) in Ci.xyz_ft_property.vv(target_node)
+    source_nodes in Ci.xyz_ft_property.endnodes(target_nodes, value='val')
+
+**B. Special edge features**::
+
+    target_node in C.__x.v(source_node)
+    target_node in C.__y.v(source_node)
+
+    source_node in Ci.__x.v(target_node)
+    source_node in Ci.__y.v(target_node)
+
+**C. Sorting the results**:: 
+
+    target_node in C.xyz_ft_property.vs(source_node)
+
+(the methods ``vv`` and ``endnodes`` are also valid for the special features.
+
+**Ad A. Normal edge features**
 
 This is the connectivity of nodes by edges.
-It is an object that specifies completely how you can walk from one node to another
-by means of an edge.
+``C`` and ``Ci`` are objects that specify completely how you can walk from one node to another
+by means of edges.
 
-For each *edge*-feature that you have declared, it has a members
-with a handy name.
-
-.. caution::
-    This functionality takes processing time when you load the API.
-    It takes 10-15 seconds on a Macbook Air for the Hebrew Bible.
-
-    However, you do not have to suffer from this repeated overhead.
-    Once you have called the *API()* function, the data stays in memory, and you can experiment
-    without recomputing this information over and over again.
+For each *edge*-feature that you have declared, it has a member with a handy name, exactly as in the ``FE`` object.
 
 ``C.xyz_ft_property`` is a connection table based on the
 edge-feature ``property`` in the annotation space ``xyz``, under annotation label ``ft``.
-Note that there is no ``_e`` behind the name, because we are only dealing with edge-features here.
 
-Such a table gives for each value of the edge-feature in question a nested dictionary, for example::
+Such a table yields for each node ``node1`` a list of pairs ``(node2, val)`` for which there is an edge going
+from ``node1`` to ``node2``, annotated by this feature with value ``val``.
 
-    C.xyz_ft_property['myvalue']
+This is what the ``vv()`` methods yields as a generator.
 
-The first key it accepts is the node you want to start with (``source_node``),
-and what you get then::
+If you are not interested in the actual values, there is a simpler generator ``v()``, yielding the list of only the nodes.
+If there are multiple edges with several values going from ``node1`` to ``node2``, ``node2`` will be yielded
+only once.
 
-    C.xyz_ft_property['value'][source_node]
+If you want to travel onwards until there are no outgoing edges left that qualify, use the method ``endnodes()``.
 
-is :py:class:`set` of nodes.
+For all this functionality there is also a version that uses the opposite edge direction.
+Use ``Ci`` instead of ``C``.
 
-These are the nodes reachable by an edge from ``source_node`` that has been annotated by
-feature ``property`` in an annotation with label ``ft`` in the space ``xyz``.
+If you have loaded an extra annotation package (*annox*), lookups are first performed with the data from the *annox*,
+and only if that fails, from the main source. All relevant data will be combined.
 
-Analogously::
+**Ad B. Special edge features**
 
-    Ci.xyz_ft_property['value'][target_node]
+There may be edges that are completely unannotated. These edges are made available through the special
+``C`` and ``Ci`` members called ``__x``. (No annotation namespace, no annotation label, name ``'x'``.)
 
-are the nodes that have an outgoing edge to ``target_node`` that has been annotated by
-feature ``property`` in an annotation with label ``ft`` in the space ``xyz``.
+If you have loaded an *annox*, it may have annotated formerly unannotated edges.
+However, this will not influence the ``__x`` feature.
 
-There may be edges that have not been annotated.
-These edges can also be used to travel from node to node.
+``__x`` always corresponds to the unannotated edges in the main source, irrespective of any *annox* whatsoever.
 
-Instead of specifying a feature, you specify ``_none_``, so::
+But loading an annox introduces an other special edge feature: ``__y``: all edges that have been annotated by the annox.
 
-    target_node in C._node_[''][source_node]
+In your script you can compute what the unannotated edges are according to the combination of main source and annox.
+It is all the edges that you get with ``__x``, minus those yielded by ``__y``.
 
-If you want to use these edges, you have to specify in your load directives::
+Think of ``x`` as *excluded* from annotations, and ``y`` as *yes annotations*.
 
-    "other_edges": True,
+**Ad C. Sorting the results** 
 
-.. caution::
-    The edges indicated by ``none`` are the edges that do not have any of the features specified in your
-    load directives. The only way to be sure that these edges are truly un-annotated, is to
-    specify *all* edge features in your load directives.
-    I am not pleased with this, but it is quite a job to find out the unannotated edges,
-    especially in the presence of extra annotation packages, that may annotated previously
-    un-annotated edges.
-
-A common task is to find the top nodes of a given set of nodes with respect to a set of edges.
-For example, if you have a node set with all word nodes, and if you have edges labelled with the string ``parents``,
-you might be interested in following these edges from each of the words until you cannot travel further, and then
-collect all the nodes where you came to a stand still. These are the top nodes.
-You can do this as follows::
-
-    words = NN(test=F.shebanq_db_otype.v, value='word')
-    top_nodes = C.shebanq_parents__T('', words)
-
-Note the extra ``T`` after the name of the feature.
-In the Hebrew Text database, you get all *sentence* nodes in this way.
-
-.. note::
-    In this particular case, you can also get the sentences by::
-
-        sentences = NN(test=F.shebanq_db_otype.v, value='sentence')
-
-    The point is that you can check whether really all top nodes are sentences and vice versa.
-
-You can also travel backwards::
-
-    sentences = NN(test=F.shebanq_db_otype.v, value='sentence')
-    bottom_nodes = Ci.shebanq_parents__T('', sentences)
+The results of the ``v`` and ``vv`` methods are unordered.
+If you want ordering, use the ``v`` and ``vv`` methods instead.
+Their results are ordered in the standard ordering.
+If you have loaded an additional prepared ordering, the results will come in that ordering.
 
 See the example notebook
 `trees <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/syntax/trees.ipynb>`_
@@ -294,47 +347,78 @@ With ``BF`` you can quickly see when that is the case.
 
 There is no mutual order between two nodes if at least one of the following holds:
 
-* one of them is not linked to the primary data
+* at least one of them is not linked to the primary data
 * both start and end at the same point in the primary data (what happens in between is immaterial).
 
 NN (Next Node)
 --------------
 Examples::
     
-    (a) for node in NN():
-            pass
+    (a0) for node in NN():
+             pass
 
-    (b) for node in NN(test=F.shebanq_db_otype.v, value='book'):
-            pass
+    (a1) for node in NN(nodes=nodeset):
+             pass
 
-    (c) for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
-            pass
+    (a2) for node in NN(nodes=nodeset, extrakey=your_order):
+             pass
 
-    (d) for node in NN(
-            test=F.shebanq_db_otype.v,
-            values=['phrase', 'word'],
-            extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase',
-        ):
-            pass
+    (b)  for node in NN(test=F.shebanq_db_otype.v, value='book'):
+             pass
+
+    (c)  for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
+             pass
+
+    (d)  for node in NN(
+             test=F.shebanq_db_otype.v,
+             values=['phrase', 'word'],
+             extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase',
+         ):
+             pass
 
 NN() walks through nodes, not by edges, but through a predefined set, in the
 natural order given by the primary data (see :ref:`node-order`).
 Only nodes that are linked to a region (one or more) of the primary data are
-being walked.
+being walked. You can walk all nodes, or just a given set.
 
 It is an *iterator* that yields a new node everytime it is called.
 
-The ``test`` and ``value`` arguments are optional.
-If given, ``test`` should be a *callable* with one argument, returning a string;
-``value`` should be a string and ``values`` should be an iterable of strings.
+All arguments are optional. They mean the following, if present.
+
+* ``test``: A filter that tests whether nodes are passed through or inhibited.
+  It should be a *callable* with one argument and return some value;
+* ``value``: string
+* ``values``: an iterable of strings.
 
 ``test`` will be called for each passing node,
-and if the value returned is not in the set given ``value`` and/or ``values``,
-the node will be skipped.
+and if the value returned is not in the set given by ``value`` and/or ``values``,
+the node will be skipped. If neither ``value`` or ``values`` are provided,
+the node will be passed if and only if ``test`` returns a true value.
 
-Example (a) iterates through all nodes, (b) only through the book nodes, because *test*
+* ``nodes``: this will limit the set of nodes that are visited to the given value,
+  which must be an iterable of nodes. Before yielding nodes, ``NN(nodes=nodeset)``
+  will order the nodes according to the standard ordering, and if you have provided
+  an extra, prepared ordering, this ordering will be taken instead.
+
+The ``nodes`` argument is compatible with all other arguments.
+
+.. note::
+    ``nodelist = NN(nodes=nodeset)`` is a practical way to get the nodeset in the right
+    order. If your program works a lot with nodeset, and then needs to produce
+    orderly output, this is your method. If you have a custom ordering defined in your
+    task, you can apply it to arbitrary node sets via ``NN(nodes=nodeset, extrakey=your_order)``.
+
+Example (a) iterates through all nodes, (a1) only through the nodes in nodeset,
+(a2) idem, but applies an extra ordering beforehand, 
+(b) only through the book nodes, because *test*
 is the feature value lookup function associated with the ``shebanq_db_otype`` function,
 which gives for each node its type.
+
+.. note::
+    The type of a node is not a LAF concept, but a concept in this particular LAF resource.
+    There are annotations which give the feature ``shebanq_db_otype`` to nodes, stating
+    that nodes are books, chapters, words, phrases, and so on.
+
 In example (c) you can give multiple values for which you want the corresponding nodes.
 
 Example (d) passes an extra sort key. The set of nodes is sorted on the basis of how they
@@ -348,22 +432,23 @@ and ``True`` for the other nodes, which carry value ``word`` for that feature.
 Because ``False`` comes before ``True``, the phrases come before the words they contain.
 
 .. note::
-    Without extrakey, all phrases that do not coincide with any of the words they contain,
-    have already the property that they are yielded before their words.
-    The difficulty is where a phrase contains just a single word.
+    Without extrakey, all nodes that have not identical start and end points
+    have already the property that they are yielded in the proper mutual order.
+    The difficulty is where the ``BF`` method above yields ``None``.
     It is exactly these cases that are remedied with ``extrakey``. 
     The rest of the order remains untouched.
 
+.. caution::
+    Ordering the nodes with ``extrakey`` is costly, it may take several seconds.
+    The etcbc module comes with a method to compute this ordering once and for all.
+    This supplementary data can easilyand quickly be loaded, and then you do not have to bother
+    about ``extrakey`` anymore. See :ref:`data-prep`.
+
 .. note::
     You can invoke a supplementary module of your choice to make the ordering more complete.
-    See the API method ``prep`` below.
+    See the section on extra data preparation below.
 
-.. note::
-    The type of a node is not a LAF concept, but a concept in this particular LAF resource.
-    There are annotations which give the feature ``shebanq_db_otype`` to nodes, stating
-    that nodes are books, chapters, words, phrases, and so on.
-
-See :meth:`next_node() <laf.task.LafTask.API>`.
+See ``next_node()`` in ``laf.fabric``.
 
 .. _node-events:
 
@@ -386,13 +471,15 @@ Examples::
     for (anchor, events) in NE(simplify=filter):
     for (anchor, events) in NE(key=filter1, simplify=filter2):
 
+**``NE()`` is only available if you have specified in the *load* directives: ``primary: True``.**
+
 NE() walks through the primary data, or, more precisely, through the anchor positions where
 something happens with the nodes.
 
 It is an *iterator* that yields the set of events for the next anchor that has events everytime it is called.
 It will return a pair, consisting of the anchor position and a list of events.
 
-See :meth:`next_event() <laf.task.LafTask.API>`.
+See ``next_event()`` in ``laf.fabric``.
 
 What can happen is that a node *starts*, *resumes*, *suspends* or *ends* at a certain anchor position.
 This things are called *node_events*.
@@ -495,33 +582,30 @@ so the node has a real gap at that anchor.
 Formally, a node event is a tuple ``(node, kind)`` where ``kind`` is 0, 1, ,2, or 3, meaning
 *start*, *resume*, *suspend*, *end* respectively.
 
-X (XML Identifiers)
--------------------
+X, XE (XML Identifiers)
+-----------------------
 
 Examples::
 
-    X.node.r(i)
-    X.node.i(x)
-    X.edge.r(i)
-    X.edge.i(x)
+    X.r(i)
+    X.i(x)
+    XE.r(i)
+    XE.i(x)
 
 If you need to convert the integers that identify nodes and edges in the compiled data back to
-their original XML identifiers, you can do that with the *X* object.
-
-It has two members, ``X.node`` and ``X.edge``, which contain the separate mapping tables for
-nodes and edges.
+their original XML identifiers, you can do that with the *X* object for nodes and the *XE* object for edges.
 
 Both have two methods, corresponding to the direction of the translation:
-with ``X.node.i(«xml id»)`` you get the corresponding number of a node, and with ``X.node.r(«number»)``
-you get the original XML id by which the node was identified in the LAF resource.
-
-Analogously for edges.
+with ``i(«xml id»)`` you get the corresponding number of a node/edge, and with ``r(«number»)``
+you get the original XML id by which the node/edge was identified in the LAF resource.
 
 P (Primary Data)
 ----------------
 Examples::
 
     P.data(node)
+
+**The primary data is only available if you have specified in the *load* directives: ``primary: True``.**
 
 Your gateway to the primary data. For nodes ``node`` that are linked to the primary data by one or more regions,
 ``P.data(node)`` yields a set of chunks of primary data, corresponding with those regions.
@@ -530,8 +614,6 @@ The chunks are *maximal*, *non-overlapping*, *ordered* according to the primary 
 
 Every chunk is given as a tuple (*pos*, *text*), where *pos* is the position in the primary data where
 the start of *text* can be found, and *text* is the chunk of actual text that is specified by the region.
-The primary data is only available if you have specified in the *load* directives: 
-``primary: True``
 
 .. caution:: Note that *text* may be empty.
     This happens in cases where the region is not a true interval but merely
@@ -543,14 +625,16 @@ Examples::
 
     out_handle = outfile("output.txt")
     in_handle  = infile("input.txt")
+    file_path = my_file("thefile.txt")
+    close()
 
     msg(text)
+    msg(text, verbose='ERROR')
     msg(text, newline=False)
     msg(text, withtime=False)
 
 
-You can create an output filehandle, open for writing, by calling the
-method :meth:`outfile <laf.task.LafTask.add_output>`
+You can create an output filehandle, open for writing, by calling the ``outfile()`` method
 and assigning the result to a variable, say *out_handle*.
 
 From then on you can write output simply by saying::
@@ -565,12 +649,12 @@ and read them by saying::
 
     text = in_handle.read()
 
-Once your task has finished, LAF-Fabric will close them all.
+You can have LAF-Fabric close them all by means of ``close()`` without arguments.
 
 If you want to refer in your notebook, outside the LAF-Fabric context, to files in the task-specific working directory,
 you can do so by saying::
 
-    full_path = my_file("output.csv")
+    full_path = my_file("thefile.txt")
 
 The method ``my_file`` prepends the full directory path in front of the file name.
 It does not check whether the file exists.
@@ -578,64 +662,41 @@ It does not check whether the file exists.
 You can issue progress messages while executing your task.
 These messages go to the output of a code cell.
 
+You can adjust the verbosity level of messages, see above for possible values.
+
 These messages get the elapsed time prepended, unless you say ``withtime=False``.
 
 A newline will be appended, unless you say ``newline=False``.
 
-The elapsed timeis reckoned from the start of the task, but after all the task-specific
+The elapsed time is reckoned from the start of the task, but after all the task-specific
 loading of features.
 
-.. _node-order:
+.. _data-prep:
 
-Node order
-==========
-There is an implicit partial order on nodes, derived from their attachment to *regions*
-which are stretches of primary data, and the primary data is totally ordered.
-The order we use in LAF-Fabric is defined as follows.
-
-Suppose we compare node *A* and node *B*.
-Look up all regions for *A* and for *B* and determine the first point of the first region
-and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
-
-Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
-
-In other words: if *A* starts before *B*, then *A* becomes before *B*.
-If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
-
-If neither *A* < *B* nor *B* < *A* then the order is not specified.
-LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
-The only way this can happen is when *A* and *B* start and end at the same point.
-Between those points they might be very different. 
-
-If you have a LAF resource and a method to order the nodes more completely,
-you can supply that as an extra data preparation step. See below.
-
-The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
-the order specifies a walk through the nodes were enclosing nodes come first,
-and embedded children come in the order dictated by the primary data.
-
-prep Extra data preparation
-===========================
+Extra data preparation
+======================
+.. caution::
+    This section is meant for developers of extra modules on top of LAF-Fabric
 
 LAF-Fabric admits other modules to precompute data to which it should be pointed.
 
-Currently only an additional ordering of the nodes is admitted.
+Here is how it works. The example is that of adding additional order to the nodes
+based on the informal embedding levels between books, chapters, sentences, clauses etc.
 
-Here is how it works. Suppose you are working with a specific resource, say the ETCBC Hebrew Text Database.
+Suppose you are working with a specific resource, say the ETCBC Hebrew Text Database.
 Probably there is already a package *etcbc* to streamline the tasks relevant to this resource.
-To this package you can add a module, say *preprocess.py* with the following structure::
+To this package you can add a module, say *preprocess.py* in which you can define
+an additional sort order on nodes.
+Here is the actual contents of *etcbc.preprocess* in this distribution::
 
-    import sys
     import collections
     import array
 
     def node_order(API):
-        '''Creates a form based on the information passed when creating this object.
-        '''
+        '''Creates a form based on the information passed when creating this object.'''
         msg = API['msg']
         F = API['F']
         NN = API['NN']
-
         object_rank = {
             'book': -4,
             'chapter': -3,
@@ -650,39 +711,62 @@ To this package you can add a module, say *preprocess.py* with the following str
             'subphrase': 7,
             'word': 8,
         }
-
-        def hierarchy(node):
-            return object_rank[F.shebanq_db_otype.v(node)]
-
+        def hierarchy(node): return object_rank[F.shebanq_db_otype.v(node)]
         return array.array('I', NN(extrakey=hierarchy))
 
-    def check(API):
-        API['prep'](node_order, 'node_resorted', __file__)
+    def node_order_inv(API):
+        make_array_inverse = API['make_array_inverse']
+        data_items = API['data_items']
+        return make_array_inverse(data_items['zG00(node_sort)'])
+
+    prepare = collections.OrderedDict((
+        ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
+        ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
+    ))
 
 Back to your notebook. Say::
 
-    form etcbc import preprocess
+    from etcbc.preprocess import prepare
 
-If you call there, after having loaded the API::
-
-    preprocess.check(API)
+    processor.load('your source', '--', 'your task',
+        {
+            "xmlids": {"node": False, "edge": False},
+            "features": { ... your features ...},
+            "prepare": prepare,
+        }
+    )
 
 then the following will happen:
 
-* LAF-Fabric checks whether a file *node_resorted.bin* exists next to the binary compiled data, and whether this file
-   is newer than your module *preprocess.py*.
+* LAF-Fabric checks whether file *Z/etcbc/zG00(node_sort)* and *Z/etcbc/zG00(node_sort_inv)* exist next to the binary compiled data, and whether these files
+  are newer than your module *preprocess.py*.
 * If so, it loads this data from disk.
-* If not, it will execute the *node_order* function, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk.
+* If not, it will execute the *node_order* function in *preprocess.py*, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk
+  in *Z/etcbc/zG00(node_sort)* and it also computes *node_order_inv* in order to get an inverse: *Z/etcbc/zG00(node_sort_inv)*.
 
-The LAF-Fabric data that is affected by this action is *node_resorted*.
-This is the data that *NN()* uses when iterating over the nodes.
+Note that these functions can be programmed using the API of LAF-Fabric itself. Preparing data always takes place after full loading.
+The prepared data will be subsequently loaded.
 
+The *True* component in the dictionary *prepare* tells LAF-Fabric to use this data **instead of previously compiled data**.
+In this case, there should be a data item keyed with ``mG00(node_sort)`` in the already loaded data (otherwise you get an error).
+In fact, LAF-Fabric uses a data item with this name to help *NN()* iterate over its nodes in a convenient order.
 So you have effectively supplanted LAF-Fabric's standard ordering of the nodes by your own ordering, which makes better use
 of the particular structure of this data. 
 
-This data is only loaded if you make the ``preprocess.check(API)`` call.
-So you have ways to work with the original data as well.
+If you had said ``False`` instead, no attempt of overriding existing data would have been made. If you want to use this data,
+you can refer to it by:: 
 
-.. note::
-    The prepared data will not be unloaded until you changes source or restart the program.
+        API['data_items']['zG00(node_sort)']
 
+The *etcbc* directory corresponds to the ``etcbc`` component in the dictionary *prepare*.
+In this way, different modules may keep their computed data separate from each other.
+Computed data is always separated from the previously compiled data.
+
+This data is only loaded if you have ``'prepare': etcbc.preprocess.prepare`` in your load instructions,
+or if you have done an import like this::
+
+    from etcbc.preprocess import prepare
+
+then ``'prepare': prepare`` suffices.
+
+In order to know the data that LAF-Fabric uses natively, look at the list in the ``names`` module.

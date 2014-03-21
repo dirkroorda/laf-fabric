@@ -88,9 +88,9 @@ class GenForm(object):
             this_type = F.shebanq_db_otype.v(i)
             if this_type in self.target_types:
                 if in_chapter:
-                    the_xml_id = X.node.r(i)
+                    the_xml_id = X.r(i)
                     the_text = " ".join([text for (n, text) in P.data(i)])
-                    the_show_features = "\t".join([nonerep(F.F["{}_{}_{}".format(*sf)].v(i)) for sf in self.show_features])
+                    the_show_features = "\t".join([nonerep(F.item["{}_{}_{}".format(*sf)].v(i)) for sf in self.show_features])
                     outf.write("{}\t{}{}{}{}{}\n".format(
                         the_xml_id,
                         "\t" * self.type_col[this_type],

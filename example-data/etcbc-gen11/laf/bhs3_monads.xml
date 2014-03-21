@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl>
+            <labelUsage        label="db" occurs="426499"      />
+        </labelsDecl>
+        <dependencies><!--
+            <dependsOn f.id="f_monad.region"/>-->
+        </dependencies>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="yes"/>
+        </annotationSpaces>
+    </graphHeader>
+<node xml:id="n2"><link targets="w_1"/></node>
+<a xml:id="am2" label="db" ref="n2"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="2"/>
+    <f name="monads" value="1"/>
+    <f name="minmonad" value="1"/>
+    <f name="maxmonad" value="1"/>
+</fs></a>
+
+<node xml:id="n3"><link targets="w_2"/></node>
+<a xml:id="am3" label="db" ref="n3"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="3"/>
+    <f name="monads" value="2"/>
+    <f name="minmonad" value="2"/>
+    <f name="maxmonad" value="2"/>
+</fs></a>
+
+<node xml:id="n4"><link targets="w_3"/></node>
+<a xml:id="am4" label="db" ref="n4"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="4"/>
+    <f name="monads" value="3"/>
+    <f name="minmonad" value="3"/>
+    <f name="maxmonad" value="3"/>
+</fs></a>
+
+<node xml:id="n5"><link targets="w_4"/></node>
+<a xml:id="am5" label="db" ref="n5"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="5"/>
+    <f name="monads" value="4"/>
+    <f name="minmonad" value="4"/>
+    <f name="maxmonad" value="4"/>
+</fs></a>
+
+<node xml:id="n6"><link targets="w_5"/></node>
+<a xml:id="am6" label="db" ref="n6"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="6"/>
+    <f name="monads" value="5"/>
+    <f name="minmonad" value="5"/>
+    <f name="maxmonad" value="5"/>
+</fs></a>
+
+<node xml:id="n7"><link targets="w_6"/></node>
+<a xml:id="am7" label="db" ref="n7"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="7"/>
+    <f name="monads" value="6"/>
+    <f name="minmonad" value="6"/>
+    <f name="maxmonad" value="6"/>
+</fs></a>
+
+<node xml:id="n8"><link targets="w_7"/></node>
+<a xml:id="am8" label="db" ref="n8"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="8"/>
+    <f name="monads" value="7"/>
+    <f name="minmonad" value="7"/>
+    <f name="maxmonad" value="7"/>
+</fs></a>
+
+<node xml:id="n9"><link targets="w_8"/></node>
+<a xml:id="am9" label="db" ref="n9"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="9"/>
+    <f name="monads" value="8"/>
+    <f name="minmonad" value="8"/>
+    <f name="maxmonad" value="8"/>
+</fs></a>
+
+<node xml:id="n10"><link targets="w_9"/></node>
+<a xml:id="am10" label="db" ref="n10"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="10"/>
+    <f name="monads" value="9"/>
+    <f name="minmonad" value="9"/>
+    <f name="maxmonad" value="9"/>
+</fs></a>
+
+<node xml:id="n11"><link targets="w_10"/></node>
+<a xml:id="am11" label="db" ref="n11"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="11"/>
+    <f name="monads" value="10"/>
+    <f name="minmonad" value="10"/>
+    <f name="maxmonad" value="10"/>
+</fs></a>
+
+<node xml:id="n12"><link targets="w_11"/></node>
+<a xml:id="am12" label="db" ref="n12"><fs>
+    <f name="otype" value="word"/>
+    <f name="oid" value="12"/>
+    <f name="monads" value="11"/>
+    <f name="minmonad" value="11"/>
+    <f name="maxmonad" value="11"/>
+</fs></a>
+
+</graph>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+    <graphHeader>
+        <labelsDecl>
+            <labelUsage        label="ft" occurs="426499"      />
+        </labelsDecl>
+        <dependencies><!--
+            <dependsOn f.id="f_monad"/>-->
+        </dependencies>
+        <annotationSpaces>
+            <annotationSpace   as.id="shebanq" default="yes"/>
+        </annotationSpaces>
+    </graphHeader>
+<a xml:id="amf1" label="ft" ref="n2"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="בְּ"/>
+</fs></a>
+
+<a xml:id="amf13" label="ft" ref="n3"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="רֵאשִׁ֖ית"/>
+</fs></a>
+
+<a xml:id="amf25" label="ft" ref="n4"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="בָּרָ֣א"/>
+</fs></a>
+
+<a xml:id="amf37" label="ft" ref="n5"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="אֱלֹהִ֑ים"/>
+</fs></a>
+
+<a xml:id="amf49" label="ft" ref="n6"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="אֵ֥ת"/>
+</fs></a>
+
+<a xml:id="amf61" label="ft" ref="n7"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="הַ"/>
+</fs></a>
+
+<a xml:id="amf73" label="ft" ref="n8"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="שָּׁמַ֖יִם"/>
+</fs></a>
+
+<a xml:id="amf85" label="ft" ref="n9"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="וְ"/>
+</fs></a>
+
+<a xml:id="amf97" label="ft" ref="n10"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="אֵ֥ת"/>
+</fs></a>
+
+<a xml:id="amf109" label="ft" ref="n11"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="הָ"/>
+</fs></a>
+
+<a xml:id="amf121" label="ft" ref="n12"><fs>
+	<f name="suffix" value="׃"/>
+	<f name="text" value="אָֽרֶץ"/>
+</fs></a>
+
+</graph>

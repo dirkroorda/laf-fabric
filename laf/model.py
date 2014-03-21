@@ -1,256 +1,174 @@
-import os
-import collections
 import array
-from .lib import grouper
-
-def arrayify(source_list):
-    '''Efficient storage of a list of lists of integers in two Python :py:mod:`array`.
-
-    *This is one of the most important tricks of the LAF-Fabric, and yet it is only 10 lines of code!*
-
-    Args:
-        source_list (iterable):
-            a list of lists of integers
-    
-    Returns:
-        (index_array, items_array):
-            two :py:mod:`array` s.
-
-        *index_array* contains an index for each item in *source_list*.
-        *items_array* contains all the items in the following way: if an item with *n* members has to be added,
-        then first the number *n* is added, and then all the members.
-        This is how you get the original information back: if you want the 
-        members of item *i* in *source_list*, read number *i* in *index_array*, say *k*, go to position *k* in
-        *items_array*, read the number at that position, say *n*,
-        and then find the members at the next *n* positions in *items_array*.
-
-    '''
-    dest_array = array.array('I')
-    dests_array = array.array('I')
-    j = 0
-
-    for i in range(len(source_list)):
-        items = source_list[i]
-        dest_array.append(j)
-        dests_array.append(len(items))
-        dests_array.extend(items)
-        j += 1 + len(items)
-    return (dest_array, dests_array)
+from .lib import grouper, arrayify, make_inverse, make_array_inverse 
+from .names import Names
 
 def normalize_ranges(ranges):
-    '''Normalizes a set of ranges.
-
-    Ranges come from the regions in the primary data.
-    The anchors in the regions point to positions between characters in the primary data.
-    So range (1,1) points to the point after the first character and before the second one.
-    This range does not include any character. But the range (0,1) correspondes with the interval
-    between the points before any character and the point after the first character.
-    So this is character [0] in the string.
-    
-    Nodes may be linked to multiple regions. Then we get multiple ranges associated to nodes.
-    This function simplifies a set of ranges: overlapping ranges will be joined, adjacent regions
-    will be combined, ranges will be ordered.
-
-    Args:
-        ranges(iterable of 2-tuples):
-            List of ranges, where every range is a tuple of exactly 2 integers.
-
-    Returns:
-        The result is a plain list of integers. The number of integers is even.
-        The first two correspond to the first range, the second two to the second range and so on.
-        This way we can deliver the results of many nodes as a compact *double_array*.
-    '''
     covered = {}
     for (start, end) in ranges:
         if start == end:
-            if start not in covered:
-                covered[start] = False
+            if start not in covered: covered[start] = False
         else:
-            for i in range(start, end):
-                covered[i] = True
+            for i in range(start, end): covered[i] = True
     cur_start = None
     cur_end = None
     result = []
     for i in sorted(covered.keys()):
         if not covered[i]:
-            if cur_end != None:
-                result.extend((cur_start, cur_end))
+            if cur_end != None: result.extend((cur_start, cur_end))
             result.extend((i, i))
             cur_start = None
             cur_end = None
         elif cur_end == None or i > cur_end:
-            if cur_end != None:
-                result.extend((cur_start, cur_end))
+            if cur_end != None: result.extend((cur_start, cur_end))
             cur_start = i
             cur_end = i + 1
-        else:
-            cur_end = i + 1
-    if cur_end != None:
-        result.extend((cur_start, cur_end))
-
+        else: cur_end = i + 1
+    if cur_end != None: result.extend((cur_start, cur_end))
     return result
 
-def model(data_items, temp_data_items, stamp):
-    '''Remodels various data structures
+def model(origin, data_items, stamp):
+    '''Augment the results of XML parsing by precomputing additional data structures.'''
 
-    Args:
-        data_items:
-            data structures coming from :mod:`parse <laf.parse>`, that are here to stay
+    def model_x():
+        stamp.Imsg("XML-IDS (inverse mapping)")
+        for kind in ('n', 'e'):
+            xi = (origin + 'X' + kind + 'f', ())
+            xr = (origin + 'X' + kind + 'b', ())
+            Names.deliver(make_inverse(data_items[Names.comp(*xi)]), xr, data_items)
 
-        temp_data_items:
-            data structures coming from :mod:`parse <laf.parse>` that may be thrown away
+    def model_regions():
+        stamp.Imsg("NODES AND REGIONS")
+        node_region_list = data_items[Names.comp(origin + 'T00', ('node_region_list',))]
+        n_node = len(node_region_list)
 
-        stamp (:class:`Timestamp <laf.timestamp.Timestamp>`):
-            object for issuing progress messages
+        stamp.Imsg("NODES ANCHOR BOUNDARIES")
+        node_anchor_min = array.array('I', [0 for i in range(n_node)])
+        node_anchor_max = array.array('I', [0 for i in range(n_node)])
+        node_linked = array.array('I')
+        region_begin = data_items[Names.comp(origin + 'T00', ('region_begin',))]
+        region_end = data_items[Names.comp(origin + 'T00', ('region_end',))]
+        node_anchor_list = []
+        for node in range(n_node):
+            links = node_region_list[node]
+            if len(links) == 0:
+                node_anchor_list.append([])
+                continue
+            node_linked.append(node)
+            ranges = []
+            for r in links:
+                this_anchor_begin = region_begin[r]
+                this_anchor_end = region_end[r]
+                ranges.append((this_anchor_begin, this_anchor_end))
+            norm_ranges = normalize_ranges(ranges)
+            node_anchor_list.append(norm_ranges)
+            node_anchor_min[node] = min(norm_ranges) + 1
+            node_anchor_max[node] = max(norm_ranges) + 1
+        (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
+        Names.deliver(node_anchor_min, (origin + 'G00', ('node_anchor_min',)), data_items)
+        Names.deliver(node_anchor_max, (origin + 'G00', ('node_anchor_max',)), data_items)
+        Names.deliver(node_anchor, (origin + 'P00', ('node_anchor',)), data_items)
+        Names.deliver(node_anchor_items, (origin + 'P00', ('node_anchor_items',)), data_items)
 
-    Returns:
-        The resulting permanent remodelled data structures.
+        node_region_list = None
+        del data_items[Names.comp(origin + 'T00', ('region_begin',))]
+        del data_items[Names.comp(origin + 'T00', ('region_end',))]
+        del data_items[Names.comp(origin + 'T00', ('node_region_list',))]
 
-    The transformations are:
+        def interval(node): return (node_anchor_min[node], -node_anchor_max[node])
 
-    Nodes and regions:
-        The list linking regions to nodes is transformed into a double array.
+        stamp.Imsg("NODES SORTING BY REGIONS")
+        node_sort = array.array('I', sorted(node_linked, key=interval))
+        node_sort_inv = make_array_inverse(node_sort)
+        Names.deliver(node_sort, (origin + 'G00', ('node_sort',)), data_items)
+        Names.deliver(node_sort_inv, (origin + 'G00', ('node_sort_inv',)), data_items)
 
-    Nodes and anchors:
-        As a preparation to sorting, the minimal and maximal anchors of each node
-        are determined. Nodes may be linked to many regions.
+        stamp.Imsg("NODES EVENTS")
+        anchor_max = max(node_anchor_max) - 1
+        node_events = list([([],[],[]) for n in range(anchor_max + 1)])
+        for n in node_sort:
+            ranges = node_anchor_list[n]
+            amin = ranges[0]
+            amax = ranges[len(ranges)-1] 
+            for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
+                is_first = r == 0
+                is_last = r == (len(ranges) / 2) - 1
+                start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
+                end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
+                if amin == amax: node_events[a_start][1].extend([(n, 0), (n,3)])
+                else:
+                    node_events[a_start][0].append((n, start_kind))
+                    node_events[a_end][2].append((n, end_kind))
+        node_events_n = array.array('I')
+        node_events_k = array.array('I')
+        node_events_a = list([[] for a in range(anchor_max + 1)])
+        e_index = 0
+        for (anchor, events) in enumerate(node_events):
+            events[2].reverse()
+            for main_kind in (2, 1, 0):
+                for (node, kind) in events[main_kind]:
+                    node_events_n.append(node)
+                    node_events_k.append(kind)
+                    node_events_a[anchor].append(e_index)
+                    e_index += 1
+        node_events = None
+        (node_events, node_events_items) = arrayify(node_events_a)
+        node_events_a = None
+        Names.deliver(node_events_n, (origin + 'P00', ('node_events_n',)), data_items)
+        Names.deliver(node_events_k, (origin + 'P00', ('node_events_k',)), data_items)
+        Names.deliver(node_events, (origin + 'P00', ('node_events',)), data_items)
+        Names.deliver(node_events_items, (origin + 'P00', ('node_events_items',)), data_items)
+        node_anchor_list = None
 
-        It also creates a list of node events:
+    def model_conn():
+        node_anchor_min = data_items[Names.comp('mG00', ('node_anchor_min',))]
+        node_anchor_max = data_items[Names.comp('mG00', ('node_anchor_max',))]
 
-        For each anchor position, a list will be created of nodes that start, terminate, suspend and resume there.
-        
-        * A node *starts* at an anchor if the anchor is the first anchor position of that node
-        * A node *terminates* at an anchor if the anchor is the last anchor position of that node
-        * A node *suspends* at an anchor position if
-            #. the anchor position belongs to that node, 
-            #. the next anchor position does not belong to that node
-            #. there are later anchor positions that belong to that node
-        * A node *resumes* at an anchor position if
-            #. the anchor position belongs to that node, 
-            #. the previous anchor position does not belong to that node
-            #. there are earlier anchor positions that belong to that node
+        def interval(elem): return (node_anchor_min[elem[0]], -node_anchor_max[elem[0]])
 
-    Node sorting:
-        Create a list of nodes in a sort order derived from their linking to regions,
-        and the ordered nature of the primary data. 
+        stamp.Imsg("CONNECTIVITY")
+        edges_from = data_items[Names.comp('m' + 'G00', ('edges_from',))]
+        edges_to = data_items[Names.comp('m' + 'G00', ('edges_to',))]
+        labeled_edges = set()
+        efeatures = set()
+        for dkey in data_items:
+            (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
+            if dgroup != 'F' or dorigin != origin or dkind != 'e': continue
+            efeatures.add((dkey, dcomps))
+        for (dkey, feat) in efeatures:
+            feature_map = data_items[dkey]
+            connections = {}
+            connectionsi = {}
+            for (edge, fvalue) in feature_map.items():
+                labeled_edges.add(edge)
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
+                connections.setdefault(node_from, {})[node_to] = fvalue
+                connectionsi.setdefault(node_to, {})[node_from] = fvalue
+            Names.deliver(connections, (origin + 'C0f', feat), data_items)
+            Names.deliver(connectionsi, (origin + 'C0b', feat), data_items)
 
-        *node1* comes before *node2* if *node1* starts before *node2*.
-        If *node1* and *node2* start at the same point, the object that ends last comes first.
-        Otherwise objects count as equal in position.
-        If the objects are sorted in this way, embedding objects come before all objects that are embedded in it.
+        connections = {}
+        connectionsi = {}
+        if origin == 'm':
+            for edge in range(len(edges_from)):
+                if edge in labeled_edges: continue
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
+                connections.setdefault(node_from, {})[node_to] = ''
+                connectionsi.setdefault(node_to, {})[node_from] = ''
+        elif origin == 'a':
+            for edge in range(len(edges_from)):
+                if edge not in labeled_edges: continue
+                node_from = edges_from[edge]
+                node_to = edges_to[edge]
+                connections.setdefault(node_from, {})[node_to] = ''
+                connectionsi.setdefault(node_to, {})[node_from] = ''
+        sfeature = Names.E_ANNOT_NON if origin == 'm' else Names.E_ANNOT_YES if origin == 'a' else ''
+        Names.deliver(connections, (origin + 'C0f', sfeature), data_items)
+        Names.deliver(connectionsi, (origin + 'C0b', sfeature), data_items)
 
-    Nodes and edges:
-        Collect the outgoing and incoming edges for each node in a pair of double arrays.
-
-        Collect the set of unannotated edges.
-
-    '''
-    result_items = []
-
-    stamp.progress("NODES AND REGIONS")
-
-    node_region_list = temp_data_items["node_region_list"]
-    n_node = len(node_region_list)
-
-    stamp.progress("NODES ANCHOR BOUNDARIES")
-
-#   in node_anchor_min/max the value 0 counts as undefined.
-#   So we have to increase all real values by one in order to make the distinction.
-
-    node_anchor_min = array.array('I', [0 for i in range(n_node)])
-    node_anchor_max = array.array('I', [0 for i in range(n_node)])
-    node_linked = array.array('I')
-    region_begin = temp_data_items["region_begin"]
-    region_end = temp_data_items["region_end"]
-
-    node_anchor_list = []
-    for node in range(n_node):
-        links = node_region_list[node]
-        if len(links) == 0:
-            node_anchor_list.append([])
-            continue
-        node_linked.append(node)
-        ranges = []
-        for r in links:
-            this_anchor_begin = region_begin[r]
-            this_anchor_end = region_end[r]
-            ranges.append((this_anchor_begin, this_anchor_end))
-        norm_ranges = normalize_ranges(ranges)
-        node_anchor_list.append(norm_ranges)
-
-#       we store the true value increased by one
-        node_anchor_min[node] = min(norm_ranges) + 1
-        node_anchor_max[node] = max(norm_ranges) + 1
-
-    (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
-    result_items.append(("node_anchor_min", node_anchor_min))
-    result_items.append(("node_anchor_max", node_anchor_max))
-    result_items.append(("node_anchor", node_anchor))
-    result_items.append(("node_anchor_items", node_anchor_items))
-    node_region_list = None
-    del temp_data_items["node_region_list"]
-
-    def interval(node):
-        ''' Key function used when sorting objects according to embedding and left right.
-
-        Args:
-            node (int):
-                interval
-
-        Returns:
-            a tuple containing the left boundary and the nagative of the right boundary
-        '''
-        return (node_anchor_min[node], -node_anchor_max[node])
-
-    stamp.progress("NODES SORTING BY REGIONS")
-
-    node_sort = array.array('I', sorted(node_linked, key=interval))
-    result_items.append(("node_sort", node_sort))
-
-    stamp.progress("NODES EVENTS")
-
-    anchor_max = max(node_anchor_max) - 1
-    node_events = list([([],[],[]) for n in range(anchor_max + 1)])
-
-    for n in node_sort:
-        ranges = node_anchor_list[n]
-        amin = ranges[0]
-        amax = ranges[len(ranges)-1] 
-        for (r, (a_start, a_end)) in enumerate(grouper(ranges, 2)):
-            is_first = r == 0
-            is_last = r == (len(ranges) / 2) - 1
-            start_kind = 0 if is_first else 1 # 0 = start,   1 = resume
-            end_kind = 3 if is_last else 2    # 2 = suspend, 3 = end
-            if amin == amax:
-                node_events[a_start][1].extend([(n, 0), (n,3)])
-            else:
-                node_events[a_start][0].append((n, start_kind))
-                node_events[a_end][2].append((n, end_kind))
-
-    node_events_n = array.array('I')
-    node_events_k = array.array('I')
-    node_events_a = list([[] for a in range(anchor_max + 1)])
-
-    e_index = 0
-    for (anchor, events) in enumerate(node_events):
-        events[2].reverse()
-        for main_kind in (2, 1, 0):
-            for (node, kind) in events[main_kind]:
-                node_events_n.append(node)
-                node_events_k.append(kind)
-                node_events_a[anchor].append(e_index)
-                e_index += 1
-
-    node_events = None
-    (node_events, node_events_items) = arrayify(node_events_a)
-    node_events_a = None
-
-    result_items.append(("node_events_n", node_events_n))
-    result_items.append(("node_events_k", node_events_k))
-    result_items.append(("node_events", node_events))
-    result_items.append(("node_events_items", node_events_items))
-
-    node_anchor_list = None
-
-    return result_items
+    if origin == 'm':
+        model_x()
+        model_regions()
+    model_conn()
 

@@ -33,9 +33,11 @@ There are also other ways, including a config file next to your notebook.
 
 Changes under the hood
 ^^^^^^^^^^^^^^^^^^^^^^
-The mechanism to store and load LAF data now has a hook by which auxiliary modules can register new data with LAF Fabric.
-Currently, this mechanism is used by the ``etcbc`` module to inject a better ordering of the nodes than LAF Fabric can generate on its own.
-In future versions we will use this mechanism to load compute and load extra indices needed for working with the EMDROS database.
+* The mechanism to store and load LAF data now has a hook by which auxiliary modules can register new data with LAF Fabric.
+  Currently, this mechanism is used by the ``etcbc`` module to inject a better ordering of the nodes than LAF Fabric can generate on its own.
+  In future versions we will use this mechanism to load compute and load extra indices needed for working with the EMDROS database.
+* Unit tests. In the file *lf-unittest.py* there are now several unit tests. If they pass most things in LAF-Fabric are working as expected.
+  However, the set needs to be enlarged before new changes are undertaken.
 
 3.7
 ---
@@ -181,7 +183,7 @@ Incompatible changes
 Bugfix. The order of node events turned out wrong in the case of nodes that are linked to point regions,
 i.e. regions with zero width (e.g. ``(n, n)``, being the point between characters ``n-1`` and ``n``).
 This caused weird behaviour in the tree generating notebook
-`trees (rough path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees-r.ipynb>`_.
+`trees (rough path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/trees-r.ipynb>`_.
 
 Yet it is impossible to guarantee natural behaviour in all cases.
 If there are nodes linked to empty regions in your LAF resource, you should sort the node events per anchor yourself,

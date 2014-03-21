@@ -7,9 +7,9 @@ class Names(Settings):
     Data items are stored in a dictionary with keys that tell a lot about the kind of data stored under that key.
     Keys have the following format::
 
-        origin group kind direction <space> item
+        origin group kind direction ( item )
 
-    and **item** is a space separated list of a variable number of components, possibly zero.
+    and **item** is a comma separated list of a variable number of components, possibly zero.
 
     **Group**:
 
@@ -71,10 +71,10 @@ class Names(Settings):
         ('mG00 edges_from',        (True,  'arr')),
         ('mG00 edges_to',          (True,  'arr')),
         ('mP00 primary_data',      (False, 'str')),
-        ('mXnf ',                  ([],    'dct')),
-        ('mXef ',                  ([],    'dct')),
-        ('mXnb ',                  ([],    'dct')),
-        ('mXeb ',                  ([],    'dct')),
+        ('mXnf',                   ([],    'dct')),
+        ('mXef',                   ([],    'dct')),
+        ('mXnb',                   ([],    'dct')),
+        ('mXeb',                   ([],    'dct')),
         ('mFn0',                   ([],    'dct')),
         ('mFe0',                   ([],    'dct')),
         ('mC0f',                   ([],    'dct')),
@@ -88,13 +88,13 @@ class Names(Settings):
     ))
     _data_items_def = collections.OrderedDict()
 
-    E_ANNOT_YES = ('-','-','y')
-    E_ANNOT_NON = ('-','-','x')
+    E_ANNOT_YES = ('','','y')
+    E_ANNOT_NON = ('','','x')
     DCOMP_SEP = ','
 
-    def __init__(self, work_dir, laf_dir, save):
-        Settings.__init__(self, work_dir, laf_dir, save)
-        self._data_items = collections.OrderedDict()
+    def __init__(self, work_dir, laf_dir, save, verbose):
+        Settings.__init__(self, work_dir, laf_dir, save, verbose)
+        self.req_data_items = collections.OrderedDict()
         self._old_data_items = collections.OrderedDict()
         for ((dkey_raw, dbits)) in Names._data_items_tpl:
             parts = dkey_raw.split(' ')
@@ -115,7 +115,13 @@ class Names(Settings):
         
     def apiname(dcomps): return "_".join(dcomps)
     def orig_key(dkey): return dkey.replace('z', 'm', 1) if dkey.startswith('z') else dkey
-    def deliver(computed_data, dest, data_items): data_items[Names.comp(*dest)] = computed_data
+
+    def query(dorigin=None, dgroup=None):
+        def test(dkey): return (not dorigin or dorigin == dkey[0]) and (not dgroup or dgroup == dkey[1])
+        return [dkey for dkey in Names._data_items_def if test(dkey)]
+
+    def deliver(computed_data, dest, data_items):
+        if computed_data: data_items[Names.comp(*dest)] = computed_data
 
     def dmsg(dkey):
         (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
@@ -135,22 +141,22 @@ class Names(Settings):
             req_items[docc] = docc_def.copy() if type(docc_def) == list or type(docc_def) == dict else docc_def
 
     def request_files(self, req_items):
-        self._old_data_items = self._data_items
-        self._data_items = collections.OrderedDict()
+        self._old_data_items = self.req_data_items
+        self.req_data_items = collections.OrderedDict()
         for dkey in Names._data_items_def:
             (docc_def, dtype) = Names._data_items_def[dkey]
             docc = Names.decomp(dkey)[0]
             if docc not in req_items: continue
             if req_items[docc] == True:
-                self._data_items[dkey] = self.dinfo(dkey)
+                self.req_data_items[dkey] = self.dinfo(dkey)
             elif req_items[docc] == False or req_items[docc] == None: continue
             else:
                 for dcomps in req_items[docc]:
                     dkeyfull = Names.comp(dkey, dcomps)
-                    self._data_items[dkeyfull] = self.dinfo(dkeyfull)
+                    self.req_data_items[dkeyfull] = self.dinfo(dkeyfull)
         dkeys = {'clear': [], 'keep': [], 'load': []}
         old_data_items = self._old_data_items
-        new_data_items = self._data_items
+        new_data_items = self.req_data_items
         for dkey in old_data_items:
             if dkey not in new_data_items or new_data_items[dkey] != old_data_items[dkey]: dkeys['clear'].append(dkey)
         for dkey in new_data_items:
@@ -168,5 +174,5 @@ class Names(Settings):
         if dgroup == 'T': return (None, None, None, None, None)
         dloc = self.env['{}_compiled_dir'.format(dorigin)]
         dfile = Names.comp_file(dgroup, dkind, ddir, dcomps)
-        return (dorigin == 'm', dloc, dfile, dtype, dorigin == 'z')
+        return (dgroup not in 'FC', dloc, dfile, dtype, dorigin == 'z')
 

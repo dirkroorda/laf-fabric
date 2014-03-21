@@ -82,6 +82,7 @@ Then you have the processor to load data, according to the source you choose::
             "primary": False,
         },
         compile_main=False, compile_annox=False,
+        verbose='NORMAL',
     )
 
 If you want to do other tasks in your script, you can repeat calls to ``API()``.
@@ -142,6 +143,37 @@ compared to::
 
 Not all API elements contain meaningful information.
 It depends on what you have specified in the ``init()`` call.
+
+.. _node-order:
+
+Node order
+==========
+There is an implicit partial order on nodes, derived from their attachment to *regions*
+which are stretches of primary data, and the primary data is totally ordered.
+The order we use in LAF-Fabric is defined as follows.
+
+Suppose we compare node *A* and node *B*.
+Look up all regions for *A* and for *B* and determine the first point of the first region
+and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
+
+Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
+
+In other words: if *A* starts before *B*, then *A* becomes before *B*.
+If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
+
+If neither *A* < *B* nor *B* < *A* then the order is not specified.
+LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
+The only way this can happen is when *A* and *B* start and end at the same point.
+Between those points they might be very different. 
+
+Based on the formal information in a LAF resource, LAF-Fabric is not able to order
+the nodes according to all of your intuitions.
+However, if you have a particular LAF resource and a method to order the nodes in a more satisfying manner,
+you can supply a module in which you implement that order. See :ref:`data-prep`.
+
+The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
+the order specifies a walk through the nodes were enclosing nodes come first,
+and embedded children come in the order dictated by the primary data.
 
 LAF API
 =======
@@ -233,6 +265,10 @@ Examples:
     source_node in Ci.__x.v(target_node)
     source_node in Ci.__y.v(target_node)
 
+**C. Sorting the results**:: 
+
+    target_node in C.xyz_ft_property.vs(source_node)
+
 (the methods ``vv`` and ``endnodes`` are also valid for the special features.
 
 **Ad A. Normal edge features**
@@ -246,11 +282,12 @@ For each *edge*-feature that you have declared, it has a member with a handy nam
 ``C.xyz_ft_property`` is a connection table based on the
 edge-feature ``property`` in the annotation space ``xyz``, under annotation label ``ft``.
 
-Such a table yields for each node ``node1`` pairs ``(node2, val)`` for which there is an edge going
+Such a table yields for each node ``node1`` a list of pairs ``(node2, val)`` for which there is an edge going
 from ``node1`` to ``node2``, annotated by this feature with value ``val``.
 
 This is what the ``vv()`` methods yields as a generator.
-If you are not interested in the actual values, there is a simpler generator ``v()``, just yielding the nodes.
+
+If you are not interested in the actual values, there is a simpler generator ``v()``, yielding the list of only the nodes.
 If there are multiple edges with several values going from ``node1`` to ``node2``, ``node2`` will be yielded
 only once.
 
@@ -278,6 +315,13 @@ In your script you can compute what the unannotated edges are according to the c
 It is all the edges that you get with ``__x``, minus those yielded by ``__y``.
 
 Think of ``x`` as *excluded* from annotations, and ``y`` as *yes annotations*.
+
+**Ad C. Sorting the results** 
+
+The results of the ``v`` and ``vv`` methods are unordered.
+If you want ordering, use the ``v`` and ``vv`` methods instead.
+Their results are ordered in the standard ordering.
+If you have loaded an additional prepared ordering, the results will come in that ordering.
 
 See the example notebook
 `trees <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/syntax/trees.ipynb>`_
@@ -310,38 +354,63 @@ NN (Next Node)
 --------------
 Examples::
     
-    (a) for node in NN():
-            pass
+    (a0) for node in NN():
+             pass
 
-    (b) for node in NN(test=F.shebanq_db_otype.v, value='book'):
-            pass
+    (a1) for node in NN(nodes=nodeset):
+             pass
 
-    (c) for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
-            pass
+    (a2) for node in NN(nodes=nodeset, extrakey=your_order):
+             pass
 
-    (d) for node in NN(
-            test=F.shebanq_db_otype.v,
-            values=['phrase', 'word'],
-            extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase',
-        ):
-            pass
+    (b)  for node in NN(test=F.shebanq_db_otype.v, value='book'):
+             pass
+
+    (c)  for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
+             pass
+
+    (d)  for node in NN(
+             test=F.shebanq_db_otype.v,
+             values=['phrase', 'word'],
+             extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase',
+         ):
+             pass
 
 NN() walks through nodes, not by edges, but through a predefined set, in the
 natural order given by the primary data (see :ref:`node-order`).
 Only nodes that are linked to a region (one or more) of the primary data are
-being walked.
+being walked. You can walk all nodes, or just a given set.
 
 It is an *iterator* that yields a new node everytime it is called.
 
-The ``test`` and ``value`` arguments are optional.
-If given, ``test`` should be a *callable* with one argument, returning a string;
-``value`` should be a string and ``values`` should be an iterable of strings.
+All arguments are optional. They mean the following, if present.
+
+* ``test``: A filter that tests whether nodes are passed through or inhibited.
+  It should be a *callable* with one argument and return some value;
+* ``value``: string
+* ``values``: an iterable of strings.
 
 ``test`` will be called for each passing node,
-and if the value returned is not in the set given ``value`` and/or ``values``,
-the node will be skipped.
+and if the value returned is not in the set given by ``value`` and/or ``values``,
+the node will be skipped. If neither ``value`` or ``values`` are provided,
+the node will be passed if and only if ``test`` returns a true value.
 
-Example (a) iterates through all nodes, (b) only through the book nodes, because *test*
+* ``nodes``: this will limit the set of nodes that are visited to the given value,
+  which must be an iterable of nodes. Before yielding nodes, ``NN(nodes=nodeset)``
+  will order the nodes according to the standard ordering, and if you have provided
+  an extra, prepared ordering, this ordering will be taken instead.
+
+The ``nodes`` argument is compatible with all other arguments.
+
+.. note::
+    ``nodelist = NN(nodes=nodeset)`` is a practical way to get the nodeset in the right
+    order. If your program works a lot with nodeset, and then needs to produce
+    orderly output, this is your method. If you have a custom ordering defined in your
+    task, you can apply it to arbitrary node sets via ``NN(nodes=nodeset, extrakey=your_order)``.
+
+Example (a) iterates through all nodes, (a1) only through the nodes in nodeset,
+(a2) idem, but applies an extra ordering beforehand, 
+(b) only through the book nodes, because *test*
 is the feature value lookup function associated with the ``shebanq_db_otype`` function,
 which gives for each node its type.
 
@@ -368,6 +437,12 @@ Because ``False`` comes before ``True``, the phrases come before the words they 
     The difficulty is where the ``BF`` method above yields ``None``.
     It is exactly these cases that are remedied with ``extrakey``. 
     The rest of the order remains untouched.
+
+.. caution::
+    Ordering the nodes with ``extrakey`` is costly, it may take several seconds.
+    The etcbc module comes with a method to compute this ordering once and for all.
+    This supplementary data can easilyand quickly be loaded, and then you do not have to bother
+    about ``extrakey`` anymore. See :ref:`data-prep`.
 
 .. note::
     You can invoke a supplementary module of your choice to make the ordering more complete.
@@ -596,34 +671,7 @@ A newline will be appended, unless you say ``newline=False``.
 The elapsed time is reckoned from the start of the task, but after all the task-specific
 loading of features.
 
-.. _node-order:
-
-Node order
-==========
-There is an implicit partial order on nodes, derived from their attachment to *regions*
-which are stretches of primary data, and the primary data is totally ordered.
-The order we use in LAF-Fabric is defined as follows.
-
-Suppose we compare node *A* and node *B*.
-Look up all regions for *A* and for *B* and determine the first point of the first region
-and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
-
-Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
-
-In other words: if *A* starts before *B*, then *A* becomes before *B*.
-If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
-
-If neither *A* < *B* nor *B* < *A* then the order is not specified.
-LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
-The only way this can happen is when *A* and *B* start and end at the same point.
-Between those points they might be very different. 
-
-If you have a LAF resource and a method to order the nodes more completely,
-you can supply that as an extra data preparation step. See below.
-
-The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
-the order specifies a walk through the nodes were enclosing nodes come first,
-and embedded children come in the order dictated by the primary data.
+.. _data-prep:
 
 Extra data preparation
 ======================
@@ -678,14 +726,22 @@ Here is the actual contents of *etcbc.preprocess* in this distribution::
 
 Back to your notebook. Say::
 
-    from etcbc import preprocess
+    from etcbc.preprocess import prepare
+
+    processor.load('your source', '--', 'your task',
+        {
+            "xmlids": {"node": False, "edge": False},
+            "features": { ... your features ...},
+            "prepare": prepare,
+        }
+    )
 
 then the following will happen:
 
 * LAF-Fabric checks whether file *Z/etcbc/zG00(node_sort)* and *Z/etcbc/zG00(node_sort_inv)* exist next to the binary compiled data, and whether these files
   are newer than your module *preprocess.py*.
 * If so, it loads this data from disk.
-* If not, it will execute the *node_order* function, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk
+* If not, it will execute the *node_order* function in *preprocess.py*, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk
   in *Z/etcbc/zG00(node_sort)* and it also computes *node_order_inv* in order to get an inverse: *Z/etcbc/zG00(node_sort_inv)*.
 
 Note that these functions can be programmed using the API of LAF-Fabric itself. Preparing data always takes place after full loading.

@@ -120,9 +120,14 @@ def model(origin, data_items, stamp):
         node_anchor_list = None
 
     def model_conn():
+        node_anchor_min = data_items[Names.comp('mG00', ('node_anchor_min',))]
+        node_anchor_max = data_items[Names.comp('mG00', ('node_anchor_max',))]
+
+        def interval(elem): return (node_anchor_min[elem[0]], -node_anchor_max[elem[0]])
+
         stamp.Imsg("CONNECTIVITY")
-        edges_from = data_items[Names.comp(origin + 'G00', ('edges_from',))]
-        edges_to = data_items[Names.comp(origin + 'G00', ('edges_to',))]
+        edges_from = data_items[Names.comp('m' + 'G00', ('edges_from',))]
+        edges_to = data_items[Names.comp('m' + 'G00', ('edges_to',))]
         labeled_edges = set()
         efeatures = set()
         for dkey in data_items:
@@ -137,10 +142,11 @@ def model(origin, data_items, stamp):
                 labeled_edges.add(edge)
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
-                connections.setdefault(dkey, {}).setdefault(node_from, set()).add((node_to, fvalue))
-                connectionsi.setdefault(dkey, {}).setdefault(node_to, set()).add((node_from, fvalue))
+                connections.setdefault(node_from, {})[node_to] = fvalue
+                connectionsi.setdefault(node_to, {})[node_from] = fvalue
             Names.deliver(connections, (origin + 'C0f', feat), data_items)
-            Names.deliver(connections, (origin + 'C0b', feat), data_items)
+            Names.deliver(connectionsi, (origin + 'C0b', feat), data_items)
+
         connections = {}
         connectionsi = {}
         if origin == 'm':
@@ -148,18 +154,18 @@ def model(origin, data_items, stamp):
                 if edge in labeled_edges: continue
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
-                connections.setdefault(node_from, set()).add((node_to, ''))
-                connectionsi.setdefault(node_to, set()).add((node_from, ''))
+                connections.setdefault(node_from, {})[node_to] = ''
+                connectionsi.setdefault(node_to, {})[node_from] = ''
         elif origin == 'a':
             for edge in range(len(edges_from)):
                 if edge not in labeled_edges: continue
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
-                connections.setdefault(node_from, set()).add((node_to, ''))
-                connectionsi.setdefault(node_to, set()).add((node_from, ''))
+                connections.setdefault(node_from, {})[node_to] = ''
+                connectionsi.setdefault(node_to, {})[node_from] = ''
         sfeature = Names.E_ANNOT_NON if origin == 'm' else Names.E_ANNOT_YES if origin == 'a' else ''
         Names.deliver(connections, (origin + 'C0f', sfeature), data_items)
-        Names.deliver(connections, (origin + 'C0b', sfeature), data_items)
+        Names.deliver(connectionsi, (origin + 'C0b', sfeature), data_items)
 
     if origin == 'm':
         model_x()

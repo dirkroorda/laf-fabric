@@ -1,9 +1,11 @@
 import sys
 import os
 import configparser
+from .timestamp import Timestamp
 
-MAIN_CFG = 'laf-fabric.cfg'
 VERSION = '3.7.0'
+MAIN_CFG = 'laf-fabric.cfg'
+DEFAULT_WORK_DIR = 'laf-fabric-data'
 
 class Settings(object):
     '''Manage the configuration.
@@ -37,8 +39,8 @@ class Settings(object):
         'empty':                 '{empty}',
         'work_dir':              '{work_dir}',
         'bin_dir':               '{work_dir}/{bin_subdir}',
-        'm_source_dir':          '{m_source_dir}',
-        'm_source_path':         '{m_source_dir}/{source}',
+        'm_source_dir':          '{m_source_dir}/{m_source_subdir}',
+        'm_source_path':         '{m_source_dir}/{m_source_subdir}/{source}',
         'a_source_dir':          '{m_source_dir}/{a_source_subdir}/{annox}',
         'a_source_path':         '{m_source_dir}/{a_source_subdir}/{annox}/{header}',
         'compiled_file':         '{log_name}{compile_name}.{text_ext}',
@@ -52,46 +54,44 @@ class Settings(object):
         'log_path':              '{work_dir}/{task_subdir}/{source}/{task}/{log_name}{task}.{text_ext}',
     }
 
-    def __init__(self, work_dir, laf_dir, save):
-        sys.stderr.write('This is LAF-Fabric {}\n'.format(VERSION))
-        config_path = None
-        home_config_path = "{}/{}".format(os.path.expanduser('~'), MAIN_CFG)
-        cwd_path = os.getcwd()
-        if os.path.exists(MAIN_CFG): config_path = MAIN_CFG
-        else:
-            if os.path.exists(home_config_path): config_path = home_config_path
+    def __init__(self, work_dir, laf_dir, save, verbose):
+        stamp = Timestamp(verbose=verbose)
+        self.stamp = stamp
+        stamp.Nmsg('This is LAF-Fabric {}'.format(VERSION))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
-        strings.read_file(open(config_path, "r", encoding="utf-8"))
+        cw_dir = os.getcwd()
+        home_dir = os.path.expanduser('~')
+        global_config_dir = "{}/{}".format(home_dir, DEFAULT_WORK_DIR)
+        global_config_path = "{}/{}".format(global_config_dir, MAIN_CFG)
+        local_config_path = MAIN_CFG
+        default_work_dir = global_config_dir
+        default_laf_dir = global_config_dir
         config_work_dir = None
         config_laf_dir = None
-        if 'locations' in strings:
-            if 'work_dir' in strings['locations']: config_work_dir = strings['locations']['work_dir']
-            if 'laf_dir' in strings['locations']: config_laf_dir = strings['locations']['laf_dir']
-        if work_dir == None: work_dir = config_work_dir
-        if laf_dir == None: laf_dir = config_laf_dir
-        if work_dir == None:
-            print("ERROR: No data directory given (looked for arguments, {}, and {}.".format(MAIN_CFG, home_config_dir))
-            sys.exit(1)
-        work_dir = work_dir.replace('.', cwd_path, 1) if work_dir.startswith('.') else work_dir
-        laf_dir = laf_dir.replace('.', cwd_path, 1) if laf_dir.startswith('.') else laf_dir
-        if not os.path.exists(work_dir):
-            print("ERROR: Given data directory {} does not exist.".format(work_dir))
-            work_dir = None
-        if work_dir == None: sys.exit(1)
-        if laf_dir == None:
-            print("WARNING: No original laf directory given (looked for arguments, {}, and {}.".format(MAIN_CFG, home_config_dir))
-        elif not os.path.exists(laf_dir):
-            print("WARNING: Given original laf directory {} does not exist.".format(laf_dir))
-            laf_dir = None
-        self._myconfig['work_dir'] = work_dir
-        self._myconfig['m_source_dir'] = laf_dir
-        if save and work_dir != None:
-            strings['locations'] = {
-                'work_dir': work_dir,
-                'laf_dir': laf_dir,
-            }
-            config_path = home_config_path
-            strings.write(open(home_config_path, 'w', encoding= 'utf-8'))
+        the_config_path = None
+        for config_path in (local_config_path, global_config_path):
+            if os.path.exists(config_path): the_config_path = config_path
+        if the_config_path != None:
+            with open(the_config_path, "r", encoding="utf-8") as f: strings.read_file(f)
+            if 'locations' in strings:
+                if 'work_dir' in strings['locations']: config_work_dir = strings['locations']['work_dir']
+                if 'laf_dir' in strings['locations']: config_laf_dir = strings['locations']['laf_dir']
+        the_work_dir = work_dir or config_work_dir or default_work_dir
+        the_laf_dir = laf_dir or config_laf_dir or the_work_dir
+        the_work_dir = \
+            the_work_dir.replace('.', cw_dir, 1) if the_work_dir.startswith('.') else the_work_dir.replace('~', home_dir, 1) if the_work_dir.startswith('~') else the_work_dir
+        the_laf_dir = \
+            the_laf_dir.replace('.', cw_dir, 1) if the_laf_dir.startswith('.') else the_laf_dir.replace('~', home_dir, 1) if the_laf_dir.startswith('~') else the_laf_dir
+        if not os.path.exists(the_work_dir):
+            stamp.Imsg("CREATING new WORK_DIR {}".format(the_work_dir))
+            os.makedirs(the_work_dir)
+        self._myconfig.update({'work_dir': the_work_dir, 'm_source_dir': the_laf_dir})
+        if save:
+            strings['locations'] = {'work_dir': the_work_dir, 'laf_dir': the_laf_dir}
+            if not os.path.exists(global_config_path):
+                stamp.Imsg("CREATING new GLOBAL CONFIG FILE {}".format(global_config_path))
+                if not os.path.exists(global_config_dir): os.makedirs(global_config_dir)
+            with open(global_config_path, "w", encoding="utf-8") as f: strings.write(f)
         self.env = {}
         self.zspace = ''
 

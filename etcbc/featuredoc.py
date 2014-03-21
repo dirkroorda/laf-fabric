@@ -43,8 +43,8 @@ class FeatureDoc(object):
         self.study = study
         this_load = deepcopy(BASELOAD)
         this_load['features']['shebanq']['node'].extend(['ft.{}'.format(x) for x in study['features']])
-        processor.load(this_load)
-        self.API = processor.API()
+        processor.load_again(this_load)
+        self.API = processor.api
 
     def feature_doc(self):
         '''Create the feature information.
@@ -78,7 +78,7 @@ class FeatureDoc(object):
         
         for node in NN():
             for (ft, feat) in feats:
-                val = F.F[feat].v(node)
+                val = F.item[feat].v(node)
                 otype = F.shebanq_db_otype.v(node)
                 if val != None:
                     if val in absence_values:

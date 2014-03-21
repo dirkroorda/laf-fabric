@@ -225,10 +225,9 @@ def parse(origin, graf_header_file, stamp, data_items):
     init()
     saxparse(graf_header_file, HeaderHandler())
 
-    handle = open(primary_data_file, "r", encoding="utf-8")
-    primary_data = handle.read(None)
-    handle.close()
-    Names.deliver(primary_data, (origin + 'P00', ('primary_data',)), data_items)
+    if origin == 'm':
+        with open(primary_data_file, "r", encoding="utf-8") as f: primary_data = f.read(None)
+        Names.deliver(primary_data, (origin + 'P00', ('primary_data',)), data_items)
 
     for kind in ('n', 'e'):
         xi_key = Names.comp('mX' + kind + 'f', ())
@@ -260,13 +259,14 @@ def parse(origin, graf_header_file, stamp, data_items):
         id_region + id_node + id_edge + id_annot,
     )
     stamp.Imsg(mg)
-    Names.deliver(identifiers_n, (origin + 'Xnf', ()), data_items)
-    Names.deliver(identifiers_e, (origin + 'Xef', ()), data_items)
-    Names.deliver(region_begin, (origin + 'T00', ('region_begin',)), data_items)
-    Names.deliver(region_end, (origin + 'T00', ('region_end',)), data_items)
-    Names.deliver(node_region_list, (origin + 'T00', ('node_region_list',)), data_items)
-    Names.deliver(edges_from, (origin + 'G00', ('edges_from',)), data_items)
-    Names.deliver(edges_from, (origin + 'G00', ('edges_to',)), data_items)
+    if origin == 'm':
+        Names.deliver(identifiers_n, (origin + 'Xnf', ()), data_items)
+        Names.deliver(identifiers_e, (origin + 'Xef', ()), data_items)
+        Names.deliver(edges_from, (origin + 'G00', ('edges_from',)), data_items)
+        Names.deliver(edges_to, (origin + 'G00', ('edges_to',)), data_items)
+        Names.deliver(region_begin, (origin + 'T00', ('region_begin',)), data_items)
+        Names.deliver(region_end, (origin + 'T00', ('region_end',)), data_items)
+        Names.deliver(node_region_list, (origin + 'T00', ('node_region_list',)), data_items)
 
     for f in feature: Names.deliver(feature[f], (origin + 'Fn0', f), data_items)
     for f in efeature: Names.deliver(efeature[f], (origin + 'Fe0', f), data_items)

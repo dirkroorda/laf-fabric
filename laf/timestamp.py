@@ -22,10 +22,10 @@ class Timestamp(object):
         ('DEBUG', 10),
     ))
 
-    def __init__(self, log_file=None):
+    def __init__(self, log_file=None, verbose=None):
         self.timestamp = time.time()
         self.log = None
-        self.verbose = self.verbose_level['NORMAL']
+        self.verbose = self.verbose_level[verbose or 'NORMAL']
         if log_file:
             self.connect_log(log_file)
 
@@ -37,7 +37,7 @@ class Timestamp(object):
     def Xmsg(self, msg, newline=True, withtime=True): self.raw_msg('XXX: '+msg, newline, withtime, verbose='DEBUG')
 
     def raw_msg(self, msg, newline=True, withtime=True, verbose=None):
-        verbose = 'NORMAL' if verbose == None else verbose
+        verbose = verbose or 'NORMAL'
         if self.verbose_level[verbose] > self.verbose: return 
         timed_msg = "{:>7} ".format(self._elapsed()) if withtime else ''
         timed_msg += msg
@@ -46,7 +46,7 @@ class Timestamp(object):
         sys.stderr.flush()
         if self.log: self.log.write(timed_msg)
 
-    def set_verbose(self, verbose): self.verbose = self.verbose_level[verbose if verbose else 'NORMAL']
+    def set_verbose(self, verbose): self.verbose = self.verbose_level[verbose or 'NORMAL']
     def reset(self): self.timestamp = time.time()
     def connect_log(self, log_file): self.log = log_file
     def disconnect_log(self): self.log = None

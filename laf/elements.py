@@ -44,7 +44,7 @@ class Connection(object):
     (having this feature with this value or any value).
     '''
     def __init__(self, lafapi, feature, inv):
-        self.source = lafapi
+        self.lafapi = lafapi
         self.inv = inv
         data_items = lafapi.data_items
         label = Names.comp('mC0' + inv, feature)
@@ -52,18 +52,39 @@ class Connection(object):
         self.lookup = data_items[label] if label in data_items else {}
         self.alookup = data_items[alabel] if alabel in data_items else {}
 
+    def vs(self, n):
+        lookup = self.lookup
+        alookup = self.alookup
+        data_items = self.lafapi.data_items
+        order = data_items[Names.comp('mG00', ('node_sort_inv',))]
+        cn = lookup.get(n, {})
+        cn.update(alookup.get(n, {}))
+        for x in sorted(cn.keys(), key=lambda x:order[x]): yield x
+
+    def vvs(self, n):
+        lookup = self.lookup
+        alookup = self.alookup
+        data_items = self.lafapi.data_items
+        order = data_items[Names.comp('mG00', ('node_sort_inv',))]
+        cn = lookup.get(n, {})
+        cn.update(alookup.get(n, {}))
+        for x in sorted(cn.items(), key=lambda x:order[x[0]]): yield x
+
     def v(self, n):
         lookup = self.lookup
         alookup = self.alookup
-        for m in set(lookup.get(n, {})) | set(alookup.get(n, {})): yield m
+        for x in alookup.get(n, {}).keys(): yield x
+        for x in lookup.get(n, {}).keys(): yield x
 
     def vv(self, n):
         lookup = self.lookup
         alookup = self.alookup
-        for m in set(lookup.get(n, {})) | set(alookup.get(n, {})):
-            yield (m, alookup.get(n, lookup.get(n)).get(m, lookup.get(n).get(m)))
+        for x in alookup.get(n, {}).items(): yield x
+        for x in lookup.get(n, {}).items(): yield x
 
     def endnodes(self, node_set, value=None):
+        data_items = self.lafapi.data_items
+        order = data_items[Names.comp('mG00', ('node_sort_inv',))]
         visited = set()
         result = set()
         next_set = node_set
@@ -75,7 +96,7 @@ class Connection(object):
                 if next_nodes: new_next_set |= next_nodes - visited
                 else: result.add(node)
             next_set = new_next_set
-        return result
+        return sorted(result, key=lambda x:order[x])
 
 class XMLid(object):
     '''Mappings between XML identifiers in original LAF resource and integers identifying nodes and edges in compiled data.

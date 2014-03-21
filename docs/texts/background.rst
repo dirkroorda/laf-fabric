@@ -92,7 +92,7 @@ That is a great environment to run tasks interactively, exploring the data as yo
 your intermediate results at the moment they become available.
 Last but not least, you can add documentation to notebooks and share them with your colleagues.
 As an example, look at the
-`gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+`gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/gender.ipynb>`_
 notebook by which you can draw a graph of the percentage of masculine and feminine
 words in each chapter of the Hebrew Bible.
 More involved notebooks can be found at the `ETCBC-Data repository <https://github.com/judithgottschalk/ETCBC-data>`_.

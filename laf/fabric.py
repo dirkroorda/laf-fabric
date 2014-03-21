@@ -2,7 +2,6 @@ import os
 import glob
 import collections
 from .lib import make_array_inverse
-from .timestamp import Timestamp
 from .names import Names
 from .data import LafData
 from .elements import Feature, Connection, XMLid, PrimaryData
@@ -12,9 +11,9 @@ class LafAPI(LafData):
     ``API()`` returns a dict keyed by mnemonics and valued by API methods.
     '''
     def __init__(self, names):
-        LafData.__init__(self)
-        self.stamp = Timestamp()
         self.names = names
+        self.stamp = names.stamp
+        LafData.__init__(self)
         self.result_files = []
 
     def API(self):
@@ -53,7 +52,7 @@ class LafAPI(LafData):
             for feat in connections[inv]:
                 name = Names.apiname(feat) 
                 obj = Connection(self, feat, inv)
-                dest = api['Ci'] if inv else api['C']
+                dest = api['C'] if inv == 'f' else api['Ci'] if inv == 'b' else None
                 dest.item[name] = obj
                 setattr(dest, name, obj)
         for kind in xmlmaps:
@@ -78,10 +77,21 @@ class LafAPI(LafData):
             result = []
             for namespace in sorted(all_features[kind]):
                 result.append((namespace, sorted(all_features[kind][namespace])))
+            return result
+
+        def pretty_fl(flist):
+            result = []
+            for ((namespace, features)) in flist:
+                result.append('{}:'.format(namespace))
+                for feature in features:
+                    result.append('\t{}:'.format(feature))
+            return '\n'.join(result)
 
         api.update({
             'F_all': feature_list('n'),
+            'fF_all': pretty_fl(feature_list('n')),
             'FE_all': feature_list('e'),
+            'fFE_all': pretty_fl(feature_list('e')),
         })
         self.api.update(api)
 
@@ -104,7 +114,7 @@ class LafAPI(LafData):
             if node_anchor_max[nodea] < node_anchor_max[nodeb]: return False
             return None
 
-        def next_node(test=None, value=None, values=None, extrakey=None):
+        def next_node(nodes=None, test=None, value=None, values=None, extrakey=None):
             class Extra_key(object):
                 __slots__ = ['value', 'amin', 'amax']
                 def __init__(self, node):
@@ -132,20 +142,22 @@ class LafAPI(LafData):
                 __hash__ = None
 
             order = data_items[Names.comp('mG00', ('node_sort',))]
+            the_nodes = nodes or order
 
             if extrakey != None:
-                self.stamp.Imsg("Resorting {} nodes...".format(len(order)))
-                order = sorted(order, key=Extra_key)
+                self.stamp.Imsg("Resorting {} nodes...".format(len(the_nodes)))
+                the_nodes = sorted(the_nodes, key=Extra_key)
                 self.stamp.Imsg("Done")
             if test != None:
-                test_values = {}
-                if value != None: test_values[value] = None
-                if values != None:
-                    for val in values: test_values[val] = None
-                for node in order:
-                    if test(node) in test_values: yield node
+                test_values = set(([value] if value != None else []) + (list(values) if values != None else []))
+                if len(test_values):
+                    for node in the_nodes:
+                        if test(node) in test_values: yield node
+                else:
+                    for node in the_nodes:
+                        if test(node): yield node
             else:
-                for node in order: yield node
+                for node in the_nodes: yield node
 
         def no_next_event(key=None, simplify=None):
             self.stamp.Emsg("Node events not available because primary data is not loaded.")
@@ -281,14 +293,15 @@ class LafFabric(object):
     ``load(params)``: given the source, annox and task, loads the data, assembles the API, and returns the API.
     '''
     def __init__(self, work_dir=None, laf_dir=None, save=False, verbose=None):
-        self.lafapi = LafAPI(Names(work_dir, laf_dir, save))
-        self.lafapi.stamp.set_verbose(verbose)
+        self.lafapi = LafAPI(Names(work_dir, laf_dir, save, verbose))
         self.lafapi.stamp.reset()
         self.api = {}
 
-    def load(self, source, annox, task, load_dict, compile_main=False, compile_annox=False):
+    def load(self, source, annox, task, load_dict, compile_main=False, compile_annox=False, verbose=None):
         self.api.clear()
         lafapi = self.lafapi
+        self.lafapi.stamp.reset()
+        if verbose: self.lafapi.stamp.set_verbose(verbose)
         lafapi.stamp.Nmsg("LOADING API: please wait ... ")
         lafapi.names.setenv(source=source, annox=annox, task=task)
         env = lafapi.names.env
@@ -296,9 +309,9 @@ class LafFabric(object):
         lafapi.names.request_init(req_items)
         if 'primary' in load_dict and load_dict['primary']: req_items['mP00'] = True
         if 'xmlids' in load_dict:
-            for item in [k[0] for k in load_dict['xmlids'] if load_dict['xmlids'][k]]:
+            for kind in [k[0] for k in load_dict['xmlids'] if load_dict['xmlids'][k]]:
                 for ddir in ('f', 'b'): req_items['mX{}{}'.format(kind, ddir)].append(())
-        if 'features' in load_dict: LafFabric._request_features(load_dict['features'], req_items)
+        if 'features' in load_dict: LafFabric._request_features(load_dict['features'], req_items, annox!=env['empty'])
         lafapi.adjust_all(source, annox, task, req_items, {'m': compile_main, 'a': compile_annox})
         self.api.update(lafapi.API())
         if 'prepare' in load_dict: lafapi.prepare_all(self.api, load_dict['prepare'])
@@ -306,7 +319,11 @@ class LafFabric(object):
         lafapi.stamp.reset()
         return self.api
 
-    def _request_features(feat_dict, req_items):
+    def load_again(self, load_dict, compile_main=False, compile_annox=False, verbose=None):
+        env = self.lafapi.names.env
+        return self.load(env['source'], env['annox'], env['task'], load_dict, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
+
+    def _request_features(feat_dict, req_items, also_from_annox):
         for aspace in feat_dict:
             for kind in feat_dict[aspace]:
                 for line in feat_dict[aspace][kind]:
@@ -314,7 +331,7 @@ class LafFabric(object):
                     fnames = fnamestring.split(',')
                     for fname in fnames:
                         the_feature = (aspace, alabel, fname)
-                        for origin in ('m', 'a'):
+                        for origin in ['m'] + (['a'] if also_from_annox else []):
                             req_items['{}F{}0'.format(origin, kind[0])].append(the_feature)
-                            if kind == 'e':
+                            if kind[0] == 'e':
                                 for ddir in ('f', 'b'): req_items['{}C0{}'.format(origin, ddir)].append(the_feature)

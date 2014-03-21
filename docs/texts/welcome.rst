@@ -17,7 +17,7 @@ You need an interactive environment where tools can be developed and data can be
 
 This is the LAF Fabric, and here is a simple example of what you can do with it:
 
-* `gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+* `gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/gender.ipynb>`_
 
 People at the Theology Department of the VU University Amsterdam are producing notebooks for their research
 into the text of the Hebrew Bible, see

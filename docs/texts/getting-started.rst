@@ -81,44 +81,39 @@ Here are the steps, assuming you are in the command line, at the top level direc
 This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
 Hebrew Text Database: *etcbc*.
 
-Configure LAF-Fabric
-====================
-LAF-Fabric needs to know where the LAF data is.
-You can tell it every time by entering the locations in your scripts, but you can also use a configuration file.
-This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in your home directory.
-Make a copy of the *laf-fabric-sample.cfg* in the top-level directory to *laf-fabric.cfg* in your home directory
-and modify the one relevant setting in it.
-
-There are just one or two settings, and you have to adapt it to your local situation:
-
-    [locations]
-    work_dir  = /Users/you/laf-data-dir
-    #laf-dir  = /Users/you/shebanq/results/laf
-    
-*work_dir* is folder where all the data is, input, intermediate, and output.
-
-*laf_dir* is the folder where the original laf-xml data is.
-It is *optional*. LAF-Fabric can work without it.
-If you do not have the original LAF source, leave it commented out.
-
 Get the data
 ============
-If you have a LAF resource, create a subdirectory *laf* inside the *work_dir*, and put 
-the files of the LAF resource there.
-You can also put it elsewhere, but then you have to adapt the *laf_dir* setting in the configuration file.
-
-If you only have a compiled LAF resource, put that inside *work_dir*.
-
 If you are interested in working with the Hebrew Bible,
 go to the `ETCBC github repository <https://github.com/judithgottschalk/ETCBC-data>`_.
 You find a download link for a ready made work directory containing the binary LAF data of the ETCBC Hebrew Text database.
 (You need to ask for a password, though, to unlock the zip file).
+Download and unpack it in your home directory. If all goes well you have a directory
+*laf-fabric-data* in your home directory.
 
-Run LAF-Fabric
-==============
-On all platforms (Windows users: use Firefox or Chrome as your browser, not Internet Explorer), you can test your installation as follows::
+.. caution::
+    If you have already a *laf-fabric-data* directory, unpack the download somewhere else,
+    and copy over the relevant subdirectories to your own. In that way you do not loose your work.
 
-    cd notebooks
+Test and run LAF-Fabric
+=======================
+In the top-level directory of LAF-Fabric there is a gallery script.
+If you run it, you will also configure your LAF-Fabric::
+
+    python lf-gallery.py tinys
+
+This points laf-fabric to the example data that comes with the distribution, which is just Genesis 1:1.
+If you have downloaded the binary data for the full Hebrew Text Database, then
+make sure the data is in *~/laf-fabric-data/etcbc-bhs3* and run::
+
+    python lf-gallery.py fulls
+
+After this you have a default config file *~/laf-fabric-data/laf-fabric.cfg* and you can use
+laf-fabric scripts from anywhere on your system, also in notebooks.
+
+On all platforms (Windows users: use Firefox or Chrome as your browser, not Internet Explorer),
+you can also run notebooks with LAF-Fabric:: 
+
+    cd examples
     ipython notebook
 
 This starts a python process that communicates with a browser tab, which will pop up in front of you.
@@ -137,6 +132,26 @@ In that way you can apply updates easily without overwriting your work.
     notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/judithgottschalk/ETCBC-data>`_.
     If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
 
+More configuration for LAF-Fabric
+=================================
+If you need the data to be at another location, you must modify the *laf-fabric.cfg*.
+This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in a standard
+directory, which is *laf-fabric-data* in your home directory.
+
+There are just one or two settings.
+
+    [locations]
+    work_dir  = /Users/you/laf-data-dir/etcbc-bhs3
+    laf_dir  = /Users/you/laf-data-dir/etcbc-bhs3
+    
+*work_dir* is folder where all the data is, input, intermediate, and output.
+
+*laf_dir* is the folder where the original laf-xml data is.
+It is *optional*. LAF-Fabric can work without it.
+
+Alternatively, you can override the config files by specifying the locations in your scripts.
+Those scripts are not very portable, of course.
+
 Writing notebooks
 =================
 
@@ -152,7 +167,7 @@ nodes that represent words and chapters.
 
 We want to plot the percentage of masculine and feminine words per chapter.
 
-With the example notebook `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/gender.ipynb>`_
+With the example notebook `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/gender.ipynb>`_
 we can count all words in the Hebrew bible and produce
 a table, where each row consists of the bible book plus chapter, followed
 by the percentage masculine words, followed by the percentage of feminine words in that chapter::

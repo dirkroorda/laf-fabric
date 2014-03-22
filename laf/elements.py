@@ -60,6 +60,7 @@ class Connection(object):
         cn = lookup.get(n, {})
         cn.update(alookup.get(n, {}))
         for x in sorted(cn.keys(), key=lambda x:order[x]): yield x
+        #return sorted(cn.keys(), key=lambda x:order[x])
 
     def vvs(self, n):
         lookup = self.lookup
@@ -75,6 +76,9 @@ class Connection(object):
         alookup = self.alookup
         for x in alookup.get(n, {}).keys(): yield x
         for x in lookup.get(n, {}).keys(): yield x
+        #return set(alookup.get(n, {}).keys()) | set(lookup.get(n, {}).keys())
+
+    def e(self, n): return len(self.lookup.get(n, {})) or len(self.alookup.get(n, {}))
 
     def vv(self, n):
         lookup = self.lookup

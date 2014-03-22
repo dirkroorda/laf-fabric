@@ -10,6 +10,10 @@ further processing in LAF-Fabric.
 
 Current
 =======
+4.0.1
+-----
+Small bug fixes.
+
 4.0
 ---
 API

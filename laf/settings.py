@@ -3,7 +3,7 @@ import os
 import configparser
 from .timestamp import Timestamp
 
-VERSION = '4.0.0'
+VERSION = '4.0.1'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 

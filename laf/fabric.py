@@ -142,7 +142,8 @@ class LafAPI(LafData):
                 __hash__ = None
 
             order = data_items[Names.comp('mG00', ('node_sort',))]
-            the_nodes = nodes or order
+            order_key = data_items[Names.comp('mG00', ('node_sort_inv',))]
+            the_nodes = sorted(nodes, key=lambda x: order_key[x]) if nodes else order
 
             if extrakey != None:
                 self.stamp.Imsg("Resorting {} nodes...".format(len(the_nodes)))

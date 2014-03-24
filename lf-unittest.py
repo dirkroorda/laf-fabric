@@ -78,7 +78,7 @@ class TestLafFabric(unittest.TestCase):
             if os.path.getmtime(f) < now: newer = False
         self.assertTrue(newer)
         self.assertTrue(the_log)
-        self.assertEqual(found, 7)
+        self.assertEqual(found, 9)
         API['close']()
         API = self.processor.load(SOURCE, ANNOX, 'compile', {}, compile_annox=False)
         API['close']()
@@ -140,6 +140,46 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(len(loadspec['keep']), 20)
         self.assertEqual(len(loadspec['clear']), 17)
         self.assertEqual(len(loadspec['load']), 2)
+
+    def test_d2_load(self):
+        self.processor.lafapi.unload_all()
+        API = self.processor.load(SOURCE, ANNOX, 'load', {
+                "xmlids": {
+                    "node": False,
+                    "edge": False,
+                },
+                "features": {
+                    "shebanq": {
+                        "node": [
+                            "db.otype",
+                            "ft.text,suffix",
+                            "sft.book",
+                        ],
+                        "edge": [
+                            "mother.",
+                            "parents.",
+                        ],
+                    },
+                    "dirk": {
+                        "node": [
+                            "db.otype",
+                            "dbs.otype",
+                        ],
+                    }
+                },
+                "primary": True,
+                "prepare": prepare,
+            },
+            compile_main=False, compile_annox=False,
+        )
+        API['close']()
+        feature_abbs = self.processor.lafapi.feature_abbs
+        feature_abb = self.processor.lafapi.feature_abb
+        self.assertEqual(feature_abb['otype'], 'shebanq_db_otype')
+        self.assertEqual(len(feature_abbs['otype']), 3)
+        for nm in ('shebanq_db_otype', 'dirk_dbs_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
+        self.assertEqual(len(feature_abbs['db_otype']), 2)
+        for nm in ('shebanq_db_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
 
     def test_e1_primary_data(self):
         API = self.processor.load(SOURCE, ANNOX, 'plain', {
@@ -395,9 +435,9 @@ class TestLafFabric(unittest.TestCase):
         F = API['F']
 
         textitems = []
-        for i in F.shebanq_db_otype.s('word'):
-            text = F.shebanq_ft_text.v(i) 
-            suffix = F.shebanq_ft_suffix.v(i) 
+        for i in F.otype.s('word'):
+            text = F.text.v(i) 
+            suffix = F.suffix.v(i) 
             textitems.append('{}{}{}'.format(text, suffix, "\n" if '׃' in suffix else ""))
         text = ''.join(textitems)
         expected = '''בְּרֵאשִׁ֖ית בָּרָ֣א אֱלֹהִ֑ים אֵ֥ת הַשָּׁמַ֖יִם וְאֵ֥ת הָאָֽרֶץ׃

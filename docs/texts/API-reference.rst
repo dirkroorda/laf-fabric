@@ -207,6 +207,15 @@ It is a node feature.
 ``FE.shebanq_mother_`` is also a feature object, but now on an edge, and corresponding
 with an empty annotation.
 
+You can also leave out the namespace and the label, so the following are also valid:
+
+``F.db_otype`` or even ``F.otype``. And also: ``FE.mother_``. 
+However, if the feature name is empty, you cannot leave out the label: ``FE.`` is not valid.
+
+When there is ambiguity, you will get a warning when the features are requested, from which it will
+be clear to what features the ambiguous abbreviated forms refer. In other to use the other possibilities,
+use the more expanded names.
+
 If a node or edge is annotated by an empty annotation, we do not have real features, but still there
 is an annotation label and an annotation space.
 In such cases we leave the feature name empty.
@@ -269,6 +278,10 @@ Examples:
 
     target_node in C.xyz_ft_property.vs(source_node)
 
+**D. Existence of edges**::
+
+    if C.parents_.e(node): has_parents = True
+
 (the methods ``vv`` and ``endnodes`` are also valid for the special features.
 
 **Ad A. Normal edge features**
@@ -326,6 +339,12 @@ If you have loaded an additional prepared ordering, the results will come in tha
 See the example notebook
 `trees <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/syntax/trees.ipynb>`_
 for working code with connectivity.
+
+**Ad D. Existence of edges**
+
+If you want to merely check whether a node has outgoing edges with a certain annotated feature, you can
+use the direct method ``e(node)``.
+This is much faster than using the ``v(node)`` mode, since the ``e()`` method builds less data structures.
 
 BF (Before)
 -----------

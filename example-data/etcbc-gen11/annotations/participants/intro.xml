@@ -8,6 +8,12 @@
 <a xml:id="a1" as="dirk" label="part" ref="n8"><fs>
 	<f name="intro" value="CCCCCC"/>
 </fs></a>
+<a xml:id="a1a" as="dirk" label="dbs" ref="n8"><fs>
+	<f name="otype" value="constituent"/>
+</fs></a>
+<a xml:id="a1a" as="dirk" label="db" ref="n8"><fs>
+	<f name="otype" value="phrase_np"/>
+</fs></a>
 <a xml:id="a2" as="dirk" label="part" ref="n5"><fs>
 	<f name="intro" value="BBBBBB"/>
 </fs></a>

@@ -10,6 +10,19 @@ further processing in LAF-Fabric.
 
 Current
 =======
+4.0.2
+-----
+API
+^^^
+For connectivity there is a new API method: ``C.feature.e(n)``. This returns ``True`` if and only if 
+``n`` is connected to a node by means of an edge annotated with ``feature``. 
+This function can also be obtained by using ``C.feature.v(n)``, but the direct ``e(n)`` is much more efficient.
+
+Usability
+^^^^^^^^^
+When calling up features as in ``F_shebanq_ft_part_of_speech``, you may now leave out the namespace and also the label.
+So ``F.part_of_speech`` also works.
+
 4.0.1
 -----
 Small bug fixes.

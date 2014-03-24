@@ -1,6 +1,6 @@
 from distutils.core import setup
 setup(name='laf',
-      version='4.0.1',
+      version='4.0.2',
       author='Dirk Roorda',
       author_email='dirk.roorda@dans.knaw.nl',
       description='''Tools to read LAF resources (Linguistic Annotation Framework ISO 24612:2012) and analyse them efficiently.

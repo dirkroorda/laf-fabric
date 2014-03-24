@@ -41,6 +41,20 @@ class LafAPI(LafData):
             elif dgroup == 'C': connections[ddir].add(dcomps)
             elif dgroup == 'X': xmlmaps[dkind].add(dcomps)
             elif dgroup == 'P' and dcomps[0] == 'primary_data': api['P'] = PrimaryData(self)
+        self.feature_abbs = collections.defaultdict(lambda: set())
+        self.feature_abb = {}
+        for kind in sorted(features):
+            for feat in sorted(features[kind]):
+                name = Names.apiname(feat) 
+                for abb in (Names.apiname(feat[1:]), Names.apiname(feat[2:])):
+                    if abb:
+                        self.feature_abbs[abb].add(name)
+                        self.feature_abb[abb] = name
+        for abb in self.feature_abbs:
+            expansions = self.feature_abbs[abb]
+            chosen = self.feature_abb[abb]
+            if len(expansions) > 1:
+                self.stamp.Imsg("Feature {} refers to {}, not to {}".format(abb, chosen, ', '.join(sorted(expansions - set([chosen])))))
         for kind in features:
             for feat in features[kind]:
                 name = Names.apiname(feat) 
@@ -48,6 +62,8 @@ class LafAPI(LafData):
                 dest = api['FE'] if kind == 'e' else api['F']
                 dest.item[name] = obj
                 setattr(dest, name, obj)
+                for abb in (Names.apiname(feat[1:]), Names.apiname(feat[2:])):
+                    if abb and self.feature_abb[abb] == name: setattr(dest, abb, obj)
         for inv in connections:
             for feat in connections[inv]:
                 name = Names.apiname(feat) 
@@ -55,6 +71,8 @@ class LafAPI(LafData):
                 dest = api['C'] if inv == 'f' else api['Ci'] if inv == 'b' else None
                 dest.item[name] = obj
                 setattr(dest, name, obj)
+                for abb in (Names.apiname(feat[1:]), Names.apiname(feat[2:])):
+                    if abb and self.feature_abb[abb] == name: setattr(dest, abb, obj)
         for kind in xmlmaps:
             for comp in xmlmaps[kind]:
                 obj = XMLid(self, kind)

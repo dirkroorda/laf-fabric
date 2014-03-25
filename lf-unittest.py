@@ -17,11 +17,11 @@ LAFDIR = WORKDIR
 LAFDIRA = WORKDIRA
 
 class TestLafFabric(unittest.TestCase):
-    processor = None
+    fabric = None
 
     def setUp(self):
-        if self.processor == None:
-            self.processor = LafFabric(
+        if self.fabric == None:
+            self.fabric = LafFabric(
                 work_dir=WORKDIR,
                 laf_dir=LAFDIR,
                 save=False,
@@ -30,7 +30,7 @@ class TestLafFabric(unittest.TestCase):
         pass
 
     def test_a0_startup(self):
-        lafapi = self.processor.lafapi
+        lafapi = self.fabric.lafapi
         self.assertEqual(lafapi.names._myconfig['work_dir'], WORKDIRA)
         self.assertEqual(lafapi.names._myconfig['m_source_dir'], LAFDIRA)
         pass
@@ -38,7 +38,8 @@ class TestLafFabric(unittest.TestCase):
     def test_b0_compile_main(self):
         now = time.time()
         time.sleep(1)
-        API = self.processor.load(SOURCE, '--', 'compile', {}, compile_main=True)
+        API = self.fabric.load(SOURCE, '--', 'compile', {}, compile_main=True)
+        close = API['close']
         found = 0
         the_log = None
         the_log_mtime = None
@@ -55,15 +56,16 @@ class TestLafFabric(unittest.TestCase):
         self.assertTrue(newer)
         self.assertTrue(the_log)
         self.assertEqual(found, 64)
-        API['close']()
-        API = self.processor.load(SOURCE, '--', 'compile', {}, compile_main=False)
-        API['close']()
+        close()
+        API = self.fabric.load(SOURCE, '--', 'compile', {}, compile_main=False)
+        close()
         self.assertEqual(the_log_mtime, os.path.getmtime(the_log)), 
 
     def test_b1_compile_annox(self):
         now = time.time()
         time.sleep(1)
-        API = self.processor.load(SOURCE, ANNOX, 'compile', {}, compile_annox=True)
+        API = self.fabric.load(SOURCE, ANNOX, 'compile', {}, compile_annox=True)
+        close = API['close']
         found = 0
         the_log = None
         the_log_mtime = None
@@ -79,14 +81,14 @@ class TestLafFabric(unittest.TestCase):
         self.assertTrue(newer)
         self.assertTrue(the_log)
         self.assertEqual(found, 9)
-        API['close']()
-        API = self.processor.load(SOURCE, ANNOX, 'compile', {}, compile_annox=False)
-        API['close']()
+        close()
+        API = self.fabric.load(SOURCE, ANNOX, 'compile', {}, compile_annox=False)
+        close()
         self.assertEqual(the_log_mtime, os.path.getmtime(the_log)), 
 
     def test_d1_load(self):
-        self.processor.lafapi.unload_all()
-        API = self.processor.load(SOURCE, ANNOX, 'load', {
+        self.fabric.lafapi.unload_all()
+        API = self.fabric.load(SOURCE, ANNOX, 'load', {
                 "xmlids": {
                     "node": True,
                     "edge": True,
@@ -109,12 +111,13 @@ class TestLafFabric(unittest.TestCase):
             },
             compile_main=False, compile_annox=False,
         )
-        API['close']()
-        loadspec = self.processor.lafapi.loadspec
+        close = API['close']
+        close()
+        loadspec = self.fabric.lafapi.loadspec
         self.assertEqual(len(loadspec['keep']), 0)
         self.assertEqual(len(loadspec['clear']), 0)
         self.assertEqual(len(loadspec['load']), 37)
-        API = self.processor.load(SOURCE, ANNOX, 'load', {
+        API = self.fabric.load(SOURCE, ANNOX, 'load', {
                 "xmlids": {
                     "node": True,
                     "edge": False,
@@ -135,15 +138,16 @@ class TestLafFabric(unittest.TestCase):
             },
             compile_main=False, compile_annox=False,
         )
-        API['close']()
-        loadspec = self.processor.lafapi.loadspec
+        close = API['close']
+        close()
+        loadspec = self.fabric.lafapi.loadspec
         self.assertEqual(len(loadspec['keep']), 20)
         self.assertEqual(len(loadspec['clear']), 17)
         self.assertEqual(len(loadspec['load']), 2)
 
     def test_d2_load(self):
-        self.processor.lafapi.unload_all()
-        API = self.processor.load(SOURCE, ANNOX, 'load', {
+        self.fabric.lafapi.unload_all()
+        API = self.fabric.load(SOURCE, ANNOX, 'load', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -172,9 +176,10 @@ class TestLafFabric(unittest.TestCase):
             },
             compile_main=False, compile_annox=False,
         )
-        API['close']()
-        feature_abbs = self.processor.lafapi.feature_abbs
-        feature_abb = self.processor.lafapi.feature_abb
+        close = API['close']
+        close()
+        feature_abbs = self.fabric.lafapi.feature_abbs
+        feature_abb = self.fabric.lafapi.feature_abb
         self.assertEqual(feature_abb['otype'], 'shebanq_db_otype')
         self.assertEqual(len(feature_abbs['otype']), 3)
         for nm in ('shebanq_db_otype', 'dirk_dbs_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
@@ -182,7 +187,7 @@ class TestLafFabric(unittest.TestCase):
         for nm in ('shebanq_db_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
 
     def test_e1_primary_data(self):
-        API = self.processor.load(SOURCE, ANNOX, 'plain', {
+        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -200,20 +205,22 @@ class TestLafFabric(unittest.TestCase):
             },
             compile_main=False, compile_annox=False,
         )
-        P = API['P']
-        F = API['F']
         NN = API['NN']
-        out = API['outfile']('primary_words.txt')
+        F = API['F']
+        P = API['P']
+        outfile = API['outfile']
+        close = API['close']
+        out = outfile('primary_words.txt')
         text = ''
         for n in NN(test=F.shebanq_db_otype.v, value='word'):
             text += '['+']['.join([p[1] for p in P.data(n)])+']'
         out.write(text)
-        API['close']()
+        close()
         expected = '''[בְּ][רֵאשִׁ֖ית][בָּרָ֣א][אֱלֹהִ֑ים][אֵ֥ת][הַ][שָּׁמַ֖יִם][וְ][אֵ֥ת][הָ][אָֽרֶץ]'''
         self.assertEqual(text, expected)
 
     def test_e2_primary_data(self):
-        API = self.processor.load(SOURCE, ANNOX, 'plain', {
+        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -232,9 +239,10 @@ class TestLafFabric(unittest.TestCase):
             compile_main=False, compile_annox=False,
         )
         F = API['F']
-        NN = API['NN']
         NE = API['NE']
-        out = API['outfile']('events.txt')
+        outfile = API['outfile']
+        close = API['close']
+        out = outfile('events.txt')
         text = ''
         for (anchor, events) in NE():
             for (node, kind) in events:
@@ -242,7 +250,7 @@ class TestLafFabric(unittest.TestCase):
                 otype = F.shebanq_db_otype.v(node)
                 text += "{} {:>7}: {:<15} {:>7}\n".format(kindr, anchor, otype, node)
         out.write(text)
-        API['close']()
+        close()
         expected = '''(       0: book                 25
 (       0: chapter              26
 (       0: verse                29
@@ -371,7 +379,7 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(text, expected)
 
     def test_m1_connectivity(self):
-        API = self.processor.load(SOURCE, ANNOX, 'connectivity',
+        API = self.fabric.load(SOURCE, ANNOX, 'connectivity',
         {
             "xmlids": {
                 "node": False,
@@ -388,12 +396,10 @@ class TestLafFabric(unittest.TestCase):
                 },
             },
         }, compile_main=False)
-
-        FE = API['FE']
+        NN = API['NN']
         F = API['F']
         C = API['C']
-        Ci = API['Ci']
-        NN = API['NN']
+
         top_node_types = collections.defaultdict(lambda: 0)
         top_nodes = set(C.shebanq_parents_.endnodes(NN(test=F.shebanq_db_otype.v, value='word')))
         self.assertEqual(len(top_nodes), 1)
@@ -412,7 +418,7 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(nt, 0)
 
     def test_u1_plain(self):
-        API = self.processor.load(SOURCE, '--', 'plain', {
+        API = self.fabric.load(SOURCE, '--', 'plain', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -431,7 +437,6 @@ class TestLafFabric(unittest.TestCase):
             },
             compile_main=False, compile_annox=False,
         )
-
         F = API['F']
 
         textitems = []

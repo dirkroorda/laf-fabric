@@ -1,5 +1,5 @@
-  1.34s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/personal/__log__personal.txt
-  1.35s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX participants FOR TASK personal
+  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/personal/__log__personal.txt
+  0.01s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX participants FOR TASK personal
   0.00s Get the annotations ...
   0.00s word(בְּ)	intro='ppp'	role='X-x-x-x'
   0.00s word(רֵאשִׁ֖ית)	intro='AAAAAA'	role='n/a'
@@ -17,5 +17,5 @@
   0.00s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/personal
 
-__log__personal.txt                     938 Fri Mar 21 10:22:06 2014
-annotations.txt                           0 Fri Mar 21 10:22:06 2014
+__log__personal.txt                     938 Tue Mar 25 10:58:55 2014
+annotations.txt                           0 Tue Mar 25 10:58:55 2014

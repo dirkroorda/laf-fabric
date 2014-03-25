@@ -90,6 +90,13 @@ LAF-Fabric will figure out which data can be kept in memory, which data has to b
 needs to be loaded.
 You can access the LAF data by means of local variables that correspond to various elements of the API, see below.
 
+If you want to call the load function inside another function, this trick with ``exec`` does not work.
+Then you have to use the other method to get to the API::
+
+    API = fabric.load( ...)
+    F = API['F']
+    ...
+
 **``compile-source`` and ``compile-annox``**
 If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
 The detection is based on the modified dates of the GrAF header file and the compiled files.

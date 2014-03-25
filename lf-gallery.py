@@ -75,13 +75,13 @@ print("MODE={}".format(mode))
 
 # Start up LAF-Fabric
 
-processor = LafFabric(
+fabric = LafFabric(
     work_dir=test['work_dir'],
     laf_dir=test['laf_dir'],
     save=test['save'],
     verbose=test['verbose'],
 )
-API = processor.api
+API = fabric.api
 
 print('''
 ################ PLAIN TEXT ##########################################
@@ -92,7 +92,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-processor.load(test['source_file'], '--', 'plain',
+fabric.load(test['source_file'], '--', 'plain',
         {
             "xmlids": {
                 "node": False,
@@ -112,12 +112,7 @@ processor.load(test['source_file'], '--', 'plain',
         },
         compile_main=test['compile'], compile_annox=False,
     )
-
-msg = API['msg']
-F = API['F']
-msg = API['msg']
-outfile = API['outfile']
-close = API['close']
+exec(fabric.localnames.format(var='fabric'))
 
 msg("Get the words ... ")
 out = outfile("unicode_utf8.txt")
@@ -137,7 +132,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-processor.load(test['source_file'], '--', 'objects',
+fabric.load(test['source_file'], '--', 'objects',
     {
         "xmlids": {
             "node": False,
@@ -155,12 +150,7 @@ processor.load(test['source_file'], '--', 'objects',
         'prepare': prepare,
     }
 )
-
-msg = API['msg']
-NN = API['NN']
-F = API['F']
-outfile = API['outfile']
-close = API['close']
+exec(fabric.localnames.format(var='fabric'))
 
 msg("Get the objects ... ")
 out = outfile("objects.txt")
@@ -181,7 +171,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-processor.load(test['source_file'], '--', 'parents',
+fabric.load(test['source_file'], '--', 'parents',
 {
     "xmlids": {
         "node": False,
@@ -203,17 +193,7 @@ processor.load(test['source_file'], '--', 'parents',
         },
     },
 })
-
-FE = API['FE']
-F = API['F']
-C = API['C']
-Ci = API['Ci']
-NN = API['NN']
-msg = API['msg']
-infile = API['infile']
-outfile = API['outfile']
-my_file = API['my_file']
-close = API['close']
+exec(fabric.localnames.format(var='fabric'))
 
 msg("Get the parents ...")
 
@@ -255,7 +235,7 @@ for query in (
     ):
         (the_edgetype, direction, the_edge, the_types) = query
         the_set = list(NN(test=F.shebanq_db_otype.v, values=the_types))
-        the_endset = the_edge.endnodes(the_set)
+        the_endset = set(the_edge.endnodes(the_set))
         the_endtypes = set([F.shebanq_db_otype.v(n) for n in the_endset])
         print("Traveling from start set {} with {} nodes along {} edges {}:\nYou end up in an end set of {} endnodes with {} type(s) namely {}.\n".format(
             the_types, len(the_set), the_edgetype, direction, len(the_endset), len(the_endtypes), the_endtypes
@@ -271,7 +251,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-processor.load(test['source_file'], '--', 'xmlids',
+fabric.load(test['source_file'], '--', 'xmlids',
 {
     "xmlids": {
         "node": True,
@@ -287,17 +267,7 @@ processor.load(test['source_file'], '--', 'xmlids',
         },
     },
 })
-
-X = API['X']
-XE = API['XE']
-F = API['F']
-C = API['C']
-NN = API['NN']
-msg = API['msg']
-infile = API['infile']
-outfile = API['outfile']
-my_file = API['my_file']
-close = API['close']
+exec(fabric.localnames.format(var='fabric'))
 
 msg("Get the xmlids ...")
 out = outfile('xmlids-nodes.txt')
@@ -324,7 +294,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-processor.load(test['source_file'], 'participants', 'personal',
+fabric.load(test['source_file'], 'participants', 'personal',
         {
             "xmlids": {
                 "node": False,
@@ -350,14 +320,7 @@ processor.load(test['source_file'], 'participants', 'personal',
         },
         compile_main=test['compile'], compile_annox=False,
     )
-
-F = API['F']
-NN = API['NN']
-msg = API['msg']
-infile = API['infile']
-outfile = API['outfile']
-my_file = API['my_file']
-close = API['close']
+exec(fabric.localnames.format(var='fabric'))
 
 msg("Get the annotations ...")
 out = outfile('annotations.txt')

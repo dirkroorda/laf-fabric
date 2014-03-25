@@ -1,8 +1,38 @@
   0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/xmlids/__log__xmlids.txt
   0.01s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX -- FOR TASK xmlids
   0.00s Get the xmlids ...
+  0.00s nid=25 n=25 book(oid=1) xid=n1
+  0.00s nid=26 n=26 chapter(oid=93473) xid=n93473
+  0.00s nid=29 n=29 verse(oid=93523) xid=n93523
+  0.00s nid=21 n=21 sentence(oid=84383) xid=n84383
+  0.00s nid=22 n=22 sentence_atom(oid=88917) xid=n88917
+  0.00s nid=11 n=11 clause(oid=28737) xid=n28737
+  0.00s nid=12 n=12 clause_atom(oid=34680) xid=n34680
+  0.00s nid=27 n=27 half_verse(oid=95056) xid=n95056
+  0.00s nid=13 n=13 phrase(oid=59556) xid=n59556
+  0.00s nid=17 n=17 phrase_atom(oid=40767) xid=n40767
+  0.00s nid=0 n=0 word(oid=2) xid=n2
+  0.00s nid=1 n=1 word(oid=3) xid=n3
+  0.00s nid=14 n=14 phrase(oid=59557) xid=n59557
+  0.00s nid=18 n=18 phrase_atom(oid=40768) xid=n40768
+  0.00s nid=2 n=2 word(oid=4) xid=n4
+  0.00s nid=15 n=15 phrase(oid=59558) xid=n59558
+  0.00s nid=19 n=19 phrase_atom(oid=40769) xid=n40769
+  0.00s nid=3 n=3 word(oid=5) xid=n5
+  0.00s nid=28 n=28 half_verse(oid=95057) xid=n95057
+  0.00s nid=16 n=16 phrase(oid=59559) xid=n59559
+  0.00s nid=20 n=20 phrase_atom(oid=40770) xid=n40770
+  0.00s nid=23 n=23 subphrase(oid=77637) xid=n77637
+  0.00s nid=4 n=4 word(oid=6) xid=n6
+  0.00s nid=5 n=5 word(oid=7) xid=n7
+  0.00s nid=6 n=6 word(oid=8) xid=n8
+  0.00s nid=7 n=7 word(oid=9) xid=n9
+  0.00s nid=24 n=24 subphrase(oid=77638) xid=n77638
+  0.00s nid=8 n=8 word(oid=10) xid=n10
+  0.00s nid=9 n=9 word(oid=11) xid=n11
+  0.00s nid=10 n=10 word(oid=12) xid=n12
   0.00s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/xmlids
 
-__log__xmlids.txt                       259 Fri Mar 21 10:22:05 2014
-xmlids-nodes.txt                       1144 Fri Mar 21 10:22:05 2014
+__log__xmlids.txt                      1643 Tue Mar 25 10:58:55 2014
+xmlids-nodes.txt                          0 Tue Mar 25 10:58:55 2014

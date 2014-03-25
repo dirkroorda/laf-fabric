@@ -1,0 +1,33 @@
+  0.00s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/parents/__log__parents.txt
+  0.01s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX -- FOR TASK parents
+  0.00s Get the parents ...
+  0.00s sentence_atom=22 -> sentence=21
+  0.00s clause=11 -> sentence_atom=22
+  0.00s clause_atom=12 -> clause=11
+  0.00s phrase=13 -> clause_atom=12
+  0.00s phrase_atom=17 -> phrase=13
+  0.00s word=בְּ -> phrase_atom=17
+  0.00s word=רֵאשִׁ֖ית -> phrase_atom=17
+  0.00s phrase=14 -> clause_atom=12
+  0.00s phrase_atom=18 -> phrase=14
+  0.00s word=בָּרָ֣א -> phrase_atom=18
+  0.00s phrase=15 -> clause_atom=12
+  0.00s phrase_atom=19 -> phrase=15
+  0.00s word=אֱלֹהִ֑ים -> phrase_atom=19
+  0.00s phrase=16 -> clause_atom=12
+  0.00s phrase_atom=20 -> phrase=16
+  0.00s subphrase=23 -> phrase_atom=20
+  0.00s word=אֵ֥ת -> subphrase=23
+  0.00s word=הַ -> subphrase=23
+  0.00s word=שָּׁמַ֖יִם -> subphrase=23
+  0.00s word=וְ -> phrase_atom=20
+  0.00s subphrase=24 -> phrase_atom=20
+  0.00s word=אֵ֥ת -> subphrase=24
+  0.00s word=הָ -> subphrase=24
+  0.00s word=אָֽרֶץ -> subphrase=24
+  0.00s Travel from node sets ...
+  0.00s Results directory:
+/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/parents
+
+__log__parents.txt                     1233 Tue Mar 25 10:58:55 2014
+parents_of.csv                            0 Tue Mar 25 10:58:55 2014

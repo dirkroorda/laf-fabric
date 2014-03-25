@@ -84,7 +84,7 @@ Then you have the processor to load data, according to the source you choose::
         compile_main=False, compile_annox=False,
         verbose='NORMAL',
     )
-    exec(Fabric.localnames.format(var='fabric'))
+    exec(fabric.localnames.format(var='fabric'))
 
 LAF-Fabric will figure out which data can be kept in memory, which data has to be cleared, and which data
 needs to be loaded.

@@ -10,6 +10,12 @@ further processing in LAF-Fabric.
 
 Current
 =======
+4.0.3
+-----
+API
+^^^
+The methods of the connectivity objects (except ``e()`` yield all iterators and have an optional parameter ``sort=False``.  
+The API elements now can be added very easily to your local namespace by saying: ``exec(Fabric.localnames.format(var='Fabric'))``.
 4.0.2
 -----
 API

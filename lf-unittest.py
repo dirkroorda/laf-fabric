@@ -395,7 +395,7 @@ class TestLafFabric(unittest.TestCase):
         Ci = API['Ci']
         NN = API['NN']
         top_node_types = collections.defaultdict(lambda: 0)
-        top_nodes = C.shebanq_parents_.endnodes(set(NN(test=F.shebanq_db_otype.v, value='word')))
+        top_nodes = set(C.shebanq_parents_.endnodes(NN(test=F.shebanq_db_otype.v, value='word')))
         self.assertEqual(len(top_nodes), 1)
         for node in NN(nodes=top_nodes):
             tag = F.shebanq_db_otype.v(node)

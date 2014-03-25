@@ -37,7 +37,7 @@ Calling the API
 First you have to get a *processor* object. This is how you get it::
 
     from laf.fabric import LafFabric
-    processor = LafFabric(
+    fabric = LafFabric(
         work_dir="/Users/you/laf-fabric-data",
         laf_dir="/Users/you/laf-fabric_data/laf",
         save=True,
@@ -62,7 +62,7 @@ Possible values in increasing level of verbosity::
 
 Then you have the processor to load data, according to the source you choose::
 
-    API= processor.load('bhs3.txt.hdr', '--', 'cooccurrences',
+    fabric.load('bhs3.txt.hdr', '--', 'cooccurrences',
         {
             "xmlids": {
                 "node": False,
@@ -84,65 +84,37 @@ Then you have the processor to load data, according to the source you choose::
         compile_main=False, compile_annox=False,
         verbose='NORMAL',
     )
+    exec(Fabric.localnames.format(var='fabric'))
 
-If you want to do other tasks in your script, you can repeat calls to ``API()``.
 LAF-Fabric will figure out which data can be kept in memory, which data has to be cleared, and which data
 needs to be loaded.
+You can access the LAF data by means of local variables that correspond to various elements of the API, see below.
 
 **``compile-source`` and ``compile-annox``**
 If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
 The detection is based on the modified dates of the GrAF header file and the compiled files.
 In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
 
-After loading, you get the individuela API methods as follows::
+After loading, the individual API methods can be accessed by means of local variables.
+These variables exist only if they correspond with things that you have called for.
 
-    # features in sofar as declared under "features"
-    F = API['F']
+**F**: Features, only if you have declared features.
 
-    # connectivity, only if you have declared edge features
-    C = API['C']
-    Ci = API['Ci']
+**C**, **Ci**: Connectivity, only if you have declared *edge* features.    
 
-    # primary data, only if you have specified "primary": True
-    P = API['P']
+**P**: Primary data, only if you have specified ``"primary": True``.
 
-    # XML identifiers, only in sofar as declared under "xmlids"
-    X = API['X']
+**X**: XML identifiers, only in sofar as declared under ``"xmlids"``.
 
-    # The "before" ordering of nodes
-    BR = API['BR']
+**BR**: The "before" ordering of nodes.
 
-    # The "next node" iterator
-    NN = API['NN']
+**NN**: The "next node" iterator.
 
-    # The "next event" iterator, only if you have specified "primary": True
-    NE = API['NE']
+**NE**: The "next event" iterator, only if you have specified ``"primary": True``.
 
-    # The function to issue messages with
-    msg = API['msg']
+**msg**: The function to issue messages with
 
-    # File handling (opening for input, output, , closing, getting full path)
-    infile = API['infile']
-    outfile = API['outfile']
-    close = API['close']
-    my_file = API['my_file']
-
-Of course, you only have to give names to the elements you really use.
-And if performance is not important, you can leave out the naming altogether and just refer to 
-the elements by means of the API dictionary::
-
-    for i in API['NN']():
-        this_type = API['F'].shebanq_db_otype.v(i)
-
-Remember that if you have 10 million nodes, you may incur an appreciable performance difference
-compared to::
-
-    NN = API['NN']
-    for i in NN():
-        this_type = API['F'].shebanq_db_otype.v(i)
-
-Not all API elements contain meaningful information.
-It depends on what you have specified in the ``init()`` call.
+**infile**, **outfile**, **close**, **my_file**: File handling (opening for input, output, , closing, getting full path)
 
 .. _node-order:
 
@@ -276,7 +248,9 @@ Examples:
 
 **C. Sorting the results**:: 
 
-    target_node in C.xyz_ft_property.vs(source_node)
+    target_node in C.xyz_ft_property.v(source_node, sort=True)
+    (target_node, value) in C.xyz_ft_property.vvs(source_node, sort=True)
+    target_nodes in C.xyz_ft_property.endnodes(source_nodes, value='val', sort=True)
 
 **D. Existence of edges**::
 
@@ -345,6 +319,9 @@ for working code with connectivity.
 If you want to merely check whether a node has outgoing edges with a certain annotated feature, you can
 use the direct method ``e(node)``.
 This is much faster than using the ``v(node)`` mode, since the ``e()`` method builds less data structures.
+
+**General remark**
+All methods of ``C`` and ``Ci`` objects that deliver multiple results, yield them one by one as iterators.
 
 BF (Before)
 -----------

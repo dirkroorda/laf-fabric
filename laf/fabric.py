@@ -336,6 +336,7 @@ class LafFabric(object):
         if 'prepare' in load_dict: lafapi.prepare_all(self.api, load_dict['prepare'])
         lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {}".format(env['source'], env['annox'], env['task']))
         lafapi.stamp.reset()
+        self.localnames = '\n'.join(["{key} = {{var}}.api['{key}']".format(key=key) for key in self.api])
         return self.api
 
     def load_again(self, load_dict, compile_main=False, compile_annox=False, verbose=None):

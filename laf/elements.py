@@ -52,46 +52,40 @@ class Connection(object):
         self.lookup = data_items[label] if label in data_items else {}
         self.alookup = data_items[alabel] if alabel in data_items else {}
 
-    def vs(self, n):
-        lookup = self.lookup
-        alookup = self.alookup
-        data_items = self.lafapi.data_items
-        order = data_items[Names.comp('mG00', ('node_sort_inv',))]
-        cn = lookup.get(n, {})
-        cn.update(alookup.get(n, {}))
-        for x in sorted(cn.keys(), key=lambda x:order[x]): yield x
-        #return sorted(cn.keys(), key=lambda x:order[x])
-
-    def vvs(self, n):
-        lookup = self.lookup
-        alookup = self.alookup
-        data_items = self.lafapi.data_items
-        order = data_items[Names.comp('mG00', ('node_sort_inv',))]
-        cn = lookup.get(n, {})
-        cn.update(alookup.get(n, {}))
-        for x in sorted(cn.items(), key=lambda x:order[x[0]]): yield x
-
-    def v(self, n):
-        lookup = self.lookup
-        alookup = self.alookup
-        for x in alookup.get(n, {}).keys(): yield x
-        for x in lookup.get(n, {}).keys(): yield x
-        #return set(alookup.get(n, {}).keys()) | set(lookup.get(n, {}).keys())
-
     def e(self, n): return len(self.lookup.get(n, {})) or len(self.alookup.get(n, {}))
 
-    def vv(self, n):
+    def v(self, n, sort=False):
         lookup = self.lookup
         alookup = self.alookup
-        for x in alookup.get(n, {}).items(): yield x
-        for x in lookup.get(n, {}).items(): yield x
+        if sort:
+            cn = lookup.get(n, {})
+            cn.update(alookup.get(n, {}))
+            data_items = self.lafapi.data_items
+            order = data_items[Names.comp('mG00', ('node_sort_inv',))]
+            for x in sorted(cn.keys(), key=lambda x:order[x]): yield x
+        else:
+            for x in alookup.get(n, {}).keys(): yield x
+            for x in lookup.get(n, {}).keys(): yield x
 
-    def endnodes(self, node_set, value=None):
+    def vv(self, n, sort=False):
+        lookup = self.lookup
+        alookup = self.alookup
+        if sort:
+            cn = lookup.get(n, {})
+            cn.update(alookup.get(n, {}))
+            data_items = self.lafapi.data_items
+            order = data_items[Names.comp('mG00', ('node_sort_inv',))]
+            for x in sorted(cn.items(), key=lambda x:order[x[0]]): yield x
+        else:
+            for x in alookup.get(n, {}).items(): yield x
+            for x in lookup.get(n, {}).items(): yield x
+
+    def endnodes(self, node_set, value=None, sort=False):
         data_items = self.lafapi.data_items
         order = data_items[Names.comp('mG00', ('node_sort_inv',))]
         visited = set()
         result = set()
-        next_set = node_set
+        next_set = set(node_set)
         while next_set:
             new_next_set = set()
             for node in next_set:
@@ -100,7 +94,8 @@ class Connection(object):
                 if next_nodes: new_next_set |= next_nodes - visited
                 else: result.add(node)
             next_set = new_next_set
-        return sorted(result, key=lambda x:order[x])
+        the_nodes = sorted(result, key=lambda x:order[x]) if sort else result
+        for n in the_nodes: yield n
 
 class XMLid(object):
     '''Mappings between XML identifiers in original LAF resource and integers identifying nodes and edges in compiled data.

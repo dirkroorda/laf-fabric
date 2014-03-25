@@ -188,7 +188,7 @@ fabric.load(test['source_file'], '--', 'parents',
                 "parents.",
             ],
         },
-        "": {
+        "laf": {
             "edge": ['.x'],
         },
     },
@@ -230,8 +230,8 @@ msg("Travel from node sets ...")
 for query in (
         ('parents', 'forward', C.shebanq_parents_, ['word', 'phrase', 'clause', 'sentence']),
         ('parents', 'backward', Ci.shebanq_parents_, ['word', 'phrase', 'clause', 'sentence']),
-        ('unannotated', 'forward', C.__x, ['half_verse', 'verse', 'chapter', 'book']),
-        ('unannotated', 'backward', Ci.__x, ['half_verse', 'verse', 'chapter', 'book']),
+        ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
+        ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
     ):
         (the_edgetype, direction, the_edge, the_types) = query
         the_set = list(NN(test=F.shebanq_db_otype.v, values=the_types))

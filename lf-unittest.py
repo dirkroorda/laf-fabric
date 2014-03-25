@@ -15,6 +15,7 @@ WORKDIR = './example-data/etcbc-gen11'
 WORKDIRA = '{}/example-data/etcbc-gen11'.format(os.getcwd())
 LAFDIR = WORKDIR
 LAFDIRA = WORKDIRA
+SPECIFIC = False
 
 class TestLafFabric(unittest.TestCase):
     fabric = None
@@ -29,12 +30,14 @@ class TestLafFabric(unittest.TestCase):
             )
         pass
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_a0_startup(self):
         lafapi = self.fabric.lafapi
         self.assertEqual(lafapi.names._myconfig['work_dir'], WORKDIRA)
         self.assertEqual(lafapi.names._myconfig['m_source_dir'], LAFDIRA)
         pass
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_b0_compile_main(self):
         now = time.time()
         time.sleep(1)
@@ -61,6 +64,7 @@ class TestLafFabric(unittest.TestCase):
         close()
         self.assertEqual(the_log_mtime, os.path.getmtime(the_log)), 
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_b1_compile_annox(self):
         now = time.time()
         time.sleep(1)
@@ -86,6 +90,7 @@ class TestLafFabric(unittest.TestCase):
         close()
         self.assertEqual(the_log_mtime, os.path.getmtime(the_log)), 
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_d1_load(self):
         self.fabric.lafapi.unload_all()
         API = self.fabric.load(SOURCE, ANNOX, 'load', {
@@ -145,6 +150,7 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(len(loadspec['clear']), 17)
         self.assertEqual(len(loadspec['load']), 2)
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_d2_load(self):
         self.fabric.lafapi.unload_all()
         API = self.fabric.load(SOURCE, ANNOX, 'load', {
@@ -182,10 +188,11 @@ class TestLafFabric(unittest.TestCase):
         feature_abb = self.fabric.lafapi.feature_abb
         self.assertEqual(feature_abb['otype'], 'shebanq_db_otype')
         self.assertEqual(len(feature_abbs['otype']), 3)
-        for nm in ('shebanq_db_otype', 'dirk_dbs_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
+        for nm in ('otype', 'dirk_dbs_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
         self.assertEqual(len(feature_abbs['db_otype']), 2)
-        for nm in ('shebanq_db_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
+        for nm in ('otype', 'dirk_db_otype'): nm in feature_abbs['db_otype']
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_e1_primary_data(self):
         API = self.fabric.load(SOURCE, ANNOX, 'plain', {
                 "xmlids": {
@@ -212,13 +219,14 @@ class TestLafFabric(unittest.TestCase):
         close = API['close']
         out = outfile('primary_words.txt')
         text = ''
-        for n in NN(test=F.shebanq_db_otype.v, value='word'):
+        for n in NN(test=F.otype.v, value='word'):
             text += '['+']['.join([p[1] for p in P.data(n)])+']'
         out.write(text)
         close()
         expected = '''[בְּ][רֵאשִׁ֖ית][בָּרָ֣א][אֱלֹהִ֑ים][אֵ֥ת][הַ][שָּׁמַ֖יִם][וְ][אֵ֥ת][הָ][אָֽרֶץ]'''
         self.assertEqual(text, expected)
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_e2_primary_data(self):
         API = self.fabric.load(SOURCE, ANNOX, 'plain', {
                 "xmlids": {
@@ -247,7 +255,7 @@ class TestLafFabric(unittest.TestCase):
         for (anchor, events) in NE():
             for (node, kind) in events:
                 kindr = '(' if kind == 0 else '«' if kind == 1 else '»' if kind == 2 else ')'
-                otype = F.shebanq_db_otype.v(node)
+                otype = F.otype.v(node)
                 text += "{} {:>7}: {:<15} {:>7}\n".format(kindr, anchor, otype, node)
         out.write(text)
         close()
@@ -378,6 +386,7 @@ class TestLafFabric(unittest.TestCase):
 '''
         self.assertEqual(text, expected)
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_m1_connectivity(self):
         API = self.fabric.load(SOURCE, ANNOX, 'connectivity',
         {
@@ -401,10 +410,10 @@ class TestLafFabric(unittest.TestCase):
         C = API['C']
 
         top_node_types = collections.defaultdict(lambda: 0)
-        top_nodes = set(C.shebanq_parents_.endnodes(NN(test=F.shebanq_db_otype.v, value='word')))
+        top_nodes = set(C.parents_.endnodes(NN(test=F.otype.v, value='word')))
         self.assertEqual(len(top_nodes), 1)
         for node in NN(nodes=top_nodes):
-            tag = F.shebanq_db_otype.v(node)
+            tag = F.otype.v(node)
             top_node_types[tag] += 1
         for tag in top_node_types:
             n = top_node_types[tag]
@@ -412,11 +421,12 @@ class TestLafFabric(unittest.TestCase):
             self.assertEqual(n, 1)
         nt = 0
         for node in NN():
-            parents = C.shebanq_parents_.v(node)
-            if len(list(parents)) and F.shebanq_db_otype.v(node) == 'sentence':
+            parents = C.parents_.v(node)
+            if len(list(parents)) and F.otype.v(node) == 'sentence':
                 nt += 1
         self.assertEqual(nt, 0)
 
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u1_plain(self):
         API = self.fabric.load(SOURCE, '--', 'plain', {
                 "xmlids": {
@@ -448,5 +458,142 @@ class TestLafFabric(unittest.TestCase):
         expected = '''בְּרֵאשִׁ֖ית בָּרָ֣א אֱלֹהִ֑ים אֵ֥ת הַשָּׁמַ֖יִם וְאֵ֥ת הָאָֽרֶץ׃
 '''
         self.assertEqual(text, expected)
+
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u2_not_prepared(self):
+        API = self.fabric.load(SOURCE, '--', 'plain', {
+                "xmlids": {
+                    "node": False,
+                    "edge": False,
+                },
+                "features": {
+                    "shebanq": {
+                        "node": [
+                            "db.otype",
+                        ],
+                        "edge": [
+                        ],
+                    },
+                },
+            },
+            compile_main=False, compile_annox=False,
+        )
+        NN = API['NN']
+        expected_nodes = (25,26,29,11,12,21,22,27,13,17,0,1,2,14,18,3,15,19,28,16,20,23,4,5,6,7,24,8,9,10)
+        for (i, n) in enumerate(NN()): self.assertEqual(n, expected_nodes[i])
+
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u3_prepared(self):
+        API = self.fabric.load(SOURCE, '--', 'plain', {
+                "xmlids": {
+                    "node": False,
+                    "edge": False,
+                },
+                "features": {
+                    "shebanq": {
+                        "node": [
+                            "db.otype",
+                        ],
+                        "edge": [
+                        ],
+                    },
+                },
+                "prepare": prepare,
+            },
+            compile_main=False, compile_annox=False,
+        )
+        NN = API['NN']
+        expected_nodes = (25,26,29,21,22,11,12,27,13,17,0,1,14,18,2,15,19,3,28,16,20,23,4,5,6,7,24,8,9,10)
+        for (i, n) in enumerate(NN()): self.assertEqual(n, expected_nodes[i])
+
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u4_edge_features(self):
+        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
+                "xmlids": {
+                    "node": False,
+                    "edge": False,
+                },
+                "features": {
+                    "dirk": {
+                        "edge": [
+                            'part.sectioning',
+                        ],
+                    },
+                },
+                "prepare": prepare,
+            },
+            compile_main=False, compile_annox=False,
+        )
+        FE = API['FE']
+        C = API['C']
+        Ci = API['Ci']
+        i = 0
+        expected_annots = (2,"from verse to its first half verse"),(3,"from verse to its second half verse")
+        for (n, v) in sorted(FE.sectioning.alookup.items()):
+            self.assertEqual((n, v), expected_annots[i])
+            i += 1
+
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u5_unmarked_edges(self):
+        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
+                "xmlids": {
+                    "node": False,
+                    "edge": False,
+                },
+                "features": {
+                    "dirk": {
+                        "edge": [
+                            'part.sectioning',
+                        ],
+                    },
+                    "laf": {
+                        "edge": [
+                            '.x,y',
+                        ],
+                    },
+                },
+                "prepare": prepare,
+            },
+            compile_main=False, compile_annox=False,
+        )
+        NN = API['NN']
+        C = API['C']
+        Ci = API['Ci']
+        expected_x = [[26], [29], [27, 28], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+        expected_xi = [[], [25], [26], [], [], [], [], [29], [], [], [], [], [], [], [], [], [], [], [29], [], [], [], [], [], [], [], [], [], [], []]
+        expected_y = [[], [], [27, 28], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+        expected_yi = [[], [], [], [], [], [], [], [29], [], [], [], [], [], [], [], [], [], [], [29], [], [], [], [], [], [], [], [], [], [], []] 
+        i = 0
+        for n in NN():
+            j = 0
+            for (m, v) in C.laf__x.vv(n, sort=True):
+                self.assertEqual(v, '')
+                self.assertEqual(m, expected_x[i][j])
+                j += 1
+            i += 1
+        i = 0
+        for n in NN():
+            j = 0
+            for (m, v) in C.laf__y.vv(n, sort=True):
+                self.assertEqual(v, '')
+                self.assertEqual(m, expected_y[i][j])
+                j += 1
+            i += 1
+        i = 0
+        for n in NN():
+            j = 0
+            for (m, v) in Ci.laf__x.vv(n, sort=True):
+                self.assertEqual(v, '')
+                self.assertEqual(m, expected_xi[i][j])
+                j += 1
+            i += 1
+        i = 0
+        for n in NN():
+            j = 0
+            for (m, v) in Ci.laf__y.vv(n, sort=True):
+                self.assertEqual(v, '')
+                self.assertEqual(m, expected_yi[i][j])
+                j += 1
+            i += 1
 
 if __name__ == '__main__': unittest.main()

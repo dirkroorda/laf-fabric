@@ -10,6 +10,21 @@ further processing in LAF-Fabric.
 
 Current
 =======
+4.0.4
+-----
+API
+^^^
+The special edge features for all annotated edges and unannotated edges are now called ``laf:.y`` and ``laf:.x``, because otherwise
+their names become private method names in Python.
+
+Under the hood
+--------------
+More unit tests.
+
+Incompatible changes
+--------------------
+Because of the renaming of special edge features, a new copy of the data is needed. Download the latest version.
+
 4.0.3
 -----
 API

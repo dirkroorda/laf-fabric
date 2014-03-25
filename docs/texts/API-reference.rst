@@ -247,11 +247,11 @@ Examples:
 
 **B. Special edge features**::
 
-    target_node in C.__x.v(source_node)
-    target_node in C.__y.v(source_node)
+    target_node in C.laf__x.v(source_node)
+    target_node in C.laf__y.v(source_node)
 
-    source_node in Ci.__x.v(target_node)
-    source_node in Ci.__y.v(target_node)
+    source_node in Ci.laf__x.v(target_node)
+    source_node in Ci.laf__y.v(target_node)
 
 **C. Sorting the results**:: 
 
@@ -296,17 +296,17 @@ and only if that fails, from the main source. All relevant data will be combined
 **Ad B. Special edge features**
 
 There may be edges that are completely unannotated. These edges are made available through the special
-``C`` and ``Ci`` members called ``__x``. (No annotation namespace, no annotation label, name ``'x'``.)
+``C`` and ``Ci`` members called ``laf__x``. (No annotation namespace, no annotation label, name ``'x'``.)
 
 If you have loaded an *annox*, it may have annotated formerly unannotated edges.
-However, this will not influence the ``__x`` feature.
+However, this will not influence the ``laf__x`` feature.
 
-``__x`` always corresponds to the unannotated edges in the main source, irrespective of any *annox* whatsoever.
+``laf__x`` always corresponds to the unannotated edges in the main source, irrespective of any *annox* whatsoever.
 
-But loading an annox introduces an other special edge feature: ``__y``: all edges that have been annotated by the annox.
+But loading an annox introduces an other special edge feature: ``laf__y``: all edges that have been annotated by the annox.
 
 In your script you can compute what the unannotated edges are according to the combination of main source and annox.
-It is all the edges that you get with ``__x``, minus those yielded by ``__y``.
+It is all the edges that you get with ``laf__x``, minus those yielded by ``laf__y``.
 
 Think of ``x`` as *excluded* from annotations, and ``y`` as *yes annotations*.
 

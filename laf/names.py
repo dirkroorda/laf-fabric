@@ -88,8 +88,8 @@ class Names(Settings):
     ))
     _data_items_def = collections.OrderedDict()
 
-    E_ANNOT_YES = ('','','y')
-    E_ANNOT_NON = ('','','x')
+    E_ANNOT_YES = ('laf','','y')
+    E_ANNOT_NON = ('laf','','x')
     DCOMP_SEP = ','
 
     def __init__(self, work_dir, laf_dir, save, verbose):

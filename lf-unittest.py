@@ -676,30 +676,54 @@ class TestLafFabric(unittest.TestCase):
                 self.assertEqual(len(the_endtypes), exp_t)
                 self.assertEqual(the_endtypes, exp_s)
 
-    @unittest.skipIf(True or SPECIFIC, 'running an individual test')
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u8_load_dict(self):
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
                 "xmlids": {
                     "node": True,
                     "edge": True,
+                    "region": True,
                 },
+            }
+        )
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+                "xmlids": {
+                    "node": True,
+                    "edge": None,
+                },
+            },
+        )
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
                 "features": {
                     "shebanq": {
-                        "node": [
-                            "db.otype",
-                        ],
-                        "edge": [
-                            "parents.",
-                        ],
-                    },
-                    "laf": {
-                        "edge": ['.x'],
+                        "node": [ ],
+                        "edge": [ ],
+                        "region": [ ],
                     },
                 },
-                "prepare": prepare,
-                "extra": True,
             },
-            compile_main=False, compile_annox=False,
+        )
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+                "features": {
+                    "shebanq": {
+                        "node": { },
+                        "edge": [ ],
+                    },
+                },
+            },
+        )
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+                "features": {
+                    "shebanq": {
+                        "node": [ ],
+                        "edge": { },
+                    },
+                },
+            },
+        )
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+                "prepare": set(),
+            },
         )
 
 if __name__ == '__main__': unittest.main()

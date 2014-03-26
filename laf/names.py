@@ -95,6 +95,7 @@ class Names(Settings):
 
     load_dict_keys = {'features', 'xmlids', 'primary', 'prepare'}
     load_dict_subkeys = {'node', 'edge'}
+    kind_types = {False, True}
 
     def __init__(self, work_dir, laf_dir, save, verbose):
         Settings.__init__(self, work_dir, laf_dir, save, verbose)
@@ -181,13 +182,42 @@ class Names(Settings):
         return (dgroup not in 'FC', dloc, dfile, dtype, dorigin == 'z')
 
     def check_load_dict(load_dict, stamp):
+        errors = []
         for key in load_dict:
             if key not in Names.load_dict_keys:
-                raise FabricError('You have an unknown key in your load instructions: {}'.format(key), stamp, None)
+                errors.append('only these keys are allowed: {}, not {}'.format(Names.load_dict_keys, key))
+            elif key == 'xmlids':
+                for subkey in load_dict[key]:
+                    if subkey not in Names.load_dict_subkeys:
+                        errors.append('under {} only these keys are allowed: {}, not {}'.format(key, Names.load_dict_subkeys, subkey))
+                    else:
+                        val = load_dict[key][subkey]
+                        if val not in {False, True}:
+                            errors.append('under {} and then {} only these values are allowed: {}, not {}'.format(key, subkey, Names.kind_types, val))
+            elif key == 'primary':
+                val = load_dict[key]
+                if val not in {False, True}:
+                    errors.append('under {} only these values are allowed: {}, not {}'.format(key, Names.kind_types, val))
+            elif key == 'features':
+                for namespace in load_dict[key]:
+                    for subkey in load_dict[key][namespace]:
+                        if subkey not in Names.load_dict_subkeys:
+                            errors.append('under {} and then {} only these keys are allowed: {}, not {}'.format(key, namespace, Names.load_dict_subkeys, subkey))
+                        else:
+                            val = load_dict[key][namespace][subkey]
+                            if type(val) != list:
+                                errors.append('under {} and then {} and then {} the value should be a list, not {}'.format(key, namespace, subkey, type(val)))
+            elif key == 'prepare':
+                val = load_dict[key]
+                if type(val) != collections.OrderedDict:
+                    errors.append('the value of {} should be a collections.OrderedDict, not {}'.format(key, type(val)))
+        if errors:
+            raise FabricError("Your load instructions have the following errors:\n{}".format('\n'.join(errors)), stamp, None)
+
 
 class FabricError(Exception):
-    def __init__(self, message, stamp, Errors):
+    def __init__(self, message, stamp, cause=None):
         Exception.__init__(self, message)
         stamp.Emsg(message)
-        if Errors: raise Errors
+        if cause: stamp.Dmsg("{}: {}".format(type(cause), str(cause)))
 

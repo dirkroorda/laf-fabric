@@ -1,7 +1,7 @@
 from xml.sax import parse as saxparse, SAXException
 from xml.sax.handler import ContentHandler
 import array
-from .names import Names
+from .names import Names, FabricError
 
 aspace_not_given = "_original_"
 
@@ -123,7 +123,7 @@ class AnnotationHandler(ContentHandler):
             anchors = attrs["anchors"].split(" ")
             if len(anchors) != 2:
                 faulty_regions += 1
-                self.stamp.Emsg("invalid anchor spec '{}' for region {} in {}".format(attrs["anchors"], rid, self.file_name))
+                raise FabricError("invalid anchor spec '{}' for region {} in {}".format(attrs["anchors"], rid, self.file_name), self.stamp)
                 region_begin.append(0)
                 region_end.append(0)
             else:
@@ -149,7 +149,7 @@ class AnnotationHandler(ContentHandler):
             to_node = attrs["to"]
             if not from_node or not to_node:
                 faulty_edges += 1
-                self.stamp.Emsg("invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name))
+                raise FabricError("invalid from/to spec from='{}' to='{}' for edge {} in {}".format(from_node, to_node, eid, self.file_name), self.stamp)
             else:
                 good_edges += 1
                 edges_from.append(identifiers_n[from_node])
@@ -168,7 +168,7 @@ class AnnotationHandler(ContentHandler):
             node_or_edge = attrs["ref"]
             if not self.alabel or not node_or_edge:
                 faulty_annots += 1
-                self.stamp.Emsg("invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(self.alabel, node_or_edge, self.aid, self.file_name))
+                raise FabricError("invalid annotation spec label='{}' ref='{}' for annotation {} in {}".format(self.alabel, node_or_edge, self.aid, self.file_name), self.stamp)
             else:
                 self.aref = None
                 self.atype = None
@@ -182,7 +182,7 @@ class AnnotationHandler(ContentHandler):
                     good_annots += 1
                 else:
                     faulty_annots += 1
-                    self.stamp.Emsg("invalid annotation target ref='{}' (no node, no edge) for annotation {} in {}".format(node_or_edge, self.aid, self.file_name))
+                    raise FabricError("invalid annotation target ref='{}' (no node, no edge) for annotation {} in {}".format(node_or_edge, self.aid, self.file_name), self.stamp)
         elif name == "f":
             global faulty_feats
             global good_feats
@@ -190,10 +190,10 @@ class AnnotationHandler(ContentHandler):
             fname = attrs["name"]
             if not fname:
                 faulty_feats += 1
-                self.stamp.Emsg("invalid feature spec name='{}' value='{}' for feature in annotation {} in file {}".format(fname, value, self.aid, self.file_name))
+                raise FabricError("invalid feature spec name='{}' value='{}' for feature in annotation {} in file {}".format(fname, value, self.aid, self.file_name), self.stamp)
             elif self.aref == None:
                 faulty_feats += 1
-                self.stamp.Emsg("undetermined feature kind (node/edge) for feature {} in annotation {} in {}".format(fname, self.aid, self.file_name))
+                raise FabricError("undetermined feature kind (node/edge) for feature {} in annotation {} in {}".format(fname, self.aid, self.file_name), self.stamp)
             else:
                 good_feats += 1
                 value = attrs["value"]

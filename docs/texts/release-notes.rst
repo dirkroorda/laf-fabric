@@ -10,6 +10,16 @@ further processing in LAF-Fabric.
 
 Current
 =======
+4.0.5
+-----
+Usability
+---------
+Better error handling, especially when the load dictionary does not conform to the specs of the API reference.
+
+Under the hood
+--------------
+More unit tests, especially w.r.t. error checking.
+
 4.0.4
 -----
 API

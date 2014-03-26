@@ -27,22 +27,20 @@ class LafData(object):
         env = self.names.env
         try:
             if not os.path.exists(env['m_compiled_dir']): os.makedirs(env['m_compiled_dir'])
-        except os.error:
-            raise FabricError("could not create bin directory {}".format(env['m_compiled_dir']), self.stamp, os.error)
+        except os.error as e:
+            raise FabricError("could not create bin directory {}".format(env['m_compiled_dir']), self.stamp, cause=e)
         if annox != env['empty']:
             try:
                 if not os.path.exists(env['a_compiled_dir']): os.makedirs(env['a_compiled_dir'])
-            except os.error:
-                raise FabricError("could not create bin directory {}".format(env['a_compiled_dir']), self.stamp, os.error)
+            except os.error as e:
+                raise FabricError("could not create bin directory {}".format(env['a_compiled_dir']), self.stamp, cause=e)
         try:
             if not os.path.exists(env['task_dir']): os.makedirs(env['task_dir'])
-        except os.error:
-            raise FabricError("could not create result directory {}".format(env['task_dir']), self.stamp, os.error)
-        correct = True
-        if not self._compile_all(force): correct = False
-        if not self._load_all(req_items): correct = False
+        except os.error as e:
+            raise FabricError("could not create result directory {}".format(env['task_dir']), self.stamp, cause=e)
+        self._compile_all(force)
+        self._load_all(req_items)
         self._add_logfile()
-        return correct
 
     def finish_task(self, show=True):
         '''Close all open files that have been opened by the API'''
@@ -78,8 +76,8 @@ class LafData(object):
         log_path = env['log_path'] if compile == None else env["{}_compiled_path".format(compile)]
         try:
             if not os.path.exists(log_dir): os.makedirs(log_dir)
-        except os.error:
-            raise FabricError("could not create log directory {}".format(log_dir), self.stamp, os.error)
+        except os.error as e:
+            raise FabricError("could not create log directory {}".format(log_dir), self.stamp, cause=e)
         self.log = open(log_path, "w", encoding="utf-8")
         self.stamp.connect_log(self.log)
         self.stamp.Nmsg("LOGFILE={}".format(log_path))
@@ -145,7 +143,6 @@ class LafData(object):
         self.names._old_data_items = collections.OrderedDict()
 
     def _load_all(self, req_items):
-        correct = True
         dkeys = self.names.request_files(req_items)
         self.loadspec = dkeys
         for dkey in dkeys['keep']: self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
@@ -155,35 +152,27 @@ class LafData(object):
         for dkey in dkeys['load']:
             self.stamp.Dmsg("load {}".format(Names.dmsg(dkey))) 
             ism = self.names.dinfo(dkey)[0]
-            this_correct = self._load_file(dkey, accept_missing=not ism)
-            if not this_correct: correct = False
-        return correct
+            self._load_file(dkey, accept_missing=not ism)
 
     def _load_extra(self, dkeys):
-        correct = True
         for dkey in dkeys:
             self.stamp.Dmsg("load {}".format(Names.dmsg(dkey))) 
             ism = self.names.dinfo(dkey)[0]
-            this_correct = self._load_file(dkey, accept_missing=not ism)
-            if not this_correct: correct = False
-        return correct
+            self._load_file(dkey, accept_missing=not ism)
 
     def prepare_all(self, api, prepare_dict):
-        correct = True
         self.api = api
         self.prepare_dict = prepare_dict
         for dkey in prepare_dict:
             self.stamp.Dmsg("prep {}".format(Names.dmsg(dkey))) 
-            this_correct = self._load_file(dkey, accept_missing=False)
-            if not this_correct: correct = False
-        return correct
+            self._load_file(dkey, accept_missing=False)
 
     def _load_file(self, dkey, accept_missing=False):
         dprep = self.names.dinfo(dkey)[-1]
         if dprep:
             if dkey not in self.prepare_dict:
-                self.stamp.Wmsg("Cannot prepare data for {}. No preparation method available.".format(Names.dmsg(dkey)))
-                return False
+                raise FabricError("Cannot prepare data for {}. No preparation method available.".format(Names.dmsg(dkey)), self.stamp)
+                return
             self.names.setenv(zspace=self.prepare_dict[dkey][-1])
         (ism, dloc, dfile, dtype, dprep) = self.names.dinfo(dkey)
         dpath = "{}/{}".format(dloc, dfile)
@@ -194,7 +183,10 @@ class LafData(object):
             if not up_to_date:
                 self.stamp.Dmsg("PREPARING {}".format(Names.dmsg(dkey)))
                 compiled_dir = self.names.env['{}_compiled_dir'.format('z')]
-                if not os.path.exists(compiled_dir): os.makedirs(compiled_dir)
+                try:
+                    if not os.path.exists(compiled_dir): os.makedirs(compiled_dir)
+                except os.error as e:
+                    raise FabricError("could not create compiled directory {}".format(compiled_dir), self.stamp, cause=e)
                 newdata = method(self.api)
                 self.stamp.Dmsg("WRITING {}".format(Names.dmsg(dkey)))
                 self.data_items[dkey] = newdata
@@ -202,8 +194,8 @@ class LafData(object):
                 prep_done = True
         if not os.path.exists(dpath):
             if not accept_missing:
-                self.stamp.Wmsg("Cannot load data for {}: File does not exist: {}.".format(Names.dmsg(dkey), dpath))
-            return accept_missing
+                raise FabricError("Cannot load data for {}: File does not exist: {}.".format(Names.dmsg(dkey), dpath), self.stamp)
+            return
         if not prep_done:
             newdata = None
             if dtype == 'arr':
@@ -219,13 +211,12 @@ class LafData(object):
             if replace:
                 okey = Names.orig_key(dkey)
                 if okey not in self.data_items:
-                    self.stamp.Emsg("There is no orginal {} to be replaced by {}".format(Names.dmsg(okey), Names.dmsg(dkey)))
-                    return False
+                    raise FabricError("There is no orginal {} to be replaced by {}".format(Names.dmsg(okey), Names.dmsg(dkey)), self.stamp)
+                    return 
                 if okey == dkey:
                     self.stamp.Wmsg("Data to be replaced {} is identical to replacement".format(Names.dmsg(okey)))
                 else:
                     self.data_items[okey] = self.data_items[dkey]
-        return True
 
     def _store_origin(self, origin):
         self.stamp.Nmsg("WRITING RESULT FILES for {}".format(origin))
@@ -246,7 +237,6 @@ class LafData(object):
             with gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL) as f: pickle.dump(thedata, f)
         elif dtype == 'str':
             with gzip.open(dpath, "wt", encoding="utf-8") as f: f.write(thedata)
-        return True
 
     def _parse(self, origin):
         self.stamp.Nmsg("PARSING ANNOTATION FILES")
@@ -256,16 +246,16 @@ class LafData(object):
         compiled_dir = env['{}_compiled_dir'.format(origin)]
         self.cur_dir = os.getcwd()
         if not os.path.exists(source_path):
-            raise FabricError("LAF header does not exists {}".format(source_path), self.stamp, os.error)
+            raise FabricError("LAF header does not exists {}".format(source_path), self.stamp)
         try:
             os.chdir(source_dir)
-        except os.error:
-            raise FabricError("could not change to LAF source directory {}".format(source_dir), self.stamp, os.error)
+        except os.error as e:
+            raise FabricError("could not change to LAF source directory {}".format(source_dir), self.stamp, cause=e)
         try:
             if not os.path.exists(compiled_dir): os.makedirs(compiled_dir)
-        except os.error:
+        except os.error as e:
             os.chdir(self.cur_dir)
-            raise FabricError("could not create directory for compiled source {}".format(compiled_dir), self.stamp, os.error)
+            raise FabricError("could not create directory for compiled source {}".format(compiled_dir), self.stamp, cause=e)
         parse(
             origin,
             env['{}_source_path'.format(origin)],

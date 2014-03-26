@@ -4,6 +4,7 @@ import configparser
 from .timestamp import Timestamp
 
 VERSION = '4.0.4'
+APIREF = 'http://laf-fabric.readthedocs.org/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 
@@ -57,7 +58,7 @@ class Settings(object):
     def __init__(self, work_dir, laf_dir, save, verbose):
         stamp = Timestamp(verbose=verbose)
         self.stamp = stamp
-        stamp.Nmsg('This is LAF-Fabric {}'.format(VERSION))
+        stamp.Nmsg('This is LAF-Fabric {}\n{}\n'.format(VERSION, APIREF))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         cw_dir = os.getcwd()
         home_dir = os.path.expanduser('~')
@@ -84,13 +85,19 @@ class Settings(object):
             the_laf_dir.replace('.', cw_dir, 1) if the_laf_dir.startswith('.') else the_laf_dir.replace('~', home_dir, 1) if the_laf_dir.startswith('~') else the_laf_dir
         if not os.path.exists(the_work_dir):
             stamp.Imsg("CREATING new WORK_DIR {}".format(the_work_dir))
-            os.makedirs(the_work_dir)
+            try:
+                if not os.path.exists(the_work_dir): os.makedirs(the_work_dir)
+            except os.error as e:
+                raise FabricError("could not create work directory {}".format(the_work_dir), stamp, cause=e)
         self._myconfig.update({'work_dir': the_work_dir, 'm_source_dir': the_laf_dir})
         if save:
             strings['locations'] = {'work_dir': the_work_dir, 'laf_dir': the_laf_dir}
             if not os.path.exists(global_config_path):
                 stamp.Imsg("CREATING new GLOBAL CONFIG FILE {}".format(global_config_path))
-                if not os.path.exists(global_config_dir): os.makedirs(global_config_dir)
+                try:
+                    if not os.path.exists(global_config_dir): os.makedirs(global_config_dir)
+                except os.error as e:
+                    raise FabricError("could not create global config directory {}".format(global_config_dir), stamp, cause=e)
             with open(global_config_path, "w", encoding="utf-8") as f: strings.write(f)
         self.env = {}
         self.zspace = ''

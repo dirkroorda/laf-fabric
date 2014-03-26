@@ -179,7 +179,7 @@ class LafAPI(LafData):
                 for node in the_nodes: yield node
 
         def no_next_event(key=None, simplify=None):
-            self.stamp.Emsg("Node events not available because primary data is not loaded.")
+            raise FabricError("Node events not available because primary data is not loaded.", self.stamp)
             return None
 
         def next_event(key=None, simplify=None):

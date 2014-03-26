@@ -6,5 +6,5 @@
   0.00s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/objects
 
-__log__objects.txt                      346 Tue Mar 25 19:28:07 2014
-objects.txt                            1590 Tue Mar 25 19:28:07 2014
+__log__objects.txt                      346 Wed Mar 26 08:56:10 2014
+objects.txt                            1590 Wed Mar 26 08:56:10 2014

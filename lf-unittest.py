@@ -15,7 +15,7 @@ WORKDIR = './example-data/etcbc-gen11'
 WORKDIRA = '{}/example-data/etcbc-gen11'.format(os.getcwd())
 LAFDIR = WORKDIR
 LAFDIRA = WORKDIRA
-SPECIFIC = False
+SPECIFIC = True
 
 class TestLafFabric(unittest.TestCase):
     fabric = None
@@ -461,7 +461,7 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u2_not_prepared(self):
-        API = self.fabric.load(SOURCE, '--', 'plain', {
+        API = self.fabric.load(SOURCE, '--', 'n_prep', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -484,7 +484,7 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u3_prepared(self):
-        API = self.fabric.load(SOURCE, '--', 'plain', {
+        API = self.fabric.load(SOURCE, '--', 'prep', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -508,7 +508,7 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u4_edge_features(self):
-        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
+        API = self.fabric.load(SOURCE, ANNOX, 'edges', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -535,7 +535,7 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u5_unmarked_edges(self):
-        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
+        API = self.fabric.load(SOURCE, ANNOX, 'u_edges', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -595,5 +595,84 @@ class TestLafFabric(unittest.TestCase):
                 self.assertEqual(m, expected_yi[i][j])
                 j += 1
             i += 1
+
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u6_xml_ids(self):
+        API = self.fabric.load(SOURCE, ANNOX, 'plain', {
+                "xmlids": {
+                    "node": True,
+                    "edge": True,
+                },
+                "features": {
+                    "shebanq": {
+                        "edge": [
+                            "mother.",
+                            "parents.",
+                        ],
+                    },
+                },
+                "prepare": prepare,
+            },
+            compile_main=False, compile_annox=False,
+        )
+        FE = API['FE']
+        NN = API['NN']
+        X = API['X']
+        XE = API['XE']
+
+        expected = {0: 'n2', 1: 'n3', 2: 'n4', 3: 'n5', 4: 'n6', 5: 'n7', 6: 'n8', 7: 'n9', 8: 'n10', 9: 'n11', 10: 'n12', 11: 'n28737', 12: 'n34680', 13: 'n59556', 14: 'n59557', 15: 'n59558', 16: 'n59559', 17: 'n40767', 18: 'n40768', 19: 'n40769', 20: 'n40770', 21: 'n84383', 22: 'n88917', 23: 'n77637', 24: 'n77638', 25: 'n1', 26: 'n93473', 27: 'n95056', 28: 'n95057', 29: 'n93523'}
+        self.assertEqual(len(set(NN())), len(expected))
+        for (n,x) in expected.items():
+            self.assertEqual(X.i(x), n)
+            self.assertEqual(X.r(n), x)
+
+        expected_e = {4: 'el1', 5: 'el101734', 6: 'el253771', 7: 'el253772', 8: 'el253773', 9: 'el253774', 10: 'el511117', 11: 'el511118', 12: 'el511119', 13: 'el511120', 14: 'el793283', 15: 'el865010', 16: 'el865011', 17: 'el865012', 18: 'el1029314', 19: 'el1029315', 20: 'el1029316', 21: 'el1029317', 22: 'el1029318', 23: 'el1029319', 24: 'el1029320', 25: 'el1029321', 26: 'el1029322', 27: 'el1029323', 28: 'el1029324'}
+        self.assertEqual(len(set(FE.parents_.lookup)|set(FE.mother_.lookup)), len(expected_e))
+        for (e,x) in expected_e.items():
+            self.assertEqual(XE.i(x), e)
+            self.assertEqual(XE.r(e), x)
+
+    #unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u7_endnodes(self):
+        API = self.fabric.load(SOURCE, '--', 'plain', {
+                "xmlids": {
+                    "node": True,
+                    "edge": True,
+                },
+                "features": {
+                    "shebanq": {
+                        "node": [
+                            "db.otype",
+                        ],
+                        "edge": [
+                            "parents.",
+                        ],
+                    },
+                    "laf": {
+                        "edge": ['.x'],
+                    },
+                },
+                "prepare": prepare,
+            },
+            compile_main=False, compile_annox=False,
+        )
+        NN = API['NN']
+        F = API['F']
+        C = API['C']
+        Ci = API['Ci']
+        for query in (
+                ('parents', 'forward', C.parents_, ['word', 'phrase', 'clause', 'sentence'], 17, 1, 1, {'sentence'}),
+                ('parents', 'backward', Ci.parents_, ['word', 'phrase', 'clause', 'sentence'], 17, 11, 1, {'word'}),
+                ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book'], 5, 2, 1, {'half_verse'}),
+                ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book'], 5, 1, 1, {'book'}),
+            ):
+                (the_edgetype, direction, the_edge, the_types, exp_o, exp_n, exp_t, exp_s) = query
+                the_set = list(NN(test=F.otype.v, values=the_types))
+                the_endset = set(the_edge.endnodes(the_set))
+                the_endtypes = set([F.otype.v(n) for n in the_endset])
+                self.assertEqual(len(the_set), exp_o)
+                self.assertEqual(len(the_endset), exp_n)
+                self.assertEqual(len(the_endtypes), exp_t)
+                self.assertEqual(the_endtypes, exp_s)
 
 if __name__ == '__main__': unittest.main()

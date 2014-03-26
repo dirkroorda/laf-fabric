@@ -42,8 +42,8 @@ def model(origin, data_items, stamp):
         n_node = len(node_region_list)
 
         stamp.Imsg("NODES ANCHOR BOUNDARIES")
-        node_anchor_min = array.array('I', [0 for i in range(n_node)])
-        node_anchor_max = array.array('I', [0 for i in range(n_node)])
+        node_anchor_min = array.array('I', (0 for i in range(n_node)))
+        node_anchor_max = array.array('I', (0 for i in range(n_node)))
         node_linked = array.array('I')
         region_begin = data_items[Names.comp(origin + 'T00', ('region_begin',))]
         region_end = data_items[Names.comp(origin + 'T00', ('region_end',))]

@@ -21,6 +21,6 @@ def arrayify(source_list):
         j += 1 + len(items)
     return (dest_array, dests_array)
 
-def make_inverse(mapping): return dict([(y,x) for (x,y) in mapping.items()])
-def make_array_inverse(arraylist): return dict([(x,n) for (n,x) in enumerate(arraylist)])
+def make_inverse(mapping): return dict((y,x) for (x,y) in mapping.items())
+def make_array_inverse(arraylist): return dict((x,n) for (n,x) in enumerate(arraylist))
 

@@ -2,7 +2,7 @@ import os
 import glob
 import collections
 from .lib import make_array_inverse
-from .names import Names
+from .names import Names, FabricError
 from .data import LafData
 from .elements import Feature, Connection, XMLid, PrimaryData
 
@@ -320,6 +320,7 @@ class LafFabric(object):
         self.api.clear()
         lafapi = self.lafapi
         self.lafapi.stamp.reset()
+        Names.check_load_dict(load_dict, self.lafapi.stamp)
         if verbose: self.lafapi.stamp.set_verbose(verbose)
         lafapi.stamp.Nmsg("LOADING API: please wait ... ")
         lafapi.names.setenv(source=source, annox=annox, task=task)

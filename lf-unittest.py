@@ -7,6 +7,7 @@ from contextlib import contextmanager
 import unittest
 
 from laf.fabric import LafFabric
+from laf.names import FabricError
 from etcbc.preprocess import prepare
 
 SOURCE = 'bhs3-tiny.txt.hdr'
@@ -15,7 +16,7 @@ WORKDIR = './example-data/etcbc-gen11'
 WORKDIRA = '{}/example-data/etcbc-gen11'.format(os.getcwd())
 LAFDIR = WORKDIR
 LAFDIRA = WORKDIRA
-SPECIFIC = True
+SPECIFIC = False
 
 class TestLafFabric(unittest.TestCase):
     fabric = None
@@ -632,7 +633,7 @@ class TestLafFabric(unittest.TestCase):
             self.assertEqual(XE.i(x), e)
             self.assertEqual(XE.r(e), x)
 
-    #unittest.skipIf(SPECIFIC, 'running an individual test')
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u7_endnodes(self):
         API = self.fabric.load(SOURCE, '--', 'plain', {
                 "xmlids": {
@@ -674,5 +675,31 @@ class TestLafFabric(unittest.TestCase):
                 self.assertEqual(len(the_endset), exp_n)
                 self.assertEqual(len(the_endtypes), exp_t)
                 self.assertEqual(the_endtypes, exp_s)
+
+    @unittest.skipIf(True or SPECIFIC, 'running an individual test')
+    def test_u8_load_dict(self):
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+                "xmlids": {
+                    "node": True,
+                    "edge": True,
+                },
+                "features": {
+                    "shebanq": {
+                        "node": [
+                            "db.otype",
+                        ],
+                        "edge": [
+                            "parents.",
+                        ],
+                    },
+                    "laf": {
+                        "edge": ['.x'],
+                    },
+                },
+                "prepare": prepare,
+                "extra": True,
+            },
+            compile_main=False, compile_annox=False,
+        )
 
 if __name__ == '__main__': unittest.main()

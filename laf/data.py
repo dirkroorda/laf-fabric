@@ -5,17 +5,11 @@ import array
 import pickle
 import collections
 import gzip
-from .names import Names
+from .names import Names, FabricError
 from .parse import parse
 from .model import model
 
 GZIP_LEVEL = 2
-
-class LafException(Exception):
-    def __init__(self, message, stamp, Errors):
-        Exception.__init__(self, message)
-        stamp.Emsg(message)
-        raise
 
 class LafData(object):
     '''Manage the compiling and loading of LAF/GraF data.'''
@@ -34,16 +28,16 @@ class LafData(object):
         try:
             if not os.path.exists(env['m_compiled_dir']): os.makedirs(env['m_compiled_dir'])
         except os.error:
-            raise LafException("could not create bin directory {}".format(env['m_compiled_dir']), self.stamp, os.error)
+            raise FabricError("could not create bin directory {}".format(env['m_compiled_dir']), self.stamp, os.error)
         if annox != env['empty']:
             try:
                 if not os.path.exists(env['a_compiled_dir']): os.makedirs(env['a_compiled_dir'])
             except os.error:
-                raise LafException("could not create bin directory {}".format(env['a_compiled_dir']), self.stamp, os.error)
+                raise FabricError("could not create bin directory {}".format(env['a_compiled_dir']), self.stamp, os.error)
         try:
             if not os.path.exists(env['task_dir']): os.makedirs(env['task_dir'])
         except os.error:
-            raise LafException("could not create result directory {}".format(env['task_dir']), self.stamp, os.error)
+            raise FabricError("could not create result directory {}".format(env['task_dir']), self.stamp, os.error)
         correct = True
         if not self._compile_all(force): correct = False
         if not self._load_all(req_items): correct = False
@@ -85,7 +79,7 @@ class LafData(object):
         try:
             if not os.path.exists(log_dir): os.makedirs(log_dir)
         except os.error:
-            raise LafException("could not create log directory {}".format(log_dir), self.stamp, os.error)
+            raise FabricError("could not create log directory {}".format(log_dir), self.stamp, os.error)
         self.log = open(log_path, "w", encoding="utf-8")
         self.stamp.connect_log(self.log)
         self.stamp.Nmsg("LOGFILE={}".format(log_path))
@@ -262,16 +256,16 @@ class LafData(object):
         compiled_dir = env['{}_compiled_dir'.format(origin)]
         self.cur_dir = os.getcwd()
         if not os.path.exists(source_path):
-            raise LafException("LAF header does not exists {}".format(source_path), self.stamp, os.error)
+            raise FabricError("LAF header does not exists {}".format(source_path), self.stamp, os.error)
         try:
             os.chdir(source_dir)
         except os.error:
-            raise LafException("could not change to LAF source directory {}".format(source_dir), self.stamp, os.error)
+            raise FabricError("could not change to LAF source directory {}".format(source_dir), self.stamp, os.error)
         try:
             if not os.path.exists(compiled_dir): os.makedirs(compiled_dir)
         except os.error:
             os.chdir(self.cur_dir)
-            raise LafException("could not create directory for compiled source {}".format(compiled_dir), self.stamp, os.error)
+            raise FabricError("could not create directory for compiled source {}".format(compiled_dir), self.stamp, os.error)
         parse(
             origin,
             env['{}_source_path'.format(origin)],

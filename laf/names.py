@@ -1,3 +1,4 @@
+import sys
 import collections
 from .settings import Settings
 
@@ -92,6 +93,9 @@ class Names(Settings):
     E_ANNOT_NON = ('laf','','x')
     DCOMP_SEP = ','
 
+    load_dict_keys = {'features', 'xmlids', 'primary', 'prepare'}
+    load_dict_subkeys = {'node', 'edge'}
+
     def __init__(self, work_dir, laf_dir, save, verbose):
         Settings.__init__(self, work_dir, laf_dir, save, verbose)
         self.req_data_items = collections.OrderedDict()
@@ -175,4 +179,15 @@ class Names(Settings):
         dloc = self.env['{}_compiled_dir'.format(dorigin)]
         dfile = Names.comp_file(dgroup, dkind, ddir, dcomps)
         return (dgroup not in 'FC', dloc, dfile, dtype, dorigin == 'z')
+
+    def check_load_dict(load_dict, stamp):
+        for key in load_dict:
+            if key not in Names.load_dict_keys:
+                raise FabricError('You have an unknown key in your load instructions: {}'.format(key), stamp, None)
+
+class FabricError(Exception):
+    def __init__(self, message, stamp, Errors):
+        Exception.__init__(self, message)
+        stamp.Emsg(message)
+        if Errors: raise Errors
 

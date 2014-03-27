@@ -18,7 +18,7 @@ Better error handling, especially when the load dictionary does not conform to t
 
 Under the hood
 --------------
-More unit tests, especially w.r.t. error checking.
+More unit tests, especially w.r.t. error checking, and node order, and the ``BF`` API element.
 
 4.0.4
 -----

@@ -20,6 +20,14 @@ def node_order(API):
         'subphrase': 7,
         'word': 8,
     }
+
+# we should sort on minmonad and maxmonad instead of min anchor and max anchor.
+# There are monads with have equal min and max anchor. 
+# They got sorted wrong.
+
+    def etcbckey(node):
+        pass
+
     def hierarchy(node): return object_rank[F.shebanq_db_otype.v(node)]
     return array.array('I', NN(extrakey=hierarchy))
 

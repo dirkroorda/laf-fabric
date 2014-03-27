@@ -678,7 +678,7 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, 'running an individual test')
     def test_u8_load_dict(self):
-        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "xmlids": {
                     "node": True,
                     "edge": True,
@@ -686,14 +686,14 @@ class TestLafFabric(unittest.TestCase):
                 },
             }
         )
-        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "xmlids": {
                     "node": True,
                     "edge": None,
                 },
             },
         )
-        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "features": {
                     "shebanq": {
                         "node": [ ],
@@ -703,7 +703,7 @@ class TestLafFabric(unittest.TestCase):
                 },
             },
         )
-        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "features": {
                     "shebanq": {
                         "node": { },
@@ -712,7 +712,7 @@ class TestLafFabric(unittest.TestCase):
                 },
             },
         )
-        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "features": {
                     "shebanq": {
                         "node": [ ],
@@ -721,9 +721,44 @@ class TestLafFabric(unittest.TestCase):
                 },
             },
         )
-        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'plain', {
+        self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "prepare": set(),
             },
         )
+
+    @unittest.skipIf(SPECIFIC, 'running an individual test')
+    def test_u9_node_order(self):
+        API = self.fabric.load(SOURCE, '--', 'before', {
+                "features": {"shebanq": {"node": ['db.otype,monads']}},
+            },
+        ) 
+        NN = API['NN']
+        F = API['F']
+        BF = API['BF']
+        close = API['close']
+        
+        expected = {(12, 21), (3, 15), (2, 18), (21, 22), (14, 18), (11, 22), (13, 17), (3, 19), (11, 21), (15, 19), (2, 14), (11, 12), (12, 22), (16, 20)}
+        nones = {(n,m) for n in NN() for m in NN() if n < m and BF(n,m) == None}
+        self.assertEqual(expected, nones)
+        for (n,m) in nones: self.assertEqual(BF(m,n), None)
+        close()
+
+        plain_expected = {(12, 21), (3, 15), (2, 18), (21, 22), (14, 18), (11, 22), (13, 17), (3, 19), (11, 21), (15, 19), (2, 14), (11, 12), (12, 22), (16, 20)}
+        plain_found = {tuple(NN(test=lambda x: x in {p[0],p[1]})) for p in nones}
+        self.assertEqual(plain_expected, plain_found)
+
+        API = self.fabric.load(SOURCE, '--', 'before', {
+                "features": {"shebanq": {"node": ['db.otype,monads']}}, "prepare": prepare,
+            },
+        ) 
+        NN = API['NN']
+        F = API['F']
+        BF = API['BF']
+        close = API['close']
+        
+        prep_expected = {(18, 2), (21, 22), (15, 3), (14, 18), (22, 12), (13, 17), (19, 3), (21, 11), (22, 11), (15, 19), (21, 12), (14, 2), (11, 12), (16, 20)}
+        prep_found = {tuple(NN(test=lambda x: x in {p[0],p[1]})) for p in nones}
+        self.assertEqual(prep_expected, prep_found)
+
 
 if __name__ == '__main__': unittest.main()

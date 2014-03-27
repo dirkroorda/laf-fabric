@@ -342,16 +342,18 @@ Examples::
         # code for the case that nodea comes after nodeb
 
 With this function you can do an easy check on the order of nodes.
-The *BF* relation corresponds with the order used in the enumeration of nodes ``NN()`` below.
-
-Especially when two nodes have no defined mutual order, you might want to supply an order
-yourself in your tasks. 
-With ``BF`` you can quickly see when that is the case.
-
+The *BF()* ordering orders the nodes as *NN()* does, but it indicates when two nodes cannot be ordered.
 There is no mutual order between two nodes if at least one of the following holds:
 
 * at least one of them is not linked to the primary data
 * both start and end at the same point in the primary data (what happens in between is immaterial).
+
+*BF(n,m)* yields ``True`` if *n* comes before *m*, ``False`` if *m* comes before *n*, and ``None`` if none of these is the case.
+
+.. note::
+    The *BF()* ordering is **not** influenced by an additional ordering that you might have added to Laf Fabric by
+    data preparation. So even if you have loaded a more complete ordering, you still can analyse for which pairs of nodes the
+    extra ordering introduces extra order.
 
 NN (Next Node)
 --------------

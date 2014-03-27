@@ -58,7 +58,7 @@ class Settings(object):
     def __init__(self, work_dir, laf_dir, save, verbose):
         stamp = Timestamp(verbose=verbose)
         self.stamp = stamp
-        stamp.Nmsg('This is LAF-Fabric {}\n{}\n'.format(VERSION, APIREF))
+        stamp.Nmsg('This is LAF-Fabric {}\n{}'.format(VERSION, APIREF))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         cw_dir = os.getcwd()
         home_dir = os.path.expanduser('~')

@@ -93,8 +93,8 @@ class Names(Settings):
     E_ANNOT_NON = ('laf','','x')
     DCOMP_SEP = ','
 
-    load_dict_keys = {'features', 'xmlids', 'primary', 'prepare'}
-    load_dict_subkeys = {'node', 'edge'}
+    load_spec_keys = {'features', 'xmlids', 'primary', 'prepare'}
+    load_spec_subkeys = {'node', 'edge'}
     kind_types = {False, True}
 
     def __init__(self, work_dir, laf_dir, save, verbose):
@@ -181,34 +181,46 @@ class Names(Settings):
         dfile = Names.comp_file(dgroup, dkind, ddir, dcomps)
         return (dgroup not in 'FC', dloc, dfile, dtype, dorigin == 'z')
 
-    def check_load_dict(load_dict, stamp):
+    def check_load_spec(load_spec, stamp):
         errors = []
-        for key in load_dict:
-            if key not in Names.load_dict_keys:
-                errors.append('only these keys are allowed: {}, not {}'.format(Names.load_dict_keys, key))
+        for key in load_spec:
+            if key not in Names.load_spec_keys:
+                errors.append('only these keys are allowed: {}, not {}'.format(Names.load_spec_keys, key))
             elif key == 'xmlids':
-                for subkey in load_dict[key]:
-                    if subkey not in Names.load_dict_subkeys:
-                        errors.append('under {} only these keys are allowed: {}, not {}'.format(key, Names.load_dict_subkeys, subkey))
+                for subkey in load_spec[key]:
+                    if subkey not in Names.load_spec_subkeys:
+                        errors.append('under {} only these keys are allowed: {}, not {}'.format(key, Names.load_spec_subkeys, subkey))
                     else:
-                        val = load_dict[key][subkey]
+                        val = load_spec[key][subkey]
                         if val not in {False, True}:
                             errors.append('under {} and then {} only these values are allowed: {}, not {}'.format(key, subkey, Names.kind_types, val))
             elif key == 'primary':
-                val = load_dict[key]
+                val = load_spec[key]
                 if val not in {False, True}:
                     errors.append('under {} only these values are allowed: {}, not {}'.format(key, Names.kind_types, val))
             elif key == 'features':
-                for namespace in load_dict[key]:
-                    for subkey in load_dict[key][namespace]:
-                        if subkey not in Names.load_dict_subkeys:
-                            errors.append('under {} and then {} only these keys are allowed: {}, not {}'.format(key, namespace, Names.load_dict_subkeys, subkey))
-                        else:
-                            val = load_dict[key][namespace][subkey]
-                            if type(val) != list:
-                                errors.append('under {} and then {} and then {} the value should be a list, not {}'.format(key, namespace, subkey, type(val)))
+                val = load_spec[key]
+                if type(val) == dict:
+                    for namespace in val:
+                        for subkey in val[namespace]:
+                            if subkey not in Names.load_spec_subkeys:
+                                errors.append('under {} and then {} only these keys are allowed: {}, not {}'.format(key, namespace, Names.load_spec_subkeys, subkey))
+                            else:
+                                valsub = val[namespace][subkey]
+                                if type(valsub) != list:
+                                    errors.append('under {} and then {} and then {} the value should be a list, not {}'.format(key, namespace, subkey, type(valsub)))
+                elif type(val) == tuple:
+                    nelem = len(val)
+                    if  nelem != 2:
+                        errors.append('under {} the value should be a tuple with exactly two elements (for nodes and edges), not {}'.format(key, nelem))
+                    else:
+                        for (e, elem) in enumerate(val):
+                            if type(elem) != str: 
+                                errors.append('under {}, item {} the value should be a string, not {}'.format(key, e, type(elem)))
+                else:
+                    errors.append('under {} the value should be either a tuple with exactly two elements (for nodes and edges) or a dictionary, not {}'.format(key, type(val)))
             elif key == 'prepare':
-                val = load_dict[key]
+                val = load_spec[key]
                 if type(val) != collections.OrderedDict:
                     errors.append('the value of {} should be a collections.OrderedDict, not {}'.format(key, type(val)))
         if errors:

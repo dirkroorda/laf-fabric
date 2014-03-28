@@ -66,4 +66,104 @@
 	<f name="text" value="אָֽרֶץ"/>
 </fs></a>
 
+<a xml:id="amf2715505" label="ft" ref="n705160"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="אֶתֵּ֤ן"/>
+</fs></a>
+
+<a xml:id="amf2715517" label="ft" ref="n705161"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="בַּ"/>
+</fs></a>
+
+<a xml:id="amf2715529" label="ft" ref="n705162"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value=""/>
+</fs></a>
+
+<a xml:id="amf2715541" label="ft" ref="n705163"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="מִּדְבָּר֙"/>
+</fs></a>
+
+<a xml:id="amf2715553" label="ft" ref="n705164"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="אֶ֣רֶז"/>
+</fs></a>
+
+<a xml:id="amf2715565" label="ft" ref="n705165"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="שִׁטָּ֔ה"/>
+</fs></a>
+
+<a xml:id="amf2715577" label="ft" ref="n705166"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="וַ"/>
+</fs></a>
+
+<a xml:id="amf2715589" label="ft" ref="n705167"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="הֲדַ֖ס"/>
+</fs></a>
+
+<a xml:id="amf2715601" label="ft" ref="n705168"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="וְ"/>
+</fs></a>
+
+<a xml:id="amf2715613" label="ft" ref="n705169"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="עֵ֣ץ"/>
+</fs></a>
+
+<a xml:id="amf2715625" label="ft" ref="n705170"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="שָׁ֑מֶן"/>
+</fs></a>
+
+<a xml:id="amf2715637" label="ft" ref="n705171"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="אָשִׂ֣ים"/>
+</fs></a>
+
+<a xml:id="amf2715649" label="ft" ref="n705172"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="בָּ"/>
+</fs></a>
+
+<a xml:id="amf2715661" label="ft" ref="n705173"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value=""/>
+</fs></a>
+
+<a xml:id="amf2715673" label="ft" ref="n705174"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="עֲרָבָ֗ה"/>
+</fs></a>
+
+<a xml:id="amf2715685" label="ft" ref="n705175"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="בְּרֹ֛ושׁ"/>
+</fs></a>
+
+<a xml:id="amf2715697" label="ft" ref="n705176"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="תִּדְהָ֥ר"/>
+</fs></a>
+
+<a xml:id="amf2715709" label="ft" ref="n705177"><fs>
+	<f name="suffix" value=""/>
+	<f name="text" value="וּ"/>
+</fs></a>
+
+<a xml:id="amf2715721" label="ft" ref="n705178"><fs>
+	<f name="suffix" value=" "/>
+	<f name="text" value="תְאַשּׁ֖וּר"/>
+</fs></a>
+
+<a xml:id="amf2715733" label="ft" ref="n705179"><fs>
+	<f name="suffix" value="׃"/>
+	<f name="text" value="יַחְדָּֽו"/>
+</fs></a>
+
 </graph>

@@ -3,6 +3,8 @@ import array
 
 def node_order(API):
     '''Creates a form based on the information passed when creating this object.'''
+
+    API['fabric'].load_again({"features": {"shebanq": {"node": ["db.otype,minmonad,maxmonad",]}}}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']
@@ -21,15 +23,24 @@ def node_order(API):
         'word': 8,
     }
 
-# we should sort on minmonad and maxmonad instead of min anchor and max anchor.
-# There are monads with have equal min and max anchor. 
-# They got sorted wrong.
+    '''
+    Using the key *hierarchy* below did not solve all problems, because there are monads with empty text representations.
+    By the rules, they get sorted after the monads they come before.
+    Suppose we have text '' + 'aap' with monad numbers 24 resp 25, and anchors (1200,1200) resp (1200,1203)
+    LAF Fabric thinks monad 24 is embedded in monad 25, hence it comes out at 25 first and then 24.
+
+    Solution: we should sort on minmonad and maxmonad instead of min anchor and max anchor.
+    '''
 
     def etcbckey(node):
-        pass
+        return (int(F.minmonad.v(node)), -int(F.maxmonad.v(node)), object_rank[F.otype.v(node)])
 
-    def hierarchy(node): return object_rank[F.shebanq_db_otype.v(node)]
-    return array.array('I', NN(extrakey=hierarchy))
+    def hierarchy(node): return object_rank[F.otype.v(node)]
+
+    nodes = sorted(NN(), key=etcbckey)
+    #nodes = NN(extrakey=hierarchy)
+
+    return array.array('I', nodes)
 
 def node_order_inv(API):
     make_array_inverse = API['make_array_inverse']

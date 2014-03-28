@@ -23,5 +23,25 @@
 <edge xml:id="el793283" from="n88917" to="n84383"/>
 <a xml:id="ale793283" label="parents" ref="el793283"/>
 
+<a xml:id="alf736835" label="ft" ref="n763819"><fs>
+	<f name="number_within_chapter" value="74"/>
+</fs></a>
+
+<a xml:id="alf736836" label="ft" ref="n763820"><fs>
+	<f name="number_within_chapter" value="75"/>
+</fs></a>
+
+<a xml:id="alf808425" label="ft" ref="n768033"><fs>
+	<f name="sentence_atom_number" value="0"/>
+</fs></a>
+<edge xml:id="el825158" from="n768033" to="n763819"/>
+<a xml:id="ale825158" label="parents" ref="el825158"/>
+
+<a xml:id="alf808426" label="ft" ref="n768034"><fs>
+	<f name="sentence_atom_number" value="0"/>
+</fs></a>
+<edge xml:id="el825159" from="n768034" to="n763820"/>
+<a xml:id="ale825159" label="parents" ref="el825159"/>
+
 
 </graph>

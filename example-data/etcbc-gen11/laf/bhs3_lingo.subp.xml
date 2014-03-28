@@ -29,4 +29,100 @@
 <edge xml:id="el865012" from="n77638" to="n40770"/>
 <a xml:id="ale865012" label="parents" ref="el865012"/>
 
+<a xml:id="alf907145" label="ft" ref="n759929"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="PAR"/>
+</fs></a>
+<edge xml:id="el953312" from="n759929" to="n734530"/>
+<a xml:id="ale953312" label="parents" ref="el953312"/>
+
+<a xml:id="alf907146" label="ft" ref="n759927"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="PAR"/>
+</fs></a>
+<edge xml:id="el953313" from="n759927" to="n759929"/>
+<a xml:id="ale953313" label="parents" ref="el953313"/>
+
+<a xml:id="alf907147" label="ft" ref="n759925"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="PAR"/>
+</fs></a>
+<edge xml:id="el953314" from="n759925" to="n759927"/>
+<a xml:id="ale953314" label="parents" ref="el953314"/>
+
+<a xml:id="alf907148" label="ft" ref="n759926"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="par"/>
+</fs></a>
+<edge xml:id="el953315" from="n759926" to="n759925"/>
+<a xml:id="ale953315" label="mother" ref="el953315"/>
+<edge xml:id="el953316" from="n759926" to="n759927"/>
+<a xml:id="ale953316" label="parents" ref="el953316"/>
+
+<a xml:id="alf907149" label="ft" ref="n759928"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="par"/>
+</fs></a>
+<edge xml:id="el953317" from="n759928" to="n759927"/>
+<a xml:id="ale953317" label="mother" ref="el953317"/>
+<edge xml:id="el953318" from="n759928" to="n759929"/>
+<a xml:id="ale953318" label="parents" ref="el953318"/>
+
+<a xml:id="alf907150" label="ft" ref="n759932"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="par"/>
+</fs></a>
+<edge xml:id="el953319" from="n759932" to="n759929"/>
+<a xml:id="ale953319" label="mother" ref="el953319"/>
+<edge xml:id="el953320" from="n759932" to="n734530"/>
+<a xml:id="ale953320" label="parents" ref="el953320"/>
+
+<a xml:id="alf907151" label="ft" ref="n759930"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="REG"/>
+</fs></a>
+<edge xml:id="el953321" from="n759930" to="n759932"/>
+<a xml:id="ale953321" label="parents" ref="el953321"/>
+
+<a xml:id="alf907152" label="ft" ref="n759931"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="rec"/>
+</fs></a>
+<edge xml:id="el953322" from="n759931" to="n759930"/>
+<a xml:id="ale953322" label="mother" ref="el953322"/>
+<edge xml:id="el953323" from="n759931" to="n759932"/>
+<a xml:id="ale953323" label="parents" ref="el953323"/>
+
+<a xml:id="alf907153" label="ft" ref="n759935"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="PAR"/>
+</fs></a>
+<edge xml:id="el953324" from="n759935" to="n734533"/>
+<a xml:id="ale953324" label="parents" ref="el953324"/>
+
+<a xml:id="alf907154" label="ft" ref="n759933"><fs>
+	<f name="subphrase_kind" value="mother"/>
+	<f name="subphrase_type" value="PAR"/>
+</fs></a>
+<edge xml:id="el953325" from="n759933" to="n759935"/>
+<a xml:id="ale953325" label="parents" ref="el953325"/>
+
+<a xml:id="alf907155" label="ft" ref="n759934"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="par"/>
+</fs></a>
+<edge xml:id="el953326" from="n759934" to="n759933"/>
+<a xml:id="ale953326" label="mother" ref="el953326"/>
+<edge xml:id="el953327" from="n759934" to="n759935"/>
+<a xml:id="ale953327" label="parents" ref="el953327"/>
+
+<a xml:id="alf907156" label="ft" ref="n759936"><fs>
+	<f name="subphrase_kind" value="daughter"/>
+	<f name="subphrase_type" value="par"/>
+</fs></a>
+<edge xml:id="el953328" from="n759936" to="n759935"/>
+<a xml:id="ale953328" label="mother" ref="el953328"/>
+<edge xml:id="el953329" from="n759936" to="n734533"/>
+<a xml:id="ale953329" label="parents" ref="el953329"/>
+
 </graph>

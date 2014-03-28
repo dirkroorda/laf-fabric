@@ -3,7 +3,7 @@ import os
 import configparser
 from .timestamp import Timestamp
 
-VERSION = '4.0.5'
+VERSION = '4.0.6'
 APIREF = 'http://laf-fabric.readthedocs.org/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_WORK_DIR = 'laf-fabric-data'

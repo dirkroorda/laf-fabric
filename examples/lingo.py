@@ -6,21 +6,8 @@ processor = LafFabric(verbose='DETAIL')
 
 API = processor.load('bhs3.txt.hdr', '--', 'lingo',
     {
-        "xmlids": {
-            "node": False,
-            "edge": False,
-        },
-        "features": {
-            "shebanq": {
-                "node": [
-                    "db.otype,monads,maxmonad,minmonad",
-                    "ft.gender,part_of_speech",
-                    "sft.verse_label",
-                ],
-                "edge": [
-                ],
-            },
-        },
+        "xmlids": {"node": False, "edge": False},
+        "features": ("otype monads maxmonad minmonad gender part_of_speech verse_label", ""),
     }
 )
 
@@ -70,14 +57,14 @@ def print_node(ob, obdata):
             out.write("◘".format(monads))
         else:
             outchar = "."
-            if F.shebanq_ft_part_of_speech.v(node) == "noun":
-                if F.shebanq_ft_gender.v(node) == "masculine":
+            if F.part_of_speech.v(node) == "noun":
+                if F.gender.v(node) == "masculine":
                     outchar = "♂"
-                elif F.shebanq_ft_gender.v(node) == "feminine":
+                elif F.gender.v(node) == "feminine":
                     outchar = "♀"
-                elif F.shebanq_ft_gender.v(node) == "unknown":
+                elif F.gender.v(node) == "unknown":
                     outchar = "?"
-            if F.shebanq_ft_part_of_speech.v(node) == "verb":
+            if F.part_of_speech.v(node) == "verb":
                 outchar = "♠"
             out.write(outchar)
         if monads in watch:
@@ -87,7 +74,7 @@ def print_node(ob, obdata):
                     out.write("{})".format(o))
             del watch[monads]
     elif ob == "V":
-        this_verse_label = F.shebanq_sft_verse_label.v(node)
+        this_verse_label = F.verse_label.v(node)
         sys.stderr.write("\r{:<12}".format(this_verse_label))
         cur_verse_label[0] = this_verse_label
         cur_verse_label[1] = this_verse_label
@@ -104,14 +91,14 @@ lastmin = None
 lastmax = None
 
 for i in NN():
-    otype = F.shebanq_db_otype.v(i)
+    otype = F.otype.v(i)
 
     ob = type_map[otype]
     if ob == None:
         continue
-    monads = F.shebanq_db_monads.v(i)
-    minm = F.shebanq_db_minmonad.v(i)
-    maxm = F.shebanq_db_maxmonad.v(i)
+    monads = F.monads.v(i)
+    minm = F.minmonad.v(i)
+    maxm = F.maxmonad.v(i)
     if lastmin == minm and lastmax == maxm:
         start[ob] = (i, minm, maxm, monads)
     else:

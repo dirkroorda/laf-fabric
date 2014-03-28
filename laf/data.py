@@ -18,7 +18,7 @@ class LafData(object):
         self.log = None
         self.data_items = {}
 
-    def adjust_all(self, source, annox, task, req_items, force):
+    def adjust_all(self, source, annox, task, req_items, add, force):
         '''Load manager.
 
         Load and clear data so that the current task has all it needs and no more.
@@ -39,7 +39,7 @@ class LafData(object):
         except os.error as e:
             raise FabricError("could not create result directory {}".format(env['task_dir']), self.stamp, cause=e)
         self._compile_all(force)
-        self._load_all(req_items)
+        self._load_all(req_items, add)
         self._add_logfile()
 
     def finish_task(self, show=True):
@@ -142,13 +142,14 @@ class LafData(object):
         self.names.req_data_items = collections.OrderedDict()
         self.names._old_data_items = collections.OrderedDict()
 
-    def _load_all(self, req_items):
+    def _load_all(self, req_items, add):
         dkeys = self.names.request_files(req_items)
         self.loadspec = dkeys
         for dkey in dkeys['keep']: self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
-        for dkey in dkeys['clear']:
-            self.stamp.Dmsg("clear {}".format(Names.dmsg(dkey))) 
-            self._clear_file(dkey)
+        if not add:
+            for dkey in dkeys['clear']:
+                self.stamp.Dmsg("clear {}".format(Names.dmsg(dkey))) 
+                self._clear_file(dkey)
         for dkey in dkeys['load']:
             self.stamp.Dmsg("load {}".format(Names.dmsg(dkey))) 
             ism = self.names.dinfo(dkey)[0]

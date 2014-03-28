@@ -93,33 +93,20 @@ print('''
 ######################################################################
 ''')
 fabric.load(test['source_file'], '--', 'plain',
-        {
-            "xmlids": {
-                "node": False,
-                "edge": False,
-            },
-            "features": {
-                "shebanq": {
-                    "node": [
-                        "db.otype",
-                        "ft.text,suffix",
-                        "sft.book",
-                    ],
-                    "edge": [
-                    ],
-                },
-            },
-        },
-        compile_main=test['compile'], compile_annox=False,
-    )
+    {
+        "xmlids": {"node": False, "edge": False},
+        "features": ("otype text suffix book", ""),
+    },
+    compile_main=test['compile'], compile_annox=False,
+)
 exec(fabric.localnames.format(var='fabric'))
 
 msg("Get the words ... ")
 out = outfile("unicode_utf8.txt")
 
-for i in F.shebanq_db_otype.s('word'):
-    text = F.shebanq_ft_text.v(i) 
-    suffix = F.shebanq_ft_suffix.v(i) 
+for i in F.otype.s('word'):
+    text = F.text.v(i) 
+    suffix = F.suffix.v(i) 
     out.write('{}{}{}'.format(text, suffix, "\n" if '׃' in suffix else ""))
 close()
 
@@ -134,19 +121,8 @@ print('''
 ''')
 fabric.load(test['source_file'], '--', 'objects',
     {
-        "xmlids": {
-            "node": False,
-            "edge": False,
-        },
-        "features": {
-            "shebanq": {
-                "node": [
-                    "db.oid,otype,monads",
-                ],
-                "edge": [
-                ],
-            },
-        },
+        "xmlids": {"node": False, "edge": False },
+        "features": ("oid otype monads", ""),
         'prepare': prepare,
     }
 )
@@ -156,9 +132,9 @@ msg("Get the objects ... ")
 out = outfile("objects.txt")
 
 for i in NN():
-    oid = F.shebanq_db_oid.v(i)
-    otype = F.shebanq_db_otype.v(i)
-    monads = F.shebanq_db_monads.v(i)
+    oid = F.oid.v(i)
+    otype = F.otype.v(i)
+    monads = F.monads.v(i)
     out.write("{:>7} {:>7} {:<20} {{{:<13}}}\n".format(i, oid, otype, monads))
 close()
 
@@ -173,25 +149,8 @@ print('''
 ''')
 fabric.load(test['source_file'], '--', 'parents',
 {
-    "xmlids": {
-        "node": False,
-        "edge": False,
-    },
-    "features": {
-        "shebanq": {
-            "node": [
-                "db.otype",
-                "ft.text",
-                "sft.book",
-            ],
-            "edge": [
-                "parents.",
-            ],
-        },
-        "laf": {
-            "edge": ['.x'],
-        },
-    },
+    "xmlids": {"node": False, "edge": False},
+    "features": ("otype text book", "parents. .x"),
 })
 exec(fabric.localnames.format(var='fabric'))
 
@@ -207,16 +166,16 @@ bookname = None
 found = 0
 
 for i in NN():
-    otype = F.shebanq_db_otype.v(i)
-    for p in C.shebanq_parents_.v(i):
+    otype = F.otype.v(i)
+    for p in C.parents_.v(i):
         found += 1
-        ptype = F.shebanq_db_otype.v(p)
+        ptype = F.otype.v(p)
         if mode == 'tiny':
-            msg("{}={} -> {}={}".format(otype, F.shebanq_ft_text.v(i) if otype == 'word' else i, ptype, F.shebanq_ft_text.v(p) if ptype == 'word' else p))
+            msg("{}={} -> {}={}".format(otype, F.text.v(i) if otype == 'word' else i, ptype, F.text.v(p) if ptype == 'word' else p))
         else:
-            out.write("{}={} -> {}={}\n".format(otype, F.shebanq_ft_text.v(i) if otype == 'word' else i, ptype, F.shebanq_ft_text.v(p) if ptype == 'word' else p))
+            out.write("{}={} -> {}={}\n".format(otype, F.text.v(i) if otype == 'word' else i, ptype, F.text.v(p) if ptype == 'word' else p))
     if otype == "book":
-        bookname = F.shebanq_sft_book.v(i)
+        bookname = F.book.v(i)
         sys.stderr.write("{} ({})\n".format(bookname, found))
 sys.stderr.write("Total {}\n".format(found))
 
@@ -228,15 +187,15 @@ print('''
 msg("Travel from node sets ...")
 
 for query in (
-        ('parents', 'forward', C.shebanq_parents_, ['word', 'phrase', 'clause', 'sentence']),
-        ('parents', 'backward', Ci.shebanq_parents_, ['word', 'phrase', 'clause', 'sentence']),
+        ('parents', 'forward', C.parents_, ['word', 'phrase', 'clause', 'sentence']),
+        ('parents', 'backward', Ci.parents_, ['word', 'phrase', 'clause', 'sentence']),
         ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
         ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
     ):
         (the_edgetype, direction, the_edge, the_types) = query
-        the_set = list(NN(test=F.shebanq_db_otype.v, values=the_types))
+        the_set = list(NN(test=F.otype.v, values=the_types))
         the_endset = set(the_edge.endnodes(the_set))
-        the_endtypes = set([F.shebanq_db_otype.v(n) for n in the_endset])
+        the_endtypes = set([F.otype.v(n) for n in the_endset])
         print("Traveling from start set {} with {} nodes along {} edges {}:\nYou end up in an end set of {} endnodes with {} type(s) namely {}.\n".format(
             the_types, len(the_set), the_edgetype, direction, len(the_endset), len(the_endtypes), the_endtypes
     ))
@@ -253,19 +212,8 @@ print('''
 ''')
 fabric.load(test['source_file'], '--', 'xmlids',
 {
-    "xmlids": {
-        "node": True,
-        "edge": True,
-    },
-    "features": {
-        "shebanq": {
-            "node": [
-                "db.oid,otype",
-            ],
-            "edge": [
-            ],
-        },
-    },
+    "xmlids": {"node": True, "edge": True},
+    "features": ("oid otype", ""),
 })
 exec(fabric.localnames.format(var='fabric'))
 
@@ -273,8 +221,8 @@ msg("Get the xmlids ...")
 out = outfile('xmlids-nodes.txt')
 
 for n in NN():
-    otype = F.shebanq_db_otype.v(n)
-    oid = F.shebanq_db_oid.v(n)
+    otype = F.otype.v(n)
+    oid = F.oid.v(n)
     xid = X.r(n)
     nid = X.i(xid)
     if nid != n: Emsg('nid {} != {} n'.format(nid, n), verbose='ERROR')
@@ -296,27 +244,8 @@ print('''
 ''')
 fabric.load(test['source_file'], 'participants', 'personal',
         {
-            "xmlids": {
-                "node": False,
-                "edge": False,
-            },
-            "features": {
-                "dirk": {
-                    "node": [
-                        "part.intro,role",
-                    ],
-                    "edge": [
-                    ],
-                },
-                "shebanq": {
-                    "node": [
-                        "db.otype",
-                        "ft.text",
-                    ],
-                    "edge": [
-                    ],
-                },
-            },
+            "xmlids": {"node": False, "edge": False},
+            "features": ("intro role otype text", ""),
         },
         compile_main=test['compile'], compile_annox=False,
     )
@@ -325,11 +254,11 @@ exec(fabric.localnames.format(var='fabric'))
 msg("Get the annotations ...")
 out = outfile('annotations.txt')
 
-for n in set(F.dirk_part_intro.s()) | set(F.dirk_part_role.s()):
-    otype = F.shebanq_db_otype.v(n)
-    rep = F.shebanq_ft_text.v(n) if otype == 'word' else n
-    intro = F.dirk_part_intro.v(n)
-    role = F.dirk_part_role.v(n)
+for n in set(F.intro.s()) | set(F.role.s()):
+    otype = F.otype.v(n)
+    rep = F.text.v(n) if otype == 'word' else n
+    intro = F.intro.v(n)
+    role = F.role.v(n)
     msg("{}({})\tintro='{}'\trole='{}'".format(
         otype, rep,
         intro or 'n/a',

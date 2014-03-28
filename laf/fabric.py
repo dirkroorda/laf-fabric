@@ -24,6 +24,26 @@ class LafAPI(LafData):
         self._api_prep()
         return self.api
 
+    def get_all_features(self):
+        loadables = set()
+        for origin in ('m', 'a'):
+            for feat_path in glob.glob('{}/*'.format(self.names.env['{}_compiled_dir'.format(origin)])):
+                filename = os.path.basename(feat_path)
+                if filename.startswith(('_', 'A', 'Z')): continue
+                loadables.add('{}{}'.format(origin, filename))
+        self.all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
+        self.all_features_index = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
+        for filename in loadables:
+            (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(filename)
+            if dgroup != 'F': continue
+            (namespace, label, name) = dcomps
+            self.all_features[dkind][namespace].add("{}.{}".format(label, name))
+            self.all_features_index[dkind][name].append((namespace, label))
+        if 'e' in self.all_features:
+            for fname in ('x', 'y'):
+                self.all_features['e']['laf'].add(('', fname))
+                self.all_features_index['e'][fname].append(('laf', ''))
+
     def _api_fcxp(self):
         data_items = self.data_items
         api = {
@@ -78,23 +98,11 @@ class LafAPI(LafData):
                 obj = XMLid(self, kind)
                 dest = 'XE' if kind == 'e' else 'X'
                 api[dest] = obj
-        loadables = set()
-        for origin in ('m', 'a'):
-            for feat_path in glob.glob('{}/*'.format(self.names.env['{}_compiled_dir'.format(origin)])):
-                filename = os.path.basename(feat_path)
-                if filename.startswith(('_', 'A', 'Z')): continue
-                loadables.add('{}{}'.format(origin, filename))
-        all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
-        for filename in loadables:
-            (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(filename)
-            if dgroup != 'F': continue
-            (namespace, label, name) = dcomps
-            all_features[dkind][namespace].add("{}.{}".format(label, name))
 
         def feature_list(kind):
             result = []
-            for namespace in sorted(all_features[kind]):
-                result.append((namespace, sorted(all_features[kind][namespace])))
+            for namespace in sorted(self.all_features[kind]):
+                result.append((namespace, sorted(self.all_features[kind][namespace])))
             return result
 
         def pretty_fl(flist):
@@ -316,43 +324,81 @@ class LafFabric(object):
         self.lafapi.stamp.reset()
         self.api = {}
 
-    def load(self, source, annox, task, load_dict, compile_main=False, compile_annox=False, verbose=None):
+    def load(self, source, annox, task, load_spec, add=False, compile_main=False, compile_annox=False, verbose=None):
         self.api.clear()
         lafapi = self.lafapi
-        self.lafapi.stamp.reset()
-        Names.check_load_dict(load_dict, self.lafapi.stamp)
+        self.api['fabric'] = self
+        lafapi.stamp.reset()
+        Names.check_load_spec(load_spec, lafapi.stamp)
         if verbose: self.lafapi.stamp.set_verbose(verbose)
-        lafapi.stamp.Nmsg("LOADING API: please wait ... ")
+        lafapi.stamp.Nmsg("LOADING API{}: please wait ... ".format(' with EXTRAs' if add else ''))
         lafapi.names.setenv(source=source, annox=annox, task=task)
         env = lafapi.names.env
         req_items = {}
         lafapi.names.request_init(req_items)
-        if 'primary' in load_dict and load_dict['primary']: req_items['mP00'] = True
-        if 'xmlids' in load_dict:
-            for kind in [k[0] for k in load_dict['xmlids'] if load_dict['xmlids'][k]]:
+        lafapi.get_all_features()
+        if 'primary' in load_spec and load_spec['primary']: req_items['mP00'] = True
+        if 'xmlids' in load_spec:
+            for kind in [k[0] for k in load_spec['xmlids'] if load_spec['xmlids'][k]]:
                 for ddir in ('f', 'b'): req_items['mX{}{}'.format(kind, ddir)].append(())
-        if 'features' in load_dict: LafFabric._request_features(load_dict['features'], req_items, annox!=env['empty'])
-        lafapi.adjust_all(source, annox, task, req_items, {'m': compile_main, 'a': compile_annox})
+        if 'features' in load_spec: self._request_features(load_spec['features'], req_items, add, annox!=env['empty'])
+        lafapi.adjust_all(source, annox, task, req_items, add, {'m': compile_main, 'a': compile_annox})
         self.api.update(lafapi.API())
-        if 'prepare' in load_dict: lafapi.prepare_all(self.api, load_dict['prepare'])
+        if 'prepare' in load_spec: lafapi.prepare_all(self.api, load_spec['prepare'])
         lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {}".format(env['source'], env['annox'], env['task']))
         lafapi.stamp.reset()
         self.localnames = '\n'.join(["{key} = {{var}}.api['{key}']".format(key=key) for key in self.api])
         return self.api
 
-    def load_again(self, load_dict, compile_main=False, compile_annox=False, verbose=None):
+    def load_again(self, load_spec, compile_main=False, compile_annox=False, verbose=None, add=False):
         env = self.lafapi.names.env
-        return self.load(env['source'], env['annox'], env['task'], load_dict, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
+        return self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
 
-    def _request_features(feat_dict, req_items, also_from_annox):
-        for aspace in feat_dict:
-            for kind in feat_dict[aspace]:
-                for line in feat_dict[aspace][kind]:
-                    (alabel, fnamestring) = line.split('.')
-                    fnames = fnamestring.split(',')
-                    for fname in fnames:
-                        the_feature = (aspace, alabel, fname)
+    def _request_features(self, feat_spec, req_items, add, also_from_annox):
+        lafapi = self.lafapi
+        all_features = lafapi.all_features_index
+        stamp = lafapi.stamp
+        the_features = collections.defaultdict(lambda: set())
+        if type(feat_spec) == dict:
+            for aspace in feat_spec:
+                for kind in feat_spec[aspace]:
+                    for line in feat_spec[aspace][kind]:
+                        (alabel, fnamestring) = line.split('.') if '.' in line else (None, line)
+                        fnames = fnamestring.split(',')
+                        for fname in fnames:
+                            the_features[kind].add((aspace, alabel, fname))
+        else:
+            for (kind, index) in (("node", 0), ("edge", 1)):
+                feature_list = feat_spec[index]
+                features = feature_list.split()
+                for line in features:
+                    (aspace, feature_raw) = line.split(':', 1) if ':' in line else (None, line)
+                    (alabel, fname) = feature_raw.split('.', 1) if '.' in feature_raw else (None, feature_raw)
+                    the_features[kind].add((aspace, alabel, fname))
+
+        for kind in the_features:
+            dkind = kind[0]
+            if dkind not in all_features: raise FabricError("No features of kind {} in LAF resource".format(kind), stamp)
+            for (aspace, alabel, fname) in the_features[kind]:
+                if fname not in all_features[dkind]: raise FabricError("No such feature in LAF resource: {}".format(fname), stamp)
+                else:
+                    hits = []
+                    candidates = all_features[dkind][fname]
+                    for (aspacec, alabelc) in candidates:
+                        if (aspace == None or aspace == aspacec) and (alabel == None or alabelc == alabel): hits.append((aspacec, alabelc))
+                    if not hits: raise FabricError("No feature in LAF resource: {}{}{}".format((aspace+':') if aspace != None else '', (alabel+'.') if alabel != None else '', fname), stamp)
+                    else:
+                        hit = hits[-1]
+                        the_feature = (hit[0], hit[1], fname)
+                        if len(hits) > 1:
+                            stamp.Imsg("Feature {}{}{} may mean any of {}. Choosing {}".format(
+                                (aspace+':') if aspace != None else '',
+                                (alabel+'.') if alabel != None else '',
+                                fname,
+                                ', '.join(["{}:{}.{}".format(fc[0], fc[1], fname) for fc in hits]),
+                                "{}:{}.{}".format(*the_feature),
+                            ))
                         for origin in ['m'] + (['a'] if also_from_annox else []):
-                            req_items['{}F{}0'.format(origin, kind[0])].append(the_feature)
-                            if kind[0] == 'e':
+                            req_items['{}F{}0'.format(origin, dkind)].append(the_feature)
+                            if dkind == 'e':
                                 for ddir in ('f', 'b'): req_items['{}C0{}'.format(origin, ddir)].append(the_feature)

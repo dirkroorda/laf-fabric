@@ -10,6 +10,25 @@ further processing in LAF-Fabric.
 
 Current
 =======
+4.0.6
+-----
+API
+---
+In specifying what features to load, you may omit namespaces and labels.
+You can specify the features to load in a much less verbose way.
+
+The functions ``load()`` and ``load_again()`` have a new optional parameter ``add``, which instructs laf fabric to
+do an incremental loading, without discarding anything that has already been loaded.
+
+ETCBC
+-----
+The order defined by ``etcbc.preprocess`` has been refined, so that it can also deal with empty words. 
+
+Under the hood
+--------------
+More unit tests, especially w.r.t. node order and empty words.
+The example data on which the unit tests act, has been enlarged: it now contains also Isaiah 41:19 in which two empty words occur.
+
 4.0.5
 -----
 Usability

@@ -53,4 +53,74 @@
 <edge xml:id="el253774" from="n59559" to="n34680"/>
 <a xml:id="ale253774" label="parents" ref="el253774"/>
 
+<a xml:id="alf310495" label="ft" ref="n749941"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="1"/>
+	<f name="phrase_function" value="Pred"/>
+	<f name="phrase_type" value="VP"/>
+</fs></a>
+<edge xml:id="el385981" from="n749941" to="n722765"/>
+<a xml:id="ale385981" label="parents" ref="el385981"/>
+
+<a xml:id="alf310496" label="ft" ref="n749942"><fs>
+	<f name="determination" value="determined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="2"/>
+	<f name="phrase_function" value="Loca"/>
+	<f name="phrase_type" value="PP"/>
+</fs></a>
+<edge xml:id="el385982" from="n749942" to="n722765"/>
+<a xml:id="ale385982" label="parents" ref="el385982"/>
+
+<a xml:id="alf310497" label="ft" ref="n749943"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="3"/>
+	<f name="phrase_function" value="Objc"/>
+	<f name="phrase_type" value="NP"/>
+</fs></a>
+<edge xml:id="el385983" from="n749943" to="n722765"/>
+<a xml:id="ale385983" label="parents" ref="el385983"/>
+
+<a xml:id="alf310498" label="ft" ref="n749944"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="1"/>
+	<f name="phrase_function" value="Pred"/>
+	<f name="phrase_type" value="VP"/>
+</fs></a>
+<edge xml:id="el385984" from="n749944" to="n722766"/>
+<a xml:id="ale385984" label="parents" ref="el385984"/>
+
+<a xml:id="alf310499" label="ft" ref="n749945"><fs>
+	<f name="determination" value="determined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="2"/>
+	<f name="phrase_function" value="Loca"/>
+	<f name="phrase_type" value="PP"/>
+</fs></a>
+<edge xml:id="el385985" from="n749945" to="n722766"/>
+<a xml:id="ale385985" label="parents" ref="el385985"/>
+
+<a xml:id="alf310500" label="ft" ref="n749946"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="3"/>
+	<f name="phrase_function" value="Objc"/>
+	<f name="phrase_type" value="NP"/>
+</fs></a>
+<edge xml:id="el385986" from="n749946" to="n722766"/>
+<a xml:id="ale385986" label="parents" ref="el385986"/>
+
+<a xml:id="alf310501" label="ft" ref="n749947"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="number_within_clause" value="4"/>
+	<f name="phrase_function" value="Modi"/>
+	<f name="phrase_type" value="AdvP"/>
+</fs></a>
+<edge xml:id="el385987" from="n749947" to="n722766"/>
+<a xml:id="ale385987" label="parents" ref="el385987"/>
+
 </graph>

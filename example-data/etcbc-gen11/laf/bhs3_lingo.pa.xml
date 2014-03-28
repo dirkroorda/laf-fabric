@@ -53,4 +53,74 @@
 <edge xml:id="el511120" from="n40770" to="n59559"/>
 <a xml:id="ale511120" label="parents" ref="el511120"/>
 
+<a xml:id="alf574986" label="ft" ref="n734528"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9329"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="VP"/>
+</fs></a>
+<edge xml:id="el657926" from="n734528" to="n749941"/>
+<a xml:id="ale657926" label="parents" ref="el657926"/>
+
+<a xml:id="alf574987" label="ft" ref="n734529"><fs>
+	<f name="determination" value="determined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9330"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="PP"/>
+</fs></a>
+<edge xml:id="el657927" from="n734529" to="n749942"/>
+<a xml:id="ale657927" label="parents" ref="el657927"/>
+
+<a xml:id="alf574988" label="ft" ref="n734530"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9331"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="NP"/>
+</fs></a>
+<edge xml:id="el657928" from="n734530" to="n749943"/>
+<a xml:id="ale657928" label="parents" ref="el657928"/>
+
+<a xml:id="alf574989" label="ft" ref="n734531"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9332"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="VP"/>
+</fs></a>
+<edge xml:id="el657929" from="n734531" to="n749944"/>
+<a xml:id="ale657929" label="parents" ref="el657929"/>
+
+<a xml:id="alf574990" label="ft" ref="n734532"><fs>
+	<f name="determination" value="determined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9333"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="PP"/>
+</fs></a>
+<edge xml:id="el657930" from="n734532" to="n749945"/>
+<a xml:id="ale657930" label="parents" ref="el657930"/>
+
+<a xml:id="alf574991" label="ft" ref="n734533"><fs>
+	<f name="determination" value="indetermined"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9334"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="NP"/>
+</fs></a>
+<edge xml:id="el657931" from="n734533" to="n749946"/>
+<a xml:id="ale657931" label="parents" ref="el657931"/>
+
+<a xml:id="alf574992" label="ft" ref="n734534"><fs>
+	<f name="determination" value="NA"/>
+	<f name="is_apposition" value="false"/>
+	<f name="phrase_atom_number" value="9335"/>
+	<f name="phrase_atom_relation" value="none"/>
+	<f name="phrase_atom_type" value="AdvP"/>
+</fs></a>
+<edge xml:id="el657932" from="n734534" to="n749947"/>
+<a xml:id="ale657932" label="parents" ref="el657932"/>
+
 </graph>

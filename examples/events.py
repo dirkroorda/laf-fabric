@@ -6,19 +6,8 @@ processor = LafFabric(verbose='DETAIL')
 
 API = processor.load('bhs3.txt.hdr', '--', 'events',
     {
-        "xmlids": {
-            "node": False,
-            "edge": False,
-        },
-        "features": {
-            "shebanq": {
-                "node": [
-                    "db.otype",
-                ],
-                "edge": [
-                ],
-            },
-        },
+        "xmlids": {"node": False, "edge": False},
+        "features": ("otype", ""),
         'primary': True,
     }
 )
@@ -44,7 +33,7 @@ if mode == '1':
     level = 0
     for (anchor, events) in NE():
         for (node, kind) in events:
-            otype = F.shebanq_db_otype.v(node)
+            otype = F.otype.v(node)
             event_rep = ''
             if kind == 0:
                 event_rep = "{}({}[{}]\n".format("\t"*level, otype, node)
@@ -65,6 +54,6 @@ elif mode == '2':
     for (anchor, events) in NE():
         for (node, kind) in events:
             kindr = '(' if kind == 0 else '«' if kind == 1 else '»' if kind == 2 else ')'
-            otype = F.shebanq_db_otype.v(node)
+            otype = F.otype.v(node)
             out.write("{} {:>7}: {:<10} {:<7}\n".format(kindr, anchor, otype, node))
 close()

@@ -90,12 +90,74 @@ LAF-Fabric will figure out which data can be kept in memory, which data has to b
 needs to be loaded.
 You can access the LAF data by means of local variables that correspond to various elements of the API, see below.
 
-If you want to call the load function inside another function, this trick with ``exec`` does not work.
-Then you have to use the other method to get to the API::
+If you want to change what is loaded in your program, you can simply call the loader as follows::
 
-    API = fabric.load( ...)
-    F = API['F']
-    ...
+    fabric.load_again(
+        {
+            "xmlids": {
+                "node": True,
+                "edge": False,
+            },
+            "features": {
+                "shebanq": {
+                    "node": [
+                        "db.otype,oid",
+                        "ft.part_of_speech,noun_type,lexeme_utf8",
+                        "sft.book",
+                    ],
+                    "edge": [
+                    ],
+                },
+            },
+            "primary": False,
+        },
+        compile_main=False, compile_annox=False,
+        verbose='NORMAL',
+    )
+    exec(fabric.localnames.format(var='fabric'))
+
+If you only want to add a bit of data, you can simply call::
+
+    fabric.load_again(
+        {
+            "features": {
+                "shebanq": {
+                    "node": [
+                        "db.oid",
+                    ],
+                },
+            },
+        },
+    )
+    exec(fabric.localnames.format(var='fabric'))
+
+You can also leave specify the features as a tuple, containing a tuple of node feature specs and a tuple of edge feature specs::
+
+    "features": (
+    ''' shebanq:db.oid
+        shebanq:ft.part_of_speech
+    ''',
+    ''' shebanq:parents.
+        shebanq:mother.
+    '''
+    )
+
+The features for nodes and edges are specfied as a whitespace separated list of feature names.
+
+Finally, you may omit the namespace (``shebanq:``) and the label (``db``, ``ft``).
+If this causes ambiguity, LafFabric will choose an arbitrary variant, and inform you about the choice it has made.
+If that choice does not suit you, you can always disambiguate yourself by supplying label and possibly namespace yourself.
+So the shortest way is::
+
+    "features": ('oid part_of_speech', 'parents. mother.')
+
+.. caution::
+    If you want to call the load function inside another function, this trick with ``exec`` does not work.
+    Then you have to use the other method to get to the API::
+
+        API = fabric.load( ...)
+        F = API['F']
+        ...
 
 **``compile-source`` and ``compile-annox``**
 If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.

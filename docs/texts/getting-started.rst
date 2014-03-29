@@ -129,7 +129,7 @@ In that way you can apply updates easily without overwriting your work.
 
 .. note::
     If you create a notebook that you are proud of, it would be nice to include it in the example
-    notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/ETCBC/contributions`_.
+    notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/ETCBC/contributions>`_.
     If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
 
 More configuration for LAF-Fabric

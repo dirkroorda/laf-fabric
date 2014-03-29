@@ -350,7 +350,7 @@ class LafFabric(object):
         self.localnames = '\n'.join(["{key} = {{var}}.api['{key}']".format(key=key) for key in self.api])
         return self.api
 
-    def load_again(self, load_spec, compile_main=False, compile_annox=False, verbose=None, add=False):
+    def load_again(self, load_spec, add=False, compile_main=False, compile_annox=False, verbose=None):
         env = self.lafapi.names.env
         return self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
 

@@ -116,6 +116,14 @@ If you want to change what is loaded in your program, you can simply call the lo
     )
     exec(fabric.localnames.format(var='fabric'))
 
+.. caution::
+    If you want to call the load function inside another function, this trick with ``exec`` does not work.
+    Then you have to use the other method to get to the API::
+
+        API = fabric.load( ...)
+        F = API['F']
+        ...
+
 If you only want to add a bit of data, you can simply call::
 
     fabric.load_again(
@@ -127,11 +135,11 @@ If you only want to add a bit of data, you can simply call::
                     ],
                 },
             },
-        },
+        }, add=True
     )
     exec(fabric.localnames.format(var='fabric'))
 
-You can also leave specify the features as a tuple, containing a tuple of node feature specs and a tuple of edge feature specs::
+You can also leave specify the features as a tuple, containing node feature specs and edge feature specs::
 
     "features": (
     ''' shebanq:db.oid
@@ -144,20 +152,12 @@ You can also leave specify the features as a tuple, containing a tuple of node f
 
 The features for nodes and edges are specfied as a whitespace separated list of feature names.
 
-Finally, you may omit the namespace (``shebanq:``) and the label (``db``, ``ft``).
-If this causes ambiguity, LafFabric will choose an arbitrary variant, and inform you about the choice it has made.
+Finally, you may omit the namespace (``shebanq:``) and the labels (``db``, ``ft``, ``sft``).
+If this causes ambiguity, LAF-Fabric will choose an arbitrary variant, and inform you about the choice it has made.
 If that choice does not suit you, you can always disambiguate yourself by supplying label and possibly namespace yourself.
 So the shortest way is::
 
     "features": ('oid part_of_speech', 'parents. mother.')
-
-.. caution::
-    If you want to call the load function inside another function, this trick with ``exec`` does not work.
-    Then you have to use the other method to get to the API::
-
-        API = fabric.load( ...)
-        F = API['F']
-        ...
 
 **``compile-source`` and ``compile-annox``**
 If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
@@ -209,7 +209,15 @@ Between those points they might be very different.
 
 Based on the formal information in a LAF resource, LAF-Fabric is not able to order
 the nodes according to all of your intuitions.
-However, if you have a particular LAF resource and a method to order the nodes in a more satisfying manner,
+
+If two nodes *start and end at the same place* in the primary data, only extra knowledge can decide which embeds which.
+
+A particularly nasty case are nodes that link to a zero-width region in the primary data.
+How should they be ordered with respect to neighbouring nodes? Is the empty one embedded in its right neighbour, or its
+left one, or in both, or in neither? All possibilities make sense without further knowledge.
+LAF-Fabric's default ordering places empty nodes *after* all nodes that start at the same place.
+If this is unwanted, something should be done:
+if you have a particular LAF resource and a method to order the nodes in a more satisfying manner,
 you can supply a module in which you implement that order. See :ref:`data-prep`.
 
 The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
@@ -224,13 +232,13 @@ F, FE, F_all, FE_all (Features)
 -------------------------------
 Examples::
 
-    F.shebanq_db_otype.v(node)
+    F.otype.v(node)
 
-    FE.shebanq_mother_.v(edge)
+    FE.mother_.v(edge)
 
-    F.shebanq_ft_gender.s()
+    F.gender.s()
 
-    F.shebanq_ft_gender.s(value='feminine')
+    F.gender.s(value='feminine')
 
     all_node_features = API['F_all']
     all_edge_features = API['FE_all']
@@ -243,7 +251,6 @@ with a handy name. Likewise for *FE*, but now for *edge* features.
 ``F.shebanq_db_otype`` is a feature object
 that corresponds with the LAF feature given in an annotation in the annotation space ``shebanq``,
 with label ``db`` and name ``otype``.
-It is a node feature.
 
 ``FE.shebanq_mother_`` is also a feature object, but now on an edge, and corresponding
 with an empty annotation.
@@ -266,11 +273,11 @@ You can look up feature values by calling the method ``v(«node/edge»)`` on fea
 
 **Alternatively**, you can use the slightly more verbose alternative forms:: 
 
-    F.item['shebanq_db_otype'].v(node)
-    FE.item['shebanq_mother_'].v(edge)
+    F.item['otype'].v(node)
+    FE.item['mother_'].v(edge)
 
 They give exactly the same result:
-``F.shebanq_db_otype`` is the same thing as ``F.item['shebanq_db_otype']`` provided the feature has been loaded.
+``F.otype`` is the same thing as ``F.item['shebanq_db_otype']`` provided the feature has been loaded.
 
 The advantage of the alternative form is that the feature is specified by a *string*
 instead of a *method name*.
@@ -430,16 +437,16 @@ Examples::
     (a2) for node in NN(nodes=nodeset, extrakey=your_order):
              pass
 
-    (b)  for node in NN(test=F.shebanq_db_otype.v, value='book'):
+    (b)  for node in NN(test=F.otype.v, value='book'):
              pass
 
-    (c)  for node in NN(test=F.shebanq_sft_book.v, values=['Isaiah', 'Psalms']):
+    (c)  for node in NN(test=F.book.v, values=['Isaiah', 'Psalms']):
              pass
 
     (d)  for node in NN(
-             test=F.shebanq_db_otype.v,
+             test=F.otype.v,
              values=['phrase', 'word'],
-             extrakey=lambda x: F_shebanq_db_otype.v(x) == 'phrase',
+             extrakey=lambda x: F_otype.v(x) == 'phrase',
          ):
              pass
 
@@ -478,12 +485,12 @@ The ``nodes`` argument is compatible with all other arguments.
 Example (a) iterates through all nodes, (a1) only through the nodes in nodeset,
 (a2) idem, but applies an extra ordering beforehand, 
 (b) only through the book nodes, because *test*
-is the feature value lookup function associated with the ``shebanq_db_otype`` function,
+is the feature value lookup function associated with the ``otype`` function,
 which gives for each node its type.
 
 .. note::
     The type of a node is not a LAF concept, but a concept in this particular LAF resource.
-    There are annotations which give the feature ``shebanq_db_otype`` to nodes, stating
+    There are annotations which give the feature ``otype`` to nodes, stating
     that nodes are books, chapters, words, phrases, and so on.
 
 In example (c) you can give multiple values for which you want the corresponding nodes.
@@ -761,6 +768,8 @@ Here is the actual contents of *etcbc.preprocess* in this distribution::
 
     def node_order(API):
         '''Creates a form based on the information passed when creating this object.'''
+
+        API['fabric'].load_again({"features": {"shebanq": {"node": ["db.otype,minmonad,maxmonad",]}}}, add=True)
         msg = API['msg']
         F = API['F']
         NN = API['NN']
@@ -778,8 +787,12 @@ Here is the actual contents of *etcbc.preprocess* in this distribution::
             'subphrase': 7,
             'word': 8,
         }
-        def hierarchy(node): return object_rank[F.shebanq_db_otype.v(node)]
-        return array.array('I', NN(extrakey=hierarchy))
+
+        def etcbckey(node):
+            return (int(F.minmonad.v(node)), -int(F.maxmonad.v(node)), object_rank[F.otype.v(node)])
+
+        nodes = sorted(NN(), key=etcbckey)
+        return array.array('I', nodes)
 
     def node_order_inv(API):
         make_array_inverse = API['make_array_inverse']
@@ -790,6 +803,7 @@ Here is the actual contents of *etcbc.preprocess* in this distribution::
         ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
         ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
     ))
+
 
 Back to your notebook. Say::
 

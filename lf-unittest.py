@@ -233,7 +233,6 @@ class TestLafFabric(unittest.TestCase):
             text += '['+']['.join([p[1] for p in P.data(n)])+']'
         close()
         expected = '''[בְּ][רֵאשִׁ֖ית][בָּרָ֣א][אֱלֹהִ֑ים][אֵ֥ת][הַ][שָּׁמַ֖יִם][וְ][אֵ֥ת][הָ][אָֽרֶץ][אֶתֵּ֤ן][בַּ][מִּדְבָּר֙][][אֶ֣רֶז][שִׁטָּ֔ה][וַ][הֲדַ֖ס][וְ][עֵ֣ץ][שָׁ֑מֶן][אָשִׂ֣ים][בָּ][עֲרָבָ֗ה][][בְּרֹ֛ושׁ][תִּדְהָ֥ר][וּ][תְאַשּׁ֖וּר][יַחְדָּֽו]'''
-        with open('x.txt', 'w') as h: h.write('{}\n{}'.format(text, expected))
         self.assertEqual(text, expected)
 
         API = self.fabric.load_again({"features": ("otype",""), "primary": True, "prepare": prepare})

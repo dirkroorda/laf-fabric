@@ -3,7 +3,7 @@ Getting Started
 
 About
 =====
-*LAF-Fabric* is a `github project <https://github.com/dirkroorda/laf-fabric>`_
+*LAF-Fabric* is a `github project <https://github.com/ETCBC/laf-fabric>`_
 in which there are Python packages called *laf and *etcbc*.
 You must install them as packages in your current python installation.
 This can be done in the standard pythonic way,
@@ -56,13 +56,13 @@ Get LAF-Fabric
 If you have git you can just clone it from github on the command line::
 
     cd «directory of your choice»
-    git clone https://github.com/dirkroorda/laf-fabric
+    git clone https://github.com/ETCBC/laf-fabric
 
 If you do not have git, consider getting it from `github <https://github.com>`_.
 It makes updating your LAF-Fabric easier later on.
 
 Nevertheless, you can also download the latest version from
-`github/laf-fabric <https://github.com/dirkroorda/laf-fabric>`_.
+`github/laf-fabric <https://github.com/ETCBC/laf-fabric>`_.
 Unpack this somewhere on your file system. Change the name from *laf-fabric-master* to *laf-fabric*.
 In a command prompt, navigate to this directory.
 
@@ -84,7 +84,7 @@ Hebrew Text Database: *etcbc*.
 Get the data
 ============
 If you are interested in working with the Hebrew Bible,
-go to the `ETCBC github repository <https://github.com/judithgottschalk/ETCBC-data>`_.
+go to the `ETCBC github repository <https://github.com/ETCBC/laf-fabric-nbs>`_.
 You find a download link for a ready made work directory containing the binary LAF data of the ETCBC Hebrew Text database.
 (You need to ask for a password, though, to unlock the zip file).
 Download and unpack it in your home directory. If all goes well you have a directory
@@ -129,7 +129,7 @@ In that way you can apply updates easily without overwriting your work.
 
 .. note::
     If you create a notebook that you are proud of, it would be nice to include it in the example
-    notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/judithgottschalk/ETCBC-data>`_.
+    notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/ETCBC/contributions`_.
     If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
 
 More configuration for LAF-Fabric
@@ -167,7 +167,7 @@ nodes that represent words and chapters.
 
 We want to plot the percentage of masculine and feminine words per chapter.
 
-With the example notebook `gender <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/gender.ipynb>`_
+With the example notebook `gender <http://nbviewer.ipython.org/github/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
 we can count all words in the Hebrew bible and produce
 a table, where each row consists of the bible book plus chapter, followed
 by the percentage masculine words, followed by the percentage of feminine words in that chapter::
@@ -196,7 +196,11 @@ The gender notebook is self documenting, it contains general information on how 
 
 Next steps
 ----------
-Have a look at the notebooks in the `ETCBC-Data <https://github.com/judithgottschalk/ETCBC-data>`_ repository.
+Have a look at the notebooks in the
+`ETCBC <https://github.com/ETCBC/laf-fabric-nbs>`_ and
+`study <https://github.com/ETCBC/study>`_ and
+`contributions <https://github.com/ETCBC/contributions>`_
+repositories.
 You find notebooks by which you can study the rich feature set in the ETCBC data and notebooks that help you to add
 your own annotations to the data. These notebooks require the additional *etcbc* package, which comes
 with LAF-Fabric.

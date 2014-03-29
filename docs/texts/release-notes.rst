@@ -201,8 +201,8 @@ Thoroughly reorganized and adapted to latest changes.
 Notebooks
 ^^^^^^^^^
 This distribution only contains example tasks and notebooks.
-The real stuff can be found in the `ETCBC repository <https://github.com/judithgottschalk/ETCBC-data>`_
-maintained by Judith Gottschalk.
+The real stuff can be found in the `ETCBC repository <https://github.com/ETCBC/laf-fabric-nbs>`_
+and in a `study repo <https://github.com/ETCBC/study>`_ maintained by Judith Gottschalk.
 
 Past
 ====
@@ -225,7 +225,7 @@ See :ref:`connectivity`.
 -----
 Notebook additions only.
 
-The notebook `clause_constituent_relation <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/clause_constituent_relation.ipynb>`_
+The notebook `clause_constituent_relation <http://nbviewer.ipython.org/github/ETCBC/study/blob/master/notebooks/clause_constituent_relation.ipynb>`_
 is an example how you can investigate a LAF data source and document your findings.
 
 We intend to create a separate github dedicated to notebooks that specifically analyse the Hebrew Text Database.
@@ -250,7 +250,7 @@ Incompatible changes
 Bugfix. The order of node events turned out wrong in the case of nodes that are linked to point regions,
 i.e. regions with zero width (e.g. ``(n, n)``, being the point between characters ``n-1`` and ``n``).
 This caused weird behaviour in the tree generating notebook
-`trees (rough path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/trees-r.ipynb>`_.
+`trees (rough path) <http://nbviewer.ipython.org/github/ETCBC/laf-fabric/blob/master/examples/trees-r.ipynb>`_.
 
 Yet it is impossible to guarantee natural behaviour in all cases.
 If there are nodes linked to empty regions in your LAF resource, you should sort the node events per anchor yourself,
@@ -259,7 +259,7 @@ in your custom task.
 
 Other
 ^^^^^
-The `trees (smooth path) <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/trees.ipynb>`_
+The `trees (smooth path) <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees.ipynb>`_
 notebook is evolving to get nice syntax trees from the Hebrew database.
 
 3.3.1
@@ -294,7 +294,7 @@ API
 
 * Documentation: added release notes.
 
-* New Example Notebook: `participle <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/notebooks/participle.ipynb>`_.
+* New Example Notebook: `participle <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/participle.ipynb>`_.
 
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^

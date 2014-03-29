@@ -387,7 +387,7 @@ Their results are ordered in the standard ordering.
 If you have loaded an additional prepared ordering, the results will come in that ordering.
 
 See the example notebook
-`trees <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/syntax/trees.ipynb>`_
+`trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/syntax/trees.ipynb>`_
 for working code with connectivity.
 
 **Ad D. Existence of edges**

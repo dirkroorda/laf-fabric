@@ -82,7 +82,7 @@ Or alternatively, you can include the results of your own work, whether manual o
 with the original data. You can then do *what-if* research on the combination.
 
 The notebook
-`annox_workflow <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/annotating/annox_workflow.ipynb>`_
+`annox_workflow <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/annotating/annox_workflow.ipynb>`_
 demonstrates this workflow.
 
 Interactive notebooks
@@ -92,10 +92,11 @@ That is a great environment to run tasks interactively, exploring the data as yo
 your intermediate results at the moment they become available.
 Last but not least, you can add documentation to notebooks and share them with your colleagues.
 As an example, look at the
-`gender notebook <http://nbviewer.ipython.org/github/dirkroorda/laf-fabric/blob/master/examples/gender.ipynb>`_
+`gender notebook <http://nbviewer.ipython.org/github/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
 notebook by which you can draw a graph of the percentage of masculine and feminine
 words in each chapter of the Hebrew Bible.
-More involved notebooks can be found at the `ETCBC-Data repository <https://github.com/judithgottschalk/ETCBC-data>`_.
+More involved notebooks can be found at the `ETCBC-Data repository <https://github.com/ETCBC/laf-fabric-nbs>`_
+and `the study repo <https://github.com/ETCBC/study>`_.
 
 Rationale
 =========
@@ -110,21 +111,21 @@ LAF-Fabric is a stepping stone for teams in digital humanities to the wonderful 
 With it you extract data from your resources of interest and feed it into your other tools.
 
 See for example the notebook 
-`cooccurrences <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/language-variation/cooccurrences.ipynb>`_,
+`cooccurrences <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/language-variation/cooccurrences.ipynb>`_,
 which codes in less than a page an extraction of **data tables** relevant to the
 study of linguistic variation in the Hebrew Bible.
 These tables are suitable for subsequent data analysis
 by means of the open source `statistics toolkit R <http://www.r-project.org>`_.
 
 An other example is the notebook
-`proper <http://nbviewer.ipython.org/github/judithgottschalk/ETCBC-data/blob/master/notebooks/text/proper.ipynb>`_,
+`proper <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/text/proper.ipynb>`_,
 which outputs a **visualization** of the text of the Hebrew Bible
 in which the syntactic structure of the text is visible plus the the genders of all the proper nouns.
 With this visualization it becomes possible to discern genealogies from other genres with the unaided eye,
 even without being able to read a letter of Hebrew.
 
 The code of LAF-Fabric is on
-`github <https://github.com/dirkroorda/laf-fabric>`_,
+`github <https://github.com/ETCBC/laf-fabric>`_,
 including example notebooks and extra annotation packages.
 You are invited to develop your own notebooks and share them,
 either through data archives or directly through github,
@@ -228,7 +229,7 @@ History
 
 **2014-02-16**
 A new github repository,
-`ETCBC-data <https://github.com/judithgottschalk/ETCBC-data>`_,
+`study <https://github.com/ETCBC/study>`_,
 has been created by our associate programmer Judith Gottschalk.
 This repository will host the actual notebooks written for and by the ETCBC people.
 The LAF-Fabric repository will only host example/tutorial notebooks.

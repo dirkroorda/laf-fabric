@@ -126,6 +126,7 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(len(loadspec['keep']), 0)
         self.assertEqual(len(loadspec['clear']), 0)
         self.assertEqual(len(loadspec['load']), 37)
+
         API = self.fabric.load(SOURCE, ANNOX, 'load', {
                 "xmlids": {
                     "node": True,

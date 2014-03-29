@@ -22,6 +22,7 @@ This is the LAF Fabric, and here is a simple example of what you can do with it:
 People at the Theology Department of the VU University Amsterdam are producing notebooks for their research
 into the text of the Hebrew Bible, see
 
+* `The ETCBC's github repository <https://github.com/ETCBC/laf-fabric-nbs>`_
 * `Judith Gottschalk's github repository <https://github.com/judithgottschalk/ETCBC-data>`_
 * `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_
 

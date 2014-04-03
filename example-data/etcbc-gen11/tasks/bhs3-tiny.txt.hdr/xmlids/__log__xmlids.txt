@@ -88,10 +88,10 @@
   0.00s nid=78 n=78 subphrase(oid=759936) xid=n759936
   0.00s nid=29 n=29 word(oid=705178) xid=n705178
   0.00s nid=59 n=59 phrase(oid=749947) xid=n749947
-  0.01s nid=66 n=66 phrase_atom(oid=734534) xid=n734534
-  0.01s nid=30 n=30 word(oid=705179) xid=n705179
+  0.00s nid=66 n=66 phrase_atom(oid=734534) xid=n734534
+  0.00s nid=30 n=30 word(oid=705179) xid=n705179
   0.01s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/xmlids
 
-__log__xmlids.txt                      4717 Fri Mar 28 16:40:27 2014
-xmlids-nodes.txt                          0 Fri Mar 28 16:40:27 2014
+__log__xmlids.txt                      4717 Thu Apr  3 12:08:08 2014
+xmlids-nodes.txt                          0 Thu Apr  3 12:08:08 2014

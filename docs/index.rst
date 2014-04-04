@@ -15,6 +15,7 @@ Contents:
     texts/getting-started
     texts/background
     texts/API-reference
+    texts/ETCBC-reference
     laf/modules.rst
     etcbc/modules.rst
 

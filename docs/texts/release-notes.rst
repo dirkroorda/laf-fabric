@@ -2,14 +2,17 @@ Release Notes
 #############
 Upcoming
 ========
-4.1
----
-Emdros integration.
-In the *etcbc* module I want to make an addition that enables the user to run emdros queries, capture the results as a node set, and use that for
-further processing in LAF-Fabric.
+More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.1
+---
+Emdros integration.
+In the *etcbc* package there is a module *mql* that enables the user to run emdros queries, capture the results as a node set, and use that for
+further processing in LAF-Fabric.
+See `notebook MQL <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/MQL.ipynb>`_
+
 4.0.6
 -----
 API

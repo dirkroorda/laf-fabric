@@ -7,7 +7,7 @@
   0.00s None(35)	intro='QQQQ'	role='n/a'
   0.00s None(36)	intro='FFFF'	role='n/a'
   0.00s None(37)	intro='GGGG'	role='T-t-t-t-t'
-  0.00s phrase_np(6)	intro='CCCCCC'	role='n/a'
+  0.00s constituent(6)	intro='CCCCCC'	role='n/a'
   0.00s None(7)	intro='WWWWW'	role='n/a'
   0.00s None(8)	intro='n/a'	role='Z-z-z-z'
   0.00s None(9)	intro='UUUUUU'	role='H-h-h'
@@ -17,5 +17,5 @@
   0.00s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/personal
 
-__log__personal.txt                     841 Thu Apr  3 12:08:08 2014
-annotations.txt                           0 Thu Apr  3 12:08:08 2014
+__log__personal.txt                     843 Fri Apr  4 11:57:36 2014
+annotations.txt                           0 Fri Apr  4 11:57:36 2014

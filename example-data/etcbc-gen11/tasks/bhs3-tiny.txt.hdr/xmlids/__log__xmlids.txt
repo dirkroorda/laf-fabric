@@ -62,36 +62,36 @@
   0.00s nid=72 n=72 subphrase(oid=759932) xid=n759932
   0.00s nid=73 n=73 subphrase(oid=759930) xid=n759930
   0.00s nid=20 n=20 word(oid=705169) xid=n705169
-  0.00s nid=74 n=74 subphrase(oid=759931) xid=n759931
-  0.00s nid=21 n=21 word(oid=705170) xid=n705170
-  0.00s nid=88 n=88 half_verse(oid=772741) xid=n772741
-  0.00s nid=46 n=46 sentence(oid=763820) xid=n763820
-  0.00s nid=48 n=48 sentence_atom(oid=768034) xid=n768034
-  0.00s nid=50 n=50 clause(oid=717062) xid=n717062
-  0.00s nid=52 n=52 clause_atom(oid=722766) xid=n722766
-  0.00s nid=56 n=56 phrase(oid=749944) xid=n749944
-  0.00s nid=63 n=63 phrase_atom(oid=734531) xid=n734531
-  0.00s nid=22 n=22 word(oid=705171) xid=n705171
-  0.00s nid=57 n=57 phrase(oid=749945) xid=n749945
-  0.00s nid=64 n=64 phrase_atom(oid=734532) xid=n734532
-  0.00s nid=23 n=23 word(oid=705172) xid=n705172
-  0.00s nid=24 n=24 word(oid=705173) xid=n705173
-  0.00s nid=25 n=25 word(oid=705174) xid=n705174
-  0.00s nid=58 n=58 phrase(oid=749946) xid=n749946
-  0.00s nid=65 n=65 phrase_atom(oid=734533) xid=n734533
-  0.00s nid=75 n=75 subphrase(oid=759935) xid=n759935
-  0.00s nid=76 n=76 subphrase(oid=759933) xid=n759933
-  0.00s nid=26 n=26 word(oid=705175) xid=n705175
-  0.00s nid=77 n=77 subphrase(oid=759934) xid=n759934
-  0.00s nid=27 n=27 word(oid=705176) xid=n705176
-  0.00s nid=28 n=28 word(oid=705177) xid=n705177
-  0.00s nid=78 n=78 subphrase(oid=759936) xid=n759936
-  0.00s nid=29 n=29 word(oid=705178) xid=n705178
-  0.00s nid=59 n=59 phrase(oid=749947) xid=n749947
-  0.00s nid=66 n=66 phrase_atom(oid=734534) xid=n734534
-  0.00s nid=30 n=30 word(oid=705179) xid=n705179
+  0.01s nid=74 n=74 subphrase(oid=759931) xid=n759931
+  0.01s nid=21 n=21 word(oid=705170) xid=n705170
+  0.01s nid=88 n=88 half_verse(oid=772741) xid=n772741
+  0.01s nid=46 n=46 sentence(oid=763820) xid=n763820
+  0.01s nid=48 n=48 sentence_atom(oid=768034) xid=n768034
+  0.01s nid=50 n=50 clause(oid=717062) xid=n717062
+  0.01s nid=52 n=52 clause_atom(oid=722766) xid=n722766
+  0.01s nid=56 n=56 phrase(oid=749944) xid=n749944
+  0.01s nid=63 n=63 phrase_atom(oid=734531) xid=n734531
+  0.01s nid=22 n=22 word(oid=705171) xid=n705171
+  0.01s nid=57 n=57 phrase(oid=749945) xid=n749945
+  0.01s nid=64 n=64 phrase_atom(oid=734532) xid=n734532
+  0.01s nid=23 n=23 word(oid=705172) xid=n705172
+  0.01s nid=24 n=24 word(oid=705173) xid=n705173
+  0.01s nid=25 n=25 word(oid=705174) xid=n705174
+  0.01s nid=58 n=58 phrase(oid=749946) xid=n749946
+  0.01s nid=65 n=65 phrase_atom(oid=734533) xid=n734533
+  0.01s nid=75 n=75 subphrase(oid=759935) xid=n759935
+  0.01s nid=76 n=76 subphrase(oid=759933) xid=n759933
+  0.01s nid=26 n=26 word(oid=705175) xid=n705175
+  0.01s nid=77 n=77 subphrase(oid=759934) xid=n759934
+  0.01s nid=27 n=27 word(oid=705176) xid=n705176
+  0.01s nid=28 n=28 word(oid=705177) xid=n705177
+  0.01s nid=78 n=78 subphrase(oid=759936) xid=n759936
+  0.01s nid=29 n=29 word(oid=705178) xid=n705178
+  0.01s nid=59 n=59 phrase(oid=749947) xid=n749947
+  0.01s nid=66 n=66 phrase_atom(oid=734534) xid=n734534
+  0.01s nid=30 n=30 word(oid=705179) xid=n705179
   0.01s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/xmlids
 
-__log__xmlids.txt                      4717 Thu Apr  3 12:08:08 2014
-xmlids-nodes.txt                          0 Thu Apr  3 12:08:08 2014
+__log__xmlids.txt                      4717 Fri Apr  4 11:57:36 2014
+xmlids-nodes.txt                          0 Fri Apr  4 11:57:36 2014

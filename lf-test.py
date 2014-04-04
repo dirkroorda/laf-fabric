@@ -1,24 +1,30 @@
 from laf.fabric import LafFabric
-from laf.names import FabricError
 from etcbc.preprocess import prepare
+from etcbc.mql import MQL
 
-WORKDIR = './example-data/etcbc-gen11'
-LAFDIR = WORKDIR
+fabric = LafFabric()
 
-fabric = LafFabric(
-    work_dir=WORKDIR,
-    laf_dir=LAFDIR,
-    save=False,
-    verbose='DETAIL',
-)
-
-fabric.load('bhs3-tiny.txt.hdr', '--', 'plain', {"features": ("otype",""), "primary": True})
+API = fabric.load('bhs3.txt.hdr', '--', 'plain', {"features": ("otype oid text surface_consonants",""), "primary": False})
 exec(fabric.localnames.format(var='fabric'))
-text = ''
-for n in NN(test=F.otype.v, value='word'):
-    text += '['+']['.join([p[1] for p in P.data(n)])+']'
-close()
-expected = '''[בְּ][רֵאשִׁ֖ית][בָּרָ֣א][אֱלֹהִ֑ים][אֵ֥ת][הַ][שָּׁמַ֖יִם][וְ][אֵ֥ת][הָ][אָֽרֶץ][אֶתֵּ֤ן][בַּ][מִּדְבָּר֙][][אֶ֣רֶז][שִׁטָּ֔ה][וַ][הֲדַ֖ס][וְ][עֵ֣ץ][שָׁ֑מֶן][אָשִׂ֣ים][בָּ][עֲרָבָ֗ה][][בְּרֹ֛ושׁ][תִּדְהָ֥ר][וּ][תְאַשּׁ֖וּר][יַחְדָּֽו]'''
-with open('x.txt', 'w') as h: h.write('{}\n{}'.format(text, expected))
-print("EQUAL? {}".format(text == expected))
 
+Q = MQL(API)
+
+qu = '''
+select all objects
+in {1-20}
+where
+    [phrase
+        [word surface_consonants = 'H']
+        [word]
+    ]
+    ..
+    [phrase
+        [word]
+        [word]
+    ]
+'''
+
+sheaf = Q.mql(qu)
+print(sheaf.compact(F.surface_consonants.v))
+print("= = = = = = = > > > > > > > >")
+print(sheaf.compact_results(F.surface_consonants.v))

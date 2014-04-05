@@ -6,9 +6,16 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.1.1
+-----
+LAF Usability
+^^^^^^^^^^^^^
+After loading LAF-Fabric display the compilation data and time of the data used.
+
 4.1
 ---
-Emdros integration.
+ETCBC Emdros integration
+^^^^^^^^^^^^^^^^^^^^^^^^
 In the *etcbc* package there is a module *mql* that enables the user to run emdros queries, capture the results as a node set, and use that for
 further processing in LAF-Fabric.
 See `notebook MQL <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/MQL.ipynb>`_
@@ -16,7 +23,7 @@ See `notebook MQL <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/
 4.0.6
 -----
 API
----
+^^^
 In specifying what features to load, you may omit namespaces and labels.
 You can specify the features to load in a much less verbose way.
 
@@ -24,22 +31,22 @@ The functions ``load()`` and ``load_again()`` have a new optional parameter ``ad
 do an incremental loading, without discarding anything that has already been loaded.
 
 ETCBC
------
+^^^^^
 The order defined by ``etcbc.preprocess`` has been refined, so that it can also deal with empty words. 
 
 Under the hood
---------------
+^^^^^^^^^^^^^^
 More unit tests, especially w.r.t. node order and empty words.
 The example data on which the unit tests act, has been enlarged: it now contains also Isaiah 41:19 in which two empty words occur.
 
 4.0.5
 -----
 Usability
----------
+^^^^^^^^^
 Better error handling, especially when the load dictionary does not conform to the specs of the API reference.
 
 Under the hood
---------------
+^^^^^^^^^^^^^^
 More unit tests, especially w.r.t. error checking, and node order, and the ``BF`` API element.
 
 4.0.4
@@ -63,6 +70,7 @@ API
 ^^^
 The methods of the connectivity objects (except ``e()`` yield all iterators and have an optional parameter ``sort=False``.  
 The API elements now can be added very easily to your local namespace by saying: ``exec(Fabric.localnames.format(var='Fabric'))``.
+
 4.0.2
 -----
 API

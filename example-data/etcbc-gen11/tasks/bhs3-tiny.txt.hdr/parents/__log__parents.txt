@@ -1,3 +1,4 @@
+OPENED AT:2014-04-05T08-42-53
   0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/parents/__log__parents.txt
   0.01s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX -- FOR TASK parents
   0.00s Get the parents ...
@@ -60,26 +61,28 @@
   0.00s phrase_atom=63 -> phrase=56
   0.00s word=אָשִׂ֣ים -> phrase_atom=63
   0.00s phrase=57 -> clause_atom=52
-  0.00s phrase_atom=64 -> phrase=57
-  0.00s word=בָּ -> phrase_atom=64
-  0.00s word= -> phrase_atom=64
-  0.00s word=עֲרָבָ֗ה -> phrase_atom=64
-  0.00s phrase=58 -> clause_atom=52
-  0.00s phrase_atom=65 -> phrase=58
-  0.00s subphrase=75 -> phrase_atom=65
-  0.00s subphrase=76 -> subphrase=75
-  0.00s word=בְּרֹ֛ושׁ -> subphrase=76
-  0.00s subphrase=77 -> subphrase=75
-  0.00s word=תִּדְהָ֥ר -> subphrase=77
-  0.00s word=וּ -> phrase_atom=65
-  0.00s subphrase=78 -> phrase_atom=65
-  0.00s word=תְאַשּׁ֖וּר -> subphrase=78
-  0.00s phrase=59 -> clause_atom=52
-  0.00s phrase_atom=66 -> phrase=59
-  0.00s word=יַחְדָּֽו -> phrase_atom=66
-  0.00s Travel from node sets ...
+  0.01s phrase_atom=64 -> phrase=57
+  0.01s word=בָּ -> phrase_atom=64
+  0.01s word= -> phrase_atom=64
+  0.01s word=עֲרָבָ֗ה -> phrase_atom=64
+  0.01s phrase=58 -> clause_atom=52
+  0.01s phrase_atom=65 -> phrase=58
+  0.01s subphrase=75 -> phrase_atom=65
+  0.01s subphrase=76 -> subphrase=75
+  0.01s word=בְּרֹ֛ושׁ -> subphrase=76
+  0.01s subphrase=77 -> subphrase=75
+  0.01s word=תִּדְהָ֥ר -> subphrase=77
+  0.01s word=וּ -> phrase_atom=65
+  0.01s subphrase=78 -> phrase_atom=65
+  0.01s word=תְאַשּׁ֖וּר -> subphrase=78
+  0.01s phrase=59 -> clause_atom=52
+  0.01s phrase_atom=66 -> phrase=59
+  0.01s word=יַחְדָּֽו -> phrase_atom=66
+  0.01s Travel from node sets ...
   0.01s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/tasks/bhs3-tiny.txt.hdr/parents
 
-__log__parents.txt                     3267 Fri Apr  4 11:57:36 2014
-parents_of.csv                            0 Fri Apr  4 11:57:36 2014
+__log__parents.txt                     3297 Sat Apr  5 10:42:53 2014
+parents_of.csv                            0 Sat Apr  5 10:42:53 2014
+
+CLOSED AT:2014-04-05T08-42-53

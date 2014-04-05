@@ -61,6 +61,7 @@ class LafData(object):
         self._finish_logfile()
 
     def _finish_logfile(self):
+        self.log.write("\nCLOSED AT:{}".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
         try: self.log.close()
         except: pass
         self.stamp.disconnect_log()
@@ -79,6 +80,7 @@ class LafData(object):
         except os.error as e:
             raise FabricError("could not create log directory {}".format(log_dir), self.stamp, cause=e)
         self.log = open(log_path, "w", encoding="utf-8")
+        self.log.write("OPENED AT:{}\n".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
         self.stamp.connect_log(self.log)
         self.stamp.Nmsg("LOGFILE={}".format(log_path))
 
@@ -111,6 +113,13 @@ class LafData(object):
                 has_compiled = True
                 self.stamp.Nmsg("END   COMPILE {}: {}".format(origin, env['source'] if origin == 'm' else env['annox']))
             else: self.stamp.Dmsg("COMPILING {}: UP TO DATE".format(origin))
+            if origin == 'a' and env['annox'] == env['empty']: continue
+            the_time = 'UNSPECIFIED'
+            with open(env['{}_compiled_path'.format(origin)]) as h:
+                last_line = list(h)[-1]
+                if ':' in last_line:
+                    the_time = last_line.split(':', 1)[1]
+            self.stamp.Imsg("DATA COMPILED AT: {}".format(the_time))
         if has_compiled:
             for origin in ('m', 'a'):
                 self._clear_origin_unnec(origin)

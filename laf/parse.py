@@ -6,64 +6,43 @@ from .names import Names, FabricError
 aspace_not_given = "_original_"
 
 def init():
-    global good_regions
+    global good_regions,good_edges, good_annots, good_feats
+    global faulty_regions, faulty_edges, faulty_annots, faulty_feats 
+    global identifiers_r, identifiers_n, identifiers_e, id_region, id_node, id_edge, id_annot
+    global region_begin, region_end, node_region_list, edges_from, edges_to, feature, efeature, linked_nodes, unlinked_nodes
+    global primary_data_file, annotation_files
+
     good_regions = 0
-    global linked_nodes
-    linked_nodes = 0
-    global good_edges
     good_edges = 0
-    global good_annots
     good_annots = 0
-    global good_feats
     good_feats = 0
 
-    global faulty_regions
     faulty_regions = 0
-    global unlinked_nodes
-    unlinked_nodes = 0
-    global faulty_edges
     faulty_edges = 0
-    global faulty_annots
     faulty_annots = 0
-    global faulty_feats
     faulty_feats = 0
 
-    global primary_data_file
-    primary_data_file = None
-
-    global annotation_files
-    annotation_files = []
-
-    global identifiers_r
     identifiers_r = {}
-    global identifiers_n
     identifiers_n = {}
-    global identifiers_e
     identifiers_e = {}
 
-    global id_region
     id_region = 0
-    global id_node
     id_node = 0
-    global id_edge
     id_edge = 0
-    global id_annot
     id_annot = 0
 
-    global region_begin
+    unlinked_nodes = 0
+    linked_nodes = 0
     region_begin = array.array('I')
-    global region_end
     region_end = array.array('I')
-    global node_region_list
     node_region_list = []
-    global edges_from
     edges_from = array.array('I')
-    global edges_to
     edges_to = array.array('I')
-    global feature
     feature = {}
-    global efeature
     efeature = {}
+
+    primary_data_file = None
+    annotation_files = []
 
 class HeaderHandler(ContentHandler):
     def __init__(self): self._tag_stack = []
@@ -105,6 +84,7 @@ class AnnotationHandler(ContentHandler):
         self.node_link = None
 
     def startElement(self, name, attrs):
+        global faulty_regions, good_regions, id_region, id_node, faulty_edges, good_edges, id_edge, faulty_annots, good_annots, id_annot, faulty_feats, good_feats
         self._tag_stack.append(name)
         if name == "annotationSpace":
             if "as.id" in attrs:
@@ -114,9 +94,6 @@ class AnnotationHandler(ContentHandler):
                     if is_default in self.truth and self.truth[is_default]: self.aspace_default = self.aspace
             if self.aspace == None: self.aspace = self.aspace_default
         elif name == "region":
-            global faulty_regions
-            global good_regions
-            global id_region
             rid = attrs["xml:id"]
             identifiers_r[rid] = id_region
             id_region += 1
@@ -131,7 +108,6 @@ class AnnotationHandler(ContentHandler):
                 region_begin.append(int(anchors[0]))
                 region_end.append(int(anchors[1]))
         elif name == "node":
-            global id_node
             nid = attrs["xml:id"]
             identifiers_n[nid] = id_node
             id_node += 1
@@ -139,9 +115,6 @@ class AnnotationHandler(ContentHandler):
             self.nid = nid 
         elif name == "link": self.node_link = attrs["targets"].split(" ")
         elif name == "edge":
-            global faulty_edges
-            global good_edges
-            global id_edge
             eid = attrs["xml:id"]
             identifiers_e[eid] = id_edge
             id_edge += 1
@@ -155,9 +128,6 @@ class AnnotationHandler(ContentHandler):
                 edges_from.append(identifiers_n[from_node])
                 edges_to.append(identifiers_n[to_node])
         elif name == "a":
-            global faulty_annots
-            global good_annots
-            global id_annot
             aid = attrs["xml:id"]
             id_annot += 1
             self.aid = aid
@@ -184,8 +154,6 @@ class AnnotationHandler(ContentHandler):
                     faulty_annots += 1
                     raise FabricError("invalid annotation target ref='{}' (no node, no edge) for annotation {} in {}".format(node_or_edge, self.aid, self.file_name), self.stamp)
         elif name == "f":
-            global faulty_feats
-            global good_feats
             self.aempty = False
             fname = attrs["name"]
             if not fname:
@@ -201,9 +169,8 @@ class AnnotationHandler(ContentHandler):
                 dest.setdefault((self.aspace, self.alabel, fname), {})[self.aref] = value
 
     def endElement(self, name):
+        global unlinked_nodes, linked_nodes
         if name == "node":
-            global unlinked_nodes
-            global linked_nodes
             if not self.node_link:
                 unlinked_nodes += 1
                 node_region_list.append(array.array('I', []))
@@ -222,6 +189,7 @@ class AnnotationHandler(ContentHandler):
 
 def parse(origin, graf_header_file, stamp, data_items):
     '''Parse a LAF/GrAF resource and deliver results.'''
+    global identifiers_n, identifiers_e
     init()
     saxparse(graf_header_file, HeaderHandler())
 
@@ -233,10 +201,8 @@ def parse(origin, graf_header_file, stamp, data_items):
         xi_key = Names.comp('mX' + kind + 'f', ())
         xmlitems = data_items[xi_key] if xi_key in data_items else {}
         if kind == 'n':
-            global identifiers_n
             identifiers_n = xmlitems
         else:
-            global identifiers_e
             identifiers_e = xmlitems
 
     for annotation_file in annotation_files:

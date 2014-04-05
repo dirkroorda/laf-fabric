@@ -56,6 +56,14 @@ testmodes = {
         'compile': False,
         'save': False,
     },
+    'fullc': {
+        'work_dir': None,
+        'laf_dir': None,
+        'source_file': 'bhs3.txt.hdr',
+        'verbose': 'NORMAL',
+        'compile': True,
+        'save': False,
+    },
     'fulls': {
         'work_dir': None,
         'laf_dir': None,

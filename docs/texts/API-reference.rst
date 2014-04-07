@@ -185,6 +185,8 @@ These variables exist only if they correspond with things that you have called f
 
 **infile**, **outfile**, **close**, **my_file**: File handling (opening for input, output, , closing, getting full path)
 
+**fabric**: the laf processor itself
+
 .. _node-order:
 
 Node order
@@ -744,6 +746,24 @@ A newline will be appended, unless you say ``newline=False``.
 
 The elapsed time is reckoned from the start of the task, but after all the task-specific
 loading of features.
+
+fabric
+------
+You also have access to the laf processor itself, by means of the ``fabric`` key in the ``API``.
+
+Here are some useful methods.
+
+**resolve_feature**
+
+Example::
+
+    fabric.resolve_feature('node', 'otype')
+    fabric.resolve_feature('node', 'db.otype')
+    fabric.resolve_feature('node', 'shebanq:db.otype')
+
+Resolves incomplete and complete feature names. Raises FabricError if there is no resolution in the current resource.
+If there are resolutions, delivers the last one found, in the form of a tuple (*namespace*, *label*, *feature name*).
+If there aremultiple resolutions, lists all the candidates and tells which one has been chosen.
 
 .. _data-prep:
 

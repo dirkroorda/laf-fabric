@@ -6,6 +6,12 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.1.2
+-----
+LAF Usability
+^^^^^^^^^^^^^
+Small usability improvements in ``etcbc`` and in ``laf``.
+
 4.1.1
 -----
 LAF Usability

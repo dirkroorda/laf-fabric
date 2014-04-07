@@ -347,7 +347,7 @@ class LafFabric(object):
         if 'prepare' in load_spec: lafapi.prepare_all(self.api, load_spec['prepare'])
         lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {}".format(env['source'], env['annox'], env['task']))
         lafapi.stamp.reset()
-        self.localnames = '\n'.join(["{key} = {{var}}.api['{key}']".format(key=key) for key in self.api])
+        self.localnames = '\n'.join("{key} = {{var}}.api['{key}']".format(key=key) for key in self.api)
         return self.api
 
     def load_again(self, load_spec, add=False, compile_main=False, compile_annox=False, verbose=None):
@@ -375,7 +375,7 @@ class LafFabric(object):
                 (aspace+':') if aspace != None else '',
                 (alabel+'.') if alabel != None else '',
                 fname,
-                ', '.join(["{}:{}.{}".format(fc[0], fc[1], fname) for fc in hits]),
+                ', '.join("{}:{}.{}".format(fc[0], fc[1], fname) for fc in hits),
                 "{}:{}.{}".format(*the_feature),
             ))
         return the_feature

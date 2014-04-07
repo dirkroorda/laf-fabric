@@ -6,6 +6,10 @@ MQL_PROC = '/usr/local/bin/mql'
 MQL_OPTS = ['--cxml', '-b', 's3', '-d']
 
 index2node = {}
+node2verse = {}
+node2sentence = {}
+sentence2words = {}
+
 F = None
 NN = None
 
@@ -18,7 +22,16 @@ class MQL(object):
         self.parser = etree.XMLParser(remove_blank_text=True)
         NN = API['NN']
         F = API['F']
-        for n in NN(): index2node[F.oid.v(n)] = n
+        cur_verse = None
+        cur_sentence = None
+        for n in NN():
+            otype = F.otype.v(n)
+            if otype == 'verse': cur_verse = n
+            if otype == 'sentence': cur_sentence = n
+            if otype == 'word': sentence2words.setdefault(cur_sentence, []).append(n)
+            index2node[F.oid.v(n)] = n
+            node2verse[n] = cur_verse
+            node2sentence[n] = cur_sentence
 
     def mql(self, query):
         proc = subprocess.Popen(
@@ -39,12 +52,12 @@ class MQL(object):
         if nres > 1:
             print("WARNING: multiple results: {}".format(nres))
             return None
-        return results[0] if nres else None
+        return results[0] if nres else []
             
     def _parse_result(elem):
         results = [MQL._parse_sheaf(child) for child in elem if child.tag == 'sheaf']
         nres = len(results)
-        return results[0] if nres else None
+        return results[0] if nres else []
 
     def _parse_sheaf(elem):
         return [MQL._parse_straw(child) for child in elem]
@@ -53,7 +66,7 @@ class MQL(object):
         return [MQL._parse_grain(child) for child in elem]
 
     def _parse_grain(elem):
-        node = index2node[elem.attrib["id_d"] or elem.attrib["id_m"]]
+        node = index2node[elem.attrib["id_d"]]
         result = (node,)
         for child in elem:
             if child.tag == 'sheaf' and len(child):
@@ -61,9 +74,13 @@ class MQL(object):
                 break
         return result
 
-    def _results_sheaf(sheaf):
+    def _results_sheaf(sheaf, limit=None):
+        yielded = 0
+        if sheaf == None: return
         for straw in sheaf:
             for result in MQL._results_straw(straw):
+                if limit != None and yielded >= limit: return
+                yielded += 1
                 yield result
 
     def _results_straw(straw):
@@ -76,13 +93,15 @@ class MQL(object):
 
     def _results_grain(grain):
         if len(grain) == 1:
-            yield grain[0]
+            yield grain
         else:
             for r in MQL._results_sheaf(grain[1]):
                 yield (grain[0], r)
                     
     def _render_sheaf(data, indent, monadrep):
-        if len(data):
+        if data == None or not len(data):
+            print("Empty sheaf")
+        else:
             for (i, elem) in enumerate(data):
                 if i>0: print("{}--".format(' '*indent))
                 MQL._render_straw(elem, indent+1, monadrep)
@@ -93,14 +112,17 @@ class MQL(object):
                 MQL._render_grain(elem, indent+1, monadrep)
             
     def _render_grain(data, indent, monadrep):
-        if len(data) == 1:
+        otype = F.otype.v(data[0])
+        if otype == 'word':
             print("{}'{}'".format(' '*indent, monadrep(data[0])))
         else:
             print("{}[{}".format(' '*indent, F.otype.v(data[0])))
-            MQL._render_sheaf(data[1], indent+1, monadrep)
+            if len(data) > 1:
+                MQL._render_sheaf(data[1], indent+1, monadrep)
             print("{}]".format(' '*indent))
 
     def _compact_sheaf(data, level, monadrep):
+        if data == None: return ''
         sep = '\n' if level == 0 else ' -- '
         return sep.join([MQL._compact_straw(elem, level+1, monadrep) for elem in data])
             
@@ -108,23 +130,38 @@ class MQL(object):
         return ' '.join([MQL._compact_grain(elem, level, monadrep) for elem in data])
 
     def _compact_grain(data, level, monadrep):
-        if len(data) == 1:
+        otype = F.otype.v(data[0])
+        if otype == 'word':
             return "'{}'".format(monadrep(data[0]))
         else:
-            return "[{} {}]".format(F.otype.v(data[0]), MQL._compact_sheaf(data[1], level, monadrep))
+            subdata = data[1] if len(data) > 1 else []
+            return "[{} {}]".format(F.otype.v(data[0]), MQL._compact_sheaf(subdata, level, monadrep))
 
-    def _compact_results(data, level, monadrep):
+    def _compact_results(data, level, monadrep, passages, sentence):
+        if data == None: return ''
         sep = '\n' if level == 0 else ' -- '
-        return sep.join([MQL._compact_result(elem, level+1, monadrep) for elem in data])
+        return sep.join([MQL._compact_result(elem, level+1, monadrep, passages, sentence) for elem in data])
 
-    def _compact_result(data, level, monadrep):
-        return ' '.join([MQL._compact_resgrain(elem, level, monadrep) for elem in data])
+    def _compact_result(data, level, monadrep, passages, sentence):
+        return ' '.join([MQL._compact_resgrain(elem, level, monadrep, passages, sentence) for elem in data])
 
-    def _compact_resgrain(data, level, monadrep):
-        if type(data) == int:
-            return "'{}'".format(monadrep(data))
+    def _compact_resgrain(data, level, monadrep, passages, sentence):
+        passage = ''
+        sentext = ''
+        if level == 1:
+            if passages:
+                verse = node2verse[data[0]]
+                passage = "{} ".format(F.verse_label.v(verse))
+            if sentence:
+                sent = node2sentence[data[0]]
+                sentext = '{} '.format(' '.join(monadrep(w) for w in sentence2words[sent]))
+
+        otype = F.otype.v(data[0])
+        if otype == 'word':
+            return "{}{} '{}'".format(passage,sentext, monadrep(data[0]))
         else:
-            return "[{} {}]".format(F.otype.v(data[0]), MQL._compact_result(data[1], level, monadrep))
+            subdata = data[1] if len(data) > 1 else []
+            return "{}{} [{} {}]".format(passage, sentext, F.otype.v(data[0]), MQL._compact_result(subdata, level+1, monadrep, passages, sentence))
 
 
 class Sheaf(object):
@@ -132,4 +169,5 @@ class Sheaf(object):
     def render(self, monadrep): MQL._render_sheaf(self.data, 0, monadrep)
     def compact(self, monadrep): return MQL._compact_sheaf(self.data, 0, monadrep)
     def results(self): return MQL._results_sheaf(self.data)
-    def compact_results(self, monadrep): return MQL._compact_results(MQL._results_sheaf(self.data), 0, monadrep)
+    def compact_results(self, monadrep, passages=None, sentence=None, limit=None):
+        return MQL._compact_results(MQL._results_sheaf(self.data, limit=limit), 0, monadrep, passages, sentence)

@@ -188,3 +188,42 @@ class GenForm(object):
         outa.write("</graph>\n")        
         inp.close()
         outa.close()
+
+def create_annots(API, data):
+    '''Converts a list of node, value,feature entries to a string which can be saved as an annotation file.
+
+    The columns must be: nodeid, value, feature name, feature_label (optional), namespace (optional)
+    '''
+    result = []
+    result.append('''<?xml version="1.0" encoding="UTF-8"?>
+<graph xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/">
+<graphHeader>
+    <labelsDecl/>
+    <dependencies/>
+    <annotationSpaces/>
+</graphHeader>''')
+    aid = 0
+    features = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: {})))
+    for line in data:
+        node = line[0]
+        value = line[1]
+        feat = line[2]
+        if len(line) > 3:
+            feat = "{}.{}".format(line[3], feat)
+        if len(line) > 4:
+            feat = "{}:{}".format(line[4], feat)
+        (aspace, alabel, fname) = API['fabric'].resolve_feature('node', feat)
+        xml_id = API['X'].r(node)
+        features[aspace][alabel][xml_id][fname] = value
+
+    for aspace in features:
+        for alabel in features[aspace]:
+            for xml_id in features[aspace][alabel]:
+                aid += 1
+                result.append('<a xml:id="a{}" as="{}" label="{}" ref="{}"><fs>'.format(aid, aspace, alabel, xml_id))
+                for fname in features[aspace][alabel][xml_id]:
+                    value = features[aspace][alabel][xml_id][fname]
+                    result.append('\t<f name="{}" value="{}"/>'.format(fname, value))
+                result.append('</fs></a>')
+    result.append("</graph>")        
+    return '\n'.join(result)

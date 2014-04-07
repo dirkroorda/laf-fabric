@@ -354,6 +354,32 @@ class LafFabric(object):
         env = self.lafapi.names.env
         return self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
 
+    def resolve_feature(self, kind, feature_given):
+        lafapi = self.lafapi
+        all_features = lafapi.all_features_index
+        stamp = lafapi.stamp
+        dkind = kind[0]
+        if dkind not in all_features: raise FabricError("No features of kind {} in LAF resource".format(kind), stamp)
+        (aspace, feature_raw) = feature_given.split(':', 1) if ':' in feature_given else (None, feature_given)
+        (alabel, fname) = feature_raw.split('.', 1) if '.' in feature_raw else (None, feature_raw)
+        if fname not in all_features[dkind]: raise FabricError("No such feature in LAF resource: {}".format(fname), stamp)
+        hits = []
+        candidates = all_features[dkind][fname]
+        for (aspacec, alabelc) in candidates:
+            if (aspace == None or aspace == aspacec) and (alabel == None or alabelc == alabel): hits.append((aspacec, alabelc))
+        if not hits: raise FabricError("No feature in LAF resource: {}{}{}".format((aspace+':') if aspace != None else '', (alabel+'.') if alabel != None else '', fname), stamp)
+        hit = hits[-1]
+        the_feature = (hit[0], hit[1], fname)
+        if len(hits) > 1:
+            stamp.Imsg("Feature {}{}{} may mean any of {}. Choosing {}".format(
+                (aspace+':') if aspace != None else '',
+                (alabel+'.') if alabel != None else '',
+                fname,
+                ', '.join(["{}:{}.{}".format(fc[0], fc[1], fname) for fc in hits]),
+                "{}:{}.{}".format(*the_feature),
+            ))
+        return the_feature
+        
     def _request_features(self, feat_spec, req_items, add, also_from_annox):
         lafapi = self.lafapi
         all_features = lafapi.all_features_index
@@ -372,33 +398,14 @@ class LafFabric(object):
                 feature_list = feat_spec[index]
                 features = feature_list.split()
                 for line in features:
-                    (aspace, feature_raw) = line.split(':', 1) if ':' in line else (None, line)
-                    (alabel, fname) = feature_raw.split('.', 1) if '.' in feature_raw else (None, feature_raw)
-                    the_features[kind].add((aspace, alabel, fname))
+                    the_features[kind].add(self.resolve_feature(kind, line))
 
         for kind in the_features:
             dkind = kind[0]
             if dkind not in all_features: raise FabricError("No features of kind {} in LAF resource".format(kind), stamp)
             for (aspace, alabel, fname) in the_features[kind]:
                 if fname not in all_features[dkind]: raise FabricError("No such feature in LAF resource: {}".format(fname), stamp)
-                else:
-                    hits = []
-                    candidates = all_features[dkind][fname]
-                    for (aspacec, alabelc) in candidates:
-                        if (aspace == None or aspace == aspacec) and (alabel == None or alabelc == alabel): hits.append((aspacec, alabelc))
-                    if not hits: raise FabricError("No feature in LAF resource: {}{}{}".format((aspace+':') if aspace != None else '', (alabel+'.') if alabel != None else '', fname), stamp)
-                    else:
-                        hit = hits[-1]
-                        the_feature = (hit[0], hit[1], fname)
-                        if len(hits) > 1:
-                            stamp.Imsg("Feature {}{}{} may mean any of {}. Choosing {}".format(
-                                (aspace+':') if aspace != None else '',
-                                (alabel+'.') if alabel != None else '',
-                                fname,
-                                ', '.join(["{}:{}.{}".format(fc[0], fc[1], fname) for fc in hits]),
-                                "{}:{}.{}".format(*the_feature),
-                            ))
-                        for origin in ['m'] + (['a'] if also_from_annox else []):
-                            req_items['{}F{}0'.format(origin, dkind)].append(the_feature)
-                            if dkind == 'e':
-                                for ddir in ('f', 'b'): req_items['{}C0{}'.format(origin, ddir)].append(the_feature)
+                for origin in ['m'] + (['a'] if also_from_annox else []):
+                    req_items['{}F{}0'.format(origin, dkind)].append((aspace, alabel, fname))
+                    if dkind == 'e':
+                        for ddir in ('f', 'b'): req_items['{}C0{}'.format(origin, ddir)].append((aspace, alabel, fname))

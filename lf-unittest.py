@@ -19,6 +19,12 @@ LAFDIRA = WORKDIRA
 SPECIFIC_MSG = "running an individual test"
 SPECIFIC = False
 
+if __name__ == '__main__':
+    spec = sys.argv[-1]
+    if spec in ('0', '1'):
+        SPECIFIC = spec == '1'
+        del sys.argv[-1]
+
 class TestLafFabric(unittest.TestCase):
     fabric = None
 
@@ -196,6 +202,16 @@ class TestLafFabric(unittest.TestCase):
         for nm in ('otype', 'dirk_dbs_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
         self.assertEqual(len(feature_abbs['db_otype']), 2)
         for nm in ('otype', 'dirk_db_otype'): nm in feature_abbs['db_otype']
+
+    #unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
+    def test_d300_resolve(self):
+        API = self.fabric.load(SOURCE, '--', 'resolve', {"features": ("","")})
+        feature = self.fabric.resolve_feature('node', 'otype')
+        self.assertEqual(feature, ('shebanq', 'db', 'otype'))
+        feature = self.fabric.resolve_feature('node', 'db.otype')
+        self.assertEqual(feature, ('shebanq', 'db', 'otype'))
+        feature = self.fabric.resolve_feature('node', 'shebanq:db.otype')
+        self.assertEqual(feature, ('shebanq', 'db', 'otype'))
 
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_e100_monad_numbers(self):
@@ -912,4 +928,5 @@ class TestLafFabric(unittest.TestCase):
         close()
 
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main()

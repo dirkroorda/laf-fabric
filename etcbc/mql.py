@@ -5,15 +5,15 @@ MQL_FILE = 'mql/bhs3'
 MQL_PROC = '/usr/local/bin/mql'
 MQL_OPTS = ['--cxml', '-b', 's3', '-d']
 
-index2node = {}
-node2verse = {}
-node2sentence = {}
-sentence2words = {}
-
 F = None
 NN = None
 
 class MQL(object):
+    index2node = {}
+    node2verse = {}
+    node2sentence = {}
+    object2words = {}
+
     def __init__(self, API):
         global F
         global NN
@@ -22,18 +22,18 @@ class MQL(object):
         self.parser = etree.XMLParser(remove_blank_text=True)
         NN = API['NN']
         F = API['F']
-        cur_verse = None
-        cur_sentence = None
+        cur_object = {}
         for n in NN():
             otype = F.otype.v(n)
-            if otype == 'verse': cur_verse = n
-            if otype == 'sentence': cur_sentence = n
-            if otype == 'word': sentence2words.setdefault(cur_sentence, []).append(n)
-            index2node[F.oid.v(n)] = n
-            node2verse[n] = cur_verse
-            node2sentence[n] = cur_sentence
+            if otype != 'word': cur_object[otype] = n
+            if otype == 'word':
+                for curo in cur_object.values():
+                    MQL.object2words.setdefault(curo, []).append(n)
+            MQL.index2node[F.oid.v(n)] = n
+            MQL.node2verse[n] = cur_object.get('verse', None)
+            MQL.node2sentence[n] = cur_object.get('sentence', None)
 
-    def mql(self, query):
+    def mql(self, query, format='sheaf'):
         proc = subprocess.Popen(
             [MQL_PROC] + MQL_OPTS + [self.data_path],
             stdout=subprocess.PIPE,
@@ -42,8 +42,11 @@ class MQL(object):
         proc.stdin.write(bytes(query, encoding='utf8'))
         proc.stdin.close()
         xml = proc.stdout.read()
-        sheaf = self._parse_results(xml)
-        return Sheaf(sheaf)
+        if format == 'xml':
+            return xml
+        elif format == None or format == 'sheaf':
+            sheaf = self._parse_results(xml)
+            return Sheaf(sheaf)
 
     def _parse_results(self, xml):
         root = etree.fromstring(xml, self.parser)
@@ -66,7 +69,7 @@ class MQL(object):
         return [MQL._parse_grain(child) for child in elem]
 
     def _parse_grain(elem):
-        node = index2node[elem.attrib["id_d"]]
+        node = MQL.index2node[elem.attrib["id_d"]]
         result = (node,)
         for child in elem:
             if child.tag == 'sheaf' and len(child):
@@ -150,11 +153,11 @@ class MQL(object):
         sentext = ''
         if level == 1:
             if passages:
-                verse = node2verse[data[0]]
+                verse = MQL.node2verse[data[0]]
                 passage = "{} ".format(F.verse_label.v(verse))
             if sentence:
-                sent = node2sentence[data[0]]
-                sentext = '{} '.format(' '.join(monadrep(w) for w in sentence2words[sent]))
+                sent = MQL.node2sentence[data[0]]
+                sentext = '{} '.format(' '.join(monadrep(w) for w in MQL.object2words[sent]))
 
         otype = F.otype.v(data[0])
         if otype == 'word':

@@ -1,6 +1,14 @@
 Welcome
 #######
-.. image:: /files/gender_graph.png
+.. image:: /files/TLA-small.png
+   :target: http://tla.mpi.nl
+   :width: 200px
+.. image:: /files/DANS-small.png
+   :target: http://www.dans.knaw.nl
+   :width: 200px
+.. image:: /files/VU-ETCBC-small.png
+   :target: http://www.godgeleerdheid.vu.nl/etcbc
+   :width: 200px
 
 The word **fabric** denotes a texture, and a LAF resource can be seen as a texture of annotations to
 a primary data source. 
@@ -19,11 +27,33 @@ This is the LAF Fabric, and here is a simple example of what you can do with it:
 
 * `gender notebook <http://nbviewer.ipython.org/github/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
 
+Author
+======
+LAF-Fabric has been developed by Dirk Roorda, working at
+`DANS <http://www.dans.knaw.nl>`_
+and 
+`TLA <http://tla.mpi.nl>`_.
+The need for it arose while executing a
+`CLARIN-NL <http://www.clarin.nl>`_
+project
+`SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_,
+by which the contents of the Hebrew Text Database of the
+`ETCBC <http://www.godgeleerdheid.vu.nl/etcbc>`_
+was converted from
+`EMDROS <http://emdros.org>`_
+into
+`LAF <http://www.iso.org/iso/catalogue_detail.htm?csnumber=37326>`_.
+
+Who is using LAF-Fabric?
+========================
 People at the Theology Department of the VU University Amsterdam are producing notebooks for their research
 into the text of the Hebrew Bible, see
 
 * `The ETCBC's github repository <https://github.com/ETCBC/laf-fabric-nbs>`_
+  (highlight:
+  `trees for Data Oriented Parsing <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees.ipynb>`_)
 * `Judith Gottschalk's github repository <https://github.com/ETCBC/study>`_
 * `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_
 
-LAF-Fabric includes a specialized module called *etcbc* to support working with the Hebrew Text Database of the ETCBC.
+The development of LAF-Fabric continues, but its progress now takes place mostly inside the module *etcbc*,
+a specialized module to support working with the Hebrew Text Database of the ETCBC.

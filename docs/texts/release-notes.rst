@@ -21,6 +21,8 @@ should change into::
 
 Same for ``laf-dir``.
 
+Because of this reorganization you have to download the data again.
+
 4.1.3
 -----
 Small fixes.

@@ -138,11 +138,11 @@ If you need the data to be at another location, you must modify the *laf-fabric.
 This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in a standard
 directory, which is *laf-fabric-data* in your home directory.
 
-There are just one or two settings.
+There are just one or two settings::
 
     [locations]
-    work_dir  = /Users/you/laf-data-dir/etcbc-bhs3
-    laf_dir  = /Users/you/laf-data-dir/etcbc-bhs3
+    work_dir  = /Users/you/laf-data-dir
+    laf_dir  = /Users/you/laf-data-dir
     
 *work_dir* is folder where all the data is, input, intermediate, and output.
 

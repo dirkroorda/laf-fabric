@@ -3,7 +3,7 @@ import os
 import configparser
 from .timestamp import Timestamp
 
-VERSION = '4.1.3'
+VERSION = '4.1.4'
 APIREF = 'http://laf-fabric.readthedocs.org/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
@@ -39,20 +39,20 @@ class Settings(object):
         'zspace':                '{zspace}',
         'empty':                 '{empty}',
         'work_dir':              '{work_dir}',
-        'bin_dir':               '{work_dir}/{bin_subdir}',
-        'm_source_dir':          '{m_source_dir}/{m_source_subdir}',
-        'm_source_path':         '{m_source_dir}/{m_source_subdir}/{source}',
-        'a_source_dir':          '{m_source_dir}/{a_source_subdir}/{annox}',
-        'a_source_path':         '{m_source_dir}/{a_source_subdir}/{annox}/{header}',
+        'bin_dir':               '{work_dir}/{source}/{bin_subdir}',
+        'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',
+        'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}',
+        'a_source_dir':          '{m_source_dir}/{source}/{a_source_subdir}/{annox}',
+        'a_source_path':         '{m_source_dir}/{source}/{a_source_subdir}/{annox}/{header}',
         'compiled_file':         '{log_name}{compile_name}.{text_ext}',
-        'm_compiled_dir':        '{work_dir}/{bin_subdir}/{source}',
-        'm_compiled_path':       '{work_dir}/{bin_subdir}/{source}/{log_name}{compile_name}.{text_ext}',
-        'primary_compiled_path': '{work_dir}/{bin_subdir}/{source}/{primary_data}',
-        'a_compiled_dir':        '{work_dir}/{bin_subdir}/{source}/A/{annox}',
-        'a_compiled_path':       '{work_dir}/{bin_subdir}/{source}/A/{annox}/{log_name}{compile_name}.{text_ext}',
-        'z_compiled_dir':        '{work_dir}/{bin_subdir}/{source}/Z/{zspace}',
-        'task_dir':              '{work_dir}/{task_subdir}/{source}/{task}',
-        'log_path':              '{work_dir}/{task_subdir}/{source}/{task}/{log_name}{task}.{text_ext}',
+        'm_compiled_dir':        '{work_dir}/{source}/{bin_subdir}',
+        'm_compiled_path':       '{work_dir}/{source}/{bin_subdir}/{log_name}{compile_name}.{text_ext}',
+        'primary_compiled_path': '{work_dir}/{source}/{bin_subdir}/{primary_data}',
+        'a_compiled_dir':        '{work_dir}/{source}/{bin_subdir}/A/{annox}',
+        'a_compiled_path':       '{work_dir}/{source}/{bin_subdir}/A/{annox}/{log_name}{compile_name}.{text_ext}',
+        'z_compiled_dir':        '{work_dir}/{source}/{bin_subdir}/Z/{zspace}',
+        'task_dir':              '{work_dir}/{source}/{task_subdir}/{task}',
+        'log_path':              '{work_dir}/{source}/{task_subdir}/{task}/{log_name}{task}.{text_ext}',
     }
 
     def __init__(self, work_dir, laf_dir, save, verbose):

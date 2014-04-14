@@ -12,8 +12,8 @@ from etcbc.preprocess import prepare
 
 SOURCE = 'bhs3-tiny.txt.hdr'
 ANNOX = 'participants'
-WORKDIR = './example-data/etcbc-gen11'
-WORKDIRA = '{}/example-data/etcbc-gen11'.format(os.getcwd())
+WORKDIR = './example-data'
+WORKDIRA = '{}/example-data'.format(os.getcwd())
 LAFDIR = WORKDIR
 LAFDIRA = WORKDIRA
 SPECIFIC_MSG = "running an individual test"
@@ -55,7 +55,7 @@ class TestLafFabric(unittest.TestCase):
         the_log = None
         the_log_mtime = None
         newer = True
-        for f in glob.glob("{}/bin/{}/*".format(WORKDIRA, SOURCE)):
+        for f in glob.glob("{}/{}/bin/*".format(WORKDIRA, SOURCE)):
             fn = os.path.basename(f)
             if fn in 'AZ': continue
             elif fn == '__log__compile__.txt':
@@ -83,7 +83,7 @@ class TestLafFabric(unittest.TestCase):
         the_log = None
         the_log_mtime = None
         newer = True
-        for f in glob.glob("{}/bin/{}/A/{}/*".format(WORKDIRA, SOURCE, ANNOX)):
+        for f in glob.glob("{}/{}/bin/A/{}/*".format(WORKDIRA, SOURCE, ANNOX)):
             fn = os.path.basename(f)
             if fn == '__log__compile__.txt':
                 the_log = f

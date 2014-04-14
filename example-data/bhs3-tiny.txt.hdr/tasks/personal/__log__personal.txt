@@ -1,0 +1,24 @@
+OPENED AT:2014-04-14T06-44-24
+  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3-tiny.txt.hdr/tasks/personal/__log__personal.txt
+  0.01s INFO: DATA LOADED FROM SOURCE bhs3-tiny.txt.hdr AND ANNOX participants FOR TASK personal
+  0.00s Get the annotations ...
+  0.00s word(בְּ)	intro='ppp'	role='X-x-x-x'
+  0.00s word(רֵאשִׁ֖ית)	intro='AAAAAA'	role='n/a'
+  0.00s word(בָּרָ֣א)	intro='VVVVVV'	role='n/a'
+  0.00s phrase(35)	intro='QQQQ'	role='n/a'
+  0.00s phrase(36)	intro='FFFF'	role='n/a'
+  0.00s phrase(37)	intro='GGGG'	role='T-t-t-t-t'
+  0.00s word(אֱלֹהִ֑ים)	intro='BBBBBB'	role='n/a'
+  0.00s word(שָּׁמַ֖יִם)	intro='CCCCCC'	role='n/a'
+  0.00s word(וְ)	intro='WWWWW'	role='n/a'
+  0.00s word(הָ)	intro='UUUUUU'	role='H-h-h'
+  0.00s word(אֵ֥ת)	intro='n/a'	role='Y-y-y-y'
+  0.00s word(אֵ֥ת)	intro='n/a'	role='Z-z-z-z'
+  0.00s subphrase(44)	intro='RRRR'	role='V-v-v-v'
+  0.00s Results directory:
+/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3-tiny.txt.hdr/tasks/personal
+
+__log__personal.txt                     956 Mon Apr 14 08:44:24 2014
+annotations.txt                           0 Mon Apr 14 08:44:24 2014
+
+CLOSED AT:2014-04-14T06-44-24

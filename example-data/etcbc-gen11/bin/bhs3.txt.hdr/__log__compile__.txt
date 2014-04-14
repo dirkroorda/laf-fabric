@@ -1,4 +1,0 @@
-  0.00s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/bin/bhs3.txt.hdr/__log__compile__.txt
-  0.00s PARSING ANNOTATION FILES
-  0.00s ERROR: LAF header does not exists /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/etcbc-gen11/laf/bhs3.txt.hdr
-  0.00s END

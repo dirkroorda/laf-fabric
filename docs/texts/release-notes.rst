@@ -6,6 +6,25 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.1.4
+-----
+LAF Usability
+^^^^^^^^^^^^^
+Small reorganization of subdirectories. The structure is now better adapted to work with completely different data sources.
+Update your configuration files. The trailing directory names must be removed. So::
+
+    work_dir = ~/laf-fabric-data/etcbc-bhs
+
+should change into::
+
+    work_dir = ~/laf-fabric-data
+
+Same for ``laf-dir``.
+
+4.1.3
+-----
+Small fixes.
+
 4.1.2
 -----
 LAF Usability

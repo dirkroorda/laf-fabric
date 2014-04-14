@@ -25,24 +25,24 @@ from etcbc.preprocess import prepare
 
 testmodes = {
     'tiny': {
-        'work_dir': './example-data/etcbc-gen11',
-        'laf_dir': './example-data/etcbc-gen11',
+        'work_dir': './example-data',
+        'laf_dir': './example-data',
         'source_file': 'bhs3-tiny.txt.hdr',
         'verbose': 'DEBUG',
         'compile': False,
         'save': False,
     },
     'tinys': {
-        'work_dir': './example-data/etcbc-gen11',
-        'laf_dir': './example-data/etcbc-gen11',
+        'work_dir': './example-data',
+        'laf_dir': './example-data',
         'source_file': 'bhs3-tiny.txt.hdr',
         'verbose': 'DEBUG',
         'compile': False,
         'save': True,
     },
     'tinyc': {
-        'work_dir': './example-data/etcbc-gen11',
-        'laf_dir': './example-data/etcbc-gen11',
+        'work_dir': './example-data',
+        'laf_dir': './example-data',
         'source_file': 'bhs3-tiny.txt.hdr',
         'verbose': 'DEBUG',
         'compile': True,

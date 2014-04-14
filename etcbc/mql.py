@@ -172,5 +172,9 @@ class Sheaf(object):
     def render(self, monadrep): MQL._render_sheaf(self.data, 0, monadrep)
     def compact(self, monadrep): return MQL._compact_sheaf(self.data, 0, monadrep)
     def results(self): return MQL._results_sheaf(self.data)
+    def nresults(self):
+        i = 0;
+        for r in MQL._results_sheaf(self.data): i += 1
+        return i
     def compact_results(self, monadrep, passages=None, sentence=None, limit=None):
         return MQL._compact_results(MQL._results_sheaf(self.data, limit=limit), 0, monadrep, passages, sentence)

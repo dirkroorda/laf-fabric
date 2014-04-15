@@ -1,9 +1,8 @@
-import sys
 import os
 import configparser
 from .timestamp import Timestamp
 
-VERSION = '4.1.4'
+VERSION = '4.2.0'
 APIREF = 'http://laf-fabric.readthedocs.org/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
@@ -41,7 +40,7 @@ class Settings(object):
         'work_dir':              '{work_dir}',
         'bin_dir':               '{work_dir}/{source}/{bin_subdir}',
         'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',
-        'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}',
+        'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}.txt.hdr',
         'a_source_dir':          '{m_source_dir}/{source}/{a_source_subdir}/{annox}',
         'a_source_path':         '{m_source_dir}/{source}/{a_source_subdir}/{annox}/{header}',
         'compiled_file':         '{log_name}{compile_name}.{text_ext}',

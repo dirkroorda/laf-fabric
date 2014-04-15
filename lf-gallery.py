@@ -27,7 +27,7 @@ testmodes = {
     'tiny': {
         'work_dir': './example-data',
         'laf_dir': './example-data',
-        'source_file': 'bhs3-tiny.txt.hdr',
+        'source': 'bhs3',
         'verbose': 'DEBUG',
         'compile': False,
         'save': False,
@@ -35,7 +35,7 @@ testmodes = {
     'tinys': {
         'work_dir': './example-data',
         'laf_dir': './example-data',
-        'source_file': 'bhs3-tiny.txt.hdr',
+        'source': 'bhs3',
         'verbose': 'DEBUG',
         'compile': False,
         'save': True,
@@ -43,7 +43,7 @@ testmodes = {
     'tinyc': {
         'work_dir': './example-data',
         'laf_dir': './example-data',
-        'source_file': 'bhs3-tiny.txt.hdr',
+        'source': 'bhs3',
         'verbose': 'DEBUG',
         'compile': True,
         'save': False,
@@ -51,7 +51,7 @@ testmodes = {
     'full': {
         'work_dir': None,
         'laf_dir': None,
-        'source_file': 'bhs3.txt.hdr',
+        'source': 'bhs3',
         'verbose': 'NORMAL',
         'compile': False,
         'save': False,
@@ -59,7 +59,7 @@ testmodes = {
     'fullc': {
         'work_dir': None,
         'laf_dir': None,
-        'source_file': 'bhs3.txt.hdr',
+        'source': 'bhs3',
         'verbose': 'NORMAL',
         'compile': True,
         'save': False,
@@ -67,7 +67,7 @@ testmodes = {
     'fulls': {
         'work_dir': None,
         'laf_dir': None,
-        'source_file': 'bhs3.txt.hdr',
+        'source': 'bhs3',
         'verbose': 'NORMAL',
         'compile': False,
         'save': True,
@@ -100,7 +100,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source_file'], '--', 'plain',
+fabric.load(test['source'], '--', 'plain',
     {
         "xmlids": {"node": False, "edge": False},
         "features": ("otype text suffix book", ""),
@@ -127,7 +127,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source_file'], '--', 'objects',
+fabric.load(test['source'], '--', 'objects',
     {
         "xmlids": {"node": False, "edge": False },
         "features": ("oid otype monads", ""),
@@ -155,7 +155,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source_file'], '--', 'parents',
+fabric.load(test['source'], '--', 'parents',
 {
     "xmlids": {"node": False, "edge": False},
     "features": ("otype text book", "parents. .x"),
@@ -218,7 +218,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source_file'], '--', 'xmlids',
+fabric.load(test['source'], '--', 'xmlids',
 {
     "xmlids": {"node": True, "edge": True},
     "features": ("oid otype", ""),
@@ -250,7 +250,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source_file'], 'participants', 'personal',
+fabric.load(test['source'], 'participants', 'personal',
         {
             "xmlids": {"node": False, "edge": False},
             "features": ("intro role otype text", ""),

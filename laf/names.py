@@ -1,4 +1,3 @@
-import sys
 import collections
 from .settings import Settings
 

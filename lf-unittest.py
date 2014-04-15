@@ -10,7 +10,7 @@ from laf.fabric import LafFabric
 from laf.names import FabricError
 from etcbc.preprocess import prepare
 
-SOURCE = 'bhs3-tiny.txt.hdr'
+SOURCE = 'bhs3'
 ANNOX = 'participants'
 WORKDIR = './example-data'
 WORKDIRA = '{}/example-data'.format(os.getcwd())

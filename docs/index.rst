@@ -16,8 +16,10 @@ Contents:
     texts/background
     texts/API-reference
     texts/ETCBC-reference
+    texts/EMDROS2LAF-reference
     laf/modules.rst
     etcbc/modules.rst
+    emdros2laf/modules.rst
 
 Indices and tables
 ==================

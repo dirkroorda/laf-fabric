@@ -40,12 +40,15 @@ project
 by which the contents of the Hebrew Text Database of the
 `ETCBC <http://www.godgeleerdheid.vu.nl/etcbc>`_
 was converted from
-`EMDROS <http://emdros.org>`_
+`EMDROS <http://emdros.org>`_ (that conversion is also part of LAF-Fabric).
 into
 `LAF <http://www.iso.org/iso/catalogue_detail.htm?csnumber=37326>`_.
 
 Who is using LAF-Fabric?
 ========================
+
+.. image:: /files/ETCBC-LAF-small.png
+
 People at the Theology Department of the VU University Amsterdam are producing notebooks for their research
 into the text of the Hebrew Bible, see
 

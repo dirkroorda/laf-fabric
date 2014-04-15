@@ -1,0 +1,2 @@
+<edge xml:id="e{part}{eid}" from="n{fr}" to="n{to}"/>
+<a xml:id="a{part}e{aid}" label="{akind}" ref="e{part}{eid}"/>

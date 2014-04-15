@@ -6,6 +6,15 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.2
+-----
+LAF Usability
+^^^^^^^^^^^^^
+The conversion program from EMDROS to LAF (now the package *emdros2laf*) has been integrated in LAF-Fabric.
+Because of this a small reorganization of subdirectories was necessary (again).
+The EMDROS source of the LAF has a place in *laf-fabric-data* as well.
+So: again: a new download of the data is required.
+
 4.1.4
 -----
 LAF Usability

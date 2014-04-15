@@ -79,7 +79,12 @@ Here are the steps, assuming you are in the command line, at the top level direc
     python setup.py install
 
 This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
-Hebrew Text Database: *etcbc*.
+Hebrew Text Database: *etcbc*. It also installs *emdros2laf*, a conversion package from the source format of the ETCBC database (EMDROS) to LAF.
+This package has been used to obtain the actual LAF version of the ETCBC database.
+
+.. note::
+    In order to use *emdros2laf* and parts of *etcbc*, you need to install `EMDROS <http://emdros.org>`_ software, which is freely available.
+    Tip: you do not need graphical user interfaces, just command line tools. It works nicely with an sqlite3 backend.
 
 Get the data
 ============

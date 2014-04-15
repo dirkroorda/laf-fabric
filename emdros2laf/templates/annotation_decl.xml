@@ -1,0 +1,7 @@
+            <annotationDecl xml:id="a.{name}" as.id="shebanq">
+                <a.desc>{kind}: {name}</a.desc>
+                <a.resp>ETCBC via SHEBANQ project</a.resp>
+                <a.method type="conversion script"/>
+                <a.doc lnk:href="{danspid_act}"/>
+				<a.schema lnk:href="{schema}" type="{schematype}"/>
+            </annotationDecl>

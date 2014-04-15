@@ -38,7 +38,7 @@ by following this persistent identifier:
 This data is not yet in LAF format.
 
 The `SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_ project has
-converted the database into LAF (the conversion code is in `GitHub project wivu2laf <https://github.com/dirkroorda/wivu2laf>`_),
+converted the database into LAF (the conversion code is in the package *emdros2laf*, which is included in LAF-Fabric),
 and the resulting LAF resource is a file set of 2.27 GB, being predominantly linguistic annotations.
 It is this LAF resource that is the reference context for LAF-Fabric.
 It is to be deposited into the DANS archive shortly, under an Open Access licence, with the
@@ -217,7 +217,6 @@ This work has been undertaken first in November 2013 by Dirk Roorda, working for
 `The Language Archive (TLA) <http://tla.mpi.nl>`_.
 The work has been triggered by the execution of the
 `SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_ project
-(see `results <http://wivu2laf.readthedocs.org/en/latest/>`_)
 together with the researchers Wido van Peursen, Oliver Glanz and Janet Dyk at the
 `Eep Talstra Centre for Bible and Computing (ETCBC), VU University
 <http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp>`_.

@@ -18,7 +18,7 @@ Usage::
 
     from etcbc.preprocess import prepare
 
-    fabric.load('bhs3.txt.hdr', '--', 'trees', {
+    fabric.load('bhs3', '--', 'trees', {
         ...
         "prepare": prepare,
     }

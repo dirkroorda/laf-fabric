@@ -62,7 +62,7 @@ Possible values in increasing level of verbosity::
 
 Then you have the processor to load data, according to the source you choose::
 
-    fabric.load('bhs3.txt.hdr', '--', 'cooccurrences',
+    fabric.load('bhs3', '--', 'cooccurrences',
         {
             "xmlids": {
                 "node": False,

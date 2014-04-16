@@ -1,3 +1,3 @@
-from emdros2laf.etcbc2laf import processor
+from emdros2laf.run import processor
 
 processor()

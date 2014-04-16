@@ -15,7 +15,7 @@ It has these major components:
     * an extension toolkit geared to a specific LAF resource: the ETCBC Hebrew Text Database.
 * the *emdros2laf* package
     * conversion from EMDROS to LAF. The ETCBC Hebrew is originally available as an EMDROS database.
-      This package performas the conversion to LAF.
+      This package performs the conversion to LAF.
 
 The selling point of LAF-fabric is performance, both in terms of speed and memory usage.
 The second goal is to make it really easy for you to write analytic notebooks

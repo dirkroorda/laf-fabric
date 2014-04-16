@@ -4,10 +4,10 @@ emdros2laf |release|
 Submodules
 ----------
 
-emdros2laf.config module
-------------------------
+emdros2laf.settings module
+--------------------------
 
-.. automodule:: emdros2laf.config
+.. automodule:: emdros2laf.settings
     :members:
     :undoc-members:
     :show-inheritance:
@@ -44,10 +44,10 @@ emdros2laf.validate module
     :undoc-members:
     :show-inheritance:
 
-emdros2laf.etcbc2laf module
----------------------------
+emdros2laf.run module
+---------------------
 
-.. automodule:: emdros2laf.etcbc2laf
+.. automodule:: emdros2laf.run
     :members:
     :undoc-members:
     :show-inheritance:

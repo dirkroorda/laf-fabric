@@ -41,19 +41,13 @@ class Etcbc:
 
     The feature information is stored in the following dictionaries:
 
-    (Ia) part_info[part][subpart][object_type][feature_name] = None
-    
-        Stores the organization of individual objects and their features in parts and subparts.
+    (Ia) part_info[part][subpart][object_type] = set of feature_names
         NB: object_types may occur in multiple parts.
 
-    (Ib) part_object[part][object_type] = None
+    (Ib) part_object[part] = set of object_types
     
-        Stores the set of object types of parts
-
-    (Ic) part_feature[part][object_type][feature_name] = None
+    (Ic) part_feature[part][object_type] = set of feature_names
     
-        Stores the set of features types of parts
-
     (Id) object_subpart[part][object_type] = subpart
     
         Stores the subpart in which each object type occurs, per part
@@ -102,18 +96,18 @@ class Etcbc:
       0            1             2           3           4              5                      6                                           7     8
     
     '''
-    cfg= None
+    settings = None
 
     object_info = {}
     feature_info = {}
     value_info = {}
     part_info = {}
     object_subpart = {}
-    part_object = collections.defaultdict(lambda: {})
-    part_feature = collections.defaultdict(lambda: {})
+    part_object = collections.defaultdict(lambda: set())
+    part_feature = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
     reference_feature = {}
 
-    def __init__(self, cfg):
+    def __init__(self, settings):
         ''' Initialization is: reading the excel sheet with feature information.
 
         The sheet should be in the form of a tab-delimited text file.
@@ -131,269 +125,127 @@ class Etcbc:
         So the file gives essential information to map objects/features/values to ISOcat data categories.
         It indicates how the LAF output can be chunked in parts and subparts.
         '''
-
-        self.cfg = cfg
-
-        file = cfg.env['feature_info']
-        file_handle = codecs.open(file, encoding = 'utf-8')
+        self.settings = settings
+        ffile = settings.env['feature_info']
+        file_handle = codecs.open(ffile, encoding = 'utf-8')
         line_number = 0
 
 # the following fields are hierarchical : part, subpart, object_type, feature_name, etcbc_type
 # they may inherit from one line to the next, and when one field changes, others have to be reset
 # For each input line, we collect them in the list this_fields, and we maintain current values in cur_fields
 
-        cur_part, cur_subpart, cur_object_type, cur_feature_name, cur_etcbc_type = '', '', '', '', ''
+        (cur_part, cur_subpart, cur_object_type, cur_feature_name, cur_etcbc_type) = ('', '', '', '', '')
 
         for line in file_handle:
             line_number += 1
-
 # The first two lines in the feature info file are header lines. We skip them
-
-            if line_number <= 2:
-                continue
+            if line_number <= 2: continue
 
             all_fields = fillup(13, '', line.rstrip().split("\t"))
             used_fields = all_fields[0:6] + all_fields[7:8] + all_fields[11:13]
-
-            object_type, feature_name, defined_on, etcbc_type, feature_value, isocat_key, isocat_name, part, subpart = used_fields
-
-            object_atts = [isocat_key, isocat_name]
-            feature_atts = [defined_on, etcbc_type, isocat_key, isocat_name]
-            value_atts = [etcbc_type, isocat_key, isocat_name]
-
-            this_fields = [part, subpart, object_type, feature_name, etcbc_type]
-
+            (object_type, feature_name, defined_on, etcbc_type, feature_value, isocat_key, isocat_name, part, subpart) = used_fields
+            o_atts = (isocat_key, isocat_name)
+            f_atts = (defined_on, etcbc_type, isocat_key, isocat_name)
+            v_atts = (etcbc_type, isocat_key, isocat_name)
+            this_fields = (part, subpart, object_type, feature_name, etcbc_type)
 # Reset parts of cur_fields when a hierarchically higher part changes
             if object_type != '':
                 cur_feature_name = ''; 
                 cur_etcbc_type = ''; 
-            if feature_name != '':
-                cur_etcbc_type = ''; 
-            if part != '':
-                cur_subpart = ''; 
-
-            cur_fields = [cur_part, cur_subpart, cur_object_type, cur_feature_name, cur_etcbc_type]
-
+            if feature_name != '': cur_etcbc_type = ''; 
+            if part != '': cur_subpart = ''; 
+            cur_fields = (cur_part, cur_subpart, cur_object_type, cur_feature_name, cur_etcbc_type)
 # For fields that are empty on the current line, use the value saved in cur_fields
-            cur_part, cur_subpart, cur_object_type, cur_feature_name, cur_etcbc_type = map(lambda c,t: t if t != '' else c, cur_fields, this_fields) 
-
+            (cur_part, cur_subpart, cur_object_type, cur_feature_name, cur_etcbc_type) = map(lambda c,t: t if t != '' else c, cur_fields, this_fields) 
 # Identify the reference features
-
             if cur_etcbc_type == 'reference':
-                self.reference_feature[cur_feature_name] = cur_feature_name not in cfg.annotation_skip 
-
+                self.reference_feature[cur_feature_name] = cur_feature_name not in settings.annotation_skip 
 # Add features to the (sub)part structure
-            self.part_object[cur_part][cur_object_type] = None
+            self.part_object[cur_part].add(cur_object_type)
             if cur_feature_name != '':
                 if cur_object_type not in self.part_feature[cur_part]:
-                    self.part_feature[cur_part][cur_object_type] = collections.defaultdict(lambda: {})
-                self.part_feature[cur_part][cur_object_type][cur_feature_name] = None
+                    self.part_feature[cur_part][cur_object_type] = set()
+                self.part_feature[cur_part][cur_object_type].add(cur_feature_name)
 
-            this_dict = self.part_info
-            if cur_part not in this_dict:
-                this_dict[cur_part] = {}
-
-            this_dict = this_dict[cur_part]
-            if cur_subpart not in this_dict:
-                this_dict[cur_subpart] = {}
-
-            this_dict = this_dict[cur_subpart]
-            if cur_object_type not in this_dict:
-                this_dict[cur_object_type] = {}
-
+            this_info = self.part_info
+            if cur_part not in this_info: this_info[cur_part] = {}
+            this_info = this_info[cur_part]
+            if cur_subpart not in this_info: this_info[cur_subpart] = {}
+            this_info = this_info[cur_subpart]
+            if cur_object_type not in this_info: this_info[cur_object_type] = set()
             if cur_feature_name != '':
-                this_dict = this_dict[cur_object_type]
-                if cur_feature_name not in this_dict:
-                    this_dict[cur_feature_name] = None
+                this_info = this_info[cur_object_type]
+                if cur_feature_name not in this_info: this_info.add(cur_feature_name)
 
-            this_dict = self.object_subpart
-            if cur_part not in this_dict:
-                this_dict[cur_part] = {}
-            this_dict[cur_part][cur_object_type] = cur_subpart
-
+            this_info = self.object_subpart
+            if cur_part not in this_info: this_info[cur_part] = {}
+            this_info[cur_part][cur_object_type] = cur_subpart
 # Add object info
-            this_dict = self.object_info
-            if cur_object_type not in this_dict:
-                this_dict[cur_object_type] = object_atts
-
+            this_info = self.object_info
+            if cur_object_type not in this_info: this_info[cur_object_type] = o_atts
 # Add feature info
-            this_dict = self.feature_info
-            if cur_object_type not in this_dict:
-                this_dict[cur_object_type] = {}
-
+            this_info = self.feature_info
+            if cur_object_type not in this_info: this_info[cur_object_type] = {}
             if cur_feature_name != '':
-                this_dict = this_dict[cur_object_type]
-                if cur_feature_name not in this_dict:
-                    this_dict[cur_feature_name] = feature_atts
-
+                this_info = this_info[cur_object_type]
+                if cur_feature_name not in this_info: this_info[cur_feature_name] = f_atts
 # Add value info
-            this_dict = self.value_info
-            if cur_object_type not in this_dict:
-                this_dict[cur_object_type] = {}
-
+            this_info = self.value_info
+            if cur_object_type not in this_info: this_info[cur_object_type] = {}
             if cur_feature_name != '':
-                this_dict = this_dict[cur_object_type]
-                if cur_feature_name not in this_dict:
-                    this_dict[cur_feature_name] = {}
+                this_info = this_info[cur_object_type]
+                if cur_feature_name not in this_info: this_info[cur_feature_name] = {}
 
                 if feature_value != '':
-                    this_dict = this_dict[cur_feature_name]
-                    if feature_value not in this_dict:
-                        this_dict[feature_value] = value_atts
-
+                    this_info = this_info[cur_feature_name]
+                    if feature_value not in this_info: this_info[feature_value] = v_atts
         file_handle.close()
 
 # create directories and queries if we have to query the EMDROS database for data
-        if self.cfg.flag('raw'):
-            run('mkdir -p ' + cfg.env['raw_emdros_dir'])
-            run('mkdir -p ' + cfg.env['query_dst_dir'])
+        if settings.flag('raw'):
+            run('mkdir -p ' + settings.env['raw_emdros_dir'])
+            run('mkdir -p ' + settings.env['query_dst_dir'])
             for part in self.part_list():
                 self.make_query_file(part)
 
-# Now come the accessor functions for the datastructures created upon initialization
-
-    def part_list(self):
-        ''' Answers: which parts are there?
-        '''
-        return sorted(self.part_info.keys())
-
-    def subpart_list(self, part):
-        ''' Answers: which subparts are there in a part?
-        '''
-        return sorted(self.part_info[part].keys())
-
-    def object_list_all(self):
-        ''' Answers: which object types are there?
-        '''
-        return sorted(self.object_info.keys())
-
-    def object_list_part(self, part):
-        ''' Answers: which objects are there in all subparts of a part?
-        '''
-        return sorted(self.part_object[part].keys())
-
-    def the_subpart(self, part, object_type):
-        ''' Answers: which subpart of part contains this object type?
-        '''
-        return self.object_subpart[part][object_type]
-
-    def object_list(self, part, subpart):
-        ''' Answers: which objects are there in a subpart of a part?
-        '''
-        return sorted(self.part_info[part][subpart].keys())
-
-    def feature_list(self, object_type):
-        ''' Answers: which features belong to an object type?
-        '''
-        return sorted(self.feature_info[object_type].keys())
-
-    def feature_list_part(self, part, object_type):
-        ''' Answers: which features belong to an object type, and also in a part and exclude the features to be skipped?
-        '''
-        return sorted([x for x in self.part_feature[part][object_type] if x not in self.cfg.annotation_skip])
-
-    def feature_list_subpart(self, part, subpart, object_type):
-        ''' Answers: which features belong to an object type, a part and subpart, and also in a part and exclude the features to be skipped?
-        '''
-        return sorted([x for x in self.part_info[part][subpart][object_type] if x not in self.cfg.annotation_skip])
-
-    def value_list(self, object_type, feature_name):
-        ''' Answers: which values belong to a features of an object type?
-        '''
-        return sorted(self.value_info[object_type][feature_name].keys())
-
-    def object_atts(self, object_type):
-        ''' Returns a tuple of object attributes, corresponding with the columns in the feature excel sheet.
-        
-        The Etcbc column (object type) is missing, since they are given as arguments.
-        The LAFcolumns are not included.
-        The attributes returned are:
-         
-            isocat_key, isocat_name
-        '''
-        return self.object_info[object_type]
-
-    def feature_atts(self, object_type, feature_name):
-        ''' Returns a tuple of feature attributes, corresponding with the columns in the feature excel sheet.
-        
-        The Etcbc columns (object type, feature name) are missing, since they are given as arguments.
-        The LAFcolumns are not included.
-        The attributes returned are:
-         
-            defined_on, etcbc_type, isocat_key, isocat_name
-        '''
-        return self.feature_info[object_type][feature_name]
-
-    def value_atts(self, object_type, feature_name, feature_value):
-        ''' Returns a tuple of value attributes, corresponding with the columns in the feature excel sheet.
-        
-        The Etcbc columns (object type, feature name, feature_value) are missing, since they are given as arguments
-        The LAFcolumns are not included.
-        The attributes returned are:
-         
-            etcbc_type, isocat_key, isocat_name
-        '''
-        return self.value_info[object_type][feature_name][feature_value]
-
-    def list_ref_noskip(self):
-        ''' List the reference features that should not be skipped
-        '''
-        return sorted([x for x in self.reference_feature if self.reference_feature[x]])
-
-    def is_ref_skip(self, feature_name):
-        ''' Tests if the feature_name is a reference feature that should be skipped
-        '''
-        return feature_name in self.reference_feature and not self.reference_feature[feature_name]
-
-    def raw_file(self, part):
-        ''' Give the name of the file with raw emdros output for part
-        '''
-        return self.cfg.parts[part]['raw_text']
-
     def check_raw_files(self, part):
-        ''' Generate the file with raw emdros output by executing a generated mql query.
-        This query has been generated during initialization.
-        Only when there is a command line flag present that tells to do this
-        '''
-        if not self.cfg.flag('raw'):
-            return
+        if not self.settings.flag('raw'): return
         print("INFO: BEGIN Generate raw MQL output from EMDROS")
-
-# execute the generated mql query
         run('mql -b s3 -d {source} --console {query} > {raw}'.format(
-                source = self.cfg.env['source_data'],
-                query = self.cfg.parts[part]['query_file'],
-                raw = self.cfg.parts[part]['raw_text']
+                source = self.settings.env['source_data'],
+                query = self.settings.parts[part]['query_file'],
+                raw = self.settings.parts[part]['raw_text']
             ))
-
         print("INFO: END Generate raw MQL output from EMDROS")
 
-# TASK RAW (generate mql export queries)
-#
-# Every part (monad, section, lingo) consists of a selection of object types and feature names.
-# This function generates the mql query that extracts exactly the objects of those types, and 
-# retrieves their features in so far as they belong to this part
-
     def make_query_file(self, part):
-        ''' Generate an emdros query file to extract the raw data for part from the emdros database.
-        '''
-        template = '''
-GET OBJECTS HAVING MONADS IN ALL
-	[{object} GET
-    	{features}
-	]
-GO
-'''
+        template = 'GET OBJECTS HAVING MONADS IN ALL\n[{object} GET {features}]\nGO\n'
         query_text = ''
         for object_type in self.object_list_part(part):
             copy = template.format(
                 object = object_type,
-                features = ",\n\t\t".join(self.feature_list_part(part, object_type)),
+                features = ",\n\t\t".join(self._feature_list_part(part, object_type)),
             )
             query_text += copy
-
-        file_handle = codecs.open(self.cfg.parts[part]['query_file'], "w", encoding = 'utf-8')
+        file_handle = codecs.open(self.settings.parts[part]['query_file'], "w", encoding = 'utf-8')
         file_handle.write(query_text)
         file_handle.close()
 
-
+    def part_list(self): return sorted(self.part_info.keys())
+    def subpart_list(self, part): return sorted(self.part_info[part].keys())
+#    def object_list_all(self): return sorted(self.object_info.keys())
+    def object_list_part(self, part): return sorted(self.part_object[part])
+    def the_subpart(self, part, object_type): return self.object_subpart[part][object_type]
+    def object_list(self, part, subpart): return sorted(self.part_info[part][subpart].keys())
+    def feature_list(self, object_type): return sorted(self.feature_info[object_type].keys())
+    def _feature_list_part(self, part, object_type):
+        return sorted(x for x in self.part_feature[part][object_type] if x not in self.settings.annotation_skip)
+    def feature_list_subpart(self, part, subpart, object_type):
+        return sorted(x for x in self.part_info[part][subpart][object_type] if x not in self.settings.annotation_skip)
+    def value_list(self, object_type, feature_name): return sorted(self.value_info[object_type][feature_name].keys())
+    def object_atts(self, object_type): return self.object_info[object_type]
+    def feature_atts(self, object_type, feature_name): return self.feature_info[object_type][feature_name]
+    def value_atts(self, object_type, feature_name, feature_value): return self.value_info[object_type][feature_name][feature_value]
+    def list_ref_noskip(self): return sorted(x for x in self.reference_feature if self.reference_feature[x])
+    def is_ref_skip(self, feature_name): return feature_name in self.reference_feature and not self.reference_feature[feature_name]
+    def raw_file(self, part): return self.settings.parts[part]['raw_text']

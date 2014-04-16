@@ -6,6 +6,12 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.2.1
+=====
+Small fixes in *emdros2laf*.
+
+Past
+====
 4.2
 -----
 LAF Usability
@@ -251,8 +257,6 @@ This distribution only contains example tasks and notebooks.
 The real stuff can be found in the `ETCBC repository <https://github.com/ETCBC/laf-fabric-nbs>`_
 and in a `study repo <https://github.com/ETCBC/study>`_ maintained by Judith Gottschalk.
 
-Past
-====
 3.3.6
 -----
 Usability

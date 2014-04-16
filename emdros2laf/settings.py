@@ -8,25 +8,21 @@ import configparser
 import argparse
 
 VERSION = '4.2.0'
-APIREF = 'http://laf-fabric.readthedocs.org/texts/ETCBC2LAF-reference.html'
-MAIN_CFG = 'laf-fabric.cfg'
+APIREF = 'http://laf-fabric.readthedocs.org/texts/EMDROS2LAF-reference.html'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 ALL_PARTS = ['monad', 'section', 'lingo']
 
-class Config:
+class Settings:
     ''' Stores configuration information from the main configuration file and the command line.
         
         Defines an extra function in order to get the items in a section as a dictionary,
         without getting the DEFAULT items as wel
-
     '''
-
     _myconfig = {
         'version':          VERSION,
         'ISOcatprefix':     'http://www.isocat.org/datcat/DC-',
         'DANSpidprefix':    'http://persistent-identifier/?identifier=',
     }
-
     _env_def = {
         'version':          '{version}',
         'template_dir':     '{script_dir}/templates',
@@ -49,7 +45,6 @@ class Config:
         'decl_dst_dir':     '{work_dir}/{source}/decl',
 
     }
-
     _laf_templates = {
         'feature_decl':     ('feature_decl.xml', False),
         'feature':          ('feature.xml', True),
@@ -73,12 +68,10 @@ class Config:
         'primary_hdr':      ('primary_header.xml', False),
         'dependency':       ('dependency.xml', True),
     }
-
     _laf = {
         'resource_header':  'requires',
         'annotation_header':'dependsOn',
     }
-
     _xml = {
         'xmllint_cmd':           'xmllint --noout --nonet --stream --schema {{schema}} {{xmlfile}}',
         'xmllint_cat_env_var':   'XML_CATALOG_FILES',
@@ -100,13 +93,11 @@ class Config:
         'dcr_src':               '{xml_dir}/dcr.xsd',
         'dcr_dst':               '{decl_dst_dir}/dcr.xsd',
     }
-
     _meta = {
         'publicationdate':       '{publicationdate}',
         'danspid_urn':           '{danspid_urn}',
         'danspid_act':           '{DANSpidprefix}{danspid_urn}',
     }
-
     _parts = {
         'monad': {
             'query_file':            '{query_dst_dir}/monad.mql',
@@ -127,9 +118,9 @@ class Config:
             'query_file':            '{query_dst_dir}/lingo.mql',
             'raw_text':              '{raw_emdros_dir}/lingo.txt',
             'separate_node_file':    '',
+            'no_monad_nodes':        '',
         },
     }
-
     _annotation_kind = {
         'monad':                    'minimal objects&text&',
         'section':                  'section objects&text&',
@@ -139,29 +130,22 @@ class Config:
         'sft':                      'sectional features&fsDecl&decl/sft.xml',
         'db':                       'database features&fsDecl&decl/db.xml',
     }
-
     _annotation_regions = {
         'name':     'region',
         'word':     'w',
         'punct':    'p',
         'section':  's',
     }
-
     _annotation_skip_object = {
         'lingo':    'word',
     }
-
-    _annotation_skip = {
-        'self': '',
-    }
-
+    annotation_skip = set(('self',))
     _annotation_label = {
         'section_label':    'sft',
         'lingo_label':      'ft',
         'monad_label':      'ft',
         'db_label':         'db',
     }
-
     _type_mapping = {
         'string':   'string',
         'ascii':    'string',
@@ -170,16 +154,11 @@ class Config:
         'boolean':  'binary',
         'reference':'string',
     }
-
     _type_boolean = {
         't':    'false',
         'f':    'true',
     }
-
-    _laf_switches = {
-        'comment_local_deps':   '',
-    }
-
+    laf_switches = set(('comment_local_deps',))
     _file_types = collections.OrderedDict((
         ('f.hdr',            '.hdr&xml'),
         ('f.primary.hdr',    '.text.hdr&xml'),
@@ -192,9 +171,9 @@ class Config:
         ('f_lingo.*',        '_lingo.{{subpart}}.xml&xml&{{referencefeatures}} ft&f_lingo'),
     ))
 
+    def flag(self, name): return getattr(self.args, name)
+
     def __init__(self):
-        ''' Reads the command line
-        '''
         print('This is ETCBC2LAF {}\n{}'.format(VERSION, APIREF))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -205,12 +184,7 @@ class Config:
         self._myconfig['home_dir'] = home_dir
         self._myconfig['script_dir'] = script_dir
 
-# COMMAND LINE PARSING
-# using the standard module argsparser
-
-# Read the command line arguments
         argsparser = argparse.ArgumentParser(description = 'Conversion of Emdros to LAF')
-
         argsparser.add_argument(
             '--source',
             nargs = 1,
@@ -232,13 +206,11 @@ class Config:
             action = "store_true",
             help = "retrieve raw data from Emdros",
         )
-
         argsparser.add_argument(
             "--validate",
             action = "store_true",
             help = "validate genrated xml files against their schemas",
         )
-
         argsparser.add_argument(
             "--fdecls-only",
             dest = 'fdecls_only',
@@ -246,7 +218,6 @@ class Config:
             action = "store_true",
             help = "only generate feature declaration file, nothing else",
         )
-
         argsparser.add_argument(
             "--limit",
             dest = 'limit',
@@ -254,26 +225,18 @@ class Config:
             metavar = 'Limit',
             help = "limit to the first N monads",
         )
-
         self.args = argsparser.parse_args()
-
-# Interpret the command line arguments
         self.given_parts = collections.OrderedDict()
         for arg in self.args.parts:
             if arg == 'none' or self.args.fdecls_only:
                 for a in ALL_PARTS:
-                    if a in self.given_parts:
-                        del self.given_parts[a]
+                    if a in self.given_parts: del self.given_parts[a]
             elif arg == 'all':
-                for a in ALL_PARTS:
-                    self.given_parts[a] = True
-            else:
-                self.given_parts[arg] = True
-
+                for a in ALL_PARTS: self.given_parts[a] = True
+            else: self.given_parts[arg] = True
         source = self.args.source[0]
-        self.env = {}
 
-        for e in self._env_def: self.env[e] = self._env_def[e].format(source=source, **self._myconfig)
+        self.env = dict((e, v.format(source=source, **self._myconfig)) for (e,v) in self._env_def.items())
         self._myconfig.update(self.env)
         with open(self.env['meta_info'], "r", encoding="utf-8") as f: strings.read_file(f)
         if 'meta' in strings:
@@ -289,17 +252,7 @@ class Config:
         self.annotation_kind = dict((e, v.format(**self._myconfig)) for (e,v) in self._annotation_kind.items())
         self.annotation_regions = dict((e, v.format(**self._myconfig)) for (e,v) in self._annotation_regions.items())
         self.annotation_skip_object = dict((e, v.format(**self._myconfig)) for (e,v) in self._annotation_skip_object.items())
-        self.annotation_skip = dict((e, v.format(**self._myconfig)) for (e,v) in self._annotation_skip.items())
         self.annotation_label = dict((e, v.format(**self._myconfig)) for (e,v) in self._annotation_label.items())
         self.type_mapping = dict((e, v.format(**self._myconfig)) for (e,v) in self._type_mapping.items())
         self.type_boolean = dict((e, v.format(**self._myconfig)) for (e,v) in self._type_boolean.items())
-        self.laf_switches = dict((e, v.format(**self._myconfig)) for (e,v) in self._laf_switches.items())
         self.file_types = collections.OrderedDict((e, v.format(**self._myconfig)) for (e,v) in self._file_types.items())
-
-# setup the environment
-
-    def flag(self, name):
-        ''' get the value of a command line flag
-        '''
-        return getattr(self.args, name)
-

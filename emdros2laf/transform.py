@@ -1,5 +1,4 @@
 import sys
-import codecs
 import re
 import collections
 
@@ -106,18 +105,23 @@ class Transform:
         if do_primary:
             primary_handle = self.lf.primary_handle
             region_handle = self.lf.file_handles[self.settings.annotation_regions['name']][0]
+            primary_feature = self.settings.meta['primary']
         if separate_node_file: plain_handle = self.lf.file_handles[''][0]
 # create or use the monad char index if needed
         if make_index: index_handle = open(index_path, 'w')
         if use_index:
+            gminmonad = None
+            gmaxmonad = None
             index_handle = open(index_path, 'r')
             for line in index_handle:
-                fields = line.rstrip("\n").split("\t")
-                monad_chars[fields[0]] = fields[1:]
+                (m, start, end_word, end_suffix) = line.rstrip("\n").split("\t")
+                monad_chars[m] = (start, end_word, end_suffix)
+                if gminmonad == None or int(m) < int(gminmonad): gminmonad = m
+                if gmaxmonad == None or int(m) > int(gmaxmonad): gmaxmonad = m
             index_handle.close()
-            print("INFO: Monad-char index has {} items".format(len(monad_chars)))
+            print("INFO: Monad-char index has {} items, from monad {} to monad {}".format(len(monad_chars), gminmonad, gmaxmonad))
 # open the input file with raw data
-        file_handle = codecs.open(self.et.raw_file(part), encoding = 'utf-8')
+        file_handle = open(self.et.raw_file(part), encoding = 'utf-8')
 # initialize some counters
         n_line = 0          # number of current line in input file
         n_unmatched = 0     # number of illegal lines in input file that has been encountered
@@ -230,9 +234,15 @@ class Transform:
 # What needs to come out of that function is a word, possible punctuation behind it,
 # an indication of the spacing, and some other characters that must be appended
             if do_primary:
-                text, suffix = primary_data(feature_dict['text'], feature_dict['suffix'])
-                feature_dict['text'] = text
-                feature_dict['suffix'] = suffix
+                if primary_feature:
+                    text_xml = feature_dict[primary_feature]
+                    suffix_xml = ' '
+                else:
+                    text_xml, suffix_xml = primary_data(feature_dict['text'], feature_dict['suffix'])
+                    feature_dict['text'] = text_xml
+                    feature_dict['suffix'] = suffix_xml
+                text = text_xml.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
+                suffix = suffix_xml.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
 # Construct PRIMARY DATA
 # Now we build up the primary data file and the regions file
 # We have to keep count of the char position of the data in the primary data file
@@ -315,12 +325,12 @@ class Transform:
                     maxchar = 0
                     minmonad = str(min(regions))
                     if minmonad not in monad_chars:
-                        print("ERROR: line {}: monad {} not in monad_char index".format(n_line, minmonad))
-                        continue
+                        print("WARNING: line {}: min monad {} not in monad_char index, taking monad {} instead.".format(n_line, minmonad, gminmonad))
+                        minmonad = gminmonad
                     minchar = monad_chars[minmonad][0]
                     if maxmonad not in monad_chars:
-                        print("ERROR: line {}: monad {} not in monad_char index".format(n_line, maxmonad))
-                        continue
+                        print("WARNING: line {}: max monad {} not in monad_char index, taking monad {} instead.".format(n_line, maxmonad, gmaxmonad))
+                        maxmonad = gmaxmonad
                     maxchar = monad_chars[maxmonad][2]
                     r_id = "{}_{}".format(region_section, object_id)
                     r_data = region_elem.format(xmlid = r_id, start = minchar, end = maxchar)
@@ -370,7 +380,9 @@ class Transform:
                 if has_real_features:
                     a_data = annotation_elem.format(part = part[0], xmlid = n_af, akind = annotation_label, objectid = object_id, features = f_data)
                     n_a += 1
-                sub_handles[subpart][0].write(r_data + n_data + a_data + e_data + "\n")
+                outline = r_data + n_data + a_data + e_data
+                if outline:
+                    sub_handles[subpart][0].write(outline + "\n")
                 stats[object_type][subpart] += 1
                 statskind[subpart] += 1
 #####################################################

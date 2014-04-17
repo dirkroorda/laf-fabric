@@ -2,7 +2,8 @@ import os
 import configparser
 from .timestamp import Timestamp
 
-VERSION = '4.2.1'
+NAME = 'LAF-Fabric'
+VERSION = '4.2.2'
 APIREF = 'http://laf-fabric.readthedocs.org/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
@@ -57,7 +58,7 @@ class Settings(object):
     def __init__(self, work_dir, laf_dir, save, verbose):
         stamp = Timestamp(verbose=verbose)
         self.stamp = stamp
-        stamp.Nmsg('This is LAF-Fabric {}\n{}'.format(VERSION, APIREF))
+        stamp.Nmsg('This is {} {}\n{}'.format(NAME, VERSION, APIREF))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         cw_dir = os.getcwd()
         home_dir = os.path.expanduser('~')

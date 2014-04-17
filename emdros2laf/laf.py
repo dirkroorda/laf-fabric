@@ -158,7 +158,8 @@ class Laf:
             self.template[tpl] = ("\n" + template.rstrip("\n")) if  nl_before else template
         
     def makeheaders(self):
-        self.makefeatureheader()
+        if not self.et.simple:
+            self.makefeatureheader()
         if not self.settings.args.fdecls_only:
             self.makeresourceheader()
             self.makeprimaryheader()
@@ -166,9 +167,10 @@ class Laf:
     def makefeatureheader(self):
         f_text = collections.defaultdict(lambda: '')
         f_index = 0
-        iso_prefix = self.settings.env['ISOcatprefix']
+        iso_prefix = self.settings.meta['ISOcatprefix']
         truth_values = sorted(self.settings.type_boolean.values())
         db_label = self.settings.annotation_label['db_label']
+        meta = self.settings.meta
         for db_feature in (
             ('monads', 'monads', 'integer', 'the monads that belong to this object'),
             ('minmonad', 'minmonad', 'integer', 'the first monad of this object'),
@@ -180,33 +182,20 @@ class Laf:
             f_index += 1
             (fs_type, fs_type_atts) = fillup(2, '', self.settings.type_mapping[ftype].split('&'))
             if fs_type_atts != '': fs_type_atts = ' ' + fs_type_atts
-            fv_text = self.template['feature_basic'].format(
-                valtype = fs_type,
-                atts = fs_type_atts,
-            )
-            f_text[db_label] += self.template['feature_local'].format(
-                i = f_index,
-                name = fname,
-                isoname = longfname,
-                isodescr = 'database value:' + descr,
-                values = fv_text,
+            fv_text = self.template['feature_basic'].format(valtype = fs_type, atts = fs_type_atts, **meta)
+            f_text[db_label] += self.template['feature_local'].format(i = f_index, name = fname, isoname = longfname, isodescr = 'database value:' + descr,
+                values = fv_text, **meta
             )
         for part in self.et.part_list():
             for object_type in self.et.object_list_part(part):
                 object_kind = self.settings.annotation_label[part + '_label']
                 f_index += 1
                 isocat_key, isocat_name = self.et.object_atts(object_type)
-                fv_text = self.template['feature_basic'].format(
-                    valtype = 'string',
-                    atts = '',
-                )
-                f_text[object_kind] += self.template['feature'].format(
-                    i = f_index,
-                    name = object_type,
+                fv_text = self.template['feature_basic'].format(valtype = 'string', atts = '', **meta)
+                f_text[object_kind] += self.template['feature'].format(i = f_index, name = object_type,
                     isoname = camel(isocat_name) if isocat_name != '' else object_type + '_object',
-                    isolink = iso_prefix + isocat_key,
-                    isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
-                    values = fv_text,
+                    isolink = iso_prefix + isocat_key, isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
+                    values = fv_text, **meta
                 )
                 for feature_name in self.et.feature_list(object_type):
                     defined_on, etcbc_type, isocat_key, isocat_name = self.et.feature_atts(object_type, feature_name)
@@ -221,43 +210,28 @@ class Laf:
                         fv1_text = ''
                         for feature_value in value_list:
                             v_etcbc_type, v_isocat_key, v_isocat_name = self.et.value_atts(object_type, feature_name, feature_value)
-                            fv1_text += self.template['feature_val1'].format(
-                                valtype = 'symbol',
-                                name = feature_value,
+                            fv1_text += self.template['feature_val1'].format(valtype = 'symbol', name = feature_value,
                                 value = camel(v_isocat_name) if v_isocat_name != '' else feature_value,
-                                isolink = iso_prefix + v_isocat_key,
+                                isolink = iso_prefix + v_isocat_key, **meta
                             )
-                        fv_text = self.template['feature_val'].format(
-                            values = fv1_text,
-                        )
+                        fv_text = self.template['feature_val'].format(values = fv1_text, **meta)
                     if fs_type != 'symbol':
                         if fs_type == 'binary':
                             fv1_text = ''
                             for feature_value in truth_values:
                                 fv1_text += "\n\t\t\t\t" + '<{} value="{}"/>'.format(fs_type, feature_value)
-                            fv_text = self.template['feature_val'].format(
-                                values = fv1_text,
-                            )
+                            fv_text = self.template['feature_val'].format(values = fv1_text, **meta)
                         else:
-                            fv_text = self.template['feature_basic'].format(
-                                valtype = fs_type,
-                                atts = fs_type_atts,
-                            )
-                    f_text[object_kind] += self.template['feature'].format(
-                        i = f_index,
-                        name = feature_name,
+                            fv_text = self.template['feature_basic'].format(valtype = fs_type, atts = fs_type_atts, **meta)
+                    f_text[object_kind] += self.template['feature'].format(i = f_index, name = feature_name,
                         isoname = camel(isocat_name) if isocat_name != '' else feature_name,
-                        isolink = iso_prefix + isocat_key,
-                        isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
-                        values = fv_text,
+                        isolink = iso_prefix + isocat_key, isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
+                        values = fv_text, **meta
                     )
         for feature_type in f_text:
             absolute_path = "{}/{}.xml".format(self.settings.env['decl_dst_dir'], feature_type)
             file_handle = open(absolute_path, "w", encoding = 'utf-8')
-            text = self.template['feature_decl'].format(
-                kind = feature_type,
-                features = f_text[feature_type],
-            )
+            text = self.template['feature_decl'].format(kind = feature_type, features = f_text[feature_type], **meta)
             file_handle.write(text) 
             file_handle.close()
             self.val.add(absolute_path, self.settings.xml['tei_fs_dst'])
@@ -268,16 +242,13 @@ class Laf:
 # generate the variable parts: the list of filetypes, the specification of file types
         filetypes_decl = ''
         annotation_decls = ''
+        meta = self.settings.meta
         for part in sorted(self.annotation_files):
             for subpart in sorted(self.annotation_files[part]):
                 ftype, medium, location, requires, annotations, is_region = self.annotation_files[part][subpart]
                 dependencies = ''
                 for dep in requires:
-                    dependencies += self.template['dependency'].format(
-                        indent = "\t\t",
-                        elementname = self.settings.laf['resource_header'],
-                        fileid = dep,
-                    )
+                    dependencies += self.template['dependency'].format(indent = "\t\t", elementname = self.settings.laf['resource_header'], fileid = dep, **meta)
                 requirestxt = "/>"
                 if requires:
                     requirestxt = ">" + dependencies + "\n\t\t\t\t</fileType>"
@@ -308,22 +279,9 @@ class Laf:
             for item in items:
                 schema = danspid
                 if schematype == 'fsDecl': schema = '{}/{}'.format(danspid, schemaloc)
-                annotation_decls += self.template['annotation_decl'].format(
-                    name = item,
-                    kind = descr,
-                    danspid_act = danspid,
-                    schema = schema,
-                    schematype = schematype,
-                )
-        text = self.template['resource_hdr'].format(
-            createdate = today(),
-            hebrew_version = self.settings.env['source'],
-            nmonads = self.stats['nmonads'],
-            publicationdate = self.settings.meta['publicationdate'],
-            danspid = danspid,
-            filetypeslist = filetypes_list,
-            filetypesdecl = filetypes_decl,
-            annotationdecls = annotation_decls
+                annotation_decls += self.template['annotation_decl'].format(name = item, kind = descr, schema = schema, schematype = schematype, **meta)
+        text = self.template['resource_hdr'].format(createdate = today(), nmonads = self.stats['nmonads'],
+            filetypeslist = filetypes_list, filetypesdecl = filetypes_decl, annotationdecls = annotation_decls, **meta
         )
         file_handle.write(text)
         file_handle.close()
@@ -333,27 +291,17 @@ class Laf:
         absolute_path = self.settings.env['primary_hdr_txt']
         file_handle = open(absolute_path, "w", encoding = 'utf-8')
         danspid = self.settings.meta['danspid_act']
-        hebrew_version = self.settings.env['source']
         annotation_item_dict = {} 
+        meta = self.settings.meta
         for part in sorted(self.annotation_files):
             if part == '': continue
             for subpart in sorted(self.annotation_files[part]):
                 ftype, medium, location, requires, annotations, is_region = self.annotation_files[part][subpart]
-                annotation_item_dict[ftype] = self.template['annotation_item'].format(
-                    id = ftype,
-                    loc = hebrew_version + location,
-                )
+                annotation_item_dict[ftype] = self.template['annotation_item'].format(id = ftype, loc = location, **meta)
         annotation_items = ''
         for ftype in self.file_order:
             if ftype in annotation_item_dict: annotation_items += annotation_item_dict[ftype]
-        text = self.template['primary_hdr'].format(
-            createdate = today(),
-            version = self.settings.env['version'],
-            hebrew_version = hebrew_version,
-            charsize = self.stats['charsize'],
-            danspid = danspid,
-            annotationitems = annotation_items
-        )
+        text = self.template['primary_hdr'].format(createdate = today(), charsize = self.stats['charsize'], annotationitems = annotation_items, **meta)
         file_handle.write(text)
         file_handle.close()
         self.val.add(absolute_path, self.settings.xml['graf_document_dst'])
@@ -361,33 +309,23 @@ class Laf:
     def start_annot(self, part):
         print("INFO: Generating annotation files for {}".format(part))
         self.file_handles = {}
+        meta = self.settings.meta
         for subpart in self.annotation_files[part]:
             (ftype, medium, location, requires, annotations, is_region) = self.annotation_files[part][subpart]
             absolute_path = "{}{}".format(self.settings.env['annot_hdr'], location)
             annotation_labels = ''
             for annot in annotations:
-                annotation_labels += self.template['annotation_label'].format(
-                    annot = annot,
-                )
+                annotation_labels += self.template['annotation_label'].format(annot = annot, **meta)
             dependencies = ''
             for dep in requires:
-                dependencies += self.template['dependency'].format(
-                    indent = "",
-                    elementname = self.settings.laf['annotation_header'],
-                    fileid = dep,
-                )
+                dependencies += self.template['dependency'].format(indent = "", elementname = self.settings.laf['annotation_header'], fileid = dep, **meta)
             if dependencies and 'comment_local_deps' in self.settings.laf_switches:
                 dependencies = "<!--" + dependencies + "-->"
             annotation_header = ''
             if is_region:
-                annotation_header = self.template['region_hdr'].format(
-                    dependencies = dependencies,
-                )
+                annotation_header = self.template['region_hdr'].format(dependencies = dependencies, **meta)
             else:
-                annotation_header = self.template['annotation_hdr'].format(
-                    labels = annotation_labels,
-                    dependencies = dependencies,
-                )
+                annotation_header = self.template['annotation_hdr'].format(labels = annotation_labels, dependencies = dependencies, **meta)
             file_handle = open(absolute_path, "w", encoding = 'utf-8')
             file_handle.write(annotation_header)
             file_handle.close()
@@ -400,9 +338,10 @@ class Laf:
         self.primary_handle = open(absolute_path, "w", encoding = 'utf-8')
 
     def finish_annot(self, part):
+        meta = self.settings.meta
         for subpart in self.file_handles:
             file_handle, absolute_path, length, annotations = self.file_handles[subpart]
-            file_handle.write(self.template['annotation_ftr'])
+            file_handle.write(self.template['annotation_ftr'].format(**meta))
             file_handle.close
             file_handle = open(absolute_path, "r+")
             header = file_handle.read(length)

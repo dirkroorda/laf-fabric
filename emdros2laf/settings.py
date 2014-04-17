@@ -1,12 +1,12 @@
 import os
 import sys
-import codecs
 import collections
 import glob
 
 import configparser
 import argparse
 
+NAME = 'LAF-Fabric'
 VERSION = '4.2.0'
 APIREF = 'http://laf-fabric.readthedocs.org/texts/EMDROS2LAF-reference.html'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
@@ -19,20 +19,18 @@ class Settings:
         without getting the DEFAULT items as wel
     '''
     _myconfig = {
-        'version':          VERSION,
-        'ISOcatprefix':     'http://www.isocat.org/datcat/DC-',
-        'DANSpidprefix':    'http://persistent-identifier/?identifier=',
+        'my_name':           NAME,
+        'version':           VERSION,
     }
     _env_def = {
+        'my_name':          '{my_name}',
         'version':          '{version}',
         'template_dir':     '{script_dir}/templates',
         'xml_dir':          '{script_dir}/xml',
-        'ISOcatprefix':     '{ISOcatprefix}',
-        'DANSpidprefix':    '{DANSpidprefix}',
-        'feature_info':     '{feature_info}',
         'source':           '{source}',
         'meta_info':        '{work_dir}/{source}/config/main.cfg',
         'feature_info':     '{work_dir}/{source}/config/ObjectsFeaturesValues.txt',
+        'object_info':      '{work_dir}/{source}/config/Objects.txt',
         'raw_emdros_dir':   '{work_dir}/{source}/raw',
         'source_data':      '{work_dir}/{source}/mql/{source}',
         'query_dst_dir':    '{work_dir}/{source}/mql',
@@ -44,6 +42,25 @@ class Settings:
         'monad_index':      '{work_dir}/{source}/laf/{source}.lst',
         'decl_dst_dir':     '{work_dir}/{source}/decl',
 
+    }
+    _metaconfig = {
+        'my_name':           NAME,
+        'version':           VERSION,
+        'ISOcatprefix':     'http://www.isocat.org/datcat/DC-',
+        'DANSpidprefix':    'http://persistent-identifier/?identifier=',
+    }
+    _meta_def = {
+        'my_name':          '{my_name}',
+        'version':          '{version}',
+        'source':           '{source}',
+        'ISOcatprefix':     '{ISOcatprefix}',
+        'DANSpidprefix':    '{DANSpidprefix}',
+        'danspid_act':      '{DANSpidprefix}{danspid_urn}',
+        'publicationdate':  '{publicationdate}',
+        'danspid_urn':      '{danspid_urn}',
+        'annot_method':     'conversion script {my_name} {version}',
+        'annot_resp':       '{annot_resp}',
+        'primary':          '{primary}',
     }
     _laf_templates = {
         'feature_decl':     ('feature_decl.xml', False),
@@ -93,14 +110,8 @@ class Settings:
         'dcr_src':               '{xml_dir}/dcr.xsd',
         'dcr_dst':               '{decl_dst_dir}/dcr.xsd',
     }
-    _meta = {
-        'publicationdate':       '{publicationdate}',
-        'danspid_urn':           '{danspid_urn}',
-        'danspid_act':           '{DANSpidprefix}{danspid_urn}',
-    }
     _parts = {
         'monad': {
-            'query_file':            '{query_dst_dir}/monad.mql',
             'raw_text':              '{raw_emdros_dir}/monad.txt',
             'object_type':           'word',
             'make_index':            '',
@@ -108,14 +119,12 @@ class Settings:
             'separate_node_file':    '',
         },
         'section': {
-            'query_file':            '{query_dst_dir}/section.mql',
             'raw_text':              '{raw_emdros_dir}/section.txt',
             'use_index':             '',
             'find_embedding':        '',
             'hierarchy':             'book chapter verse half_verse',
         },
         'lingo': {
-            'query_file':            '{query_dst_dir}/lingo.mql',
             'raw_text':              '{raw_emdros_dir}/lingo.txt',
             'separate_node_file':    '',
             'no_monad_nodes':        '',
@@ -174,7 +183,7 @@ class Settings:
     def flag(self, name): return getattr(self.args, name)
 
     def __init__(self):
-        print('This is ETCBC2LAF {}\n{}'.format(VERSION, APIREF))
+        print('This is {} {}\n{}'.format(NAME, VERSION, APIREF))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         script_dir = os.path.dirname(os.path.abspath(__file__))
         home_dir = os.path.expanduser('~')
@@ -237,11 +246,10 @@ class Settings:
         source = self.args.source[0]
 
         self.env = dict((e, v.format(source=source, **self._myconfig)) for (e,v) in self._env_def.items())
-        self._myconfig.update(self.env)
         with open(self.env['meta_info'], "r", encoding="utf-8") as f: strings.read_file(f)
-        if 'meta' in strings:
-            self._myconfig.update(dict((e, v.format(**self._myconfig)) for (e,v) in strings['meta'].items()))
-        self.meta = dict((e, v.format(**self._myconfig)) for (e,v) in self._meta.items())
+        self._metaconfig.update(strings['meta'] if 'meta' in strings else {})
+        self.meta = dict((e, v.format(source=source, **self._metaconfig)) for (e,v) in self._meta_def.items())
+        self._myconfig.update(self.env)
         self.laf_templates = dict((e, (v[0].format(**self._myconfig), v[1])) for (e,v) in self._laf_templates.items()) 
         self.laf = dict((e, v.format(**self._myconfig)) for (e,v) in self._laf.items())
         self.xml = dict((e, v.format(**self._myconfig)) for (e,v) in self._xml.items())

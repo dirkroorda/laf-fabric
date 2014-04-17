@@ -1,1 +1,1 @@
-		<annotation f.id="{id}" loc="{loc}"/>
+		<annotation f.id="{id}" loc="{source}{loc}"/>

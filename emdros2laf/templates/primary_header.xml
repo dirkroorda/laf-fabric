@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<documentHeader xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/" docId="{danspid}" creator="SHEBANQ" date.created="{createdate}" version="{version}">
+<documentHeader xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/" docId="{danspid_act}" creator="SHEBANQ" date.created="{createdate}" version="{version}">
   <fileDesc>
     <titleStmt>
       <title>Hebrew Text Database (WIVU)</title>
@@ -14,7 +14,7 @@
     </sourceDesc>
   </fileDesc>
   <profileDesc>
-    <primaryData f.id="f.primary" loc="{hebrew_version}.txt"/>
+    <primaryData f.id="f.primary" loc="{source}.txt"/>
 	<langUsage>
 		<language iso639="hbo"/> <!-- ancient hebrew http://www-01.sil.org/iso639-3/documentation.asp?id=hbo -->
 		<language iso639="arc"/> <!-- aramaic http://www-01.sil.org/iso639-3/documentation.asp?id=arc -->

@@ -18,12 +18,7 @@ class LafData(object):
         self.log = None
         self.data_items = {}
 
-    def adjust_all(self, source, annox, task, req_items, add, force):
-        '''Load manager.
-
-        Load and clear data so that the current task has all it needs and no more.
-        Compile outdated binary data just before loading.
-        '''
+    def prepare_dirs(self, annox):
         env = self.names.env
         try:
             if not os.path.exists(env['m_compiled_dir']): os.makedirs(env['m_compiled_dir'])
@@ -38,9 +33,10 @@ class LafData(object):
             if not os.path.exists(env['task_dir']): os.makedirs(env['task_dir'])
         except os.error as e:
             raise FabricError("could not create result directory {}".format(env['task_dir']), self.stamp, cause=e)
-        self._compile_all(force)
-        self._load_all(req_items, add)
-        self._add_logfile()
+
+    def adjust_all(self, annox, req_items, add, force):
+        '''Load manager.
+        '''
 
     def finish_task(self, show=True):
         '''Close all open files that have been opened by the API'''
@@ -71,7 +67,7 @@ class LafData(object):
         try: self.log.flush()
         except: pass
 
-    def _add_logfile(self, compile=None):
+    def add_logfile(self, compile=None):
         env = self.names.env
         log_dir = env['task_dir'] if compile == None else env["{}_compiled_dir".format(compile)]
         log_path = env['log_path'] if compile == None else env["{}_compiled_path".format(compile)]
@@ -84,7 +80,7 @@ class LafData(object):
         self.stamp.connect_log(self.log)
         self.stamp.Nmsg("LOGFILE={}".format(log_path))
 
-    def _compile_all(self, force):
+    def compile_all(self, force):
         env = self.names.env
         compile_uptodate = {}
         compile_uptodate['m'] = not os.path.exists(env['m_source_path']) or (
@@ -129,7 +125,7 @@ class LafData(object):
         env = self.names.env
         the_log_file = env['compiled_file']
         the_log_dir = env['{}_compiled_dir'.format(origin)]
-        self._add_logfile(compile=origin)
+        self.add_logfile(compile=origin)
         self._parse(origin)
         self._model(origin)
         self._store_origin(origin)
@@ -151,7 +147,7 @@ class LafData(object):
         self.names.req_data_items = collections.OrderedDict()
         self.names._old_data_items = collections.OrderedDict()
 
-    def _load_all(self, req_items, add):
+    def load_all(self, req_items, add):
         dkeys = self.names.request_files(req_items)
         self.loadspec = dkeys
         for dkey in dkeys['keep']: self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 

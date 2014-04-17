@@ -1,5 +1,4 @@
 import sys
-import codecs
 
 from .mylib import *
 from .settings import Settings

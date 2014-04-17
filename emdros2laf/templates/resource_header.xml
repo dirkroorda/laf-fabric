@@ -9,14 +9,14 @@
                 <resp lnk:href="http://www.godgeleerdheid.vu.nl/etcbc">Eep Talstra Centre for Bibleand Computing</resp>
             </respStmt>
         </titleStmt>
-        <editionStmt version="{hebrew_version}"/>
+        <editionStmt version="{source}"/>
         <extent count="{nmonads}" unit="words"/>
         <publicationStmt>
             <distributor>Eep Talstra Centre for Bible and Computing</distributor>
             <pubAddress>Faculty of Theology, VU University, Amsterdam</pubAddress>
             <eAddress>w.t.van.peursen@vu.nl</eAddress>
             <pubDate value="{publicationdate}"/>
-            <availability lnk:href="{danspid}" status="free"/>
+            <availability lnk:href="{danspid_act}" status="free"/>
         </publicationStmt>
     </fileDesc>
     <encodingDesc>
@@ -42,7 +42,7 @@
             </fileTypes>
         </fileStruct>
         <annotationSpaces>
-            <annotationSpace xml:id="shebanq" pid="{danspid}"/>
+            <annotationSpace xml:id="shebanq" pid="{danspid_act}"/>
         </annotationSpaces>
         <annotationDecls>{annotationdecls}
         </annotationDecls>

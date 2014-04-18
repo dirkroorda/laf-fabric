@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<documentHeader xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/" docId="{danspid_act}" creator="SHEBANQ" date.created="{createdate}" version="{version}">
+<documentHeader
+    xmlns="http://www.xces.org/ns/GrAF/1.0/"
+    xmlns:graf="http://www.xces.org/ns/GrAF/1.0/"
+    docId="{danspid_act}"
+    creator="{prim_creator}"
+    date.created="{createdate}"
+    version="{version}"
+>
   <fileDesc>
     <titleStmt>
-      <title>Hebrew Text Database (WIVU)</title>
+      <title>{prim_title}</title>
     </titleStmt>
     <extent count="{charsize}" unit="char"/>
     <sourceDesc>
-      <title>Biblia Hebraica Stuttgartentis</title>
-      <author>tradition</author>
-      <publisher>Deutsche Bibelgesellschaft</publisher>
-      <pubDate value="1900-00-00">1900</pubDate>
-      <pubPlace>Germany</pubPlace>
+      <title>{prim_source_title}</title>
+      <author>{prim_source_author}</author>
+      <publisher>{prim_source_publisher}</publisher>
+      <pubDate value="{prim_source_date}">{prim_source_year}</pubDate>
+      <pubPlace>{prim_source_place}</pubPlace>
     </sourceDesc>
   </fileDesc>
   <profileDesc>
     <primaryData f.id="f.primary" loc="{source}.txt"/>
 	<langUsage>
-		<language iso639="hbo"/> <!-- ancient hebrew http://www-01.sil.org/iso639-3/documentation.asp?id=hbo -->
-		<language iso639="arc"/> <!-- aramaic http://www-01.sil.org/iso639-3/documentation.asp?id=arc -->
+{prim_languages}
 	</langUsage>
     <annotations>{annotationitems}
     </annotations>

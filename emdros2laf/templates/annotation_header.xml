@@ -6,6 +6,6 @@
         <dependencies>{dependencies}
         </dependencies>
         <annotationSpaces>
-            <annotationSpace   as.id="shebanq" default="yes"/>
+            <annotationSpace   as.id="{annot_space_def}" default="yes"/>
         </annotationSpaces>
     </graphHeader>

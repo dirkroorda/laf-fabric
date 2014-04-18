@@ -4,7 +4,7 @@ Getting Started
 About
 =====
 *LAF-Fabric* is a `github project <https://github.com/ETCBC/laf-fabric>`_
-in which there are Python packages called *laf and *etcbc*.
+in which there are Python packages called *laf* and *etcbc* and *emdros2laf*.
 You must install them as packages in your current python installation.
 This can be done in the standard pythonic way,
 and the precise instructions will be spelled out below.
@@ -79,7 +79,8 @@ Here are the steps, assuming you are in the command line, at the top level direc
     python setup.py install
 
 This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
-Hebrew Text Database: *etcbc*. It also installs *emdros2laf*, a conversion package from the source format of the ETCBC database (EMDROS) to LAF.
+Hebrew Text Database: *etcbc*.
+It also installs *emdros2laf*, a conversion package from the source format of the ETCBC database (EMDROS) to LAF.
 This package has been used to obtain the actual LAF version of the ETCBC database.
 
 .. note::

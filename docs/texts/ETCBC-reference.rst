@@ -9,6 +9,34 @@ They make available a better ordering of nodes, add more ways of querying the da
 
 Most of the functionality is demonstrated in dedicated notebooks. This text is only a rough overview.
 
+Transcription
+=============
+The ETCBC has a special way to transcribe Hebrew characters into latin characters.
+Sometimes it is handier to work with transcriptions, because some applications do not render texts with mixed writing directions well.
+
+In *etcbc.lib* there is a conversion tool. This is how it works::
+
+    from etcbc.lib import Transcription
+
+    tr = Transcription()
+
+    t = 'DAF DAC'
+    h = tr.hebrew(t)
+    tb = tr.trans(h)
+
+    print("{}\n{}\n{}".format(t, h, tb))
+
+``hebrew(word)`` maps from transcription to Hebrew characters, ``trans(word)`` does the opposite.
+
+There are some points to note:
+
+* if characters to be mapped are not in the domain of the mapping, they will be left unchanged.
+* there are two versions of the shin, each consists of two combined unicode characters.
+  Before applying the mappings, these characters will be combined into a single character.
+  After applying the mapping ``hebrew()``, these characters will be *always* decomposed.
+
+
+
 Node order
 ==========
 The module ``etcbc.preprocess`` takes care of preparing a table that codes the optimal node order for working with ETCBC data. 

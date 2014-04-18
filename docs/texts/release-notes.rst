@@ -6,6 +6,13 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.2.3
+=====
+In *emdros2laf* every source can now have its own metadata.
+In *etcbc* there is a workable definition between consonantal Hebrew characters and their ETCBC latin transcriptions.
+
+Past
+====
 4.2.2
 -----
 More fixes in *emdros2laf*, a new source, the *CALAP* has been converted to LAF.
@@ -13,9 +20,6 @@ LAF-Fabric has compiled it, and it is ready for exploration.
 See the example notebook
 `plain-calap <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/plain_calap.ipynb>`_.
 The CALAP is included in the data download (see :doc:`getting-started`).
-
-Past
-====
 4.2.1
 -----
 Small fixes in *emdros2laf*.

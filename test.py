@@ -1,17 +1,10 @@
-import sys
-import collections
+from etcbc.lib import Transcription
 
-from laf.fabric import LafFabric
-fabric = LafFabric()
+tr = Transcription()
 
-fabric.load('calap', '--', 'plain', {
-    "xmlids": {"node": False, "edge": False},
-    "features": ('''
-        otype
-        surface_consonants
-        psp
-        book chapter verse verse_label
-    ''',''),
-    "primary": True,
-})
-exec(fabric.localnames.format(var='fabric'))
+t = 'DAF DAC'
+h = tr.hebrew(t)
+tb = tr.trans(h)
+
+print("{}\n{}\n{}".format(t, h, tb))
+

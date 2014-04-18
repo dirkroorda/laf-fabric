@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resourceHeader xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:lnk="http://www.w3.org/1999/xlink"
-    version="1.0" creator="ETBC" date.created="{createdate}" type="text">
+<resourceHeader
+    xmlns="http://www.xces.org/ns/GrAF/1.0/"
+    xmlns:lnk="http://www.w3.org/1999/xlink"
+    version="1.0"
+    creator="{res_creator}"
+    date.created="{createdate}"
+    type="text"
+>
     <fileDesc>
         <titleStmt>
-            <title>Hebrew Text Database</title>
-            <funder>Eep Talstra Centre for Bible and Computing Faculty of Theology, VU University Amsterdam Netherlands; CLARIN-NL; Data Archiving and Networked Services</funder>
+            <title>{res_title}</title>
+            <funder>{res_funder}</funder>
             <respStmt>
-                <resp lnk:href="http://www.godgeleerdheid.vu.nl/etcbc">Eep Talstra Centre for Bibleand Computing</resp>
+                <resp lnk:href="{res_respons_link}">{res_respons_link}</resp>
             </respStmt>
         </titleStmt>
         <editionStmt version="{source}"/>
         <extent count="{nmonads}" unit="words"/>
         <publicationStmt>
-            <distributor>Eep Talstra Centre for Bible and Computing</distributor>
-            <pubAddress>Faculty of Theology, VU University, Amsterdam</pubAddress>
+            <distributor>{res_distributor}</distributor>
+            <pubAddress>{res_institute}</pubAddress>
             <eAddress>w.t.van.peursen@vu.nl</eAddress>
             <pubDate value="{publicationdate}"/>
             <availability lnk:href="{danspid_act}" status="free"/>
         </publicationStmt>
     </fileDesc>
     <encodingDesc>
-        <projectDesc>The Hebrew Text Database of the VU University Amsterdam is known as the WIVU database. It consists of the full text of the Biblia
-		Hebraica Stuttgartensia plus linguistic features from the morpheme level up to the sentence level. Text and features are stored in a special database (EMDROS) that supports the model of objects with features. The SHEBANQ project (2013-2014) has turned this database into a linked data resource, with the possibility of saving queries as annotations to the linked data version. SHEBANQ also converted the database into a LAF resource, to be archived at DANS.</projectDesc>
-        <samplingDecl>The plain full text of the Biblia Hebraica is stored in one file as UNICODE text in the utf8 encoding, using combining characters whereever possible. The text consists of {nmonads} words (prepositions that are attached to other words count as separate words). The text contains all the vocalization, pointing, cantillation and other punctuation that is present in the BHS.</samplingDecl>
+        <projectDesc>{res_project_desc}</projectDesc>
+        <samplingDecl>{res_sampling_desc}</samplingDecl>
         <editorialDecl>
-            <transduction>The text file has been generated from the EMDROS database. This database contains so called monad objects for each word. The various spellings of each word is available in the features of the associated monad object. This also holds for the punctuation. By applying a few simple rules it is possible to recreate the complete text of the BHS edition. The linguistic features are present as features on the monad objects and other objects corresponding to phrases, clauses and sentences. These features have been translated literally, with the understanding that values consisting of utf8 codes have been translated into real UNICODE characters in the utf8 encoding. The meaning of the features have been documented in the ISOcat metadata registry.</transduction>
-            <correction>No corrections have been applied.
-                </correction>
-            <segmentation>The primary text is divided into four kinds of regions: (i) regions that correspond to words; (ii) regions that correspond white space; (iii) regions that correspond to punctuatio; (iv) regions that correspond to sectioning objects such as books, chapters and verses. Linguistic objects refer to multiple regions: the regions of all words that belong to it. So linguistic objects do not refer to white space and punctuation. Sectioning objects refer to larger regions which contain whitespace and punctuation. Section regions overlap all other kinds of regions. All regions are specified by means of character positions in the utf8 primary data file.</segmentation>
+            <transduction>{res_transduction}</transduction>
+            <correction>{res_correction}</correction>
+            <segmentation>{res_segmentation}</segmentation>
         </editorialDecl>
     </encodingDesc>
     <resourceDesc>
@@ -42,7 +46,7 @@
             </fileTypes>
         </fileStruct>
         <annotationSpaces>
-            <annotationSpace xml:id="shebanq" pid="{danspid_act}"/>
+            <annotationSpace xml:id="{annot_space_def}" pid="{danspid_act}"/>
         </annotationSpaces>
         <annotationDecls>{annotationdecls}
         </annotationDecls>

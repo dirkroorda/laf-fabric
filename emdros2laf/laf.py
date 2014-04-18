@@ -280,9 +280,8 @@ class Laf:
                 schema = danspid
                 if schematype == 'fsDecl': schema = '{}/{}'.format(danspid, schemaloc)
                 annotation_decls += self.template['annotation_decl'].format(name = item, kind = descr, schema = schema, schematype = schematype, **meta)
-        text = self.template['resource_hdr'].format(createdate = today(), nmonads = self.stats['nmonads'],
-            filetypeslist = filetypes_list, filetypesdecl = filetypes_decl, annotationdecls = annotation_decls, **meta
-        )
+        text = self.template['resource_hdr'].format(createdate = today(), filetypeslist = filetypes_list, filetypesdecl = filetypes_decl,
+            annotationdecls = annotation_decls, nmonads = self.gstats['f Number of monads'], **meta).format(nmonads = self.gstats['f Number of monads'], **meta)
         file_handle.write(text)
         file_handle.close()
         self.val.add(absolute_path, self.settings.xml['graf_resource_dst'])

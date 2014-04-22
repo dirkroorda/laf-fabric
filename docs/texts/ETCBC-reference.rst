@@ -11,6 +11,8 @@ Most of the functionality is demonstrated in dedicated notebooks. This text is o
 
 Transcription
 =============
+Hebrew
+------
 The ETCBC has a special way to transcribe Hebrew characters into latin characters.
 Sometimes it is handier to work with transcriptions, because some applications do not render texts with mixed writing directions well.
 
@@ -21,12 +23,12 @@ In *etcbc.lib* there is a conversion tool. This is how it works::
     tr = Transcription()
 
     t = 'DAF DAC'
-    h = tr.hebrew(t)
-    tb = tr.trans(h)
+    h = tr.to_hebrew(t)
+    tb = tr.from_hebrew(h)
 
     print("{}\n{}\n{}".format(t, h, tb))
 
-``hebrew(word)`` maps from transcription to Hebrew characters, ``trans(word)`` does the opposite.
+``to_hebrew(word)`` maps from transcription to Hebrew characters, ``from_hebrew(word)`` does the opposite.
 
 There are some points to note:
 
@@ -34,8 +36,14 @@ There are some points to note:
 * there are two versions of the shin, each consists of two combined unicode characters.
   Before applying the mappings, these characters will be combined into a single character.
   After applying the mapping ``hebrew()``, these characters will be *always* decomposed.
+* up till now we have only transcription conversions for *consonantal Hebrew*.
 
+Syriac
+------
+We have a transcription for consonantal Syriac. The interface is nearly the same as for Hebrew, but now use::
 
+    to_syriac(word)
+    from_syriac(word)
 
 Node order
 ==========

@@ -1,7 +1,6 @@
 import subprocess
 from lxml import etree
 
-MQL_FILE = 'mql/bhs3'
 MQL_PROC = '/usr/local/bin/mql'
 MQL_OPTS = ['--cxml', '-b', 's3', '-d']
 
@@ -18,7 +17,7 @@ class MQL(object):
         global F
         global NN
         env = API['fabric'].lafapi.names.env
-        self.data_path = '{}/{}'.format(env['work_dir'], MQL_FILE)
+        self.data_path = env['source_data']
         self.parser = etree.XMLParser(remove_blank_text=True)
         NN = API['NN']
         F = API['F']

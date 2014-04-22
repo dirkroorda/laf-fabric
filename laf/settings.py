@@ -39,6 +39,7 @@ class Settings(object):
         'zspace':                '{zspace}',
         'empty':                 '{empty}',
         'work_dir':              '{work_dir}',
+        'source_data':           '{work_dir}/{source}/mql/{source}',
         'bin_dir':               '{work_dir}/{source}/{bin_subdir}',
         'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',
         'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}.txt.hdr',

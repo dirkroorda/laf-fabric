@@ -1,10 +1,13 @@
-from etcbc.lib import Transcription
+import sys
+import random
+import collections
+from pyparsing import nestedExpr
+import laf
+from laf.fabric import LafFabric
+from etcbc.preprocess import prepare
+from etcbc.mql import MQL
+fabric = LafFabric()
 
-tr = Transcription()
-
-t = 'DAF DAC'
-h = tr.hebrew(t)
-tb = tr.trans(h)
-
-print("{}\n{}\n{}".format(t, h, tb))
-
+data_dir = '/Users/dirk/Dropbox/DANS/current/projects/etcbc/DOP/'
+sort_frags_file = 'ot_fragments.txt'
+data_path = "{}/{}".format(data_dir, sort_frags_file)

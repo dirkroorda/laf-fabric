@@ -1,45 +1,28 @@
 import collections
+import functools
 import array
+from .lib import monad_set, object_rank
 
 def node_order(API):
-    '''Creates a form based on the information passed when creating this object.'''
-
-    API['fabric'].load_again({"features": {"shebanq": {"node": ["db.otype,minmonad,maxmonad",]}}}, add=True)
+    API['fabric'].load_again({"features": {"shebanq": {"node": ["db.otype,monads",]}}}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']
-    object_rank = {
-        'book': -4,
-        'chapter': -3,
-        'verse': -2,
-        'half_verse': -1,
-        'sentence': 1,
-        'sentence_atom': 2,
-        'clause': 3,
-        'clause_atom': 4,
-        'phrase': 5,
-        'phrase_atom': 6,
-        'subphrase': 7,
-        'word': 8,
-    }
 
-    '''
-    Using the key *hierarchy* below did not solve all problems, because there are monads with empty text representations.
-    By the rules, they get sorted after the monads they come before.
-    Suppose we have text '' + 'aap' with monad numbers 24 resp 25, and anchors (1200,1200) resp (1200,1203)
-    LAF Fabric thinks monad 24 is embedded in monad 25, hence it comes out at 25 first and then 24.
+    def before(a,b):
+        sa = monad_set(F.monads.v(a))
+        sb = monad_set(F.monads.v(b))
+        oa = object_rank[F.otype.v(a)]
+        ob = object_rank[F.otype.v(b)]
+        if sa == sb: return 0 if oa == ob else -1 if oa < ob else 1
+        if sa < sb: return 1
+        if sa > sb: return -1
+        am = min(sa - sb)
+        bm = min(sb - sa)
+        return -1 if am < bm else 1 if bm < am else None
 
-    Solution: we should sort on minmonad and maxmonad instead of min anchor and max anchor.
-    '''
-
-    def etcbckey(node):
-        return (int(F.minmonad.v(node)), -int(F.maxmonad.v(node)), object_rank[F.otype.v(node)])
-
-    def hierarchy(node): return object_rank[F.otype.v(node)]
-
+    etcbckey = functools.cmp_to_key(before)
     nodes = sorted(NN(), key=etcbckey)
-    #nodes = NN(extrakey=hierarchy)
-
     return array.array('I', nodes)
 
 def node_order_inv(API):

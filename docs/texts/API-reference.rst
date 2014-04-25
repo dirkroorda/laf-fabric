@@ -175,8 +175,6 @@ These variables exist only if they correspond with things that you have called f
 
 **X**: XML identifiers, only in sofar as declared under ``"xmlids"``.
 
-**BR**: The "before" ordering of nodes.
-
 **NN**: The "next node" iterator.
 
 **NE**: The "next event" iterator, only if you have specified ``"primary": True``.

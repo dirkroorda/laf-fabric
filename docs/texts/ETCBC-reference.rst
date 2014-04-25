@@ -45,70 +45,53 @@ We have a transcription for consonantal Syriac. The interface is nearly the same
     to_syriac(word)
     from_syriac(word)
 
+Trees
+=====
+The module *etcbc.trees* gives you two relationships between nodes: *parent* and *children*::
+
+    from etcbc.trees import Tree
+    tree = Tree(API, ['sentence', 'clause', 'phrase', 'subphrase', 'word'])
+    (parent, children) = tree.embedding()
+
+A node is a parent of another node, which is then a child of that parent, if the monad set of the child is contained in the
+monad set of the parent, and if there are not intermediate nodes (with respect to embedding) between the parent and the child.
+So this *parent* relationship defines a *tree*, and the *children* relationship is just the inverse of the *parent* relationship.
+Every node has at most 1 parent, but nodes may have multiple children.
+If two nodes have the same monad set, then the object type of the nodes determines if one is a parent and which one that is.
+A sentence can be parent of a phrase, but not vice versa.
+
+It can not be the case that two nodes have the same monad set and the same object type.
+
+You can customize your trees a little bit, by declaring a list of object types that you want to consider.
+Only nodes of thos object types will enter in the parent and children relationships.
+You should specify the types corresponding to the ranking of object types that you want to use.
+If you do not specify anything, all available nodes will be used and the ranking is the default ranking, given in 
+*etcbc.lib.object_rank*.
+
 Node order
 ==========
 The module ``etcbc.preprocess`` takes care of preparing a table that codes the optimal node order for working with ETCBC data. 
-The API deals with several aspects of task processing.
 
-Usage::
+It orders the nodes in a way that combines the left-right ordering with the embedding ordering.
+Left comes before right, and the embedder comes before the embedded.
 
-    from etcbc.preprocess import prepare
+More precisely: if we want to order node *a* and *b*, consider their monad sets *ma* and *mb*, and their object types *ta* and *tb*.
+The object types have ranks, going from a low rank for books, to higher ranks for chapters, verses, half_verses, sentences, sentence_atoms,
+clauses, clause_atoms, phrases, phrase_atoms, subphrases and words.
 
-    fabric.load('bhs3', '--', 'trees', {
-        ...
-        "prepare": prepare,
-    }
+In the etcbc data every node has a non-empty set of monads.
 
-Here is how it works. The example is that of adding additional order to the nodes
-based on the informal embedding levels between books, chapters, sentences, clauses etc.
+If *ma* is equal to *mb* and *ta* is equal to *mb*, then *a* and *b* have the same object type, and cover the same monads, and in the etcbc that implies 
+that *a* and *b* are the same node.
 
-Suppose you are working with a specific resource, say the ETCBC Hebrew Text Database.
-Probably there is already a package *etcbc* to streamline the tasks relevant to this resource.
-To this package you can add a module, say *preprocess.py* in which you can define
-an additional sort order on nodes.
-Here is the actual contents of *etcbc.preprocess* in this distribution::
+If *ma* is equal to *mb*, then if *ta* is less than *tb*, *a* comes before *b* and vice versa.
 
-    import collections
-    import array
+If *ma* is a proper subset of *mb*, then *a* comes *after* *b*, and vice versa.
 
-    def node_order(API):
-        '''Creates a form based on the information passed when creating this object.'''
-
-        API['fabric'].load_again({"features": {"shebanq": {"node": ["db.otype,minmonad,maxmonad",]}}}, add=True)
-        msg = API['msg']
-        F = API['F']
-        NN = API['NN']
-        object_rank = {
-            'book': -4,
-            'chapter': -3,
-            'verse': -2,
-            'half_verse': -1,
-            'sentence': 1,
-            'sentence_atom': 2,
-            'clause': 3,
-            'clause_atom': 4,
-            'phrase': 5,
-            'phrase_atom': 6,
-            'subphrase': 7,
-            'word': 8,
-        }
-
-        def etcbckey(node):
-            return (int(F.minmonad.v(node)), -int(F.maxmonad.v(node)), object_rank[F.otype.v(node)])
-
-        nodes = sorted(NN(), key=etcbckey)
-        return array.array('I', nodes)
-
-    def node_order_inv(API):
-        make_array_inverse = API['make_array_inverse']
-        data_items = API['data_items']
-        return make_array_inverse(data_items['zG00(node_sort)'])
-
-    prepare = collections.OrderedDict((
-        ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
-        ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
-    ))
-
+If none of the previous conditions hold, then *ma* has monads not belonging to *mb* and vice versa.
+Consider the smallest monads of both difference sets: *mma* = *min(ma-mb)* and *mmb = min(mb-ma)*.
+If *mma* < *mmb* then *a* comes before *b* and vice versa.
+Note that *mma* cannot be equal to *mmb*.
 
 Back to your notebook. Say::
 

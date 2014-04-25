@@ -6,12 +6,22 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
-4.2.4
+4.2.5
 -----
-Added Syriac transcription conversions.
+Added tree defining functionality to the etcbc package: *etcbc.trees*.
+You can make the implicit embedding relationship between objects explicit by means of parent and children relationships.
+
+Adapted the node order as customized by *etcbc.preprocess*: the order is now a total ordering.
+Main idea: try to order monad sets by the subset relation, where embedder comes before embedded.
+If the sets are equal, use the object type to force a decision.
+If two monad sets cannot be ordered by the subset relation, look at the elements that they do *not* share.
+The monad set that contains the smallest of these elements, is considered to come before the other.
 
 Past
 ====
+4.2.4
+-----
+Added Syriac transcription conversions.
 4.2.3
 -----
 In *emdros2laf* every source can now have its own metadata.

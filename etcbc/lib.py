@@ -76,3 +76,29 @@ class Transcription(object):
     def from_hebrew(self, word): return ''.join(self.hebrew_mappingi.get(x, x) for x in Transcription._comp(word))
     def to_syriac(self, word): return Transcription._decomp(''.join(self.syriac_mapping.get(x, x) for x in Transcription._comp(word)))
     def from_syriac(self, word): return ''.join(self.syriac_mappingi.get(x, x) for x in Transcription._comp(word))
+
+
+def monad_set(monadsrep):
+    monads = set()
+    for rng in monadsrep.split(','):
+        bounds = rng.split('-')
+        if len(bounds) == 2:
+            for j in range(int(bounds[0]), int(bounds[1]) + 1): monads.add(j)
+        else: monads.add(int(bounds[0]))
+    return monads
+
+object_rank = {
+    'book': -4,
+    'chapter': -3,
+    'verse': -2,
+    'half_verse': -1,
+    'sentence': 1,
+    'sentence_atom': 2,
+    'clause': 3,
+    'clause_atom': 4,
+    'phrase': 5,
+    'phrase_atom': 6,
+    'subphrase': 7,
+    'word': 8,
+}
+

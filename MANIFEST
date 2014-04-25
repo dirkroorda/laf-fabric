@@ -44,6 +44,7 @@ etcbc/featuredoc.py
 etcbc/lib.py
 etcbc/mql.py
 etcbc/preprocess.py
+etcbc/trees.py
 laf/__init__.py
 laf/data.py
 laf/elements.py

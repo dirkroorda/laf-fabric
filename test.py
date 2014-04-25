@@ -1,13 +1,23 @@
 import sys
-import random
 import collections
-from pyparsing import nestedExpr
 import laf
 from laf.fabric import LafFabric
 from etcbc.preprocess import prepare
-from etcbc.mql import MQL
+from etcbc.lib import Transcription
+from etcbc.trees import Tree
 fabric = LafFabric()
 
-data_dir = '/Users/dirk/Dropbox/DANS/current/projects/etcbc/DOP/'
-sort_frags_file = 'ot_fragments.txt'
-data_path = "{}/{}".format(data_dir, sort_frags_file)
+tr = Transcription()
+API = fabric.load('bhs3', '--', 'trees', {
+    "xmlids": {"node": False, "edge": False},
+    "features": ('''
+        otype monads
+    ''','''
+    '''),
+    "prepare": prepare,
+}, verbose='DETAIL')
+exec(fabric.localnames.format(var='fabric'))
+
+tree_big = Tree(API)
+tree = Tree(API, ['verse', 'sentence', 'word'])
+(parent, children) = tree.embedding()

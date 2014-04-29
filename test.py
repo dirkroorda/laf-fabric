@@ -1,23 +1,6 @@
-import sys
-import collections
-import laf
-from laf.fabric import LafFabric
-from etcbc.preprocess import prepare
-from etcbc.lib import Transcription
-from etcbc.trees import Tree
-fabric = LafFabric()
-
-tr = Transcription()
-API = fabric.load('bhs3', '--', 'trees', {
-    "xmlids": {"node": False, "edge": False},
-    "features": ('''
-        otype monads
-    ''','''
-    '''),
-    "prepare": prepare,
-}, verbose='DETAIL')
-exec(fabric.localnames.format(var='fabric'))
-
-tree_big = Tree(API)
-tree = Tree(API, ['verse', 'sentence', 'word'])
-(parent, children) = tree.embedding()
+bmonad = 100
+monads = '100-110,115,118,130-150'
+#monads = F.monads.v(node)
+rangesi = [[int(a)-bmonad for a in r.split('-')] for r in monads.split(',')] 
+monadss = ','.join('-'.join(str(a) for a in r) for r in rangesi)
+print(monadss)

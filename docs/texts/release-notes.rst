@@ -6,6 +6,16 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.2.6
+-----
+Developed the *etcbc.trees* module further.
+Trees based on the implicit embedding relationship do not exhibit all embedding structure:
+clauses can be further embedded by means of an explicit *mother* relationship.
+The rules are a bit intricate, but it has been implemented (BHS3 only, no CALAP).
+See the updates `trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees_bhs.ipynb>`_ notebook.
+
+Past
+====
 4.2.5
 -----
 Added tree defining functionality to the etcbc package: *etcbc.trees*.
@@ -16,9 +26,6 @@ Main idea: try to order monad sets by the subset relation, where embedder comes 
 If the sets are equal, use the object type to force a decision.
 If two monad sets cannot be ordered by the subset relation, look at the elements that they do *not* share.
 The monad set that contains the smallest of these elements, is considered to come before the other.
-
-Past
-====
 4.2.4
 -----
 Added Syriac transcription conversions.

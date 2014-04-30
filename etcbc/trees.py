@@ -3,17 +3,21 @@ import copy
 from .lib import monad_set, object_rank
 
 class Tree(object):
-    def __init__(self, API, otypes=None):
+    def __init__(self, API, otypes=None, clause_type=None):
         API['fabric'].load_again({"features": ("otype monads minmonad","mother.")}, add=True)
         self.API = API
         NN = API['NN']
         F = API['F']
         msg = API['msg']
 
-        if otypes == None:
-            otypes = sorted(object_rank, key=lambda x: object_rank[x])
+        if otypes == None: otypes = sorted(object_rank, key=lambda x: object_rank[x])
+        if clause_type == None: clause_type = 'clause'
+        self.root_type = otypes[0]
+        self.leaf_type = otypes[-1]
+        self.clause_type = clause_type
         msg("Start computing parent and children relations for objects of type {}".format(', '.join(otypes)))
         otype_set = set(otypes)
+        self.otype_set = otype_set
         base_type = otypes[-1]
         cur_stack = []
         eparent = {}
@@ -62,7 +66,7 @@ class Tree(object):
         F = API['F']
         C = API['C']
         msg = API['msg']
-        msg("Restructuring clauses: deep copying tree relations")
+        msg("Restructuring {}s: deep copying tree relations".format(self.clause_type))
         rparent = copy.deepcopy(self.eparent)
         rchildren = copy.deepcopy(self.echildren)
         sisters = collections.defaultdict(lambda: [])
@@ -75,19 +79,32 @@ class Tree(object):
         self.mother = mother
 
         msg("Pass 0: Storing mother relationship")
-        for c in NN(test=F.otype.v, value='clause'):
+        moutside = collections.defaultdict(lambda: 0)
+        mo = 0
+        for c in NN(test=F.otype.v, value=self.clause_type):
             lms = list(C.mother_.v(c))
             ms = len(lms)
             if ms:
-                mother[c] = lms[0]
-        msg("{} clauses have a mother".format(len(mother)))
+                m = lms[0]
+                mtype = F.otype.v(m)
+                if mtype in self.otype_set: mother[c] = m
+                else:
+                    moutside[mtype] += 1
+                    mo += 1
+        msg("{} {}s have a mother".format(len(mother), self.clause_type))
+        if mo:
+            msg("{} {}s have mothers of types outside {}.\nThese mother relationships will be ignored".format(mo, self.clause_type, self.otype_set))
+            for mt in sorted(moutside):
+                msg("{} mothers point to {} nodes".format(moutside[mt], mt), withtime=False)
+        else:
+            msg("All {}s have mothers of types in {}".format(self.clause_type, self.otype_set))
 
-        msg("Pass 1: all clauses except those of type Coor")
+        msg("Pass 1: all {}s except those of type Coor".format(self.clause_type))
         motherless = set()
-        for cnode in NN(test=F.otype.v, value='clause'):
+        for cnode in NN(test=F.otype.v, value=self.clause_type):
             cclass = ccr_class[F.clause_constituent_relation.v(cnode)]
             if cclass == 'n' or cclass == 'x': pass
-            elif cclass == 'p' or cclass == 'c':
+            elif cclass == 'r':
                 if cnode not in mother:
                     motherless.add(cnode)
                     continue
@@ -96,14 +113,14 @@ class Tree(object):
                 pnode = rparent[cnode]
                 if mnode not in rparent:
                     msg("Should not happen: node without parent: [{} {}]({}) =mother=> [{} {}]({}) =/=> parent".format(
-                        'clause', F.monads.v(cnode), cnode, mtype, F.monads.v(mnode), mnode
+                        self.clause_type, F.monads.v(cnode), cnode, mtype, F.monads.v(mnode), mnode
                     ))
                 pmnode = rparent[mnode]
                 pchildren = rchildren[pnode]
                 mchildren = rchildren[mnode]
                 pmchildren = rchildren[pmnode]
                 deli = pchildren.index(cnode)
-                if mtype == 'word':
+                if mtype == self.leaf_type:
                     if pnode != pmnode:
                         rparent[cnode] = pmnode
                         del pchildren[deli:deli+1]
@@ -113,8 +130,8 @@ class Tree(object):
                         rparent[cnode] = mnode
                         del pchildren[deli:deli+1]
                         mchildren.append(cnode)
-        msg("Pass 2: clauses of type Coor only")
-        for cnode in NN(test=F.otype.v, value='clause'):
+        msg("Pass 2: {}s of type Coor only".format(self.clause_type))
+        for cnode in NN(test=F.otype.v, value=self.clause_type):
             cclass = ccr_class[F.clause_constituent_relation.v(cnode)]
             if cclass != 'x': continue
             if cnode not in mother:
@@ -132,7 +149,7 @@ class Tree(object):
         for n in sisters:
             sns = sisters[n]
             sister_count[len(sns)] += 1
-        msg("Mothers applied. Found {} motherless clauses.".format(len(motherless)))
+        msg("Mothers applied. Found {} motherless {}s.".format(len(motherless), self.clause_type))
         ts = 0
         for l in sorted(sister_count):
             c = sister_count[l]
@@ -178,7 +195,7 @@ class Tree(object):
                 for cnode in children[node]:
                     _fillids(cnode)
 
-        def _debug_write_tree(node, indent, kind):
+        def _debug_write_tree(node, level, indent, kind):
             otype = F.otype.v(node)
             children = self.rchildren if kind == 'r' else self.echildren 
             sisters = self.sisters
@@ -187,7 +204,7 @@ class Tree(object):
             ccr = ''
             ccr_sep = ''
             mspec = ''
-            if otype == 'clause':
+            if otype == self.clause_type:
                 ccr = F.clause_constituent_relation.v(node)
                 if ccr != None and ccr != 'none':
                     ccr_sep = '.'
@@ -204,15 +221,20 @@ class Tree(object):
             rangesi = [[int(a)-bmonad for a in r.split('-')] for r in monads.split(',')] 
             monadss = ','.join('-'.join(str(a) for a in r) for r in rangesi)
 
-            result.append("{:<30} {:<10}] ({:>3}) {:<8} <{}>\n".format("{}[{:<10}".format(indent, "{}{}{}".format(otype, ccr_sep, ccr)), monadss, rep(node), mspec, ','.join("{:>3}".format(rep(c)) for c in children[node])))
+            result.append("{:>2}{:<30} {:<10}] ({:>3}) {:<8} <{}>\n".format(
+                level,
+                "{}[{:<10}".format(indent, "{}{}{}".format(otype, ccr_sep, ccr)),
+                monadss, rep(node), mspec,
+                ','.join("{:>3}".format(rep(c)) for c in children[node]),
+            ))
             if node in children:
                 for cnode in children[node]:
-                    _debug_write_tree(cnode, indent + '  ', kind)
+                    _debug_write_tree(cnode, level + 1, indent + '  ', kind)
             if kind == 'r' and node in sisters:
                 for snode in sisters[node]:
-                    _debug_write_tree(snode, indent + '*', kind)
+                    _debug_write_tree(snode, level, indent + '*', kind)
         _fillids(node)
-        _debug_write_tree(node, '', kind)
+        _debug_write_tree(node, 0, '', kind)
         if legenda:
             result.append("\nstart monad = {}\n\n".format(bmonad))
             result.append("{:>3} = {:>8} {:>8}\n".format('#', 'bhs_oid', 'laf_nid'))
@@ -270,6 +292,23 @@ class Tree(object):
         _write_tree(node, kind)
         return do_sequential()
 
+    def depth(self, node, kind):
+        API = self.API
+        F = API['F']
+        msg = API['msg']
+        def _depth(node, kind):
+            parent = self.rparent if kind == 'r' else self.eparent 
+            children = self.rchildren if kind == 'r' else self.echildren 
+            sisters = self.sisters
+            elder_sister = self.elder_sister
+            has_sisters =  node in sisters and len(sisters[node])
+            has_children = node in children and len(children[node])
+            cdepth = 1 + max(_depth(c, kind) for c in children[node]) if has_children else 0
+            sdepth = 1 + max(_depth(s, kind) for s in sisters[node]) if has_sisters else 0
+            if kind == 'e': return cdepth
+            elif kind == 'r': return max(cdepth + 1, sdepth) if has_sisters else cdepth
+        return _depth(node, kind)
+
     def get_leaves(self, node, kind):
         API = self.API
         F = API['F']
@@ -291,16 +330,15 @@ class Tree(object):
         _get_leaves(node, kind)
         return result
 
-    def get_sentence(self, node, kind):
+    def get_root(self, node, kind):
         API = self.API
         F = API['F']
         msg = API['msg']
         otype = F.otype.v(node)
         parent = self.rparent if kind == 'r' else self.eparent 
         children = self.rchildren if kind == 'r' else self.echildren 
-        if otype == 'sentence': return node
-        if node in parent: return self.get_sentence(parent[node], kind)
+        if node in parent: return self.get_root(parent[node], kind)
         if kind == 'r':
-            if node in elder_sister: return self.get_sentence(elder_sister[node], kind)
+            if node in elder_sister: return self.get_root(elder_sister[node], kind)
         return (node, otype)
     

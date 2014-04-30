@@ -242,7 +242,7 @@ class Tree(object):
                 result.append("{:>3} = {:>8} {:>8}\n".format(s, F.oid.v(n), n))
         return ''.join(result)
 
-    def write_tree(self, node, kind, get_tag, rev=False):
+    def write_tree(self, node, kind, get_tag, rev=False, leafnumbers=True):
         API = self.API
         F = API['F']
         msg = API['msg']
@@ -273,21 +273,24 @@ class Tree(object):
             new_words = sorted(enumerate(words), key=lambda x: x[1][0])
             word_reps = []
             for (nn, (on, (monad, text, pos))) in enumerate(new_words):
-                word_perm[on] = nn
-                word_reps.append(text)
+                if leafnumbers:
+                    word_perm[on] = nn
+                    word_reps.append(text)
+                else:
+                    word_perm[on] = text[::-1] if rev else text
+                    word_reps.append(str(nn))
             word_rep = ' '.join(word_reps)
                             
-            result = []
+            tree_rep = []
             for (code, info) in sequential:
                 if code == 'O' or code == 'C':
-                    if code == 'O': result.append('({}'.format(info))
-                    else: result.append(')')
+                    if code == 'O': tree_rep.append('({}'.format(info))
+                    else: tree_rep.append(')')
                 elif code == 'W':
                     nn = word_perm[info]
                     pos = words[info][2]
-                    result.append('({} {})'.format(pos, nn))
-            result.append("\t{}".format(word_rep[::-1] if rev else word_rep))
-            return ''.join(result)
+                    tree_rep.append('({} {})'.format(pos, nn))
+            return (''.join(tree_rep), word_rep[::-1] if rev and leafnumbers else word_rep) 
 
         _write_tree(node, kind)
         return do_sequential()

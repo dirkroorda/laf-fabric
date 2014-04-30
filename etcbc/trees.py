@@ -3,8 +3,9 @@ import copy
 from .lib import monad_set, object_rank
 
 class Tree(object):
-    def __init__(self, API, otypes=None, clause_type=None):
-        API['fabric'].load_again({"features": ("otype monads minmonad","mother.")}, add=True)
+    def __init__(self, API, otypes=None, clause_type=None, phrase_type=None):
+        API['fabric'].load_again({"features":
+            ("otype monads minmonad clause_constituent_relation phrase_type part_of_speech","mother.")}, add=True)
         self.API = API
         NN = API['NN']
         F = API['F']
@@ -12,9 +13,11 @@ class Tree(object):
 
         if otypes == None: otypes = sorted(object_rank, key=lambda x: object_rank[x])
         if clause_type == None: clause_type = 'clause'
+        if phrase_type == None: phrase_type = 'phrase'
         self.root_type = otypes[0]
         self.leaf_type = otypes[-1]
         self.clause_type = clause_type
+        self.phrase_type = phrase_type
         msg("Start computing parent and children relations for objects of type {}".format(', '.join(otypes)))
         otype_set = set(otypes)
         self.otype_set = otype_set
@@ -201,38 +204,53 @@ class Tree(object):
             sisters = self.sisters
             elder_sister = self.elder_sister
             mother = self.mother
-            ccr = ''
-            ccr_sep = ''
+            subtype = ''
+            subtype_sep = ''
             mspec = ''
             if otype == self.clause_type:
-                ccr = F.clause_constituent_relation.v(node)
-                if ccr != None and ccr != 'none':
-                    ccr_sep = '.'
+                subtype = F.clause_constituent_relation.v(node)
+                if subtype != None and subtype != 'none':
+                    subtype_sep = '.'
                 else:
-                    ccr = ''
-                    ccr_sep = ''
+                    subtype = ''
+                    subtype_sep = ''
                 if kind == 'e':
                     if node in mother:
                         mspec = '=> ({:>3})'.format(rep(mother[node]))
                 elif kind == 'r':
                     if node in elder_sister:
                         mspec = '=> ({:>3})'.format(rep(elder_sister[node]))
+            elif otype == self.phrase_type:
+                subtype = F.phrase_type.v(node)
+                if subtype != None:
+                    subtype_sep = '.'
+                else:
+                    subtype = ''
+                    subtype_sep = ''
+            elif otype == self.leaf_type:
+                subtype = F.part_of_speech.v(node)
+                if subtype != None:
+                    subtype_sep = '.'
+                else:
+                    subtype = ''
+                    subtype_sep = ''
             monads = F.monads.v(node)
             rangesi = [[int(a)-bmonad for a in r.split('-')] for r in monads.split(',')] 
             monadss = ','.join('-'.join(str(a) for a in r) for r in rangesi)
 
             result.append("{:>2}{:<30} {:<10}] ({:>3}) {:<8} <{}>\n".format(
                 level,
-                "{}[{:<10}".format(indent, "{}{}{}".format(otype, ccr_sep, ccr)),
+                "{}[{:<10}".format(indent, "{}{}{}".format(otype, subtype_sep, subtype)),
                 monadss, rep(node), mspec,
                 ','.join("{:>3}".format(rep(c)) for c in children[node]),
             ))
-            if node in children:
-                for cnode in children[node]:
-                    _debug_write_tree(cnode, level + 1, indent + '  ', kind)
-            if kind == 'r' and node in sisters:
-                for snode in sisters[node]:
-                    _debug_write_tree(snode, level, indent + '*', kind)
+            has_sisters = node in sisters and len(sisters[node])
+            has_children = node in children and len(children[node])
+            if kind == 'r' and has_sisters:
+                for cnode in children[node]: _debug_write_tree(cnode, level + 1, indent + '  ', kind)
+                for snode in sisters[node]: _debug_write_tree(snode, level, indent + '*', kind)
+            elif has_children:
+                for cnode in children[node]: _debug_write_tree(cnode, level + 1, indent + '  ', kind)
         _fillids(node)
         _debug_write_tree(node, 0, '', kind)
         if legenda:
@@ -249,6 +267,7 @@ class Tree(object):
         otype = F.otype.v(node)
         children = self.rchildren if kind == 'r' else self.echildren 
         sisters = self.sisters
+        bmonad = int(F.minmonad.v(node))
 
         words = []
         sequential = []
@@ -256,30 +275,22 @@ class Tree(object):
             (tag, pos, monad, text, is_word) = get_tag(node)
             if is_word:
                 sequential.append(("W", len(words)))
-                words.append((monad, text, pos))
+                words.append((monad - bmonad, text, pos))
             else: sequential.append(("O", tag))
             has_sisters = node in sisters and len(sisters[node])
+            has_children = node in children and len(children[node])
             if kind == 'r' and has_sisters:
                 sequential.append(("O", 'Ccoor'))
                 for c in children[node]: _write_tree(c, kind)
                 sequential.append(("C", 'Ccoor'))
                 for s in sisters[node]: _write_tree(s, kind)
-            else:
+            elif has_children:
                 for c in children[node]: _write_tree(c, kind)
             if not is_word: sequential.append(("C", tag))
 
         def do_sequential():
-            word_perm = {}
-            new_words = sorted(enumerate(words), key=lambda x: x[1][0])
-            word_reps = []
-            for (nn, (on, (monad, text, pos))) in enumerate(new_words):
-                if leafnumbers:
-                    word_perm[on] = nn
-                    word_reps.append(text)
-                else:
-                    word_perm[on] = text[::-1] if rev else text
-                    word_reps.append(str(nn))
-            word_rep = ' '.join(word_reps)
+            if leafnumbers: word_rep = ' '.join(x[1] for x in sorted(words, key=lambda x: x[0]))
+            else: word_rep = ' '.join(str(x[0]) for x in words)
                             
             tree_rep = []
             for (code, info) in sequential:
@@ -287,10 +298,10 @@ class Tree(object):
                     if code == 'O': tree_rep.append('({}'.format(info))
                     else: tree_rep.append(')')
                 elif code == 'W':
-                    nn = word_perm[info]
-                    pos = words[info][2]
-                    tree_rep.append('({} {})'.format(pos, nn))
-            return (''.join(tree_rep), word_rep[::-1] if rev and leafnumbers else word_rep) 
+                    (monad, text, pos) = words[info]
+                    leaf = monad if leafnumbers else text[::-1] if rev else text
+                    tree_rep.append('({} {})'.format(pos, leaf))
+            return (''.join(tree_rep), word_rep[::-1] if rev and leafnumbers else word_rep, bmonad) 
 
         _write_tree(node, kind)
         return do_sequential()

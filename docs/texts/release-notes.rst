@@ -26,13 +26,16 @@ Main idea: try to order monad sets by the subset relation, where embedder comes 
 If the sets are equal, use the object type to force a decision.
 If two monad sets cannot be ordered by the subset relation, look at the elements that they do *not* share.
 The monad set that contains the smallest of these elements, is considered to come before the other.
+
 4.2.4
 -----
 Added Syriac transcription conversions.
+
 4.2.3
 -----
 In *emdros2laf* every source can now have its own metadata.
 In *etcbc* there is a workable definition between consonantal Hebrew characters and their ETCBC latin transcriptions.
+
 4.2.2
 -----
 More fixes in *emdros2laf*, a new source, the *CALAP* has been converted to LAF.
@@ -40,6 +43,7 @@ LAF-Fabric has compiled it, and it is ready for exploration.
 See the example notebook
 `plain-calap <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/plain_calap.ipynb>`_.
 The CALAP is included in the data download (see :doc:`getting-started`).
+
 4.2.1
 -----
 Small fixes in *emdros2laf*.

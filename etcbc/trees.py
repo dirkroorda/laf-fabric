@@ -3,10 +3,19 @@ import copy
 from .lib import monad_set, object_rank
 
 class Tree(object):
-    def __init__(self, API, otypes=None, clause_type=None, phrase_type=None):
+    def __init__(self, API, otypes=None, clause_type=None, phrase_type=None,
+            ccr_feature='clause_constituent_relation', pt_feature='phrase_type', pos_feature='part_of_speech', mother_feature="mother."
+        ):
+        node_features = "otype monads minmonad {} {}".format(
+            ccr_feature if ccr_feature != None else '',
+            pt_feature if pt_feature != None else '',
+            pos_feature if pos_feature != None else ''
+        )
+        edge_features = mother_feature if mother_feature != None else ''
         API['fabric'].load_again({"features":
-            ("otype monads minmonad clause_constituent_relation phrase_type part_of_speech","mother.")}, add=True)
+            (node_features, edge_features)}, add=True)
         self.API = API
+        self.ccr_feature = ccr_feature
         NN = API['NN']
         F = API['F']
         msg = API['msg']
@@ -80,12 +89,14 @@ class Tree(object):
         self.sisters = sisters
         self.elder_sister = elder_sister
         self.mother = mother
+        if self.ccr_feature == None: return
 
         msg("Pass 0: Storing mother relationship")
         moutside = collections.defaultdict(lambda: 0)
         mo = 0
+        mf = C.item['mother_'].v
         for c in NN(test=F.otype.v, value=self.clause_type):
-            lms = list(C.mother_.v(c))
+            lms = list(mf(c))
             ms = len(lms)
             if ms:
                 m = lms[0]
@@ -104,8 +115,9 @@ class Tree(object):
 
         msg("Pass 1: all {}s except those of type Coor".format(self.clause_type))
         motherless = set()
+        ccrf = F.item[self.ccr_feature].v
         for cnode in NN(test=F.otype.v, value=self.clause_type):
-            cclass = ccr_class[F.clause_constituent_relation.v(cnode)]
+            cclass = ccr_class[ccrf(cnode)]
             if cclass == 'n' or cclass == 'x': pass
             elif cclass == 'r':
                 if cnode not in mother:
@@ -135,7 +147,7 @@ class Tree(object):
                         mchildren.append(cnode)
         msg("Pass 2: {}s of type Coor only".format(self.clause_type))
         for cnode in NN(test=F.otype.v, value=self.clause_type):
-            cclass = ccr_class[F.clause_constituent_relation.v(cnode)]
+            cclass = ccr_class[ccrf(cnode)]
             if cclass != 'x': continue
             if cnode not in mother:
                 motherless.add(cnode)
@@ -208,7 +220,8 @@ class Tree(object):
             subtype_sep = ''
             mspec = ''
             if otype == self.clause_type:
-                subtype = F.clause_constituent_relation.v(node)
+                ccrf = F.item[self.ccr_feature].v
+                subtype = ccrf(node)
                 if subtype != None and subtype != 'none':
                     subtype_sep = '.'
                 else:
@@ -228,7 +241,8 @@ class Tree(object):
                     subtype = ''
                     subtype_sep = ''
             elif otype == self.leaf_type:
-                subtype = F.part_of_speech.v(node)
+                posf = F.item[self.pos_feature].v
+                subtype = posf(node)
                 if subtype != None:
                     subtype_sep = '.'
                 else:

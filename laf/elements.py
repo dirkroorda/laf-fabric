@@ -20,6 +20,7 @@ class Feature(object):
         self.alookup = data_items[alabel] if alabel in data_items else {}
 
     def v(self, ne): return self.alookup.get(ne, self.lookup.get(ne))
+    def V(self, ne): return self.lookup.get(ne)
 
     def s(self, value=None):
         data_items = self.source.data_items

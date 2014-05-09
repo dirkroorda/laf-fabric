@@ -37,15 +37,17 @@ class Tree(object):
         nn = 0
         cn = 0
         chunk = 100000
+        Fotypev = F.otype.v
+        Fmonadsv = F.monads.v
         for node in NN():
-            otype = F.otype.v(node)
+            otype = Fotypev(node)
             if otype not in otype_set: continue
             nn += 1
             cn += 1
             if cn == chunk:
                 msg("{} nodes".format(nn))
                 cn = 0
-            nm_set = monad_set(F.monads.v(node))
+            nm_set = monad_set(Fmonadsv(node))
             nm_min = min(nm_set)
             nm_max = max(nm_set)
             ls = len(cur_stack)
@@ -94,7 +96,7 @@ class Tree(object):
         msg("Pass 0: Storing mother relationship")
         moutside = collections.defaultdict(lambda: 0)
         mo = 0
-        mf = C.item['mother_'].v
+        mf = C.mother_.v
         for c in NN(test=F.otype.v, value=self.clause_type):
             lms = list(mf(c))
             ms = len(lms)
@@ -115,8 +117,10 @@ class Tree(object):
 
         msg("Pass 1: all {}s except those of type Coor".format(self.clause_type))
         motherless = set()
-        ccrf = F.item[self.ccr_feature].v
-        for cnode in NN(test=F.otype.v, value=self.clause_type):
+        ccrf = F.item['shebanq_ft_' + self.ccr_feature].v
+        Fotypev = F.otype.v
+        Fmonadsv = F.monads.v
+        for cnode in NN(test=Fotypev, value=self.clause_type):
             cclass = ccr_class[ccrf(cnode)]
             if cclass == 'n' or cclass == 'x': pass
             elif cclass == 'r':
@@ -124,11 +128,11 @@ class Tree(object):
                     motherless.add(cnode)
                     continue
                 mnode = mother[cnode]
-                mtype = F.otype.v(mnode)
+                mtype = Fotypev(mnode)
                 pnode = rparent[cnode]
                 if mnode not in rparent:
                     msg("Should not happen: node without parent: [{} {}]({}) =mother=> [{} {}]({}) =/=> parent".format(
-                        self.clause_type, F.monads.v(cnode), cnode, mtype, F.monads.v(mnode), mnode
+                        self.clause_type, F.monads.v(cnode), cnode, mtype, Fmonadsv(mnode), mnode
                     ))
                 pmnode = rparent[mnode]
                 pchildren = rchildren[pnode]
@@ -146,7 +150,7 @@ class Tree(object):
                         del pchildren[deli:deli+1]
                         mchildren.append(cnode)
         msg("Pass 2: {}s of type Coor only".format(self.clause_type))
-        for cnode in NN(test=F.otype.v, value=self.clause_type):
+        for cnode in NN(test=Fotypev, value=self.clause_type):
             cclass = ccr_class[ccrf(cnode)]
             if cclass != 'x': continue
             if cnode not in mother:

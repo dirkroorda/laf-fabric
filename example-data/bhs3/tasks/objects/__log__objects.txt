@@ -1,13 +1,13 @@
-OPENED AT:2014-04-15T11-38-31
-  0.02s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3/tasks/objects/__log__objects.txt
-  0.02s DETAIL: prep prep: G.node_sort
-  0.02s DETAIL: prep prep: G.node_sort_inv
-  0.03s INFO: DATA LOADED FROM SOURCE bhs3 AND ANNOX -- FOR TASK objects
+OPENED AT:2014-05-09T09-13-28
+  0.00s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3/tasks/objects/__log__objects.txt
+  0.00s DETAIL: prep prep: G.node_sort
+  0.00s DETAIL: prep prep: G.node_sort_inv
+  0.00s INFO: DATA LOADED FROM SOURCE bhs3 AND ANNOX -- FOR TASK objects
   0.00s Get the objects ... 
   0.00s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3/tasks/objects
 
-__log__objects.txt                      338 Tue Apr 15 13:38:31 2014
-objects.txt                            4717 Tue Apr 15 13:38:31 2014
+__log__objects.txt                      338 Fri May  9 11:13:28 2014
+objects.txt                            4717 Fri May  9 11:13:28 2014
 
-CLOSED AT:2014-04-15T11-38-31
+CLOSED AT:2014-05-09T09-13-28

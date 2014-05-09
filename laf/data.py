@@ -10,6 +10,7 @@ from .parse import parse
 from .model import model
 
 GZIP_LEVEL = 2
+PICKLE_PROTOCOL = 3
 
 class LafData(object):
     '''Manage the compiling and loading of LAF/GraF data.'''
@@ -240,7 +241,7 @@ class LafData(object):
         if dtype == 'arr':
             with gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL) as f: thedata.tofile(f)
         elif dtype == 'dct':
-            with gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL) as f: pickle.dump(thedata, f)
+            with gzip.open(dpath, "wb", compresslevel=GZIP_LEVEL) as f: pickle.dump(thedata, f, protocol=PICKLE_PROTOCOL)
         elif dtype == 'str':
             with gzip.open(dpath, "wt", encoding="utf-8") as f: f.write(thedata)
 

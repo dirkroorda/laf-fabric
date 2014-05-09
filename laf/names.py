@@ -155,7 +155,7 @@ class Names(Settings):
                 self.req_data_items[dkey] = self.dinfo(dkey)
             elif req_items[docc] == False or req_items[docc] == None: continue
             else:
-                for dcomps in req_items[docc]:
+                for dcomps in sorted(req_items[docc]):
                     dkeyfull = Names.comp(dkey, dcomps)
                     self.req_data_items[dkeyfull] = self.dinfo(dkeyfull)
         dkeys = {'clear': [], 'keep': [], 'load': []}

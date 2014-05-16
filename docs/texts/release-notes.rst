@@ -6,6 +6,23 @@ More elaboration of the Emdros integration, more functions around MQL queries.
 
 Current
 =======
+4.2.7
+-----
+API
+^^^
+Added *NK*, which can be passed as a sort key for node sets. It corresponds with the "natural order" on nodes.
+If an additional module, such as *etcbc.preprocess* has modified the natural order, this sort key will reflect the
+modified order. If you let NN() yield nodes, they appear in this same order.
+
+Also added *MK*, which can be passed as a sort key for sets of anchors. It corresponds with the "natural order" on
+anchor sets.
+
+ETCBC
+^^^^^
+Improvements in *etcbc.trees*, the module that generates trees from the ETCBC database.
+
+Past
+====
 4.2.6
 -----
 Developed the *etcbc.trees* module further.
@@ -14,8 +31,6 @@ clauses can be further embedded by means of an explicit *mother* relationship.
 The rules are a bit intricate, but it has been implemented (BHS3 only, no CALAP).
 See the updates `trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees_bhs.ipynb>`_ notebook.
 
-Past
-====
 4.2.5
 -----
 Added tree defining functionality to the etcbc package: *etcbc.trees*.

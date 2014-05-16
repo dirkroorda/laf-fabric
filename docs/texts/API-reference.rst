@@ -482,6 +482,8 @@ The ``nodes`` argument is compatible with all other arguments.
     orderly output, this is your method. If you have a custom ordering defined in your
     task, you can apply it to arbitrary node sets via ``NN(nodes=nodeset, extrakey=your_order)``.
 
+    Alternatively, you can say: ``nodelist = sorted(nodeset, key=NK)``. See the API element NK.
+
 Example (a) iterates through all nodes, (a1) only through the nodes in nodeset,
 (a2) idem, but applies an extra ordering beforehand, 
 (b) only through the book nodes, because *test*
@@ -523,6 +525,29 @@ Because ``False`` comes before ``True``, the phrases come before the words they 
     See the section on extra data preparation below.
 
 See ``next_node()`` in ``laf.fabric``.
+
+NK (node sort key)
+------------------
+Example::
+
+    nodelist = sorted(nodeset, key=NK)
+
+This can be passed as a sort key for node sets. It corresponds with the "natural order" on nodes.
+If an additional module, such as *etcbc.preprocess* has modified the natural order, this sort key will reflect the
+modified order. If you let NN() yield nodes, they appear in this same order.
+
+MK (anchor set sort key)
+------------------
+Example::
+
+    anchorsets = sorted(anchorsets, key=MK)
+
+This can be passed as a sort key for anchor sets. It corresponds with the "natural order" on anchor sets, which is:
+Let *sa* and *sb* are two anchor sets.
+
+If *sa* is a proper subset of *sb* then *sb* comes before *sa* and vice versa.
+
+Otherwise, if *sa* and *sb* are not equal, the one that has the smallest element not occurring in the other comes first.
 
 .. _node-events:
 

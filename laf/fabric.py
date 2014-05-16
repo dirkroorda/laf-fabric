@@ -1,6 +1,7 @@
 import os
 import glob
 import collections
+import functools
 from .lib import make_array_inverse
 from .names import Names, FabricError
 from .data import LafData
@@ -140,6 +141,17 @@ class LafAPI(LafData):
             if node_anchor_max[nodea] < node_anchor_max[nodeb]: return False
             return None
 
+        def node_sort_key(node): return data_items[Names.comp('mG00', ('node_sort_inv',))][node]
+
+        def msetbefore(sa,sb):
+            if sa == sb: return 0
+            if sa <= sb: return 1
+            if sb <= sa: return -1
+            am = min(sa - sb)
+            bm = min(sb - sa)
+            return -1 if am < bm else 1 if bm < am else None
+        msetkey = functools.cmp_to_key(msetbefore)
+
         def next_node(nodes=None, test=None, value=None, values=None, extrakey=None):
             class Extra_key(object):
                 __slots__ = ['value', 'amin', 'amax']
@@ -271,6 +283,8 @@ class LafAPI(LafData):
             'BF':      before,
             'NN':      next_node,
             'NE':      next_event if Names.comp('mP00', ('node_events',)) in data_items else no_next_event,
+            'NK':      node_sort_key,
+            'MK':      msetkey,
         })
 
     def _api_io(self):

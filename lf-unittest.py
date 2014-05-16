@@ -927,6 +927,18 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(prep_expected, prep_found)
         close()
 
+    #@unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
+    def test_u600_node_order(self):
+        API = self.fabric.load(SOURCE, '--', 'before', {"features": ("", "")}) 
+        MK = API['MK']
+        close = API['close']
+
+        anchors = [set(), {1}, {2}, {3}, {4}, {1,2}, {1,3}, {1,4}, {2,3}, {2,4}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {2,3,4}, {1,2,3,4}]
+        ordered_anchors = sorted(anchors, key=MK)
+        expected_anchors = [{1, 2, 3, 4}, {1, 2, 3}, {1, 2, 4}, {1, 2}, {1, 3, 4}, {1, 3}, {1, 4}, {1}, {2, 3, 4}, {2, 3}, {2, 4}, {2}, {3, 4}, {3}, {4}, set()]
+        self.assertEqual(ordered_anchors, expected_anchors)
+        close()
+        
 
 if __name__ == '__main__':
     unittest.main()

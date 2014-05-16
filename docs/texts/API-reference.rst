@@ -537,7 +537,7 @@ If an additional module, such as *etcbc.preprocess* has modified the natural ord
 modified order. If you let NN() yield nodes, they appear in this same order.
 
 MK (anchor set sort key)
-------------------
+------------------------
 Example::
 
     anchorsets = sorted(anchorsets, key=MK)

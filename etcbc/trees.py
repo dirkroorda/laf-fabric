@@ -122,7 +122,7 @@ class Tree(object):
 
         msg("Pass 1: all {}s except those of type Coor".format(self.clause_type))
         motherless = set()
-        ccrf = F.item['shebanq_ft_' + self.ccr_feature].v
+        ccrf = F.item[self.ccr_feature].v
         Fotypev = F.otype.v
         Fmonadsv = F.monads.v
         for cnode in NN(test=Fotypev, value=self.clause_type):
@@ -220,7 +220,7 @@ class Tree(object):
         result = []
         ids = {}
         maxid = 0
-        ccrf = F.item['shebanq_ft_' + self.ccr_feature].v
+        ccrf = F.item[self.ccr_feature].v
         bmonad = int(F.minmonad.v(node))
         Fotypev = F.otype.v
         Fmonadsv = F.monads.v
@@ -272,7 +272,7 @@ class Tree(object):
                     subtype = ''
                     subtype_sep = ''
             elif otype == self.leaf_type:
-                posf = F.item['shebanq_ft_' + self.pos_feature].v
+                posf = F.item[self.pos_feature].v
                 subtype = posf(node)
                 if subtype != None:
                     subtype_sep = '.'

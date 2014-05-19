@@ -2,10 +2,16 @@ Release Notes
 #############
 Upcoming
 ========
-More elaboration of the Emdros integration, more functions around MQL queries.
+Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.8
+-----
+Minor improvements in the laf-api.
+
+Past
+====
 4.2.7
 -----
 API
@@ -21,8 +27,6 @@ ETCBC
 ^^^^^
 Improvements in *etcbc.trees*, the module that generates trees from the ETCBC database.
 
-Past
-====
 4.2.6
 -----
 Developed the *etcbc.trees* module further.

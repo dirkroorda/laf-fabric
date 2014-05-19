@@ -84,7 +84,9 @@ class LafAPI(LafData):
                 dest.item[name] = obj
                 setattr(dest, name, obj)
                 for abb in (Names.apiname(feat[1:]), Names.apiname(feat[2:])):
-                    if abb and self.feature_abb.get(abb, '') == name: setattr(dest, abb, obj)
+                    if abb and self.feature_abb.get(abb, '') == name:
+                        setattr(dest, abb, obj)
+                        dest.item[abb] = obj
         for inv in connections:
             for feat in connections[inv]:
                 name = Names.apiname(feat) 
@@ -93,7 +95,9 @@ class LafAPI(LafData):
                 dest.item[name] = obj
                 setattr(dest, name, obj)
                 for abb in (Names.apiname(feat[1:]), Names.apiname(feat[2:])):
-                    if abb and self.feature_abb.get(abb, '') == name: setattr(dest, abb, obj)
+                    if abb and self.feature_abb.get(abb, '') == name:
+                        setattr(dest, abb, obj)
+                        dest.item[abb] = obj
         for kind in xmlmaps:
             for comp in xmlmaps[kind]:
                 obj = XMLid(self, kind)

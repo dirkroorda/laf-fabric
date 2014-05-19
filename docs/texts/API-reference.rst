@@ -282,6 +282,7 @@ They give exactly the same result:
 The advantage of the alternative form is that the feature is specified by a *string*
 instead of a *method name*.
 That means that you can work with dynamically computed feature names.
+All abbrevitions that are valid as method name, are also valid as key in the ``F.item`` dictionary.
 
 You can use features to define sets in an easy manner.
 The ``s()`` method yields an iterator that iterates over all nodes for which the feature in question

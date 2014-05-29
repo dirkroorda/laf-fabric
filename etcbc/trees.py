@@ -384,6 +384,8 @@ class Tree(object):
             elif kind == 'r': return max(cdepth + 1, sdepth) if has_sisters else cdepth
         return _depth(node, kind)
 
+    def length(self, node): return len(monad_set(self.API['F'].monads.v(node)))
+
     def get_leaves(self, node, kind):
         API = self.API
         F = API['F']

@@ -54,9 +54,9 @@ into the text of the Hebrew Bible, see
 
 * `The ETCBC's github repository <https://github.com/ETCBC/laf-fabric-nbs>`_
   (highlight:
-  `trees for Data Oriented Parsing <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees.ipynb>`_)
-* `Judith Gottschalk's github repository <https://github.com/ETCBC/study>`_
-* `Gino Kalkman's github repository <https://github.com/GinoKalkman/Biblical_Hebrew_Analysis>`_
+  `trees for Data Oriented Parsing <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees_bhs.ipynb>`_)
+* `Gino Kalkman's analysis of the verbal forms in the Psalms, accompanying his Ph.D. thesis <https://github.com/ETCBC/Biblical_Hebrew_Analysis>`_
+* `other contributions <https://github.com/ETCBC/study>`_
 
 The development of LAF-Fabric continues, but its progress now takes place mostly inside the module *etcbc*,
 a specialized module to support working with the Hebrew Text Database of the ETCBC.

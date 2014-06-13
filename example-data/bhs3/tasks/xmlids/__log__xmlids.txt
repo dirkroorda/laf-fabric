@@ -1,4 +1,4 @@
-OPENED AT:2014-05-09T09-13-28
+OPENED AT:2014-06-12T18-20-21
   0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3/tasks/xmlids/__log__xmlids.txt
   0.01s INFO: DATA LOADED FROM SOURCE bhs3 AND ANNOX -- FOR TASK xmlids
   0.00s Get the xmlids ...
@@ -86,15 +86,15 @@ OPENED AT:2014-05-09T09-13-28
   0.00s nid=77 n=77 subphrase(oid=759934) xid=n759934
   0.00s nid=27 n=27 word(oid=705176) xid=n705176
   0.00s nid=28 n=28 word(oid=705177) xid=n705177
-  0.00s nid=78 n=78 subphrase(oid=759936) xid=n759936
-  0.00s nid=29 n=29 word(oid=705178) xid=n705178
-  0.00s nid=59 n=59 phrase(oid=749947) xid=n749947
-  0.00s nid=66 n=66 phrase_atom(oid=734534) xid=n734534
-  0.00s nid=30 n=30 word(oid=705179) xid=n705179
-  0.00s Results directory:
+  0.01s nid=78 n=78 subphrase(oid=759936) xid=n759936
+  0.01s nid=29 n=29 word(oid=705178) xid=n705178
+  0.01s nid=59 n=59 phrase(oid=749947) xid=n749947
+  0.01s nid=66 n=66 phrase_atom(oid=734534) xid=n734534
+  0.01s nid=30 n=30 word(oid=705179) xid=n705179
+  0.01s Results directory:
 /Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-data/bhs3/tasks/xmlids
 
-__log__xmlids.txt                      4709 Fri May  9 11:13:28 2014
-xmlids-nodes.txt                          0 Fri May  9 11:13:28 2014
+__log__xmlids.txt                      4709 Thu Jun 12 20:20:21 2014
+xmlids-nodes.txt                          0 Thu Jun 12 20:20:21 2014
 
-CLOSED AT:2014-05-09T09-13-28
+CLOSED AT:2014-06-12T18-20-21

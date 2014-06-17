@@ -6,6 +6,15 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.10
+------
+Separated the data directory *laf-fabric-data* into an input directory (*laf-fabric-data*) and an output directory (*laf-fabric-output*).
+In this way, it is easier to download new versions of the data without overwriting your own task results.
+
+4.2.9
+-----
+Minor improvements in the emdros2laf conversion, discovered when converting the new BHS4 version of the Hebrew Text database..
+
 4.2.8
 -----
 Minor improvements in the laf-api.

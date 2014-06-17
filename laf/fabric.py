@@ -337,8 +337,8 @@ class LafFabric(object):
 
     ``load(params)``: given the source, annox and task, loads the data, assembles the API, and returns the API.
     '''
-    def __init__(self, work_dir=None, laf_dir=None, save=False, verbose=None):
-        self.lafapi = LafAPI(Names(work_dir, laf_dir, save, verbose))
+    def __init__(self, data_dir=None, laf_dir=None, output_dir=None, save=False, verbose=None):
+        self.lafapi = LafAPI(Names(data_dir, laf_dir, output_dir, save, verbose))
         self.lafapi.stamp.reset()
         self.api = {}
 

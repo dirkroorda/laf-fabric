@@ -96,8 +96,8 @@ class Names(Settings):
     load_spec_subkeys = {'node', 'edge'}
     kind_types = {False, True}
 
-    def __init__(self, work_dir, laf_dir, save, verbose):
-        Settings.__init__(self, work_dir, laf_dir, save, verbose)
+    def __init__(self, data_dir, laf_dir, output_dir, save, verbose):
+        Settings.__init__(self, data_dir, laf_dir, output_dir, save, verbose)
         self.req_data_items = collections.OrderedDict()
         self._old_data_items = collections.OrderedDict()
         for ((dkey_raw, dbits)) in Names._data_items_tpl:

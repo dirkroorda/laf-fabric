@@ -1,0 +1,24 @@
+OPENED AT:2014-06-17T16-41-03
+  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/bhs3/personal/__log__personal.txt
+  0.01s INFO: DATA LOADED FROM SOURCE bhs3 AND ANNOX participants FOR TASK personal
+  0.00s Get the annotations ...
+  0.00s None(0)	intro='ppp'	role='X-x-x-x'
+  0.00s None(1)	intro='AAAAAA'	role='n/a'
+  0.00s None(2)	intro='VVVVVV'	role='n/a'
+  0.00s None(35)	intro='QQQQ'	role='n/a'
+  0.00s None(36)	intro='FFFF'	role='n/a'
+  0.00s None(37)	intro='GGGG'	role='T-t-t-t-t'
+  0.00s None(3)	intro='BBBBBB'	role='n/a'
+  0.00s phrase_np(6)	intro='CCCCCC'	role='n/a'
+  0.00s None(7)	intro='WWWWW'	role='n/a'
+  0.00s None(9)	intro='UUUUUU'	role='H-h-h'
+  0.00s None(4)	intro='n/a'	role='Y-y-y-y'
+  0.00s None(8)	intro='n/a'	role='Z-z-z-z'
+  0.00s None(44)	intro='RRRR'	role='V-v-v-v'
+  0.00s Results directory:
+/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/bhs3/personal
+
+__log__personal.txt                     829 Tue Jun 17 18:41:03 2014
+annotations.txt                           0 Tue Jun 17 18:41:03 2014
+
+CLOSED AT:2014-06-17T16-41-03

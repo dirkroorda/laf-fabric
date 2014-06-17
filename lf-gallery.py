@@ -25,7 +25,8 @@ from etcbc.preprocess import prepare
 
 testmodes = {
     'tiny': {
-        'work_dir': './example-data',
+        'data_dir': './example-data',
+        'output_dir': './example-output',
         'laf_dir': './example-data',
         'source': 'bhs3',
         'verbose': 'DEBUG',
@@ -33,7 +34,8 @@ testmodes = {
         'save': False,
     },
     'tinys': {
-        'work_dir': './example-data',
+        'data_dir': './example-data',
+        'output_dir': './example-output',
         'laf_dir': './example-data',
         'source': 'bhs3',
         'verbose': 'DEBUG',
@@ -41,7 +43,8 @@ testmodes = {
         'save': True,
     },
     'tinyc': {
-        'work_dir': './example-data',
+        'data_dir': './example-data',
+        'output_dir': './example-output',
         'laf_dir': './example-data',
         'source': 'bhs3',
         'verbose': 'DEBUG',
@@ -49,7 +52,8 @@ testmodes = {
         'save': False,
     },
     'full': {
-        'work_dir': None,
+        'data_dir': None,
+        'output_dir': None,
         'laf_dir': None,
         'source': 'bhs3',
         'verbose': 'NORMAL',
@@ -57,7 +61,8 @@ testmodes = {
         'save': False,
     },
     'fullc': {
-        'work_dir': None,
+        'data_dir': None,
+        'output_dir': None,
         'laf_dir': None,
         'source': 'bhs3',
         'verbose': 'NORMAL',
@@ -65,7 +70,8 @@ testmodes = {
         'save': False,
     },
     'fulls': {
-        'work_dir': None,
+        'data_dir': None,
+        'output_dir': None,
         'laf_dir': None,
         'source': 'bhs3',
         'verbose': 'NORMAL',
@@ -84,7 +90,8 @@ print("MODE={}".format(mode))
 # Start up LAF-Fabric
 
 fabric = LafFabric(
-    work_dir=test['work_dir'],
+    data_dir=test['data_dir'],
+    output_dir=test['output_dir'],
     laf_dir=test['laf_dir'],
     save=test['save'],
     verbose=test['verbose'],

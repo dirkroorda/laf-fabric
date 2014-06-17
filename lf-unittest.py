@@ -12,10 +12,12 @@ from etcbc.preprocess import prepare
 
 SOURCE = 'bhs3'
 ANNOX = 'participants'
-WORKDIR = './example-data'
-WORKDIRA = '{}/example-data'.format(os.getcwd())
-LAFDIR = WORKDIR
-LAFDIRA = WORKDIRA
+DATADIR = './example-data'
+DATADIRA = '{}/example-data'.format(os.getcwd())
+LAFDIR = DATADIR
+LAFDIRA = DATADIRA
+OUTPUTDIR = './example-output'
+OUTPUTDIRA = '{}/example-output'.format(os.getcwd())
 SPECIFIC_MSG = "running an individual test"
 SPECIFIC = False
 
@@ -31,8 +33,9 @@ class TestLafFabric(unittest.TestCase):
     def setUp(self):
         if self.fabric == None:
             self.fabric = LafFabric(
-                work_dir=WORKDIR,
+                data_dir=DATADIR,
                 laf_dir=LAFDIR,
+                output_dir=OUTPUTDIR,
                 save=False,
                 verbose='SILENT',
             )
@@ -41,7 +44,7 @@ class TestLafFabric(unittest.TestCase):
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_a100_startup(self):
         lafapi = self.fabric.lafapi
-        self.assertEqual(lafapi.names._myconfig['work_dir'], WORKDIRA)
+        self.assertEqual(lafapi.names._myconfig['data_dir'], DATADIRA)
         self.assertEqual(lafapi.names._myconfig['m_source_dir'], LAFDIRA)
         pass
 
@@ -55,7 +58,7 @@ class TestLafFabric(unittest.TestCase):
         the_log = None
         the_log_mtime = None
         newer = True
-        for f in glob.glob("{}/{}/bin/*".format(WORKDIRA, SOURCE)):
+        for f in glob.glob("{}/{}/bin/*".format(DATADIRA, SOURCE)):
             fn = os.path.basename(f)
             if fn in 'AZ': continue
             elif fn == '__log__compile__.txt':
@@ -83,7 +86,7 @@ class TestLafFabric(unittest.TestCase):
         the_log = None
         the_log_mtime = None
         newer = True
-        for f in glob.glob("{}/{}/bin/A/{}/*".format(WORKDIRA, SOURCE, ANNOX)):
+        for f in glob.glob("{}/{}/bin/A/{}/*".format(DATADIRA, SOURCE, ANNOX)):
             fn = os.path.basename(f)
             if fn == '__log__compile__.txt':
                 the_log = f

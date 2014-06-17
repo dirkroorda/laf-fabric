@@ -40,6 +40,7 @@ First you have to get a *processor* object. This is how you get it::
     fabric = LafFabric(
         work_dir="/Users/you/laf-fabric-data",
         laf_dir="/Users/you/laf-fabric_data/laf",
+        output_dir="/Users/you/laf-fabric_output",
         save=True,
         verbose='NORMAL',
     )

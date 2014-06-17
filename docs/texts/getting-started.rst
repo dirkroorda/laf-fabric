@@ -96,9 +96,11 @@ You find a download link for a ready made work directory containing the binary L
 Download and unpack it in your home directory. If all goes well you have a directory
 *laf-fabric-data* in your home directory.
 
-.. caution::
-    If you have already a *laf-fabric-data* directory, unpack the download somewhere else,
-    and copy over the relevant subdirectories to your own. In that way you do not loose your work.
+.. note::
+    If you have already a *laf-fabric-data* directory, delete it, unless you have added stuff yourself.
+    In that case, move your existing directory out of the way.
+    *laf-fabric-data* is supposed to be input data, i.e. the data you download plus the data that laf-fabric itself adds to it
+    while converting from emdros to laf or from laf to binary.
 
 Test and run LAF-Fabric
 =======================
@@ -144,13 +146,16 @@ If you need the data to be at another location, you must modify the *laf-fabric.
 This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in a standard
 directory, which is *laf-fabric-data* in your home directory.
 
-There are just one or two settings::
+There are just a few settings::
 
     [locations]
-    work_dir  = /Users/you/laf-data-dir
-    laf_dir  = /Users/you/laf-data-dir
+    data_dir  = ~/laf-data-dir
+    laf_dir  = ~/laf-data-dir
+    output_dir  = ~/output-data-dir
     
-*work_dir* is folder where all the data is, input, intermediate, and output.
+*data_dir* is folder where all the input data is.
+
+*output_dir* is folder where all the output data is, the stuff that your tasks create.
 
 *laf_dir* is the folder where the original laf-xml data is.
 It is *optional*. LAF-Fabric can work without it.

@@ -3,10 +3,10 @@ import configparser
 from .timestamp import Timestamp
 
 NAME = 'LAF-Fabric'
-VERSION = '4.2.9'
+VERSION = '4.2.10'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
-DEFAULT_WORK_DIR = 'laf-fabric-data'
+DEFAULT_DATA_DIR = 'laf-fabric-data'
 
 class Settings(object):
     '''Manage the configuration.
@@ -18,12 +18,12 @@ class Settings(object):
     It is possible to save these settings in the latter config file.
     '''
     _myconfig = {
-        'work_dir': None,                  # working directory (containing compiled laf, task results)
+        'data_dir': None,                  # data directory (possibly containing compiled laf)
+        'output_dir': None,                # output directory (containing task results)
         'm_source_dir': None,              # directory containing original, uncompiled laf resource
         'm_source_subdir': 'laf',          # subdirectory of main laf resource
         'a_source_subdir': 'annotations',  # subdirectory of annotation add-ons
         'bin_subdir': 'bin',               # subdirectory of compiled data
-        'task_subdir': 'tasks',            # subdirectory of task results
         'bin_ext': 'bin',                  # file extension for binary files
         'text_ext': 'txt',                 # file extension for text files
         'log_name': '__log__',             # base name for log files
@@ -38,61 +38,72 @@ class Settings(object):
         'task':                  '{task}',
         'zspace':                '{zspace}',
         'empty':                 '{empty}',
-        'work_dir':              '{work_dir}',
-        'source_data':           '{work_dir}/{source}/mql/{source}',
-        'bin_dir':               '{work_dir}/{source}/{bin_subdir}',
+        'data_dir':              '{data_dir}',
+        'source_data':           '{data_dir}/{source}/mql/{source}',
+        'bin_dir':               '{data_dir}/{source}/{bin_subdir}',
         'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',
         'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}.txt.hdr',
         'a_source_dir':          '{m_source_dir}/{source}/{a_source_subdir}/{annox}',
         'a_source_path':         '{m_source_dir}/{source}/{a_source_subdir}/{annox}/{header}',
         'compiled_file':         '{log_name}{compile_name}.{text_ext}',
-        'm_compiled_dir':        '{work_dir}/{source}/{bin_subdir}',
-        'm_compiled_path':       '{work_dir}/{source}/{bin_subdir}/{log_name}{compile_name}.{text_ext}',
-        'primary_compiled_path': '{work_dir}/{source}/{bin_subdir}/{primary_data}',
-        'a_compiled_dir':        '{work_dir}/{source}/{bin_subdir}/A/{annox}',
-        'a_compiled_path':       '{work_dir}/{source}/{bin_subdir}/A/{annox}/{log_name}{compile_name}.{text_ext}',
-        'z_compiled_dir':        '{work_dir}/{source}/{bin_subdir}/Z/{zspace}',
-        'task_dir':              '{work_dir}/{source}/{task_subdir}/{task}',
-        'log_path':              '{work_dir}/{source}/{task_subdir}/{task}/{log_name}{task}.{text_ext}',
+        'm_compiled_dir':        '{data_dir}/{source}/{bin_subdir}',
+        'm_compiled_path':       '{data_dir}/{source}/{bin_subdir}/{log_name}{compile_name}.{text_ext}',
+        'primary_compiled_path': '{data_dir}/{source}/{bin_subdir}/{primary_data}',
+        'a_compiled_dir':        '{data_dir}/{source}/{bin_subdir}/A/{annox}',
+        'a_compiled_path':       '{data_dir}/{source}/{bin_subdir}/A/{annox}/{log_name}{compile_name}.{text_ext}',
+        'z_compiled_dir':        '{data_dir}/{source}/{bin_subdir}/Z/{zspace}',
+        'task_dir':              '{output_dir}/{source}/{task}',
+        'log_path':              '{output_dir}/{source}/{task}/{log_name}{task}.{text_ext}',
     }
 
-    def __init__(self, work_dir, laf_dir, save, verbose):
+    def __init__(self, data_dir, laf_dir, output_dir, save, verbose):
         stamp = Timestamp(verbose=verbose)
         self.stamp = stamp
         stamp.Nmsg('This is {} {}\n{}'.format(NAME, VERSION, APIREF))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         cw_dir = os.getcwd()
         home_dir = os.path.expanduser('~')
-        global_config_dir = "{}/{}".format(home_dir, DEFAULT_WORK_DIR)
+        global_config_dir = "{}/{}".format(home_dir, DEFAULT_DATA_DIR)
         global_config_path = "{}/{}".format(global_config_dir, MAIN_CFG)
         local_config_path = MAIN_CFG
-        default_work_dir = global_config_dir
+        default_data_dir = global_config_dir
         default_laf_dir = global_config_dir
-        config_work_dir = None
+        config_data_dir = None
         config_laf_dir = None
+        config_output_dir = None
         the_config_path = None
         for config_path in (local_config_path, global_config_path):
             if os.path.exists(config_path): the_config_path = config_path
         if the_config_path != None:
             with open(the_config_path, "r", encoding="utf-8") as f: strings.read_file(f)
             if 'locations' in strings:
-                if 'work_dir' in strings['locations']: config_work_dir = strings['locations']['work_dir']
+                if 'data_dir' in strings['locations']: config_data_dir = strings['locations']['data_dir']
                 if 'laf_dir' in strings['locations']: config_laf_dir = strings['locations']['laf_dir']
-        the_work_dir = work_dir or config_work_dir or default_work_dir
-        the_laf_dir = laf_dir or config_laf_dir or the_work_dir
-        the_work_dir = \
-            the_work_dir.replace('.', cw_dir, 1) if the_work_dir.startswith('.') else the_work_dir.replace('~', home_dir, 1) if the_work_dir.startswith('~') else the_work_dir
+                if 'output_dir' in strings['locations']: config_output_dir = strings['locations']['output_dir']
+        the_data_dir = data_dir or config_data_dir or default_data_dir
+        the_laf_dir = laf_dir or config_laf_dir or the_data_dir
+        the_output_dir = output_dir or config_output_dir
+        the_data_dir = \
+            the_data_dir.replace('.', cw_dir, 1) if the_data_dir.startswith('.') else the_data_dir.replace('~', home_dir, 1) if the_data_dir.startswith('~') else the_data_dir
         the_laf_dir = \
             the_laf_dir.replace('.', cw_dir, 1) if the_laf_dir.startswith('.') else the_laf_dir.replace('~', home_dir, 1) if the_laf_dir.startswith('~') else the_laf_dir
-        if not os.path.exists(the_work_dir):
-            stamp.Imsg("CREATING new WORK_DIR {}".format(the_work_dir))
+        the_output_dir = \
+            the_output_dir.replace('.', cw_dir, 1) if the_output_dir.startswith('.') else the_output_dir.replace('~', home_dir, 1) if the_output_dir.startswith('~') else the_output_dir
+        if not os.path.exists(the_data_dir):
+            stamp.Imsg("CREATING new DATA_DIR {}".format(the_data_dir))
             try:
-                if not os.path.exists(the_work_dir): os.makedirs(the_work_dir)
+                if not os.path.exists(the_data_dir): os.makedirs(the_data_dir)
             except os.error as e:
-                raise FabricError("could not create work directory {}".format(the_work_dir), stamp, cause=e)
-        self._myconfig.update({'work_dir': the_work_dir, 'm_source_dir': the_laf_dir})
+                raise FabricError("could not create data directory {}".format(the_data_dir), stamp, cause=e)
+        if not os.path.exists(the_output_dir):
+            stamp.Imsg("CREATING new OUTPUT_DIR {}".format(the_output_dir))
+            try:
+                if not os.path.exists(the_output_dir): os.makedirs(the_output_dir)
+            except os.error as e:
+                raise FabricError("could not create output directory {}".format(the_output_dir), stamp, cause=e)
+        self._myconfig.update({'data_dir': the_data_dir, 'm_source_dir': the_laf_dir, 'output_dir': the_output_dir})
         if save:
-            strings['locations'] = {'work_dir': the_work_dir, 'laf_dir': the_laf_dir}
+            strings['locations'] = {'data_dir': the_data_dir, 'laf_dir': the_laf_dir, 'output_dir': the_output_dir}
             if not os.path.exists(global_config_path):
                 stamp.Imsg("CREATING new GLOBAL CONFIG FILE {}".format(global_config_path))
                 try:

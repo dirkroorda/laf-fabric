@@ -2,24 +2,6 @@ import sys
 import collections
 from copy import deepcopy
 
-BASELOAD = {
-    "xmlids": {
-        "node": False,
-        "edge": False,
-    },
-    "features": {
-        "shebanq": {
-            "node": [
-                "db.otype",
-                "sft.verse_label",
-            ],
-            "edge": [
-            ],
-        },
-    },
-    "primary": False,
-}
-
 class FeatureDoc(object):
     '''Extracts feature information for selected features.
 
@@ -39,9 +21,27 @@ class FeatureDoc(object):
                     * a set of *absence values*, i.e. values like ``none`` or ``unknown`` that somehow count as the absence of a value.
                     * VALUE_THRESHOLD: a parameter that indicates how many distinct values to list in the summary.
         '''
+        self.BASELOAD = {
+            "xmlids": {
+                "node": False,
+                "edge": False,
+            },
+            "features": {
+                "shebanq": {
+                    "node": [
+                        "db.otype",
+                        "sft.{}".format(study['vlabel']),
+                    ],
+                    "edge": [
+                    ],
+                },
+            },
+            "primary": False,
+        }
+
         self.processor = processor
         self.study = study
-        this_load = deepcopy(BASELOAD)
+        this_load = deepcopy(self.BASELOAD)
         this_load['features']['shebanq']['node'].extend(['ft.{}'.format(x) for x in study['features']])
         processor.load_again(this_load)
         self.API = processor.api
@@ -118,7 +118,7 @@ class FeatureDoc(object):
             for val in vals_undef[ft]:
                 n_vals_undef[ft] += vals_undef[ft][val]
         
-        summary_file = outfile("summary.txt")
+        summary_file = outfile("summary.csv")
         summary_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
             'Feature',
             'val (-)',

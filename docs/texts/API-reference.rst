@@ -178,6 +178,8 @@ These variables exist only if they correspond with things that you have called f
 
 **NN**: The "next node" iterator.
 
+**EE**: The "next edge" iterator.
+
 **NE**: The "next event" iterator, only if you have specified ``"primary": True``.
 
 **msg**: The function to issue messages with
@@ -425,6 +427,18 @@ There is no mutual order between two nodes if at least one of the following hold
     The *BF()* ordering is **not** influenced by an additional ordering that you might have added to Laf Fabric by
     data preparation. So even if you have loaded a more complete ordering, you still can analyse for which pairs of nodes the
     extra ordering introduces extra order.
+
+EE (Next Edge)
+--------------
+Examples::
+    
+    (a0) for edge in EE():
+             pass
+
+EE() walks through edges, in unspecified order.
+It yields for every edge a tuple *(id, from, to)*, where *id* is the identifier of the edge (an integer),
+and *from* and *to* are the nodes from which and to which the edge goes.
+These nodes are specified by their node identifiers (integers).
 
 NN (Next Node)
 --------------

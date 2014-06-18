@@ -116,7 +116,7 @@ class LafData(object):
                 last_line = list(h)[-1]
                 if ':' in last_line:
                     the_time = last_line.split(':', 1)[1]
-            self.stamp.Imsg("DATA COMPILED AT: {}".format(the_time))
+            self.stamp.Imsg("USING DATA COMPILED AT: {}".format(the_time))
         if has_compiled:
             for origin in ('m', 'a'):
                 self._clear_origin_unnec(origin)

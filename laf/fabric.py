@@ -21,6 +21,7 @@ class LafAPI(LafData):
         self.api = {}
         self._api_fcxp()
         self._api_nodes()
+        self._api_edges()
         self._api_io()
         self._api_prep()
         return self.api
@@ -131,6 +132,19 @@ class LafAPI(LafData):
         api = self.api
         api['make_array_inverse'] = make_array_inverse
         api['data_items'] = data_items
+
+    def _api_edges(self):
+        data_items = self.data_items
+        edges_from = data_items[Names.comp('mG00', ('edges_from',))]
+        edges_to = data_items[Names.comp('mG00', ('edges_to',))]
+
+        def next_edge():
+            for e in range(len(edges_from)):
+                yield (e, edges_from[e], edges_to[e])
+
+        self.api.update({
+            'EE':      next_edge,
+        })
 
     def _api_nodes(self):
         data_items = self.data_items

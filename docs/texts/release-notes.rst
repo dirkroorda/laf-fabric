@@ -6,6 +6,11 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.11
+------
+New API element *EE*, which yield all edges in unspecified order.
+The module *featuredoc* can now document all features, also edge features.
+
 4.2.10
 ------
 Separated the data directory *laf-fabric-data* into an input directory (*laf-fabric-data*) and an output directory (*laf-fabric-output*).
@@ -13,7 +18,8 @@ In this way, it is easier to download new versions of the data without overwriti
 
 4.2.9
 -----
-Minor improvements in the emdros2laf conversion, discovered when converting the new BHS4 version of the Hebrew Text database..
+Minor improvements in the emdros2laf conversion, discovered when converting the new BHS4 version of the Hebrew Text database.
+If you want to use the BHS4 data (beta), `download <https://www.dropbox.com/s/1oqvb92sqn7vuml/laf-fabric-data.zip>`_ the data again.
 
 4.2.8
 -----

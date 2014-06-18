@@ -26,24 +26,18 @@ class FeatureDoc(object):
                 "node": False,
                 "edge": False,
             },
-            "features": {
-                "shebanq": {
-                    "node": [
-                        "db.otype",
-                        "sft.{}".format(study['vlabel']),
-                    ],
-                    "edge": [
-                    ],
-                },
-            },
+            "features": ('''otype {}'''.format(study['vlabel']), ''),
             "primary": False,
         }
 
         self.processor = processor
         self.study = study
         this_load = deepcopy(self.BASELOAD)
-        this_load['features']['shebanq']['node'].extend(['ft.{}'.format(x) for x in study['features']])
-        processor.load_again(this_load)
+        this_load['features'] = (
+            this_load['features'][0] + ' ' + study['features']['node'],
+            this_load['features'][1] + ' ' + study['features']['edge'],
+        )
+        processor.load_again(this_load, verbose='DETAIL')
         self.API = processor.api
 
     def feature_doc(self):
@@ -59,28 +53,42 @@ class FeatureDoc(object):
         msg = self.API['msg']
         outfile = self.API['outfile']
         F = self.API['F']
+        FE = self.API['FE']
         NN = self.API['NN']
+        EE = self.API['EE']
         msg = self.API['msg']
         outfile = self.API['outfile']
         my_file = self.API['my_file']
 
         msg("Looking up feature values ... ")
-        feats = [(ft, "shebanq_ft_{}".format(ft)) for ft in self.study['features']]
+        node_feats = [ft.replace(':','_').replace('.','_') for ft in self.study['features']['node'].split()]
+        edge_feats = [ft.replace(':','_').replace('.','_') for ft in self.study['features']['edge'].split()]
         absence_values = self.study['absence_values']
         VALUE_THRESHOLD = self.study['VALUE_THRESHOLD']
 
 # values and object types for this feature
         
+        vals = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
         vals_def = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
         vals_undef = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
         n_otypes = collections.defaultdict(lambda: collections.defaultdict(lambda: [0,0]))
         n_otypesi = collections.defaultdict(lambda: collections.defaultdict(lambda: [0,0]))
+        e_otypes = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
+        e_otypesi = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
         
+        chunk_size = 100000
+        ci = 0
+        i = 0
         for node in NN():
-            for (ft, feat) in feats:
-                val = F.item[feat].v(node)
-                otype = F.shebanq_db_otype.v(node)
+            i += 1
+            ci += 1
+            if ci == chunk_size:
+                ci = 0
+                msg("{:>7} nodes done".format(i))
+            for ft in node_feats:
+                val = F.item[ft].v(node)
                 if val != None:
+                    otype = F.otype.v(node)
                     if val in absence_values:
                         n_otypes[otype][ft][0] += 1
                         n_otypesi[ft][otype][0] += 1
@@ -89,13 +97,33 @@ class FeatureDoc(object):
                         n_otypes[otype][ft][1] += 1
                         n_otypesi[ft][otype][1] += 1
                         vals_def[ft][val] += 1
+        msg("{:>7} nodes done".format(i))
+
+        ci = 0
+        i = 0
+        for edge in EE():
+            i += 1
+            ci += 1
+            if ci == chunk_size:
+                ci = 0
+                msg("{:>7} edges done".format(i))
+            for ft in edge_feats:
+                val = FE.item[ft].v(edge[0])
+                if val != None:
+                    otype_from = F.otype.v(edge[1])
+                    otype_to = F.otype.v(edge[2])
+                    e_otypes[(otype_from, otype_to)][ft] += 1
+                    e_otypesi[ft][(otype_from, otype_to)] += 1
+                    vals[ft][val] += 1
+        msg("{:>7} edges done".format(i))
         
-        otypes = sorted(n_otypes.keys())
+        node_otypes = sorted(n_otypes.keys())
+        edge_otypes = sorted(e_otypes.keys())
 
         msg("Computing results ...")
         
-        for (ft, feat) in feats:
-            result_file = outfile("{} values.txt".format(ft))
+        for ft in node_feats:
+            result_file = outfile("node {} values.txt".format(ft))
             result_file.write("UNDEFINED VALUES\n")
             for x in sorted(vals_undef[ft].items(), key=lambda y: (-y[1], y[0])):
                 result_file.write("{} x {}\n".format(*x))
@@ -104,21 +132,34 @@ class FeatureDoc(object):
                 result_file.write("{} x {}\n".format(*x))
             result_file.close()
         
-        result_file = outfile("types.txt")
+        for ft in edge_feats:
+            result_file = outfile("edge {} values.txt".format(ft))
+            result_file.write("\nVALUES\n")
+            for x in sorted(vals[ft].items(), key=lambda y: (-y[1], y[0])):
+                result_file.write("{} x {}\n".format(*x))
+            result_file.close()
+        
+        result_file = outfile("1_types_node.txt")
         for ft in sorted(n_otypesi):
             for otype in sorted(n_otypesi[ft]):
                 result_file.write("{}\t{}\t{}\t{}\n".format(ft, otype, *n_otypesi[ft][otype]))
         result_file.close()
         
+        result_file = outfile("1_types_edge.txt")
+        for ft in sorted(e_otypesi):
+            for otype in sorted(e_otypesi[ft]):
+                result_file.write("{}\t{}->{}\t{}\n".format(ft, otype[0], otype[1], e_otypesi[ft][otype]))
+        result_file.close()
+        
         n_vals_def = collections.defaultdict(lambda: 0)
         n_vals_undef = collections.defaultdict(lambda: 0)
-        for (ft, feat) in feats:
+        for ft in node_feats:
             for val in vals_def[ft]:
                 n_vals_def[ft] += vals_def[ft][val]
             for val in vals_undef[ft]:
                 n_vals_undef[ft] += vals_undef[ft][val]
         
-        summary_file = outfile("summary.csv")
+        summary_file = outfile("0_summary_node.csv")
         summary_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
             'Feature',
             'val (-)',
@@ -127,10 +168,10 @@ class FeatureDoc(object):
             '#vals (+)',
             'occs (-)',
             'occs (+)',
-            '\t'.join(["{} (-)\t{} (+)".format(otype, otype) for otype in otypes]),
+            '\t'.join(["{} (-)\t{} (+)".format(otype, otype) for otype in node_otypes]),
         ))
                            
-        for (ft, feat) in feats:
+        for ft in node_feats:
             summary_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
                 ft,
                 '',
@@ -139,7 +180,7 @@ class FeatureDoc(object):
                 len(vals_def[ft]),
                 n_vals_undef[ft],
                 n_vals_def[ft],
-                '\t'.join(["{}\t{}".format(*n_otypes[otype][ft]) for otype in otypes]),
+                '\t'.join(["{}\t{}".format(*n_otypes[otype][ft]) for otype in node_otypes]),
             ))
             for (val, n) in sorted(vals_undef[ft].items(), key=lambda x: (-x[1], x[0])):
                 summary_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
@@ -150,7 +191,7 @@ class FeatureDoc(object):
                     '',
                     n,
                     '',
-                    '\t' * (2 * len(otypes) - 1),
+                    '\t' * (2 * len(node_otypes) - 1),
             ))
             i = 0
             for (val, n) in sorted(vals_def[ft].items(), key=lambda x: (-x[1], x[0])):
@@ -164,7 +205,7 @@ class FeatureDoc(object):
                         '',
                         '',
                         '',
-                        '\t' * (2 * len(otypes) - 1),
+                        '\t' * (2 * len(node_otypes) - 1),
                     ))
                     break
                 summary_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
@@ -175,7 +216,48 @@ class FeatureDoc(object):
                     '',
                     '',
                     n,
-                    '\t' * (2 * len(otypes) - 1),
+                    '\t' * (2 * len(node_otypes) - 1),
+            ))
+        summary_file.close()
+
+        e_vals = collections.defaultdict(lambda: 0)
+        for ft in edge_feats:
+            for val in vals[ft]:
+                e_vals[ft] += vals[ft][val]
+        
+        summary_file = outfile("0_summary_edge.csv")
+        summary_file.write("{}\t{}\t{}\t{}\t{}\n".format(
+            'Feature',
+            'val',
+            '#vals',
+            'occs',
+            '\t'.join(["{}->{}".format(*otype) for otype in edge_otypes]),
+        ))
+                           
+        for ft in edge_feats:
+            summary_file.write("{}\t{}\t{}\t{}\t{}\n".format(
+                ft,
+                '',
+                len(vals[ft]),
+                e_vals[ft],
+                '\t'.join(["{}".format(e_otypes[otype][ft]) for otype in edge_otypes]),
+            ))
+            i = 0
+            for (val, n) in sorted(vals[ft].items(), key=lambda x: (-x[1], x[0])):
+                i += 1
+                if i > VALUE_THRESHOLD:
+                    summary_file.write("{}\t{}\t{}\t{}\n".format(
+                        '',
+                        "{} MORE".format(len(vals[ft]) - VALUE_THRESHOLD),
+                        '',
+                        '\t' * (len(edge_otypes) - 1),
+                    ))
+                    break
+                summary_file.write("{}\t{}\t{}\t{}\n".format(
+                    '',
+                    val,
+                    n,
+                    '\t' * (len(edge_otypes) - 1),
             ))
         summary_file.close()
         

@@ -7,8 +7,8 @@ import configparser
 import argparse
 
 NAME = 'LAF-Fabric'
-VERSION = '4.2.0'
-APIREF = 'http://laf-fabric.readthedocs.org/texts/EMDROS2LAF-reference.html'
+VERSION = '4.2.12'
+APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 ALL_PARTS = ['monad', 'section', 'lingo']
 

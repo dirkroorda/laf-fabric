@@ -2,6 +2,7 @@ import os
 import glob
 import collections
 import functools
+import time
 from .lib import make_array_inverse
 from .names import Names, FabricError
 from .data import LafData
@@ -380,7 +381,9 @@ class LafFabric(object):
         lafapi.add_logfile()
         self.api.update(lafapi.API())
         if 'prepare' in load_spec: lafapi.prepare_all(self.api, load_spec['prepare'])
-        lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {}".format(env['source'], env['annox'], env['task']))
+        lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}".format(
+            env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
+        ))
         lafapi.stamp.reset()
         self.localnames = '\n'.join("{key} = {{var}}.api['{key}']".format(key=key) for key in self.api)
         return self.api

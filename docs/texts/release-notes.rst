@@ -6,6 +6,13 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.12
+------
+LAF-Fabric reports the date and time when it has loaded data for a task.
+So in every notebook you can see the version of LAF-Fabric, the datetime when the loaded data has been compiled,
+and the datetime when this data has been loaded for this task.
+This is handy when you share tasks via nbviewer.
+
 4.2.11
 ------
 New API element *EE*, which yield all edges in unspecified order.

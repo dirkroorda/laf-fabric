@@ -6,6 +6,10 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.13
+------
+In the API you can ask for the locations of the data directory and the output directory.
+
 4.2.12
 ------
 LAF-Fabric reports the date and time when it has loaded data for a task.

@@ -157,7 +157,7 @@ Usage::
     from etcbc.annotating import GenForm
 
 More info: 
-`notebook annotating <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/annotating.ipynb>`_
+`notebook annotating <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/annotating.ipynb>`_
 
 Feature documentation
 =====================
@@ -170,10 +170,10 @@ Usage::
     from etcbc.featuredoc import FeatureDoc
 
 More info:
-`notebook feature-doc <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/feature-doc.ipynb>`_
+`notebook feature-doc <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/featuredoc/feature-doc.ipynb>`_
 
 MQL
 ===
 The module ``etcbc.mql`` lets you fire mql queries to the corresponding Emdros database, and process the results with LAF-Fabric.
 More info over what MQL, EMDROS are, and how to use it, is in 
-`notebook mql <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/mql.ipynb>`_
+`notebook mql <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/mql.ipynb>`_

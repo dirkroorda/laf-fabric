@@ -82,7 +82,7 @@ Or alternatively, you can include the results of your own work, whether manual o
 with the original data. You can then do *what-if* research on the combination.
 
 The notebook
-`annox_workflow <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/annotating/annox_workflow.ipynb>`_
+`annox_workflow <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/annox_workflow.ipynb>`_
 demonstrates this workflow.
 
 Interactive notebooks
@@ -111,7 +111,7 @@ LAF-Fabric is a stepping stone for teams in digital humanities to the wonderful 
 With it you extract data from your resources of interest and feed it into your other tools.
 
 See for example the notebook 
-`cooccurrences <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/language-variation/cooccurrences.ipynb>`_,
+`cooccurrences <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/lingvar/cooccurrences.ipynb>`_,
 which codes in less than a page an extraction of **data tables** relevant to the
 study of linguistic variation in the Hebrew Bible.
 These tables are suitable for subsequent data analysis

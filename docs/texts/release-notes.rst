@@ -59,7 +59,7 @@ Developed the *etcbc.trees* module further.
 Trees based on the implicit embedding relationship do not exhibit all embedding structure:
 clauses can be further embedded by means of an explicit *mother* relationship.
 The rules are a bit intricate, but it has been implemented (BHS3 only, no CALAP).
-See the updates `trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees_bhs.ipynb>`_ notebook.
+See the updates `trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_bhs.ipynb>`_ notebook.
 
 4.2.5
 -----
@@ -86,7 +86,7 @@ In *etcbc* there is a workable definition between consonantal Hebrew characters 
 More fixes in *emdros2laf*, a new source, the *CALAP* has been converted to LAF.
 LAF-Fabric has compiled it, and it is ready for exploration.
 See the example notebook
-`plain-calap <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/plain_calap.ipynb>`_.
+`plain-calap <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/syriac/plain_calap.ipynb>`_.
 The CALAP is included in the data download (see :doc:`getting-started`).
 
 4.2.1
@@ -141,7 +141,7 @@ ETCBC Emdros integration
 ^^^^^^^^^^^^^^^^^^^^^^^^
 In the *etcbc* package there is a module *mql* that enables the user to run emdros queries, capture the results as a node set, and use that for
 further processing in LAF-Fabric.
-See `notebook MQL <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/MQL.ipynb>`_
+See `notebook MQL <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/MQL.ipynb>`_
 
 4.0.6
 -----
@@ -391,7 +391,7 @@ in your custom task.
 
 Other
 ^^^^^
-The `trees (smooth path) <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees.ipynb>`_
+The `trees (smooth path) <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees.ipynb>`_
 notebook is evolving to get nice syntax trees from the Hebrew database.
 
 3.3.1
@@ -426,7 +426,7 @@ API
 
 * Documentation: added release notes.
 
-* New Example Notebook: `participle <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/participle.ipynb>`_.
+* New Example Notebook: `participle <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/lingvar/participle.ipynb>`_.
 
 Incompatible changes
 ^^^^^^^^^^^^^^^^^^^^

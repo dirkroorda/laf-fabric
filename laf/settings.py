@@ -3,7 +3,7 @@ import configparser
 from .timestamp import Timestamp
 
 NAME = 'LAF-Fabric'
-VERSION = '4.2.12'
+VERSION = '4.2.13'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_DATA_DIR = 'laf-fabric-data'
@@ -39,6 +39,7 @@ class Settings(object):
         'zspace':                '{zspace}',
         'empty':                 '{empty}',
         'data_dir':              '{data_dir}',
+        'output_dir':            '{output_dir}',
         'source_data':           '{data_dir}/{source}/mql/{source}',
         'bin_dir':               '{data_dir}/{source}/{bin_subdir}',
         'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',

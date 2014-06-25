@@ -738,6 +738,8 @@ Input and Output
 ----------------
 Examples::
 
+    data_dir
+    output_dir
     out_handle = outfile("output.txt")
     in_handle  = infile("input.txt")
     file_path = my_file("thefile.txt")
@@ -748,6 +750,10 @@ Examples::
     msg(text, newline=False)
     msg(text, withtime=False)
 
+
+*data_dir* is the top-level directory where all input data (laf resources, extra annotation files) reside.
+
+*output_dir* is the top-level directory where all task output data is collected.
 
 You can create an output filehandle, open for writing, by calling the ``outfile()`` method
 and assigning the result to a variable, say *out_handle*.

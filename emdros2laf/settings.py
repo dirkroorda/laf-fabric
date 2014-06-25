@@ -7,7 +7,7 @@ import configparser
 import argparse
 
 NAME = 'LAF-Fabric'
-VERSION = '4.2.12'
+VERSION = '4.2.13'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 ALL_PARTS = ['monad', 'section', 'lingo']

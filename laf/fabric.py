@@ -331,6 +331,8 @@ class LafAPI(LafData):
             'close':   self.finish_task,
             'my_file': result,
             'msg':     self.stamp.raw_msg,
+            'data_dir': self.names.env['data_dir'],
+            'output_dir': self.names.env['output_dir'],
         }
         self.api.update(api)
 

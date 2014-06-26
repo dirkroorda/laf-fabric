@@ -46,7 +46,7 @@ class Validate:
         If validation takes place, None will be replaced by True or False, depending on whether
         the xml is valid wrt. the xsd.
         '''
-        self.generated_files.append([xml, xsd, None])
+        self.generated_files.append([xml, xsd, None, ''])
 
     def validate(self):
         ''' Validate all eligible files, but only if the validation flag is on
@@ -54,13 +54,14 @@ class Validate:
         if not self.settings.flag('validate'): return
 
         for item in self.generated_files:
-            (absolute_path, schema_dst, is_valid) = item
+            (absolute_path, schema_dst, is_valid, r_code) = item
             if schema_dst == None: continue
             print("INFO: validating {}".format(absolute_path))
             error = runx(self.settings.xml['xmllint_cmd'].format(
                 schema = schema_dst,
                 xmlfile = absolute_path,
             ))
+            item[3] = error
             if not error: item[2] = True
             elif error > 0: item[2] = False
             else: errors += 1
@@ -69,10 +70,10 @@ class Validate:
         ''' Print a list of all generated files and indicate validation outcomes
         '''
         for item in self.generated_files:
-            (absolute_path, schema_dst, is_valid) = fillup(3, None, item)
+            (absolute_path, schema_dst, is_valid, r_code) = fillup(4, None, item)
             message = 'INFO: Generated '
-            if schema_dst == None: message += '{:<4} file {:<9} {}'.format('text', '', os.path.basename(absolute_path))
+            if schema_dst == None: message += '{:<4} file {:<15} {}'.format('text', '', os.path.basename(absolute_path))
             else:
                 is_valid_repr = 'UNKNOWN' if is_valid == None else 'VALID' if is_valid else 'NOT VALID'
-                message += '{:<4} file {:<9} {:<40} wrt. {}'.format('xml', is_valid_repr, os.path.basename(absolute_path), os.path.basename(schema_dst))
+                message += '{:<4} file {:<9} ({:<3}) {:<40} wrt. {}'.format('xml', is_valid_repr, r_code, os.path.basename(absolute_path), os.path.basename(schema_dst))
             print(message)

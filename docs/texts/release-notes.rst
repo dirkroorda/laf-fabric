@@ -6,6 +6,10 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.14
+------
+A few changes in etcbc.emdros2laf, which facilitates generating feature declaration documents.
+
 4.2.13
 ------
 In the API you can ask for the locations of the data directory and the output directory.

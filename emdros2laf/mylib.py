@@ -13,7 +13,7 @@ def camel(text):
 def fillup(size, val, lst): return tuple(lst[x] if x < len(lst) else val for x in range(size)) 
 def today(): return datetime.date.today()
 def run(cmd): subprocess.check_call(cmd + ' 2>&1', shell = True)
-def runx(cmd): error = subprocess.call(cmd + ' 2>&1', shell = True)
+def runx(cmd): return subprocess.call(cmd + ' 2>&1', shell = True)
 
 class Timestamp():
     timestamp = None

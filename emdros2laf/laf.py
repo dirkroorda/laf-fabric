@@ -158,7 +158,7 @@ class Laf:
             self.template[tpl] = ("\n" + template.rstrip("\n")) if  nl_before else template
         
     def makeheaders(self):
-        if not self.et.simple:
+        if not self.et.simple or self.et.plain:
             self.makefeatureheader()
         if not self.settings.args.fdecls_only:
             self.makeresourceheader()
@@ -171,6 +171,8 @@ class Laf:
         truth_values = sorted(self.settings.type_boolean.values())
         db_label = self.settings.annotation_label['db_label']
         meta = self.settings.meta
+        plain_info = collections.defaultdict(lambda: {})
+        plain_iso_info = {}
         for db_feature in (
             ('monads', 'monads', 'integer', 'the monads that belong to this object'),
             ('minmonad', 'minmonad', 'integer', 'the first monad of this object'),
@@ -186,48 +188,84 @@ class Laf:
             f_text[db_label] += self.template['feature_local'].format(i = f_index, name = fname, isoname = longfname, isodescr = 'database value:' + descr,
                 values = fv_text, **meta
             )
-        for part in self.et.part_list():
-            for object_type in self.et.object_list_part(part):
-                object_kind = self.settings.annotation_label[part + '_label']
-                f_index += 1
-                isocat_key, isocat_name = self.et.object_atts(object_type)
-                fv_text = self.template['feature_basic'].format(valtype = 'string', atts = '', **meta)
-                f_text[object_kind] += self.template['feature'].format(i = f_index, name = object_type,
-                    isoname = camel(isocat_name) if isocat_name != '' else object_type + '_object',
-                    isolink = iso_prefix + isocat_key, isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
-                    values = fv_text, **meta
-                )
-                for feature_name in self.et.feature_list(object_type):
-                    defined_on, etcbc_type, isocat_key, isocat_name = self.et.feature_atts(object_type, feature_name)
-                    if defined_on != '': continue
-                    if self.et.is_ref_skip(feature_name): continue
-                    (fs_type, fs_type_atts) = fillup(2, '', self.settings.type_mapping[etcbc_type].split('&'))
-                    if fs_type_atts != '': fs_type_atts = ' ' + fs_type_atts
+        if self.et.plain:
+            fpfile = self.settings.env['feature_plain_info']
+            with open(fpfile, 'r', encoding='utf-8') as fh:
+                for line in fh:
+                    if line.startswith('#'): continue
+                    (otype, fname, local_name, ftype, iso_name, iso_id, iso_def, iso_exm, iso_exp) = fillup(9, '', line.rstrip().split("\t"))
+                    if iso_def != 'idem.':
+                        plain_iso_info[iso_id] = (iso_name, iso_def, iso_exm, iso_exp)
+                    plain_info[otype][fname] = (local_name, iso_id)
+            for part in sorted(self.et.part_feature):
+                for object_type in sorted(self.et.part_feature[part]):
+                    if object_type not in plain_info:
+                        print("ERROR: object type {} not specified".format(object_type))
+                        continue
+                    object_kind = self.settings.annotation_label[part + '_label']
+                    for feature_name in sorted(self.et.part_feature[part][object_type]):
+                        if self.et.is_ref_skip(feature_name): continue
+                        if feature_name not in plain_info[object_type]:
+                            print("ERROR: feature {} of object type {} not specified".format(feature_name, object_type))
+                            continue
+                        (local_name, iso_id) = plain_info[object_type][feature_name]
+                        (iso_name, iso_def, iso_exm, iso_exp) = plain_iso_info[iso_id]
+                        f_index += 1
+                        fv_text = self.template['feature_basic'].format(valtype = 'string', atts = fs_type_atts, **meta)
+                        f_text[object_kind] += self.template['feature'].format(i = f_index, name = feature_name,
+                            isoname = iso_name,
+                            isolink = iso_prefix + iso_id,
+                            isodescr = 'name in local documentation: {}. {}{}{}'.format(
+                                local_name,
+                                ('Definition: ' + iso_def.rstrip('.') + '. ') if iso_def else '',
+                                ('Example: ' + iso_exm.rstrip('.') + '. ') if iso_exm else '',
+                                ('Explanation: ' + iso_exp.rstrip('.') + '. ') if iso_exp else '',
+                            ),
+                            values = fv_text, **meta
+                        )
+        else:
+            for part in self.et.part_list():
+                for object_type in self.et.object_list_part(part):
+                    object_kind = self.settings.annotation_label[part + '_label']
                     f_index += 1
-                    value_list = self.et.value_list(object_type, feature_name)
-                    fv_text = ''
-                    if len(value_list) > 0:
-                        fv1_text = ''
-                        for feature_value in value_list:
-                            v_etcbc_type, v_isocat_key, v_isocat_name = self.et.value_atts(object_type, feature_name, feature_value)
-                            fv1_text += self.template['feature_val1'].format(valtype = 'symbol', name = feature_value,
-                                value = camel(v_isocat_name) if v_isocat_name != '' else feature_value,
-                                isolink = iso_prefix + v_isocat_key, **meta
-                            )
-                        fv_text = self.template['feature_val'].format(values = fv1_text, **meta)
-                    if fs_type != 'symbol':
-                        if fs_type == 'binary':
-                            fv1_text = ''
-                            for feature_value in truth_values:
-                                fv1_text += "\n\t\t\t\t" + '<{} value="{}"/>'.format(fs_type, feature_value)
-                            fv_text = self.template['feature_val'].format(values = fv1_text, **meta)
-                        else:
-                            fv_text = self.template['feature_basic'].format(valtype = fs_type, atts = fs_type_atts, **meta)
-                    f_text[object_kind] += self.template['feature'].format(i = f_index, name = feature_name,
-                        isoname = camel(isocat_name) if isocat_name != '' else feature_name,
+                    isocat_key, isocat_name = self.et.object_atts(object_type)
+                    fv_text = self.template['feature_basic'].format(valtype = 'string', atts = '', **meta)
+                    f_text[object_kind] += self.template['feature'].format(i = f_index, name = object_type,
+                        isoname = camel(isocat_name) if isocat_name != '' else object_type + '_object',
                         isolink = iso_prefix + isocat_key, isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
                         values = fv_text, **meta
                     )
+                    for feature_name in self.et.feature_list(object_type):
+                        defined_on, etcbc_type, isocat_key, isocat_name = self.et.feature_atts(object_type, feature_name)
+                        if defined_on != '': continue
+                        if self.et.is_ref_skip(feature_name): continue
+                        (fs_type, fs_type_atts) = fillup(2, '', self.settings.type_mapping[etcbc_type].split('&'))
+                        if fs_type_atts != '': fs_type_atts = ' ' + fs_type_atts
+                        f_index += 1
+                        value_list = self.et.value_list(object_type, feature_name)
+                        fv_text = ''
+                        if len(value_list) > 0:
+                            fv1_text = ''
+                            for feature_value in value_list:
+                                v_etcbc_type, v_isocat_key, v_isocat_name = self.et.value_atts(object_type, feature_name, feature_value)
+                                fv1_text += self.template['feature_val1'].format(valtype = 'symbol', name = feature_value,
+                                    value = camel(v_isocat_name) if v_isocat_name != '' else feature_value,
+                                    isolink = iso_prefix + v_isocat_key, **meta
+                                )
+                            fv_text = self.template['feature_val'].format(values = fv1_text, **meta)
+                        if fs_type != 'symbol':
+                            if fs_type == 'binary':
+                                fv1_text = ''
+                                for feature_value in truth_values:
+                                    fv1_text += "\n\t\t\t\t" + '<{} value="{}"/>'.format(fs_type, feature_value)
+                                fv_text = self.template['feature_val'].format(values = fv1_text, **meta)
+                            else:
+                                fv_text = self.template['feature_basic'].format(valtype = fs_type, atts = fs_type_atts, **meta)
+                        f_text[object_kind] += self.template['feature'].format(i = f_index, name = feature_name,
+                            isoname = camel(isocat_name) if isocat_name != '' else feature_name,
+                            isolink = iso_prefix + isocat_key, isodescr = isocat_name if isocat_name != '' else 'MISSING ISOcat name',
+                            values = fv_text, **meta
+                        )
         for feature_type in f_text:
             absolute_path = "{}/{}.xml".format(self.settings.env['decl_dst_dir'], feature_type)
             file_handle = open(absolute_path, "w", encoding = 'utf-8')

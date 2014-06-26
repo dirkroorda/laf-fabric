@@ -128,7 +128,9 @@ class Etcbc:
         '''
         self.settings = settings
         self.simple = False
+        self.plain = False
         file_handle = None
+        fpfile = settings.env['feature_plain_info']
         ffile = settings.env['feature_info']
         ofile = settings.env['object_info']
         if os.path.exists(ffile):
@@ -136,6 +138,8 @@ class Etcbc:
         else:
             file_handle = open(ofile, encoding = 'utf-8')
             self.simple = True
+            if os.path.exists(fpfile):
+                self.plain = True
 
         if self.simple:
             for line in file_handle:

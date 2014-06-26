@@ -7,7 +7,7 @@ import configparser
 import argparse
 
 NAME = 'LAF-Fabric'
-VERSION = '4.2.13'
+VERSION = '4.2.14'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 ALL_PARTS = ['monad', 'section', 'lingo']
@@ -30,6 +30,7 @@ class Settings:
         'source':               '{source}',
         'meta_info':            '{work_dir}/{source}/config/main.cfg',
         'feature_info':         '{work_dir}/{source}/config/ObjectsFeaturesValues.txt',
+        'feature_plain_info':   '{work_dir}/{source}/config/ObjectsFeatures.csv',
         'object_info':          '{work_dir}/{source}/config/Objects.txt',
         'raw_emdros_dir':       '{work_dir}/{source}/raw',
         'source_data':          '{work_dir}/{source}/mql/{source}',

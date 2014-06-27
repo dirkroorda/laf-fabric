@@ -6,6 +6,10 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.2.15
+------
+A few changes in etcbc.emdros2laf: edge annotations are no longer empty annotations, but have a feature structure.
+
 4.2.14
 ------
 A few changes in etcbc.emdros2laf, which facilitates generating feature declaration documents.

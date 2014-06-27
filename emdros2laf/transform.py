@@ -346,7 +346,7 @@ class Transform:
                             values = value.split(" ")
                             for val in values:
                                 n_en += 1
-                                e_data += edgenode_elem.format(part = part[0], eid = n_en, fr = object_id, to = val, aid = n_en, akind = feature)
+                                e_data += edgenode_elem.format(part = part[0], eid = n_en, fr = object_id, to = val, aid = n_en, akind = annotation_label, fname = feature, value = '')
                                 n_e += 1
                                 stats[feature][subpart] += 1
                     else:

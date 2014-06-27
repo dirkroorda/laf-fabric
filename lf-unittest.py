@@ -119,13 +119,12 @@ class TestLafFabric(unittest.TestCase):
                             "sft.book",
                         ],
                         "edge": [
-                            "mother.",
-                            "parents.",
+                            "ft.mother",
+                            "ft.parents",
                         ],
                     },
                 },
                 "primary": True,
-                "prepare": prepare,
             },
             compile_main=False, compile_annox=False,
         )
@@ -149,7 +148,7 @@ class TestLafFabric(unittest.TestCase):
                             "sft.book",
                         ],
                         "edge": [
-                            "parents.",
+                            "ft.parents",
                         ],
                     },
                 },
@@ -167,7 +166,7 @@ class TestLafFabric(unittest.TestCase):
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_d200_load(self):
         self.fabric.lafapi.unload_all()
-        API = self.fabric.load(SOURCE, ANNOX, 'load', {
+        API = self.fabric.load(SOURCE, ANNOX, 'load2', {
                 "xmlids": {
                     "node": False,
                     "edge": False,
@@ -180,8 +179,8 @@ class TestLafFabric(unittest.TestCase):
                             "sft.book",
                         ],
                         "edge": [
-                            "mother.",
-                            "parents.",
+                            "ft.mother",
+                            "ft.parents",
                         ],
                     },
                     "dirk": {
@@ -206,7 +205,7 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(len(feature_abbs['db_otype']), 2)
         for nm in ('otype', 'dirk_db_otype'): nm in feature_abbs['db_otype']
 
-    #unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
+    @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_d300_resolve(self):
         API = self.fabric.load(SOURCE, '--', 'resolve', {"features": ("","")})
         feature = self.fabric.resolve_feature('node', 'otype')
@@ -648,14 +647,14 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_m100_connectivity(self):
-        API = self.fabric.load(SOURCE, ANNOX, 'connectivity', {"features": {"shebanq": {"node": ["db.otype"], "edge": ["parents."]}}})
+        API = self.fabric.load(SOURCE, ANNOX, 'connectivity', {"features": {"shebanq": {"node": ["db.otype"], "edge": ["ft.parents"]}}})
         NN = API['NN']
         F = API['F']
         C = API['C']
         close = API['close']
 
         top_node_types = collections.defaultdict(lambda: 0)
-        top_nodes = set(C.parents_.endnodes(NN(test=F.otype.v, value='word')))
+        top_nodes = set(C.parents.endnodes(NN(test=F.otype.v, value='word')))
         self.assertEqual(len(top_nodes), 3)
         for node in NN(nodes=top_nodes):
             tag = F.otype.v(node)
@@ -666,7 +665,7 @@ class TestLafFabric(unittest.TestCase):
             self.assertEqual(n, 3)
         nt = 0
         for node in NN():
-            if C.parents_.e(node) and F.otype.v(node) == 'sentence':
+            if C.parents.e(node) and F.otype.v(node) == 'sentence':
                 nt += 1
         self.assertEqual(nt, 0)
         close()
@@ -781,7 +780,7 @@ class TestLafFabric(unittest.TestCase):
     def test_u330_endnodes(self):
         API = self.fabric.load(SOURCE, '--', 'plain', {
                 "xmlids": {"node": True, "edge": True},
-                "features": ("otype", "parents. .x"),
+                "features": ("otype", "parents .x"),
                 "prepare": prepare,
             },
             compile_main=False, compile_annox=False,
@@ -792,8 +791,8 @@ class TestLafFabric(unittest.TestCase):
         Ci = API['Ci']
         close = API['close']
         for query in (
-                ('parents', 'forward', C.parents_, ['word', 'phrase', 'clause', 'sentence'], 48, 3, 1, {'sentence'}),
-                ('parents', 'backward', Ci.parents_, ['word', 'phrase', 'clause', 'sentence'], 48, 31, 1, {'word'}),
+                ('parents', 'forward', C.parents, ['word', 'phrase', 'clause', 'sentence'], 48, 3, 1, {'sentence'}),
+                ('parents', 'backward', Ci.parents, ['word', 'phrase', 'clause', 'sentence'], 48, 31, 1, {'word'}),
                 ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book'], 10, 4, 1, {'half_verse'}),
                 ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book'], 10, 2, 1, {'book'}),
             ):
@@ -811,7 +810,7 @@ class TestLafFabric(unittest.TestCase):
     def test_u400_xml_ids(self):
         API = self.fabric.load(SOURCE, ANNOX, 'plain', {
                 "xmlids": {"node": True,"edge": True,},
-                "features": ("", "mother. parents."),
+                "features": ("", "mother parents"),
                 "prepare": prepare,
             },
         )
@@ -828,7 +827,7 @@ class TestLafFabric(unittest.TestCase):
             self.assertEqual(X.r(n), x)
 
         expected_e = {8: 'el1', 9: 'el101734', 10: 'el53244', 11: 'el53245', 12: 'el190840', 13: 'el190841', 14: 'el190842', 15: 'el253771', 16: 'el253772', 17: 'el253773', 18: 'el253774', 19: 'el385981', 20: 'el385982', 21: 'el385983', 22: 'el385984', 23: 'el385985', 24: 'el385986', 25: 'el385987', 26: 'el511117', 27: 'el511118', 28: 'el511119', 29: 'el511120', 30: 'el657926', 31: 'el657927', 32: 'el657928', 33: 'el657929', 34: 'el657930', 35: 'el657931', 36: 'el657932', 37: 'el793283', 38: 'el825158', 39: 'el825159', 40: 'el865010', 41: 'el865011', 42: 'el865012', 43: 'el953312', 44: 'el953313', 45: 'el953314', 46: 'el953315', 47: 'el953316', 48: 'el953317', 49: 'el953318', 50: 'el953319', 51: 'el953320', 52: 'el953321', 53: 'el953322', 54: 'el953323', 55: 'el953324', 56: 'el953325', 57: 'el953326', 58: 'el953327', 59: 'el953328', 60: 'el953329', 61: 'el1029314', 62: 'el1029315', 63: 'el1029316', 64: 'el1029317', 65: 'el1029318', 66: 'el1029319', 67: 'el1029320', 68: 'el1029321', 69: 'el1029322', 70: 'el1029323', 71: 'el1029324', 72: 'el1255606', 73: 'el1255607', 74: 'el1255608', 75: 'el1255609', 76: 'el1255610', 77: 'el1255611', 78: 'el1255612', 79: 'el1255613', 80: 'el1255614', 81: 'el1255615', 82: 'el1255616', 83: 'el1255617', 84: 'el1255618', 85: 'el1255619', 86: 'el1255620', 87: 'el1255621', 88: 'el1255622', 89: 'el1255623', 90: 'el1255624', 91: 'el1255625'}
-        self.assertEqual(len(set(FE.parents_.lookup)|set(FE.mother_.lookup)), len(expected_e))
+        self.assertEqual(len(set(FE.parents.lookup)|set(FE.mother.lookup)), len(expected_e))
         for (e,x) in expected_e.items():
             self.assertEqual(XE.i(x), e)
             self.assertEqual(XE.r(e), x)
@@ -930,7 +929,7 @@ class TestLafFabric(unittest.TestCase):
         self.assertEqual(prep_expected, prep_found)
         close()
 
-    #@unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
+    @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_u600_node_order(self):
         API = self.fabric.load(SOURCE, '--', 'before', {"features": ("", "")}) 
         MK = API['MK']

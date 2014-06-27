@@ -6,6 +6,14 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.3
+---
+Changes in the annotation space, a new *etcbc.px* which can read certain types of *px* data and transform it into an extra LAF annotation package.
+
+Incompatible changes
+^^^^^^^^^^^^^^^^^^^^
+Due to the new names for edge features, the data for BHS3 and BHS4 has been recompiled, and all tasks that use the old names have to be updated.
+
 4.2.15
 ------
 A few changes in etcbc.emdros2laf: edge annotations are no longer empty annotations, but have a feature structure.

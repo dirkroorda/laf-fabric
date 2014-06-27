@@ -5,7 +5,7 @@ from .lib import monad_set, object_rank
 
 class Tree(object):
     def __init__(self, API, otypes=None, clause_type=None, phrase_type=None,
-            ccr_feature='clause_constituent_relation', pt_feature='phrase_type', pos_feature='part_of_speech', mother_feature="mother."
+            ccr_feature='clause_constituent_relation', pt_feature='phrase_type', pos_feature='part_of_speech', mother_feature="mother"
         ):
         node_features = "otype monads minmonad {} {} {}".format(
             ccr_feature if ccr_feature != None else '',
@@ -101,7 +101,7 @@ class Tree(object):
         msg("Pass 0: Storing mother relationship")
         moutside = collections.defaultdict(lambda: 0)
         mo = 0
-        mf = C.mother_.v
+        mf = C.mother.v
         for c in NN(test=F.otype.v, value=self.clause_type):
             lms = list(mf(c))
             ms = len(lms)

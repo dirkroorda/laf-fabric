@@ -4,7 +4,7 @@ from laf.fabric import LafFabric
 fabric = LafFabric()
 fabric.load('bhs3', '--', 'test', {
     "xmlids": {"node": False, "edge": False},
-    "features": ('''otype text suffix clause_constituent_relation phrase_type surface_consonants oid maxmonad minmonad monads text_plain''','''mother. parents.'''),
+    "features": ('''otype text suffix clause_constituent_relation phrase_type surface_consonants oid maxmonad minmonad monads text_plain''','''mother parents'''),
     "primary": False,
 }, verbose='DETAIL')
 exec(fabric.localnames.format(var='fabric'))

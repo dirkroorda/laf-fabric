@@ -7,7 +7,7 @@ import configparser
 import argparse
 
 NAME = 'LAF-Fabric'
-VERSION = '4.2.15'
+VERSION = '4.3.0'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 DEFAULT_WORK_DIR = 'laf-fabric-data'
 ALL_PARTS = ['monad', 'section', 'lingo']
@@ -201,7 +201,7 @@ class Settings:
         ('f_lingo',             '_lingo.xml&xml&db&f_monad'),
         ('f_section',           '_sections.xml&xml&db sft'),
         ('f_monad.*',           '_monads.{{subpart}}.xml&xml&ft&f_monad'),
-        ('f_lingo.*',           '_lingo.{{subpart}}.xml&xml&{{referencefeatures}} ft&f_lingo'),
+        ('f_lingo.*',           '_lingo.{{subpart}}.xml&xml&ft&f_lingo'),
     ))
 
     def flag(self, name): return getattr(self.args, name)

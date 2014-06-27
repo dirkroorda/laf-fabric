@@ -159,6 +159,21 @@ Usage::
 More info: 
 `notebook annotating <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/annotating.ipynb>`_
 
+PX data
+=======
+The ETCBC data exists in so-called *px* files, from which the EMDROS databases are generated.
+Some *px* data did not made it too EMDROS, hence this data does not show up in LAF.
+Yet there might be useful data in the *px*. The module **etcbc.px** pulls that data in, and delivers it in the form
+of an extra annotation package.
+
+Usage::
+
+    from etcbc.px import PX
+
+More info:
+`notebook feature-doc <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para from px.ipynb>`_
+
+
 Feature documentation
 =====================
 The module ``etcbc.featuredoc`` generates overviews of all available features in the main source, including information of their values,

@@ -76,10 +76,11 @@ class LafData(object):
             if not os.path.exists(log_dir): os.makedirs(log_dir)
         except os.error as e:
             raise FabricError("could not create log directory {}".format(log_dir), self.stamp, cause=e)
-        self.log = open(log_path, "w", encoding="utf-8")
-        self.log.write("OPENED AT:{}\n".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
-        self.stamp.connect_log(self.log)
-        self.stamp.Nmsg("LOGFILE={}".format(log_path))
+        if not self.log:
+            self.log = open(log_path, "w", encoding="utf-8")
+            self.log.write("OPENED AT:{}\n".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
+            self.stamp.connect_log(self.log)
+            self.stamp.Nmsg("LOGFILE={}".format(log_path))
 
     def compile_all(self, force):
         env = self.names.env
@@ -175,6 +176,7 @@ class LafData(object):
             self._load_file(dkey, accept_missing=False)
 
     def _load_file(self, dkey, accept_missing=False):
+        env = self.names.env
         dprep = self.names.dinfo(dkey)[-1]
         if dprep:
             if dkey not in self.prepare_dict:
@@ -186,7 +188,9 @@ class LafData(object):
         prep_done = False
         if dprep:
             (method, method_source, replace, zspace) = self.prepare_dict[dkey] 
-            up_to_date = os.path.exists(dpath) and os.path.getmtime(dpath) >= os.path.getmtime(method_source)
+            up_to_date = os.path.exists(dpath) and \
+                os.path.getmtime(dpath) >= os.path.getmtime(method_source) and \
+                os.path.getmtime(dpath) >= os.path.getmtime(env['m_compiled_path']) 
             if not up_to_date:
                 self.stamp.Dmsg("PREPARING {}".format(Names.dmsg(dkey)))
                 compiled_dir = self.names.env['{}_compiled_dir'.format('z')]

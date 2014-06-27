@@ -49,7 +49,10 @@ class Timestamp(object):
     def set_verbose(self, verbose): self.verbose = self.verbose_level[verbose or 'NORMAL']
     def reset(self): self.timestamp = time.time()
     def connect_log(self, log_file): self.log = log_file
-    def disconnect_log(self): self.log = None
+    def disconnect_log(self):
+        try: self.log.close()
+        except: pass
+        self.log = None
 
     def _elapsed(self):
         interval = time.time() - self.timestamp

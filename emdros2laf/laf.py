@@ -379,7 +379,7 @@ class Laf:
         for subpart in self.file_handles:
             file_handle, absolute_path, length, annotations = self.file_handles[subpart]
             file_handle.write(self.template['annotation_ftr'].format(**meta))
-            file_handle.close
+            file_handle.close()
             file_handle = open(absolute_path, "r+")
             header = file_handle.read(length)
             for annot in annotations:

@@ -1,3 +1,11 @@
-OPENED AT:2014-06-25T15-51-50
+OPENED AT:2014-06-27T14-15-28
+  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/bhs3/plain/__log__plain.txt
+  0.01s INFO: DATA LOADED FROM SOURCE bhs3 AND ANNOX -- FOR TASK plain AT 2014-06-27T14-15-28
+  0.00s Get the words ... 
+  0.00s Results directory:
+/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/bhs3/plain
 
-CLOSED AT:2014-06-25T15-51-50
+__log__plain.txt                        267 Fri Jun 27 16:15:28 2014
+unicode_utf8.txt                        368 Fri Jun 27 16:15:28 2014
+
+CLOSED AT:2014-06-27T14-15-28

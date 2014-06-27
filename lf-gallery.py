@@ -165,7 +165,7 @@ print('''
 fabric.load(test['source'], '--', 'parents',
 {
     "xmlids": {"node": False, "edge": False},
-    "features": ("otype text book", "parents. .x"),
+    "features": ("otype text book", "parents .x"),
 })
 exec(fabric.localnames.format(var='fabric'))
 
@@ -182,7 +182,7 @@ found = 0
 
 for i in NN():
     otype = F.otype.v(i)
-    for p in C.parents_.v(i):
+    for p in C.parents.v(i):
         found += 1
         ptype = F.otype.v(p)
         if mode == 'tiny':
@@ -202,8 +202,8 @@ print('''
 msg("Travel from node sets ...")
 
 for query in (
-        ('parents', 'forward', C.parents_, ['word', 'phrase', 'clause', 'sentence']),
-        ('parents', 'backward', Ci.parents_, ['word', 'phrase', 'clause', 'sentence']),
+        ('parents', 'forward', C.parents, ['word', 'phrase', 'clause', 'sentence']),
+        ('parents', 'backward', Ci.parents, ['word', 'phrase', 'clause', 'sentence']),
         ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
         ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
     ):

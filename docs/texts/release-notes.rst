@@ -6,6 +6,10 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.3.1
+-----
+The module *etcbc.px* retrieves one more field, called *instruction* from the *px* files.
+
 4.3
 ---
 Changes in the annotation space, a new *etcbc.px* which can read certain types of *px* data and transform it into an extra LAF annotation package.

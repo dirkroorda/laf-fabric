@@ -44,7 +44,7 @@ class PX(object):
         px_handle = open('{}/{}'.format(data_dir, px_file))
         ln = 0
         can = 0
-        featurescan = re.compile(r'LineNr\s*([0-9]+).*?Pargr:\s*([0-9.]+)')
+        featurescan = re.compile(r'0 0 (..) [0-9]+ LineNr\s*([0-9]+).*?Pargr:\s*([0-9.]+)')
         cur_label = None
         data = []
         for line in px_handle:
@@ -55,18 +55,19 @@ class PX(object):
             can += 1
             features = featurescan.findall(line)
             if len(features) == 0:
-                msg("Warning: line {}: no LineNr, Pargr found".format(ln))
+                msg("Warning: line {}: no instruction, LineNr, Pargr found".format(ln))
             elif len(features) > 1:
-                msg("Warning: line {}: multiple LineNr, Pargr found".format(ln))
+                msg("Warning: line {}: multiple instruction, LineNr, Pargr found".format(ln))
             else:
                 feature = features[0]
-                the_n = feature[0]
-                the_para = feature[1]
+                the_ins = feature[0]
+                the_n = feature[1]
+                the_para = feature[2]
                 labn = (cur_label, int(the_n))
                 if labn not in self.ca_labn2id:
                     not_found.add(labn)
                     continue
-                data.append((self.ca_labn2id[labn], the_n, the_para))
+                data.append((self.ca_labn2id[labn], the_ins, the_n, the_para))
         px_handle.close()
         msg("Read {} paragraph annotations".format(len(data)))
         if not_found:
@@ -91,13 +92,16 @@ class PX(object):
         
         (aspace1, alabel1, fname1) = spec[0]
         (aspace2, alabel2, fname2) = spec[1]
+        (aspace3, alabel3, fname3) = spec[2]
         for line in data:
             node = line[0]
             value1 = line[1]
             value2 = line[2]
+            value3 = line[3]
             xml_id = X.r(node)
             features[aspace1][alabel1][xml_id][fname1] = value1
             features[aspace2][alabel2][xml_id][fname2] = value2
+            features[aspace3][alabel3][xml_id][fname3] = value3
             
         for aspace in features:
             for alabel in features[aspace]:

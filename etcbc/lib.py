@@ -34,6 +34,8 @@ class Transcription(object):
         'y': "\u05E5", # tsadi final
         '&': "\u05BE", # maqaf
     }
+    hebrew_consonants = {x for x in hebrew_mapping.values() if x != '\u05BE'}
+    hebrew_consonants.add('\u05E9')
 
     syriac_mapping = {
         '>': "\u0710", # alaph

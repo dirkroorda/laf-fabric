@@ -6,6 +6,11 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.3.3
+-----
+The transliteration in *etcbc.lib* which converts between Hebrew characters and transliterated latin characters, has been extended to deal with
+vowel pointings and accents too.
+
 4.3.1
 -----
 The module *etcbc.px* retrieves one more field, called *instruction* from the *px* files.

@@ -40,6 +40,7 @@ emdros2laf/xml/xml.xsd
 emdros2laf/xml/xmllint_cat.xml
 etcbc/__init__.py
 etcbc/annotating.py
+etcbc/emdros.py
 etcbc/featuredoc.py
 etcbc/lib.py
 etcbc/mql.py

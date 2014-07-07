@@ -62,6 +62,8 @@ class Settings:
         'annot_method':         'conversion script {my_name} {version}',
         'annot_resp':           '{annot_resp}',
         'primary':              '{primary}',
+        'trailer':              '{trailer}',
+        'verse_newline':        '{verse_newline}',
         'annot_space_def':      '{annot_space_def}',
         'prim_creator':         '{prim_creator}',
         'res_creator':          '{res_creator}',

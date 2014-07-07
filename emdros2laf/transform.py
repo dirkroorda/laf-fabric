@@ -106,6 +106,8 @@ class Transform:
             primary_handle = self.lf.primary_handle
             region_handle = self.lf.file_handles[self.settings.annotation_regions['name']][0]
             primary_feature = self.settings.meta['primary']
+            trailer_feature = self.settings.meta['trailer']
+            add_verse_newline = self.settings.meta['verse_newline'] == '1'
         if separate_node_file: plain_handle = self.lf.file_handles[''][0]
 # create or use the monad char index if needed
         if make_index: index_handle = open(index_path, 'w')
@@ -114,8 +116,8 @@ class Transform:
             gmaxmonad = None
             index_handle = open(index_path, 'r')
             for line in index_handle:
-                (m, start, end_word, end_suffix) = line.rstrip("\n").split("\t")
-                monad_chars[m] = (start, end_word, end_suffix)
+                (m, start, end_word, end_trailer) = line.rstrip("\n").split("\t")
+                monad_chars[m] = (start, end_word, end_trailer)
                 if gminmonad == None or int(m) < int(gminmonad): gminmonad = m
                 if gmaxmonad == None or int(m) > int(gmaxmonad): gmaxmonad = m
             index_handle.close()
@@ -236,41 +238,44 @@ class Transform:
             if do_primary:
                 if primary_feature:
                     text_xml = feature_dict[primary_feature]
-                    suffix_xml = ' '
+                    if trailer_feature:
+                        trailer_xml = feature_dict[trailer_feature]
+                    else:
+                        trailer_xml = ' '
                 else:
-                    text_xml, suffix_xml = primary_data(feature_dict['text'], feature_dict['suffix'])
+                    text_xml, trailer_xml = primary_data(feature_dict['text'], feature_dict['suffix'])
                     feature_dict['text'] = text_xml
-                    feature_dict['suffix'] = suffix_xml
+                    feature_dict['suffix'] = trailer_xml
                 text = text_xml.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
-                suffix = suffix_xml.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
+                trailer = trailer_xml.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
 # Construct PRIMARY DATA
 # Now we build up the primary data file and the regions file
 # We have to keep count of the char position of the data in the primary data file
 # So compute the length of the unicode strings that we need to write to the primary data
                 ltext = len(text)
-                lsuffix = len(suffix)
+                ltrailer = len(trailer)
                 n_m += 1
-                if make_index: index_handle.write("{}\t{}\t{}\t{}\n".format(monad_num, o, o + ltext, o + ltext + lsuffix))
-# Every unit to be written contains exactly one word, plus a suffix which contains spacing, punctuations and final codes
+                if make_index: index_handle.write("{}\t{}\t{}\t{}\n".format(monad_num, o, o + ltext, o + ltext + ltrailer))
+# Every unit to be written contains exactly one word, plus a trailer which contains spacing, punctuations and final codes
 #   This is accumulated in p_data
 #   The current char position is maintained in o
 #
-# For every word and suffix we create a <region> element that indicates its char position
+# For every word and trailer we create a <region> element that indicates its char position
 #   This is accumulated in r_data
 # There is always a word inside
                 r_data = region_elem.format(xmlid = "{}_{}".format(region_word, monads), start = o, end = o + ltext)
                 n_r +=1
                 o += ltext
                 p_data = text
-# Possibly there is a suffix, some suffixes end a verse, there we insert a newline
-                if suffix != '':
-                    p_data += suffix
+# Possibly there is a trailer, some trailers end a verse, there we insert a newline
+                if trailer != '':
+                    p_data += trailer
                     n_nonword += 1
-                    boundaries = "{} {}".format(o, o + ltext) if suffix != '' else "{}".format(o)
-                    r_data += region_elem.format(xmlid = "{}_{}".format(region_punct, n_nonword), start = o, end = o + lsuffix)
+                    boundaries = "{} {}".format(o, o + ltext) if trailer != '' else "{}".format(o)
+                    r_data += region_elem.format(xmlid = "{}_{}".format(region_punct, n_nonword), start = o, end = o + ltrailer)
                     n_r += 1
-                    o += lsuffix
-                    if '׃' in suffix:
+                    o += ltrailer
+                    if add_verse_newline and '׃' in trailer:
                         o += 1
                         p_data += "\n"
                         r_data += "\n"
@@ -351,7 +356,7 @@ class Transform:
                                 stats[feature][subpart] += 1
                     else:
                         has_real_features = True
-                        f_data += "\n\t" + feature_elem.format(name = feature, value = feature_dict[feature])
+                        f_data += "\n\t" + feature_elem.format(name = feature, value = feature_dict[feature].replace('\n', '&#xa;'))
                         n_f += 1
 # Prepare EDGES for hierarchical sections
 # We collect a list of all objects with the first and last monad as extra information
@@ -428,14 +433,14 @@ class Transform:
         if make_index: index_handle.close()
         file_handle.close()
 
-def primary_data(text, suffix):
+def primary_data(text, trailer):
     ''' Distil primary data from two features on the word objects.
     Apply necessary tweaks!
     '''
     if text.endswith('׀'):
         text = text.rstrip('׀')
-        suffix = ' ׀' + suffix
-    return (text, suffix)
+        trailer = ' ׀' + trailer
+    return (text, trailer)
 
 def makeuni(match):
     ''' Make proper unicode of a text that contains byte escape codes such as backslash xb6

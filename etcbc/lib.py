@@ -64,6 +64,7 @@ class Transcription(object):
         '00': "\u05C3", # sof_pasuq
         '52': "\u05C4", # upper dot = puncta_above
         '53': "\u05C5", # lower dot = puncta_below
+        'ñ': "\u05C6", # nun hafukha
         '>': "\u05D0", # alef
         'B': "\u05D1", # bet
         'G': "\u05D2", # gimel

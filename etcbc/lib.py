@@ -64,7 +64,7 @@ class Transcription(object):
         '00': "\u05C3", # sof_pasuq
         '52': "\u05C4", # upper dot = puncta_above
         '53': "\u05C5", # lower dot = puncta_below
-        'ñ': "\u05C6", # nun hafukha
+        'ñ': "\u05C6\u0307", # nun hafukha
         '>': "\u05D0", # alef
         'B': "\u05D1", # bet
         'G': "\u05D2", # gimel
@@ -101,7 +101,7 @@ class Transcription(object):
     hebrew_cons = '>BGDHWZXVJKLMNS<PYQRFCT'
     trans_final_pat = re.compile(r'([' + hebrew_cons + r'][^_&]*)([KMNPY])([^' + hebrew_cons + r'_&]*(:?[_&]|\Z))')
     trans_hebrew_pat = re.compile(r'(:[AE@]|:|[0-9][0-9]|.)')
-    swap_accent_pat = re.compile(r'(\A|[_&])([:;,.EAIOU@0-9]+)([' + hebrew_cons + r'])')
+    swap_accent_pat = re.compile(r'(\A|[_&])([0-9][0-9])([' + hebrew_cons + r'])([:;,.EAIOU@]*)')
 
     syriac_mapping = {
         '>': "\u0710", # alaph
@@ -165,7 +165,7 @@ class Transcription(object):
                 llastch = new_word[-2]
                 if llastch == '_' and (lastch == 'N'):
                     new_word = new_word[0:-2]
-                    suffix = ' ' + lastch + suffix
+                    suffix = ' ñ' + suffix
             if len(new_word) >= 2:
                 lastch = new_word[-1]
                 llastch = new_word[-2]
@@ -183,11 +183,16 @@ class Transcription(object):
 
     def _map_final(m): return m.group(1) + m.group(2).lower() + m.group(3)
     def _map_hebrew(m): return Transcription.hebrew_mapping.get(m.group(1), m.group(1))
-    def _swap_accent(m): return m.group(1) + m.group(3) + m.group(2)
+    def _swap_accent(m): return m.group(1) + m.group(3) + m.group(4) + m.group(2)
 
     def to_hebrew(word):
         nword = Transcription.swap_accent_pat.sub(Transcription._swap_accent, word)
-        return unicodedata.normalize('NFKD', Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword))
+#        return unicodedata.normalize('NFKD', Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword))
+# unicode normailzation is harmful if there is a combination of dagesh, vowel and accent.
+        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword)
+
+    def to_hebrew_x(nword):
+        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword)
 
     def from_hebrew(self, word): return ''.join(self.hebrew_mappingi.get(x, x) for x in Transcription._comp(word))
     def to_syriac(self, word): return Transcription._decomp(''.join(self.syriac_mapping.get(x, x) for x in Transcription._comp(word)))

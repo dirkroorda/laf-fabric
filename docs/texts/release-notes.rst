@@ -6,6 +6,12 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.3.4
+-----
+Fine tuning of the Hebrew transliteration. The new plain text looks exceedingly well now. All changes w.r.t. the previous version of the ETCBC
+database have been reviewed, which has resulted in new code to generate the fine points of Hebrew text and type, e.g. multiple accents and vowel pointings,
+and inversed nuns.
+
 4.3.3
 -----
 The transliteration in *etcbc.lib* which converts between Hebrew characters and transliterated latin characters, has been extended to deal with

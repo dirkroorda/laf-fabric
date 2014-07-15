@@ -5,7 +5,7 @@ from .lib import monad_set, object_rank
 
 class Tree(object):
     def __init__(self, API, otypes=None, clause_type=None, phrase_type=None,
-            ccr_feature='clause_constituent_relation', pt_feature='phrase_type', pos_feature='part_of_speech', mother_feature="mother"
+            ccr_feature=None, pt_feature=None, pos_feature=None, mother_feature=None
         ):
         node_features = "otype monads minmonad {} {} {}".format(
             ccr_feature if ccr_feature != None else '',
@@ -18,6 +18,7 @@ class Tree(object):
         self.API = API
         self.ccr_feature = ccr_feature
         self.pos_feature = pos_feature
+        self.pt_feature = pt_feature
         NN = API['NN']
         F = API['F']
         msg = API['msg']
@@ -265,7 +266,7 @@ class Tree(object):
                     if node in elder_sister:
                         mspec = '=> ({:>3})'.format(rep(elder_sister[node]))
             elif otype == self.phrase_type:
-                subtype = F.phrase_type.v(node)
+                subtype = F.item[self.pt_feature].v(node)
                 if subtype != None:
                     subtype_sep = '.'
                 else:
@@ -306,7 +307,7 @@ class Tree(object):
         _debug_write_tree(node, 0, '')
         if legenda:
             result.append("\nstart monad = {}\n\n".format(bmonad))
-            result.append("{:>3} = {:>8} {:>8}\n".format('#', 'bhs_oid', 'laf_nid'))
+            result.append("{:>3} = {:>8} {:>8}\n".format('#', 'etcbc4_oid', 'laf_nid'))
             for (n, s) in sorted(ids.items(), key=lambda x: x[1]):
                 result.append("{:>3} = {:>8} {:>8}\n".format(s, F.oid.v(n), n))
         return ''.join(result)

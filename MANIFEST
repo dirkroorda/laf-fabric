@@ -34,6 +34,7 @@ emdros2laf/xml/graf-document.xsd
 emdros2laf/xml/graf-resource.xsd
 emdros2laf/xml/graf-standoff.xsd
 emdros2laf/xml/isofs_dcr.xsd
+emdros2laf/xml/test.txt
 emdros2laf/xml/xlink.xsd
 emdros2laf/xml/xml-isofs.xsd
 emdros2laf/xml/xml.xsd

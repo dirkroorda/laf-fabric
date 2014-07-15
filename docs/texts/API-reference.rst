@@ -63,17 +63,17 @@ Possible values in increasing level of verbosity::
 
 Then you have the processor to load data, according to the source you choose::
 
-    fabric.load('bhs3', '--', 'cooccurrences',
+    fabric.load('etcbc4', '--', 'cooccurrences',
         {
             "xmlids": {
                 "node": False,
                 "edge": False,
             },
             "features": {
-                "shebanq": {
+                "etcbc4": {
                     "node": [
                         "db.otype",
-                        "ft.part_of_speech,noun_type,lexeme_utf8",
+                        "ft.sp,lex_utf8",
                         "sft.book",
                     ],
                     "edge": [
@@ -100,10 +100,10 @@ If you want to change what is loaded in your program, you can simply call the lo
                 "edge": False,
             },
             "features": {
-                "shebanq": {
+                "etcbc4": {
                     "node": [
                         "db.otype,oid",
-                        "ft.part_of_speech,noun_type,lexeme_utf8",
+                        "ft.sp,lex_utf8",
                         "sft.book",
                     ],
                     "edge": [
@@ -130,7 +130,7 @@ If you only want to add a bit of data, you can simply call::
     fabric.load_again(
         {
             "features": {
-                "shebanq": {
+                "etcbc4": {
                     "node": [
                         "db.oid",
                     ],
@@ -143,22 +143,22 @@ If you only want to add a bit of data, you can simply call::
 You can also leave specify the features as a tuple, containing node feature specs and edge feature specs::
 
     "features": (
-    ''' shebanq:db.oid
-        shebanq:ft.part_of_speech
+    ''' etcbc4:db.oid
+        etcbc4:ft.sp
     ''',
-    ''' shebanq:parents.
-        shebanq:mother.
+    ''' etcbc4:ft.functional_parent
+        etcbc4:ft.mother
     '''
     )
 
 The features for nodes and edges are specfied as a whitespace separated list of feature names.
 
-Finally, you may omit the namespace (``shebanq:``) and the labels (``db``, ``ft``, ``sft``).
+Finally, you may omit the namespace (``etcbc4:``) and the labels (``db``, ``ft``, ``sft``).
 If this causes ambiguity, LAF-Fabric will choose an arbitrary variant, and inform you about the choice it has made.
 If that choice does not suit you, you can always disambiguate yourself by supplying label and possibly namespace yourself.
 So the shortest way is::
 
-    "features": ('oid part_of_speech', 'parents. mother.')
+    "features": ('oid sp', 'functional_parent mother')
 
 **``compile-source`` and ``compile-annox``**
 If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
@@ -237,7 +237,7 @@ Examples::
 
     F.otype.v(node)
 
-    FE.mother_.v(edge)
+    FE.mother.v(edge)
 
     F.gender.s()
 
@@ -251,16 +251,16 @@ All that you want to know about features and are not afraid to ask.
 *F* is an object, and for each *node* feature that you have declared, it has a member
 with a handy name. Likewise for *FE*, but now for *edge* features.
 
-``F.shebanq_db_otype`` is a feature object
-that corresponds with the LAF feature given in an annotation in the annotation space ``shebanq``,
+``F.etcbc4_db_otype`` is a feature object
+that corresponds with the LAF feature given in an annotation in the annotation space ``etcbc4``,
 with label ``db`` and name ``otype``.
 
-``FE.shebanq_mother_`` is also a feature object, but now on an edge, and corresponding
+``FE.etcbc4_ft_mother`` is also a feature object, but now on an edge, and corresponding
 with an empty annotation.
 
 You can also leave out the namespace and the label, so the following are also valid:
 
-``F.db_otype`` or even ``F.otype``. And also: ``FE.mother_``. 
+``F.db_otype`` or even ``F.otype``. And also: ``FE.mother``. 
 However, if the feature name is empty, you cannot leave out the label: ``FE.`` is not valid.
 
 When there is ambiguity, you will get a warning when the features are requested, from which it will
@@ -277,10 +277,10 @@ You can look up feature values by calling the method ``v(«node/edge»)`` on fea
 **Alternatively**, you can use the slightly more verbose alternative forms:: 
 
     F.item['otype'].v(node)
-    FE.item['mother_'].v(edge)
+    FE.item['mother'].v(edge)
 
 They give exactly the same result:
-``F.otype`` is the same thing as ``F.item['shebanq_db_otype']`` provided the feature has been loaded.
+``F.otype`` is the same thing as ``F.item['etcbc4_db_otype']`` provided the feature has been loaded.
 
 The advantage of the alternative form is that the feature is specified by a *string*
 instead of a *method name*.
@@ -334,7 +334,7 @@ Examples:
 
 **D. Existence of edges**::
 
-    if C.parents_.e(node): has_parents = True
+    if C.functional_parent.e(node): has_parents = True
 
 (the methods ``vv`` and ``endnodes`` are also valid for the special features.
 
@@ -804,7 +804,7 @@ Example::
 
     fabric.resolve_feature('node', 'otype')
     fabric.resolve_feature('node', 'db.otype')
-    fabric.resolve_feature('node', 'shebanq:db.otype')
+    fabric.resolve_feature('node', 'etcbc4:db.otype')
 
 Resolves incomplete and complete feature names. Raises FabricError if there is no resolution in the current resource.
 If there are resolutions, delivers the last one found, in the form of a tuple (*namespace*, *label*, *feature name*).

@@ -28,7 +28,7 @@ testmodes = {
         'data_dir': './example-data',
         'output_dir': './example-output',
         'laf_dir': './example-data',
-        'source': 'bhs3',
+        'source': 'etcbc4',
         'verbose': 'DEBUG',
         'compile': False,
         'save': False,
@@ -37,7 +37,7 @@ testmodes = {
         'data_dir': './example-data',
         'output_dir': './example-output',
         'laf_dir': './example-data',
-        'source': 'bhs3',
+        'source': 'etcbc4',
         'verbose': 'DEBUG',
         'compile': False,
         'save': True,
@@ -46,7 +46,7 @@ testmodes = {
         'data_dir': './example-data',
         'output_dir': './example-output',
         'laf_dir': './example-data',
-        'source': 'bhs3',
+        'source': 'etcbc4',
         'verbose': 'DEBUG',
         'compile': True,
         'save': False,
@@ -55,7 +55,7 @@ testmodes = {
         'data_dir': None,
         'output_dir': None,
         'laf_dir': None,
-        'source': 'bhs3',
+        'source': 'etcbc4',
         'verbose': 'NORMAL',
         'compile': False,
         'save': False,
@@ -64,7 +64,7 @@ testmodes = {
         'data_dir': None,
         'output_dir': None,
         'laf_dir': None,
-        'source': 'bhs3',
+        'source': 'etcbc4',
         'verbose': 'NORMAL',
         'compile': True,
         'save': False,
@@ -73,7 +73,7 @@ testmodes = {
         'data_dir': None,
         'output_dir': None,
         'laf_dir': None,
-        'source': 'bhs3',
+        'source': 'etcbc4',
         'verbose': 'NORMAL',
         'compile': False,
         'save': True,
@@ -110,7 +110,7 @@ print('''
 fabric.load(test['source'], '--', 'plain',
     {
         "xmlids": {"node": False, "edge": False},
-        "features": ("otype text suffix book", ""),
+        "features": ("otype g_word_utf8 trailer_utf8 book", ""),
     },
     compile_main=test['compile'], compile_annox=False,
 )
@@ -120,9 +120,9 @@ msg("Get the words ... ")
 out = outfile("unicode_utf8.txt")
 
 for i in F.otype.s('word'):
-    text = F.text.v(i) 
-    suffix = F.suffix.v(i) 
-    out.write('{}{}{}'.format(text, suffix, "\n" if '׃' in suffix else ""))
+    text = F.g_word_utf8.v(i) 
+    trailer = F.trailer_utf8.v(i) 
+    out.write('{}{}'.format(text, trailer))
 close()
 
 print('''
@@ -165,7 +165,7 @@ print('''
 fabric.load(test['source'], '--', 'parents',
 {
     "xmlids": {"node": False, "edge": False},
-    "features": ("otype text book", "parents .x"),
+    "features": ("otype g_word_utf8 book", "functional_parent .x"),
 })
 exec(fabric.localnames.format(var='fabric'))
 
@@ -182,13 +182,13 @@ found = 0
 
 for i in NN():
     otype = F.otype.v(i)
-    for p in C.parents.v(i):
+    for p in C.functional_parent.v(i):
         found += 1
         ptype = F.otype.v(p)
         if mode == 'tiny':
-            msg("{}={} -> {}={}".format(otype, F.text.v(i) if otype == 'word' else i, ptype, F.text.v(p) if ptype == 'word' else p))
+            msg("{}={} -> {}={}".format(otype, F.g_word_utf8.v(i) if otype == 'word' else i, ptype, F.g_word_utf8.v(p) if ptype == 'word' else p))
         else:
-            out.write("{}={} -> {}={}\n".format(otype, F.text.v(i) if otype == 'word' else i, ptype, F.text.v(p) if ptype == 'word' else p))
+            out.write("{}={} -> {}={}\n".format(otype, F.g_word_utf8.v(i) if otype == 'word' else i, ptype, F.g_word_utf8.v(p) if ptype == 'word' else p))
     if otype == "book":
         bookname = F.book.v(i)
         sys.stderr.write("{} ({})\n".format(bookname, found))
@@ -202,8 +202,8 @@ print('''
 msg("Travel from node sets ...")
 
 for query in (
-        ('parents', 'forward', C.parents, ['word', 'phrase', 'clause', 'sentence']),
-        ('parents', 'backward', Ci.parents, ['word', 'phrase', 'clause', 'sentence']),
+        ('parents', 'forward', C.functional_parent, ['word', 'phrase', 'clause', 'sentence']),
+        ('parents', 'backward', Ci.functional_parent, ['word', 'phrase', 'clause', 'sentence']),
         ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
         ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book']),
     ):
@@ -257,10 +257,10 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source'], 'participants', 'personal',
+fabric.load(test['source'], 'px', 'extradata',
         {
             "xmlids": {"node": False, "edge": False},
-            "features": ("intro role otype text", ""),
+            "features": ("instruction pargr otype g_word_utf8", ""),
         },
         compile_main=test['compile'], compile_annox=False,
     )
@@ -269,15 +269,19 @@ exec(fabric.localnames.format(var='fabric'))
 msg("Get the annotations ...")
 out = outfile('annotations.txt')
 
-for n in set(F.intro.s()) | set(F.role.s()):
+limit = 20
+i = 0
+for n in set(F.instruction.s()) | set(F.pargr.s()):
+    i += 1
+    if limit != None and i > limit: break
     otype = F.otype.v(n)
-    rep = F.text.v(n) if otype == 'word' else n
-    intro = F.intro.v(n)
-    role = F.role.v(n)
+    rep = F.g_word_utf8.v(n) if otype == 'word' else n
+    instruction = F.instruction.v(n)
+    pargr = F.pargr.v(n)
     msg("{}({})\tintro='{}'\trole='{}'".format(
         otype, rep,
-        intro or 'n/a',
-        role or 'n/a',
+        instruction or 'n/a',
+        pargr or 'n/a',
     ))
 close()
 

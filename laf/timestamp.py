@@ -25,6 +25,7 @@ class Timestamp(object):
     def __init__(self, log_file=None, verbose=None):
         self.timestamp = time.time()
         self.log = None
+        self.logs = []
         self.verbose = self.verbose_level[verbose or 'NORMAL']
         if log_file:
             self.connect_log(log_file)
@@ -48,11 +49,17 @@ class Timestamp(object):
 
     def set_verbose(self, verbose): self.verbose = self.verbose_level[verbose or 'NORMAL']
     def reset(self): self.timestamp = time.time()
-    def connect_log(self, log_file): self.log = log_file
+    def connect_log(self, log_file):
+        self.logs.append(log_file)
+        self.log = log_file
     def disconnect_log(self):
-        try: self.log.close()
+        try:
+            self.log.close()
+            del self.logs[-1]
+            if self.logs: self.log = self.logs[-1]
         except: pass
         self.log = None
+        self.logs = []
 
     def _elapsed(self):
         interval = time.time() - self.timestamp

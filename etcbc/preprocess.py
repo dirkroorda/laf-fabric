@@ -4,7 +4,7 @@ import array
 from .lib import monad_set, object_rank
 
 def node_order(API):
-    API['fabric'].load_again({"features": {"shebanq": {"node": ["db.otype,monads",]}}}, add=True)
+    API['fabric'].load_again({"features": ('otype monads', '')}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']

@@ -111,7 +111,7 @@ If you run it, you will also configure your LAF-Fabric::
 
 This points laf-fabric to the example data that comes with the distribution, which is just Genesis 1:1.
 If you have downloaded the binary data for the full Hebrew Text Database, then
-make sure the data is in *~/laf-fabric-data/etcbc-bhs3* and run::
+make sure the data is in *~/laf-fabric-data/etcbc4* and run::
 
     python lf-gallery.py fulls
 

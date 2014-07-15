@@ -1,4 +1,4 @@
-            <annotationDecl xml:id="a.{name}" as.id="shebanq">
+            <annotationDecl xml:id="a.{name}" as.id="{annot_space_def}">
                 <a.desc>{kind}: {name}</a.desc>
                 <a.resp>{annot_resp}</a.resp>
                 <a.method type="{annot_method}"/>

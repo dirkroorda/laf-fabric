@@ -17,6 +17,7 @@ class LafData(object):
 
     def __init__(self):
         self.log = None
+        self.clog = None
         self.data_items = {}
 
     def prepare_dirs(self, annox):
@@ -57,12 +58,14 @@ class LafData(object):
             self.stamp.Nmsg("\n" + "\n".join(mg), withtime=False)
         self._finish_logfile()
 
-    def _finish_logfile(self):
-        self.log.write("\nCLOSED AT:{}".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
-        try: self.log.close()
+    def _finish_logfile(self, compile=None):
+        the_log = self.log if compile == None else self.clog
+        the_log.write("\nCLOSED AT:{}".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
+        try: the_log.close()
         except: pass
         self.stamp.disconnect_log()
-        self.log = None
+        if compile == None: self.log = None
+        else: self.clog = None
 
     def _flush_logfile(self):
         try: self.log.flush()
@@ -72,15 +75,19 @@ class LafData(object):
         env = self.names.env
         log_dir = env['task_dir'] if compile == None else env["{}_compiled_dir".format(compile)]
         log_path = env['log_path'] if compile == None else env["{}_compiled_path".format(compile)]
+        the_log = self.log if compile == None else self.clog
         try:
             if not os.path.exists(log_dir): os.makedirs(log_dir)
         except os.error as e:
             raise FabricError("could not create log directory {}".format(log_dir), self.stamp, cause=e)
-        if not self.log:
-            self.log = open(log_path, "w", encoding="utf-8")
-            self.log.write("OPENED AT:{}\n".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
-            self.stamp.connect_log(self.log)
+
+        if not the_log:
+            the_log = open(log_path, "w", encoding="utf-8")
+            the_log.write("OPENED AT:{}\n".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
+            self.stamp.connect_log(the_log)
             self.stamp.Nmsg("LOGFILE={}".format(log_path))
+            if compile == None: self.log = the_log
+            else: self.clog = the_log
 
     def compile_all(self, force):
         env = self.names.env
@@ -125,13 +132,11 @@ class LafData(object):
 
     def _compile_origin(self, origin):
         env = self.names.env
-        the_log_file = env['compiled_file']
-        the_log_dir = env['{}_compiled_dir'.format(origin)]
         self.add_logfile(compile=origin)
         self._parse(origin)
         self._model(origin)
         self._store_origin(origin)
-        self._finish_logfile()
+        self._finish_logfile(compile=origin)
 
     def _clear_origin_unnec(self, origin):
         dkeys = list(self.data_items.keys())

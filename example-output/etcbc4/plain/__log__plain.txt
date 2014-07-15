@@ -1,0 +1,11 @@
+OPENED AT:2014-07-15T11-40-53
+  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/etcbc4/plain/__log__plain.txt
+  0.01s INFO: DATA LOADED FROM SOURCE etcbc4 AND ANNOX -- FOR TASK plain AT 2014-07-15T11-40-53
+  0.00s Get the words ... 
+  0.00s Results directory:
+/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/etcbc4/plain
+
+__log__plain.txt                        271 Tue Jul 15 13:40:53 2014
+unicode_utf8.txt                        366 Tue Jul 15 13:40:53 2014
+
+CLOSED AT:2014-07-15T11-40-53

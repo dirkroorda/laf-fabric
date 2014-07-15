@@ -2,8 +2,8 @@ import sys
 from etcbc.emdros import patch
 
 modes = {
-    'test': (2, '/Users/dirk/Downloads', 'bhs4_test'),
-    'full': (1000000, '/Users/dirk/Downloads', 'bhs4'),
+    'test': (2, '/Users/dirk/Downloads', '/Users/dirk/Downloads', 'bhs4_test', 'etcbc4_test'),
+    'full': (1000000, '/Users/dirk/Downloads', '/Users/dirk/Downloads', 'bhs4', 'etcbc4'),
 }
 
 if len(sys.argv) < 2:
@@ -15,5 +15,5 @@ if mode not in modes:
     print("Usage\nlf-patch mode\nwhere mode in {}".format(modes.keys()))
     sys.exit(1)
 
-(chunk, root, fname) = modes[mode]
-patch(chunk, '{}/{}.mql'.format(root, fname), '{}/{}_patched.mql'.format(root, fname))
+(chunk, rooti, rooto, fnamei, fnameo) = modes[mode]
+patch(chunk, '{}/{}.mql'.format(rooti, fnamei), '{}/{}.mql'.format(rooto, fnameo))

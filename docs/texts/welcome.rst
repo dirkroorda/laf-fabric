@@ -54,7 +54,7 @@ into the text of the Hebrew Bible, see
 
 * `The ETCBC's github repository <https://github.com/ETCBC/laf-fabric-nbs>`_
   (highlight:
-  `trees for Data Oriented Parsing <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_bhs.ipynb>`_)
+  `trees for Data Oriented Parsing <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_etcbc4.ipynb>`_)
 * `Gino Kalkman's analysis of the verbal forms in the Psalms, accompanying his Ph.D. thesis <https://github.com/ETCBC/Biblical_Hebrew_Analysis>`_
 * `other contributions <https://github.com/ETCBC/study>`_
 

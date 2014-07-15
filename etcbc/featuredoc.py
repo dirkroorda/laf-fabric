@@ -17,7 +17,7 @@ class FeatureDoc(object):
                 A dictionary directing the feature study. Contains:
                     
                     * a list of features to be studied.
-                      It is a list of names and they are taken to be in the ``shebanq`` namespace and having ``ft`` as label.
+                      It is a list of feature names
                     * a set of *absence values*, i.e. values like ``none`` or ``unknown`` that somehow count as the absence of a value.
                     * VALUE_THRESHOLD: a parameter that indicates how many distinct values to list in the summary.
         '''

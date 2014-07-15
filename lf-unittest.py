@@ -10,8 +10,8 @@ from laf.fabric import LafFabric
 from laf.names import FabricError
 from etcbc.preprocess import prepare
 
-SOURCE = 'bhs3'
-ANNOX = 'participants'
+SOURCE = 'etcbc4'
+ANNOX = 'px'
 DATADIR = './example-data'
 DATADIRA = '{}/example-data'.format(os.getcwd())
 LAFDIR = DATADIR
@@ -69,7 +69,7 @@ class TestLafFabric(unittest.TestCase):
             if os.path.getmtime(f) < now: newer = False
         self.assertTrue(newer)
         self.assertTrue(the_log)
-        self.assertEqual(found, 64)
+        self.assertEqual(found, 44)
         close()
         API = self.fabric.load_again({}, compile_main=False)
         close = API['close']
@@ -96,7 +96,7 @@ class TestLafFabric(unittest.TestCase):
             if os.path.getmtime(f) < now: newer = False
         self.assertTrue(newer)
         self.assertTrue(the_log)
-        self.assertEqual(found, 9)
+        self.assertEqual(found, 10)
         close()
         API = self.fabric.load_again({}, compile_annox=False)
         close = API['close']
@@ -112,15 +112,15 @@ class TestLafFabric(unittest.TestCase):
                     "edge": True,
                 },
                 "features": {
-                    "shebanq": {
+                    "etcbc4": {
                         "node": [
                             "db.otype",
-                            "ft.text,suffix",
+                            "ft.g_word_utf8,trailer_utf8",
                             "sft.book",
                         ],
                         "edge": [
                             "ft.mother",
-                            "ft.parents",
+                            "ft.functional_parent",
                         ],
                     },
                 },
@@ -141,14 +141,14 @@ class TestLafFabric(unittest.TestCase):
                     "edge": False,
                 },
                 "features": {
-                    "shebanq": {
+                    "etcbc4": {
                         "node": [
                             "db.oid",
-                            "ft.text,suffix",
+                            "ft.g_word_utf8,trailer_utf8",
                             "sft.book",
                         ],
                         "edge": [
-                            "ft.parents",
+                            "ft.functional_parent",
                         ],
                     },
                 },
@@ -172,15 +172,15 @@ class TestLafFabric(unittest.TestCase):
                     "edge": False,
                 },
                 "features": {
-                    "shebanq": {
+                    "etcbc4": {
                         "node": [
                             "db.otype",
-                            "ft.text,suffix",
+                            "ft.g_word_utf8,trailer_utf8",
                             "sft.book",
                         ],
                         "edge": [
                             "ft.mother",
-                            "ft.parents",
+                            "ft.functional_parent",
                         ],
                     },
                     "dirk": {
@@ -199,21 +199,21 @@ class TestLafFabric(unittest.TestCase):
         close()
         feature_abbs = self.fabric.lafapi.feature_abbs
         feature_abb = self.fabric.lafapi.feature_abb
-        self.assertEqual(feature_abb['otype'], 'shebanq_db_otype')
+        self.assertEqual(feature_abb['otype'], 'etcbc4_db_otype')
         self.assertEqual(len(feature_abbs['otype']), 3)
-        for nm in ('otype', 'dirk_dbs_otype', 'dirk_db_otype'): nm in feature_abbs['otype']
+        for nm in ('etcbc4_db_otype', 'dirk_dbs_otype', 'dirk_db_otype'): self.assertTrue(nm in feature_abbs['otype'])
         self.assertEqual(len(feature_abbs['db_otype']), 2)
-        for nm in ('otype', 'dirk_db_otype'): nm in feature_abbs['db_otype']
+        for nm in ('etcbc4_db_otype', 'dirk_db_otype'): nm in feature_abbs['db_otype']
 
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_d300_resolve(self):
         API = self.fabric.load(SOURCE, '--', 'resolve', {"features": ("","")})
         feature = self.fabric.resolve_feature('node', 'otype')
-        self.assertEqual(feature, ('shebanq', 'db', 'otype'))
+        self.assertEqual(feature, ('etcbc4', 'db', 'otype'))
         feature = self.fabric.resolve_feature('node', 'db.otype')
-        self.assertEqual(feature, ('shebanq', 'db', 'otype'))
-        feature = self.fabric.resolve_feature('node', 'shebanq:db.otype')
-        self.assertEqual(feature, ('shebanq', 'db', 'otype'))
+        self.assertEqual(feature, ('etcbc4', 'db', 'otype'))
+        feature = self.fabric.resolve_feature('node', 'etcbc4:db.otype')
+        self.assertEqual(feature, ('etcbc4', 'db', 'otype'))
 
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_e100_monad_numbers(self):
@@ -647,14 +647,14 @@ class TestLafFabric(unittest.TestCase):
 
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_m100_connectivity(self):
-        API = self.fabric.load(SOURCE, ANNOX, 'connectivity', {"features": {"shebanq": {"node": ["db.otype"], "edge": ["ft.parents"]}}})
+        API = self.fabric.load(SOURCE, ANNOX, 'connectivity', {"features": {"etcbc4": {"node": ["db.otype"], "edge": ["ft.functional_parent"]}}})
         NN = API['NN']
         F = API['F']
         C = API['C']
         close = API['close']
 
         top_node_types = collections.defaultdict(lambda: 0)
-        top_nodes = set(C.parents.endnodes(NN(test=F.otype.v, value='word')))
+        top_nodes = set(C.functional_parent.endnodes(NN(test=F.otype.v, value='word')))
         self.assertEqual(len(top_nodes), 3)
         for node in NN(nodes=top_nodes):
             tag = F.otype.v(node)
@@ -665,35 +665,35 @@ class TestLafFabric(unittest.TestCase):
             self.assertEqual(n, 3)
         nt = 0
         for node in NN():
-            if C.parents.e(node) and F.otype.v(node) == 'sentence':
+            if C.functional_parent.e(node) and F.otype.v(node) == 'sentence':
                 nt += 1
         self.assertEqual(nt, 0)
         close()
 
     @unittest.skipIf(SPECIFIC, SPECIFIC_MSG)
     def test_u100_plain(self):
-        API = self.fabric.load(SOURCE, '--', 'plain', {"features": {"shebanq": {"node": ["db.otype", "ft.text,suffix", "sft.book"]}}})
+        API = self.fabric.load(SOURCE, '--', 'plain', {"features": {"etcbc4": {"node": ["db.otype", "ft.g_word_utf8,trailer_utf8", "sft.book"]}}})
         F = API['F']
         close = API['close']
         textitems = []
         for i in F.otype.s('word'):
-            text = F.text.v(i) 
-            suffix = F.suffix.v(i) 
-            textitems.append('{}{}{}'.format(text, suffix, "\n" if '׃' in suffix else ""))
+            text = F.g_word_utf8.v(i) 
+            trailer = F.trailer_utf8.v(i) 
+            textitems.append('{}{}{}'.format(text, trailer, "\n" if '׃' in trailer else ""))
         text = ''.join(textitems)
         expected = '''בְּרֵאשִׁ֖ית בָּרָ֣א אֱלֹהִ֑ים אֵ֥ת הַשָּׁמַ֖יִם וְאֵ֥ת הָאָֽרֶץ׃
 אֶתֵּ֤ן בַּמִּדְבָּר֙ אֶ֣רֶז שִׁטָּ֔ה וַהֲדַ֖ס וְעֵ֣ץ שָׁ֑מֶן אָשִׂ֣ים בָּעֲרָבָ֗ה בְּרֹ֛ושׁ תִּדְהָ֥ר וּתְאַשּׁ֖וּר יַחְדָּֽו׃
 '''
         self.assertEqual(text, expected)
         close()
-        API = self.fabric.load_again({"features": {"shebanq": {"node": ["db.otype", "ft.text,suffix", "sft.book"]}}, "prepare": prepare})
+        API = self.fabric.load_again({"features": {"etcbc4": {"node": ["db.otype", "ft.g_word_utf8,trailer_utf8", "sft.book"]}}, "prepare": prepare})
         F = API['F']
         close = API['close']
         textitems = []
         for i in F.otype.s('word'):
-            text = F.text.v(i) 
-            suffix = F.suffix.v(i) 
-            textitems.append('{}{}{}'.format(text, suffix, "\n" if '׃' in suffix else ""))
+            text = F.g_word_utf8.v(i) 
+            trailer = F.trailer_utf8.v(i) 
+            textitems.append('{}{}{}'.format(text, trailer, "\n" if '׃' in trailer else ""))
         text = ''.join(textitems)
         expected = '''בְּרֵאשִׁ֖ית בָּרָ֣א אֱלֹהִ֑ים אֵ֥ת הַשָּׁמַ֖יִם וְאֵ֥ת הָאָֽרֶץ׃
 אֶתֵּ֤ן בַּמִּדְבָּר֙ אֶ֣רֶז שִׁטָּ֔ה וַהֲדַ֖ס וְעֵ֣ץ שָׁ֑מֶן אָשִׂ֣ים בָּעֲרָבָ֗ה בְּרֹ֛ושׁ תִּדְהָ֥ר וּתְאַשּׁ֖וּר יַחְדָּֽו׃
@@ -780,7 +780,7 @@ class TestLafFabric(unittest.TestCase):
     def test_u330_endnodes(self):
         API = self.fabric.load(SOURCE, '--', 'plain', {
                 "xmlids": {"node": True, "edge": True},
-                "features": ("otype", "parents .x"),
+                "features": ("otype", "functional_parent .x"),
                 "prepare": prepare,
             },
             compile_main=False, compile_annox=False,
@@ -791,8 +791,8 @@ class TestLafFabric(unittest.TestCase):
         Ci = API['Ci']
         close = API['close']
         for query in (
-                ('parents', 'forward', C.parents, ['word', 'phrase', 'clause', 'sentence'], 48, 3, 1, {'sentence'}),
-                ('parents', 'backward', Ci.parents, ['word', 'phrase', 'clause', 'sentence'], 48, 31, 1, {'word'}),
+                ('functional_parent', 'forward', C.functional_parent, ['word', 'phrase', 'clause', 'sentence'], 48, 3, 1, {'sentence'}),
+                ('functional_parent', 'backward', Ci.functional_parent, ['word', 'phrase', 'clause', 'sentence'], 48, 31, 1, {'word'}),
                 ('unannotated', 'forward', C.laf__x, ['half_verse', 'verse', 'chapter', 'book'], 10, 4, 1, {'half_verse'}),
                 ('unannotated', 'backward', Ci.laf__x, ['half_verse', 'verse', 'chapter', 'book'], 10, 2, 1, {'book'}),
             ):
@@ -810,7 +810,7 @@ class TestLafFabric(unittest.TestCase):
     def test_u400_xml_ids(self):
         API = self.fabric.load(SOURCE, ANNOX, 'plain', {
                 "xmlids": {"node": True,"edge": True,},
-                "features": ("", "mother parents"),
+                "features": ("", "mother functional_parent"),
                 "prepare": prepare,
             },
         )
@@ -827,7 +827,7 @@ class TestLafFabric(unittest.TestCase):
             self.assertEqual(X.r(n), x)
 
         expected_e = {8: 'el1', 9: 'el101734', 10: 'el53244', 11: 'el53245', 12: 'el190840', 13: 'el190841', 14: 'el190842', 15: 'el253771', 16: 'el253772', 17: 'el253773', 18: 'el253774', 19: 'el385981', 20: 'el385982', 21: 'el385983', 22: 'el385984', 23: 'el385985', 24: 'el385986', 25: 'el385987', 26: 'el511117', 27: 'el511118', 28: 'el511119', 29: 'el511120', 30: 'el657926', 31: 'el657927', 32: 'el657928', 33: 'el657929', 34: 'el657930', 35: 'el657931', 36: 'el657932', 37: 'el793283', 38: 'el825158', 39: 'el825159', 40: 'el865010', 41: 'el865011', 42: 'el865012', 43: 'el953312', 44: 'el953313', 45: 'el953314', 46: 'el953315', 47: 'el953316', 48: 'el953317', 49: 'el953318', 50: 'el953319', 51: 'el953320', 52: 'el953321', 53: 'el953322', 54: 'el953323', 55: 'el953324', 56: 'el953325', 57: 'el953326', 58: 'el953327', 59: 'el953328', 60: 'el953329', 61: 'el1029314', 62: 'el1029315', 63: 'el1029316', 64: 'el1029317', 65: 'el1029318', 66: 'el1029319', 67: 'el1029320', 68: 'el1029321', 69: 'el1029322', 70: 'el1029323', 71: 'el1029324', 72: 'el1255606', 73: 'el1255607', 74: 'el1255608', 75: 'el1255609', 76: 'el1255610', 77: 'el1255611', 78: 'el1255612', 79: 'el1255613', 80: 'el1255614', 81: 'el1255615', 82: 'el1255616', 83: 'el1255617', 84: 'el1255618', 85: 'el1255619', 86: 'el1255620', 87: 'el1255621', 88: 'el1255622', 89: 'el1255623', 90: 'el1255624', 91: 'el1255625'}
-        self.assertEqual(len(set(FE.parents.lookup)|set(FE.mother.lookup)), len(expected_e))
+        self.assertEqual(len(set(FE.functional_parent.lookup)|set(FE.mother.lookup)), len(expected_e))
         for (e,x) in expected_e.items():
             self.assertEqual(XE.i(x), e)
             self.assertEqual(XE.r(e), x)
@@ -853,7 +853,7 @@ class TestLafFabric(unittest.TestCase):
         )
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "features": {
-                    "shebanq": {
+                    "etcbc4": {
                         "node": [ ],
                         "edge": [ ],
                         "region": [ ],
@@ -863,7 +863,7 @@ class TestLafFabric(unittest.TestCase):
         )
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "features": {
-                    "shebanq": {
+                    "etcbc4": {
                         "node": { },
                         "edge": [ ],
                     },
@@ -872,7 +872,7 @@ class TestLafFabric(unittest.TestCase):
         )
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
                 "features": {
-                    "shebanq": {
+                    "etcbc4": {
                         "node": [ ],
                         "edge": { },
                     },
@@ -880,11 +880,11 @@ class TestLafFabric(unittest.TestCase):
             },
         )
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
-                "features": ('shebanq:db.oid shebanq:db.otype', '', ''),
+                "features": ('etcbc4:db.oid etcbc4:db.otype', '', ''),
             },
         )
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {
-                "features": ('shebanq:db.oid shebanq:db.otype', 'laf:.z'),
+                "features": ('etcbc4:db.oid etcbc4:db.otype', 'laf:.z'),
             },
         )
         self.assertRaises(FabricError, self.fabric.load, SOURCE, '--', 'load', {

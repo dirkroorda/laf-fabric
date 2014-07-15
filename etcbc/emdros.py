@@ -17,6 +17,7 @@ def patch(chunk, infile, outfile):
         if nlc == chunk:
             nlc = 0
             print('{:>9} lines, {:>7} words'.format(nl, nw))
+        if nl < 10: line = line.replace('bhs4', 'etcbc4')
         if word_type == 0:
             ofh.write('  trailer_utf8 : string DEFAULT "";\n')
             word_type = 1

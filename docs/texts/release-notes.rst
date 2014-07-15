@@ -6,6 +6,15 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.4
+---
+Adaption to the new ETCBC4 version of the data: in documentation and in the *etcbc* and *emdros2laf* packages. Bugfixes.
+
+4.3.5
+-----
+Documentation update. The data source BHS4 has been rebaptized to ETCBC4, and the documentation, which was geared towards the BHS3 data source,
+is now adjusted to ETCBC4.
+
 4.3.4
 -----
 Fine tuning of the Hebrew transliteration. The new plain text looks exceedingly well now. All changes w.r.t. the previous version of the ETCBC

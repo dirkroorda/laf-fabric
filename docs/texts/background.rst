@@ -178,9 +178,9 @@ And the part of a feature that addresses edges is kept separate from the part th
 So an individual feature is identified by *annotation space*, *annotation label*, *feature name*, and *kind* (node or edge).
 For example, in the Hebrew Bible data, we have the feature::
 
-    shebanq:ft.suffix (node)
+    etcbc4:ft.suffix (node)
 
-with annotation space ``shebanq``, annotation label ``ft``, feature name ``suffix``, and kind ``node``.
+with annotation space ``etcbc4``, annotation label ``ft``, feature name ``suffix``, and kind ``node``.
 The data of this feature is a mapping that assigns a string value to each of more than 400,000 nodes.
 So this individual feature represents a significant chunk of data.
 

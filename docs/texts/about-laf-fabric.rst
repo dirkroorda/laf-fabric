@@ -12,7 +12,8 @@ It has these major components:
     * an execution environment that gives Python notebooks access to LAF data
       and is optimized for feature lookup.
 * the *etcbc* package
-    * an extension toolkit geared to a specific LAF resource: the ETCBC Hebrew Text Database.
+    * an extension toolkit geared to a specific LAF resource:
+      the `ETCBC Hebrew Text Database <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_.
 * the *emdros2laf* package
     * conversion from EMDROS to LAF. The ETCBC Hebrew is originally available as an EMDROS database.
       This package performs the conversion to LAF.
@@ -121,11 +122,12 @@ The direction of the future work should be determined by your research needs.
 
 Adding new annotations
 ----------------------
-While LAF-Fabric supports adding an extra annotation package to the existing LAF resource,
-and contains an example workflow to create such packages, this process has not been
-honed by practice yet.
-
-We are working on concrete notebooks with real data as of January 2014.
+LAF-Fabric supports adding an extra annotation package to the existing LAF resource,
+and contains an example workflow to create such packages.
+We have used it to add an extra annotation package to the
+`ETCBC Hebrew Text Database <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_
+containing data that has not made it yet to the published set of features, but it relevant to researchers.
+See the notebook `extra px data <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para%20from%20px.ipynb>`_
 
 Visualization
 -------------
@@ -148,8 +150,7 @@ That would also help to implement feature structures in full generality.
 
 API completion
 --------------
-Many reasonable candidates for an API have not yet been implemented or exposed [#api].
-Basically we have now
+The API offers functionality that covers the following aspects of a LAF resource:
 
 *node iterator*
     iterator that produces nodes in the order by which they are anchored to the primary data (which are linearly ordered).
@@ -161,7 +162,7 @@ Basically we have now
     there are also methods to generate sets of end-points when traveling from a nodeset along featured edges until there are no
     outgoing edges. You can also travel in the opposite direction.
 *xml identifier mapping*
-    a mapping from orginal xml identifiers to integers.
+    a two-way mapping from orginal identifiers in the LAF XML resource to integers that denote the corresponding nodes in LAF-Fabric.
 *primary data access*
     The primary data can be accessed through nodes that are linked to regions of primary data.
 *hooks for custom pre-computed data*
@@ -174,13 +175,13 @@ Basically we have now
    This program has been tested with :ref:`LAF version of the Hebrew Bible <data>`.
 
 .. [#nolaf] It is perfectly possible to run the workflow without the original LAF resource.
-   If somebody has compiled a LAF resource for you, he only need to give you the compiled data,
+   If somebody has compiled a LAF resource for you, you only need to obtain you the compiled data,
    and let the LAF source in the configuration point to something non-existent.
    In that case LAF-fabric will not complain, and never attempt to recompile the original resource.
-   You can still add extra annotation packages, which still can be compiled against the original LAF source,
-   since the original XML identifiers are part of the compiled data.
-   In case of the Hebrew Bible LAF resource: the original resource is over 2 GB on disk,
-   while the compiled binary data is less than 200 MB.
+   You can still add extra annotation packages, which can be compiled against the original LAF source,
+   since the original LAF XML identifiers are part of the compiled data.
+   In case of the Hebrew Bible LAF resource: the original resource is 1.64 GB on disk,
+   while the compiled binary data is 268 MB.
 
 .. [#annox] Shorthand for *extra annotation package*. You can add an extra package of annotations in LAF format
    to your data. When needed, this annox will be compiled into binary data and combined with the compiled data

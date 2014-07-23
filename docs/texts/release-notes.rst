@@ -6,6 +6,12 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.4.1
+-----
+Documentation update. Links to the original data as archived in DANS-EASY.
+
+Past
+====
 4.4
 ---
 Adaption to the new ETCBC4 version of the data: in documentation and in the *etcbc* and *emdros2laf* packages. Bugfixes.
@@ -76,8 +82,6 @@ If you want to use the BHS4 data (beta), `download <https://www.dropbox.com/s/1o
 -----
 Minor improvements in the laf-api.
 
-Past
-====
 4.2.7
 -----
 API

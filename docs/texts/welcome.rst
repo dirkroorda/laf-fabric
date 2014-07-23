@@ -37,7 +37,7 @@ The need for it arose while executing a
 `CLARIN-NL <http://www.clarin.nl>`_
 project
 `SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_,
-by which the contents of the Hebrew Text Database of the
+by which the contents of the `Hebrew Text Database <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_ of the
 `ETCBC <http://www.godgeleerdheid.vu.nl/etcbc>`_
 was converted from
 `EMDROS <http://emdros.org>`_ (that conversion is also part of LAF-Fabric).
@@ -58,5 +58,8 @@ into the text of the Hebrew Bible, see
 * `Gino Kalkman's analysis of the verbal forms in the Psalms, accompanying his Ph.D. thesis <https://github.com/ETCBC/Biblical_Hebrew_Analysis>`_
 * `other contributions <https://github.com/ETCBC/study>`_
 
+LAF-Fabric has been used in several ways to construct the `SHEBANQ demonstrator query saver <http://shebanq.ancient-data.org>`_.
+
 The development of LAF-Fabric continues, but its progress now takes place mostly inside the module *etcbc*,
-a specialized module to support working with the Hebrew Text Database of the ETCBC.
+a specialized module to support working with the
+`Hebrew Text Database of the ETCBC <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_.

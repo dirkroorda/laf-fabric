@@ -33,23 +33,18 @@ ipython, if you like. The `website <http://ipython.org>`_ is a good entry point.
 Download Anaconda
 -----------------
 `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ is our distribution of choice.
-We want, however, base it on python3, so we have to take a detour.
+Choose a python3 based installer from `this download page <http://repo.continuum.io/anaconda3/>`_.
 
-#. Download a *miniconda* installer from `here <http://repo.continuum.io/miniconda/index.html>`_.
-   Pick the one starting with *Miniconda3* that fits your operating system.
+#. Pick the one that fits your operating system.
    Install it. If asked to install for single user or all users, choose single user.
 
 #. On Windows you could get into trouble if you have another Python.
    If you have environment variables with the name of PYTHONPATH or PYTHONHOME, you should disable
    them. For diagnosis and remedy, see [#otherpython]_ 
 
-#. Start up a new command prompt, and say::
-
-       conda install anaconda
-    
-   This will install all anaconda packages in your fresh python3 installation.
-   Now you have *ipython*, *networkx*, *matplotlib*, *numpy* to name but a few popular
-   python packages for scientific computing.
+This will install all anaconda packages in your fresh python3 installation.
+Now you have *ipython*, *networkx*, *matplotlib*, *numpy* to name but a few popular
+python packages for scientific computing.
  
 Get LAF-Fabric
 ==============
@@ -80,24 +75,23 @@ Here are the steps, assuming you are in the command line, at the top level direc
 
 This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
 Hebrew Text Database: *etcbc*.
-It also installs *emdros2laf*, a conversion package from the source format of the ETCBC database (EMDROS) to LAF.
+It also installs *emdros2laf*, a conversion package from the source format of the
+`ETCBC database <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_ (EMDROS) to LAF.
 This package has been used to obtain the actual LAF version of the ETCBC database.
 
 .. note::
     In order to use *emdros2laf* and parts of *etcbc*, you need to install `EMDROS <http://emdros.org>`_ software, which is freely available.
-    Tip: you do not need graphical user interfaces, just command line tools. It works nicely with an sqlite3 backend.
+    Tip: it works nicely with an sqlite3 backend.
 
 Get the data
 ============
 If you are interested in working with the Hebrew Bible,
-go to the `ETCBC github repository <https://github.com/ETCBC/laf-fabric-nbs>`_.
-You find a download link for a ready made work directory containing the binary LAF data of the ETCBC Hebrew Text database.
-(You need to ask for a password, though, to unlock the zip file).
-Download and unpack it in your home directory. If all goes well you have a directory
+go to the `DANS-EASY <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_ archive and
+download *laf-fabric-data.zip* and unpack it in your home directory. If all goes well you have a directory
 *laf-fabric-data* in your home directory.
 
 .. note::
-    If you have already a *laf-fabric-data* directory, delete it, unless you have added stuff yourself.
+    If you have already a *laf-fabric-data* directory, delete it, unless you have added stuff yourself (possibly extra annotations).
     In that case, move your existing directory out of the way.
     *laf-fabric-data* is supposed to be input data, i.e. the data you download plus the data that laf-fabric itself adds to it
     while converting from emdros to laf or from laf to binary.
@@ -183,16 +177,16 @@ we can count all words in the Hebrew bible and produce
 a table, where each row consists of the bible book plus chapter, followed
 by the percentage masculine words, followed by the percentage of feminine words in that chapter::
 
-    Genesis 1	22.9	5.2
-    Genesis 2	19.2	6.48
-    Genesis 3	20.6	9.02
-    Genesis 4	32	11
-    Genesis 5	36.6	17.9
-    Genesis 6	22.7	8.7
-    Genesis 7	18.8	10.7
-    Genesis 8	16.7	8.94
-    Genesis 9	19.9	6.76
-    Genesis 10	22	4.45
+    Genesis 1,42.34769687964339,5.794947994056463
+    Genesis 2,38.663967611336034,7.6923076923076925
+    Genesis 3,37.4749498997996,10.02004008016032
+    Genesis 4,43.04635761589404,11.920529801324504
+    Genesis 5,40.74844074844075,18.91891891891892
+    Genesis 6,36.61327231121282,9.610983981693364
+    Genesis 7,33.59683794466403,11.462450592885375
+    Genesis 8,31.30081300813008,9.959349593495935
+    Genesis 9,37.97216699801193,9.74155069582505
+    Genesis 10,30.679156908665107,4.68384074941452
 
 From this table we can easily make a chart, within the same notebook!
 
@@ -208,7 +202,7 @@ The gender notebook is self documenting, it contains general information on how 
 Next steps
 ----------
 Have a look at the notebooks in the
-`ETCBC <https://github.com/ETCBC/laf-fabric-nbs>`_ and
+`laf-fabric-nbs <https://github.com/ETCBC/laf-fabric-nbs>`_ and
 `study <https://github.com/ETCBC/study>`_ and
 `contributions <https://github.com/ETCBC/contributions>`_
 repositories.

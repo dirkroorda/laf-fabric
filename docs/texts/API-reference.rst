@@ -16,21 +16,13 @@ Where is the API?
 
 The API is a method of the task processor: ``API()`` in ``laf.fabric``.
 This method returns you a set of *API elements*: objects and/or methods that you can use to retrieve
-information about the LAF resource: its features, nodes, edges, primary data and
-even some of the XML identifiers used.
+information from the LAF resource: its features, nodes, edges, primary data and
+even its original XML identifiers.
 
-By calling this method you can insert the API elements in your local namespace and give it your own names.
-
-This has two advantages: efficiency and cleanliness of the code of tasks.
-
-Because API elements might easily be called millions of times in a loop, no space should be
-wasted by things as method lookup. Local names are faster.
-
-The one who writes tasks may choose names that nicely stand out in the rest of his code,
-enabling readers of the code to easily spot the interface with the actual LAF resource.
-
-For the sake of documentation, however, I have chosen names for the API elements, and will stick to
-them.
+By calling this method you can insert the API elements in your local namespace.
+This has the advantage of efficiency,
+because API elements might easily be called millions of times in a loop,
+so no time should be wasted by things as method lookup. Local names are faster.
 
 Calling the API
 ===============
@@ -38,9 +30,9 @@ First you have to get a *processor* object. This is how you get it::
 
     from laf.fabric import LafFabric
     fabric = LafFabric(
-        work_dir="/Users/you/laf-fabric-data",
-        laf_dir="/Users/you/laf-fabric_data/laf",
-        output_dir="/Users/you/laf-fabric_output",
+        work_dir='/Users/you/laf-fabric-data',
+        laf_dir='/Users/you/laf-fabric_data/laf',
+        output_dir='/Users/you/laf-fabric_output',
         save=True,
         verbose='NORMAL',
     )
@@ -61,26 +53,26 @@ Possible values in increasing level of verbosity::
     DETAIL      detailed messages and above
     DEBUG       absolutely everything
 
-Then you have the processor to load data, according to the source you choose::
+Once you have the processor, you can load data, according to the source you choose::
 
     fabric.load('etcbc4', '--', 'cooccurrences',
         {
-            "xmlids": {
-                "node": False,
-                "edge": False,
+            'xmlids': {
+                'node': False,
+                'edge': False,
             },
-            "features": {
-                "etcbc4": {
-                    "node": [
-                        "db.otype",
-                        "ft.sp,lex_utf8",
-                        "sft.book",
+            'features': {
+                'etcbc4': {
+                    'node': [
+                        'db.otype',
+                        'ft.sp,lex_utf8',
+                        'sft.book',
                     ],
-                    "edge": [
+                    'edge': [
                     ],
                 },
             },
-            "primary": False,
+            'primary': False,
         },
         compile_main=False, compile_annox=False,
         verbose='NORMAL',
@@ -95,22 +87,22 @@ If you want to change what is loaded in your program, you can simply call the lo
 
     fabric.load_again(
         {
-            "xmlids": {
-                "node": True,
-                "edge": False,
+            'xmlids': {
+                'node': True,
+                'edge': False,
             },
-            "features": {
-                "etcbc4": {
-                    "node": [
-                        "db.otype,oid",
-                        "ft.sp,lex_utf8",
-                        "sft.book",
+            'features': {
+                'etcbc4': {
+                    'node': [
+                        'db.otype,oid',
+                        'ft.sp,lex_utf8',
+                        'sft.book',
                     ],
-                    "edge": [
+                    'edge': [
                     ],
                 },
             },
-            "primary": False,
+            'primary': False,
         },
         compile_main=False, compile_annox=False,
         verbose='NORMAL',
@@ -129,10 +121,10 @@ If you only want to add a bit of data, you can simply call::
 
     fabric.load_again(
         {
-            "features": {
-                "etcbc4": {
-                    "node": [
-                        "db.oid",
+            'features': {
+                'etcbc4': {
+                    'node': [
+                        'db.oid',
                     ],
                 },
             },
@@ -142,14 +134,16 @@ If you only want to add a bit of data, you can simply call::
 
 You can also leave specify the features as a tuple, containing node feature specs and edge feature specs::
 
-    "features": (
-    ''' etcbc4:db.oid
-        etcbc4:ft.sp
-    ''',
-    ''' etcbc4:ft.functional_parent
-        etcbc4:ft.mother
-    '''
-    )
+    {
+        'features': (
+        ''' etcbc4:db.oid
+            etcbc4:ft.sp
+        ''',
+        ''' etcbc4:ft.functional_parent
+            etcbc4:ft.mother
+        '''
+        )
+    }
 
 The features for nodes and edges are specfied as a whitespace separated list of feature names.
 
@@ -158,29 +152,32 @@ If this causes ambiguity, LAF-Fabric will choose an arbitrary variant, and infor
 If that choice does not suit you, you can always disambiguate yourself by supplying label and possibly namespace yourself.
 So the shortest way is::
 
-    "features": ('oid sp', 'functional_parent mother')
+    {'features': ('oid sp', 'functional_parent mother')}
 
-**``compile-source`` and ``compile-annox``**
+**compile-source and compile-annox**:
 If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
 The detection is based on the modified dates of the GrAF header file and the compiled files.
 In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
 
 After loading, the individual API methods can be accessed by means of local variables.
 These variables exist only if they correspond with things that you have called for.
+Here is an overview.
 
-**F**: Features, only if you have declared features.
+**F**: Features (of nodes), only if you have declared node features.
+
+**FE**: Features (of edges), only if you have declared edge features.
 
 **C**, **Ci**: Connectivity, only if you have declared *edge* features.    
 
-**P**: Primary data, only if you have specified ``"primary": True``.
+**P**: Primary data, only if you have specified ``'primary': True``.
 
-**X**: XML identifiers, only in sofar as declared under ``"xmlids"``.
+**X**: XML identifiers, only in sofar as declared under ``'xmlids'``.
 
 **NN**: The "next node" iterator.
 
 **EE**: The "next edge" iterator.
 
-**NE**: The "next event" iterator, only if you have specified ``"primary": True``.
+**NE**: The "next event" iterator, only if you have specified ``'primary': True``.
 
 **msg**: The function to issue messages with
 
@@ -200,7 +197,7 @@ Suppose we compare node *A* and node *B*.
 Look up all regions for *A* and for *B* and determine the first point of the first region
 and the last point of the last region for *A* and *B*, and call those points *Amin, Amax*, *Bmin, Bmax* respectively. 
 
-Then region *A* comes before region *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
+Then node *A* comes before node *B* if and only if *Amin* < *Bmin* or *Amin* = *Bmin* and *Amax* > *Bmax*.
 
 In other words: if *A* starts before *B*, then *A* becomes before *B*.
 If *A* and *B* start at the same point, the one that ends last, counts as the earlier of the two.
@@ -210,22 +207,25 @@ LAF-Fabric will select an arbitrary but consistent order between thoses nodes.
 The only way this can happen is when *A* and *B* start and end at the same point.
 Between those points they might be very different. 
 
-Based on the formal information in a LAF resource, LAF-Fabric is not able to order
-the nodes according to all of your intuitions.
-
-If two nodes *start and end at the same place* in the primary data, only extra knowledge can decide which embeds which.
-
-A particularly nasty case are nodes that link to a zero-width region in the primary data.
-How should they be ordered with respect to neighbouring nodes? Is the empty one embedded in its right neighbour, or its
-left one, or in both, or in neither? All possibilities make sense without further knowledge.
-LAF-Fabric's default ordering places empty nodes *after* all nodes that start at the same place.
-If this is unwanted, something should be done:
-if you have a particular LAF resource and a method to order the nodes in a more satisfying manner,
-you can supply a module in which you implement that order. See :ref:`data-prep`.
-
+This order, while not perfect, is the standard order that LAF-Fabric applies to the nodes.
 The nice property of this ordering is that if a set of nodes consists of a proper hierarchy with respect to embedding,
 the order specifies a walk through the nodes were enclosing nodes come first,
 and embedded children come in the order dictated by the primary data.
+If two nodes *start and end at the same place* in the primary data, only extra knowledge can decide which embeds which.
+
+A particularly nasty case are nodes that link to a zero-width region in the primary data.
+How should they be ordered with respect to neighbouring nodes?
+Is the empty one embedded in its right neighbour, or its
+left one, or in both, or in neither? All possibilities make sense without further knowledge.
+LAF-Fabric's default ordering places empty nodes *after* all nodes that start at the same place.
+
+So, LAF-Fabric may not able to order the nodes according to all of your intuitions, because the explicit information in a LAF resource
+may not completely model those intuitions.
+
+Yet, if you have a particular LAF resource and a method to order the nodes in a more satisfying manner,
+you can supply a module in which you implement that order.
+You can then tell LAF-Fabric to override its default order by the custom one.
+See :ref:`data-prep`.
 
 LAF API
 =======
@@ -239,9 +239,9 @@ Examples::
 
     FE.mother.v(edge)
 
-    F.gender.s()
+    F.gn.s()
 
-    F.gender.s(value='feminine')
+    F.gn.s(value='feminine')
 
     all_node_features = API['F_all']
     all_edge_features = API['FE_all']
@@ -273,6 +273,13 @@ In such cases we leave the feature name empty.
 The values of such annotations are always the empty string.
 
 You can look up feature values by calling the method ``v(«node/edge»)`` on feature objects.
+Here ``«node/edge»`` is an integer denoting the node or edge you want the feature value of.
+
+.. note::
+    In LAF-Fabric, nodes and edges are not data structures, they are integers.
+    So they are their own IDs. 
+    All data about nodes exists in other global tables: how nodes are attached to regions,
+    how nodes are connected to each other by edges, and the values nodes and edges carry for each of the features.
 
 **Alternatively**, you can use the slightly more verbose alternative forms:: 
 
@@ -280,7 +287,7 @@ You can look up feature values by calling the method ``v(«node/edge»)`` on fea
     FE.item['mother'].v(edge)
 
 They give exactly the same result:
-``F.otype`` is the same thing as ``F.item['etcbc4_db_otype']`` provided the feature has been loaded.
+``F.otype`` is the same thing as ``F.item['otype']`` provided the feature has been loaded.
 
 The advantage of the alternative form is that the feature is specified by a *string*
 instead of a *method name*.
@@ -310,13 +317,13 @@ Examples:
 
 **A. Normal edge features**::
 
-    target_node in C.xyz_ft_property.v(source_node)
-    (target_node, value) in C.xyz_ft_property.vv(source_node)
-    target_nodes in C.xyz_ft_property.endnodes(source_nodes, value='val')
+    target_node in C.feature.v(source_node)
+    (target_node, value) in C.feature.vv(source_node)
+    target_nodes in C.feature.endnodes(source_nodes, value='val')
 
-    source_node in Ci.xyz_ft_property.v(target_node)
-    (source_node, value) in Ci.xyz_ft_property.vv(target_node)
-    source_nodes in Ci.xyz_ft_property.endnodes(target_nodes, value='val')
+    source_node in Ci.feature.v(target_node)
+    (source_node, value) in Ci.feature.vv(target_node)
+    source_nodes in Ci.feature.endnodes(target_nodes, value='val')
 
 **B. Special edge features**::
 
@@ -328,13 +335,14 @@ Examples:
 
 **C. Sorting the results**:: 
 
-    target_node in C.xyz_ft_property.v(source_node, sort=True)
-    (target_node, value) in C.xyz_ft_property.vvs(source_node, sort=True)
-    target_nodes in C.xyz_ft_property.endnodes(source_nodes, value='val', sort=True)
+    target_node in C.feature.v(source_node, sort=True)
+    (target_node, value) in C.feature.vvs(source_node, sort=True)
+    target_nodes in C.feature.endnodes(source_nodes, value='val', sort=True)
 
 **D. Existence of edges**::
 
-    if C.functional_parent.e(node): has_parents = True
+    if C.feature.e(node): has_outgoing = True # there is an outgoing edge from node carrying feature
+    if Ci.feature.e(node): has_incoming = True # there is an incoming edge to node carrying feature
 
 (the methods ``vv`` and ``endnodes`` are also valid for the special features.
 
@@ -346,8 +354,8 @@ by means of edges.
 
 For each *edge*-feature that you have declared, it has a member with a handy name, exactly as in the ``FE`` object.
 
-``C.xyz_ft_property`` is a connection table based on the
-edge-feature ``property`` in the annotation space ``xyz``, under annotation label ``ft``.
+``C.feature`` is a connection table based on the
+edge-feature named ``feature``.
 
 Such a table yields for each node ``node1`` a list of pairs ``(node2, val)`` for which there is an edge going
 from ``node1`` to ``node2``, annotated by this feature with value ``val``.
@@ -369,7 +377,7 @@ and only if that fails, from the main source. All relevant data will be combined
 **Ad B. Special edge features**
 
 There may be edges that are completely unannotated. These edges are made available through the special
-``C`` and ``Ci`` members called ``laf__x``. (No annotation namespace, no annotation label, name ``'x'``.)
+``C`` and ``Ci`` members called ``laf__x``. (Annotation namespace ``laf``, no annotation label, name ``'x'``.)
 
 If you have loaded an *annox*, it may have annotated formerly unannotated edges.
 However, this will not influence the ``laf__x`` feature.
@@ -385,13 +393,12 @@ Think of ``x`` as *excluded* from annotations, and ``y`` as *yes annotations*.
 
 **Ad C. Sorting the results** 
 
-The results of the ``v`` and ``vv`` methods are unordered.
-If you want ordering, use the ``v`` and ``vv`` methods instead.
-Their results are ordered in the standard ordering.
-If you have loaded an additional prepared ordering, the results will come in that ordering.
+The results of the ``v`` and ``vv`` methods are unordered, unless ``sort=True`` is passed.
+In that case, the results are ordered in the standard ordering or in the custom ordering if you have
+loaded a prepared ordering.
 
 See the example notebook
-`trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees.ipynb>`_
+`trees <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_etcbc4.ipynb>`_
 for working code with connectivity.
 
 **Ad D. Existence of edges**
@@ -424,7 +431,7 @@ There is no mutual order between two nodes if at least one of the following hold
 *BF(n,m)* yields ``True`` if *n* comes before *m*, ``False`` if *m* comes before *n*, and ``None`` if none of these is the case.
 
 .. note::
-    The *BF()* ordering is **not** influenced by an additional ordering that you might have added to Laf Fabric by
+    The *BF()* ordering is **not** influenced by an additional ordering that you might have added to LAF-Fabric by
     data preparation. So even if you have loaded a more complete ordering, you still can analyse for which pairs of nodes the
     extra ordering introduces extra order.
 
@@ -462,7 +469,7 @@ Examples::
     (d)  for node in NN(
              test=F.otype.v,
              values=['phrase', 'word'],
-             extrakey=lambda x: F_otype.v(x) == 'phrase',
+             extrakey=lambda x: F.otype.v(x) == 'phrase',
          ):
              pass
 
@@ -740,9 +747,9 @@ Examples::
 
     data_dir
     output_dir
-    out_handle = outfile("output.txt")
-    in_handle  = infile("input.txt")
-    file_path = my_file("thefile.txt")
+    out_handle = outfile('output.txt')
+    in_handle  = infile('input.txt')
+    file_path = my_file('thefile.txt')
     close()
 
     msg(text)
@@ -775,7 +782,7 @@ You can have LAF-Fabric close them all by means of ``close()`` without arguments
 If you want to refer in your notebook, outside the LAF-Fabric context, to files in the task-specific working directory,
 you can do so by saying::
 
-    full_path = my_file("thefile.txt")
+    full_path = my_file('thefile.txt')
 
 The method ``my_file`` prepends the full directory path in front of the file name.
 It does not check whether the file exists.

@@ -31,22 +31,19 @@ Data
 ====
 Although this tool is written to deal with LAF resources in general, it has been developed with a particular
 LAF resource in mind:
-the `Text database of the Hebrew Bible <http://www.dans.knaw.nl/en/content/categorieen/projecten/text-database-hebrew-old-testament>`_.
-This data set is available (by request) from the national research data archive in the Netherlands, DANS,
-by following this persistent identifier:
-`urn:nbn:nl:ui:13-ukhm-eb <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-ukhm-eb>`_.
-This data is not yet in LAF format.
+the `Text database of the Hebrew Bible <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_,
+now a dataset archived at DANS-EASY.
 
 The `SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_ project has
-converted the database into LAF (the conversion code is in the package *emdros2laf*, which is included in LAF-Fabric),
-and the resulting LAF resource is a file set of 2.27 GB, being predominantly linguistic annotations.
+converted this database from a special text database format into LAF
+(the conversion code is in the package *emdros2laf*, which is included in LAF-Fabric),
+and the resulting LAF resource is a file set of 1.64 GB, being predominantly linguistic annotations.
 It is this LAF resource that is the reference context for LAF-Fabric.
-It is to be deposited into the DANS archive shortly, under an Open Access licence, with the
-restriction that it may not be used commercially. 
 
-A compiled version of this LAF resource, suitable for working with LAF-Fabric, is available upon request.
-You can `download <https://www.dropbox.com/s/1oqvb92sqn7vuml/laf-fabric-data.zip>`_ 
-a password protected zip file of ~ 150 MB and ask `Dirk Roorda <dirk.roorda@dans.knaw.nl>`_ for the password.
+A compiled version of this LAF resource, suitable for working with LAF-Fabric, is included in the dataset.
+Also the original data has been included, so you can also run `EMDROS <http://emdros.org>`_ tools on the data
+in conjunction with LAF-Fabric. LAF-Fabric even contains a notebook that integrates the use of EMDROS MQL with
+the proper LAF processing.
 
 Existing tools for LAF/GrAF resources
 =====================================
@@ -72,7 +69,7 @@ With LAF-Fabric you can add an additional annotation package to the basic resour
 You can also switch easily between additional packages without any need for recompiling the basic resource.
 The annotations in the extra package may define new annotation spaces, but they can
 also declare themselves in the spaces that exist in the basic source.
-Features in the extra annotation package that coincide with existent features, override the existent ones,
+Features in the extra annotation package that coincide with existent features, override the existing ones,
 in the sense that for targets where they define a different value,
 the one of the added annotation package is taken. Where the additional package does not provide values,
 the original values are used.
@@ -95,7 +92,7 @@ As an example, look at the
 `gender notebook <http://nbviewer.ipython.org/github/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
 notebook by which you can draw a graph of the percentage of masculine and feminine
 words in each chapter of the Hebrew Bible.
-More involved notebooks can be found at the `ETCBC-Data repository <https://github.com/ETCBC/laf-fabric-nbs>`_
+More involved notebooks can be found at the `laf-fabric-nbs repository <https://github.com/ETCBC/laf-fabric-nbs>`_
 and `the study repo <https://github.com/ETCBC/study>`_.
 
 Rationale
@@ -124,6 +121,10 @@ in which the syntactic structure of the text is visible plus the the genders of 
 With this visualization it becomes possible to discern genealogies from other genres with the unaided eye,
 even without being able to read a letter of Hebrew.
 
+Digging deeper into syntax, the notebook
+`trees_etcbc4 <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_etcbc4.ipynb>`_
+produces syntax trees for all sentences in the Hebrew Bible.
+
 The code of LAF-Fabric is on
 `github <https://github.com/ETCBC/laf-fabric>`_,
 including example notebooks and extra annotation packages.
@@ -144,12 +145,11 @@ that is compact, fast loadable, and amenable to efficient computing.
 #. Keep individual features separate.
 #. Compress data when writing it to disk.
 
-**Everything is integer**
-In LAF the pieces of data are heavily connected, and the expression of the connections are XML identifiers.
-Besides that, absolutely everything gets an identifier, whether or not those identifiers are targeted or not.
+**Use of integers**
+In LAF the pieces of data are heavily connected, and the connections are expressed by means of XML identifiers.
 In the compiled version we get rid of all XML identifiers.
-We will represent everything that comes in great quantities by integers: regions, nodes, edges, feature values.
-But feature names, annotation labels and annotation spaces will be kept as is.
+Instead, we will represent everything that comes in great quantities by integers: regions, nodes, edges.
+But feature names and values, annotation labels and spaces will be kept as is.
 
 **Relationships between integers as Python arrays**
 In Python, an array is a C-like structure of memory slots of fixed size.
@@ -163,14 +163,15 @@ In the case of arrays of integers, we can leave out the left column: it is the a
 
 **Relationships between integers as Python arrays**
 If we want to map numbers to sets of numbers,
-we need to be more tricky, because we cannot store sets of numbers as integers.
+we need to be more tricky, because we cannot store sets of numbers directly in the slots of an array.
 What we do instead is: we build two arrays, the first array points to data records in the second array.
 A data record in the second array consists of a number giving the length of the record,
 followed by that number of integers.
 The function ``arrayify()`` in ``laf.lib`` takes a list of items and turns it in a double array. 
 
 **Keep individual features separate**
-A feature is a mapping from either nodes or edges to string values. Features are organized by the annotations
+A feature is a mapping from either nodes or edges to string values.
+Features are organized by the annotations
 they occur in, since these annotations have a *label* and occur in an *annotation space*. 
 We let features inherit the label and the space of their annotations. Within space and label, features are distinguished by name.
 And the part of a feature that addresses edges is kept separate from the part that addresses nodes.
@@ -178,17 +179,25 @@ And the part of a feature that addresses edges is kept separate from the part th
 So an individual feature is identified by *annotation space*, *annotation label*, *feature name*, and *kind* (node or edge).
 For example, in the Hebrew Bible data, we have the feature::
 
-    etcbc4:ft.suffix (node)
+    etcbc4:ft.sp (node)
 
-with annotation space ``etcbc4``, annotation label ``ft``, feature name ``suffix``, and kind ``node``.
-The data of this feature is a mapping that assigns a string value to each of more than 400,000 nodes.
+with annotation space ``etcbc4``, annotation label ``ft``, feature name ``sp`` (part of speech), and kind ``node``.
+The data of this feature is a mapping that assigns a string value to each of the 426,555 word nodes.
 So this individual feature represents a significant chunk of data.
 
-The individual features together take up the bulk of the space.
-In our example, they take 145 MB on disk, and the rest takes only 55 MB.
+The individual features together take up the bulk of the compiled data. Here is a break down of the compiled data::
+
+    features                         150 MB
+    graph (nodes, edges, regions)     17 MB
+    primary data linking              33 MB
+    LAF XML identifiers mappings      59 MB
+    precomputed data for node order    8 MB
+    extra annotation package           1 MB
+    --------------------------------+------
+    total                            269 MB
+
 Most notebooks require only a limited set of individual features.
-So when we run tasks and switch between them, we want to swap feature data in
-and out.
+So when we run tasks and switch between them, we swap feature data in and out.
 The design of LAF-fabric is such that feature data is neatly chunked per individual feature.
 
 .. note::
@@ -199,14 +208,15 @@ The design of LAF-fabric is such that feature data is neatly chunked per individ
     when individual features are cleanly separable.
 
 .. note::
-    Features coming from the source and features coming from the extra annotation package will be merged
+    Features coming from the source and features coming from the extra annotation package will be combined
     before the you can touch them in tasks.
     This merging occurs late in the process, even after the loading of features by LAF-fabric.
     Only at the point in time when a task declares the names of the API methods
     (see ``API()`` in ``laf.fabric``)
-    the features will be assembled into objects.
+    the feature data coming from main source and annox will be assembled into objects.
     Yet the underlying tables will not mixed, so that features do not have to be unloaded and reloaded
-    when you change your annox.
+    when you change your annox. The price is a small overhead for each feature lookup: it will be looked up first in the annox data,
+    and only if it is not found there, in the main data.
 
 .. _author:
 
@@ -221,10 +231,13 @@ together with the researchers Wido van Peursen, Oliver Glanz and Janet Dyk at th
 `Eep Talstra Centre for Bible and Computing (ETCBC), VU University
 <http://www.godgeleerdheid.vu.nl/nl/onderzoek/instituten-en-centra/eep-talstra-centre-for-bible-and-computer/index.asp>`_.
 
-Thanks to Martijn Naaijer and Gino Kalkman for first experiments with LAF-Fabric.
+Thanks to Martijn Naaijer and Gino Kalkman for first and on-going experiments with LAF-Fabric.
 
 History
 =======
+
+**2014-07-31**
+Publication of the ETCBC4 dataset in `DANS-EASY <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_.
 
 **2014-02-16**
 A new github repository,

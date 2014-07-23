@@ -45,8 +45,9 @@ Output
 This is what the program generates:
 
 The main output are annotation files plus a primary data file. And there are descriptive headers.
-The primary data file is a plain text file (unicode utf8) containing the complete vocalized text of the Hebrew Bible according 
-to the Biblia Hebraica Stuttgartensa. There is some chunking into books, chapters and verses, only by means of newlines.
+The primary data file is a plain text file (unicode utf8) containing the complete underlying text of the 
+database in question.
+There is some chunking into books, chapters and verses, only by means of newlines.
 No section indications occur in the primary text. This file is obtained from a few text-carrying features present in the database.
 
 Annotation files are xml files that describe regions of in the primary data, and properties of those regions.
@@ -63,7 +64,7 @@ Definitions
 The conversion process is defined by a substantial amount of information outside the program.
 This information comes in the form of a main configuration file, a feature definition file, a bunch of templates, and several XML schemas.
 
-The main config files specifies file locations, the version of the Hebrew database, and the location of the ISOcat registry.
+The main config files specifies file locations, the version of the text database, and the location of the ISOcat registry.
 The feature definition file is a big list of object types, their associated features with their enumerated values
 plus the ISOcat correspondences of it all. It also chunks the LAF materials to be generated into a monad, section and lingo part,
 providing even one more layer of subdivisions, in order to keep the resulting xml files manageable.

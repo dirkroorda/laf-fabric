@@ -6,12 +6,17 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+
+4.4.2
+=====
+*etcbc.featuredoc* now produces sphinx output that can be put on a readthedocs website.
+
+Past
+====
 4.4.1
 -----
 Documentation update. Links to the original data as archived in DANS-EASY.
 
-Past
-====
 4.4
 ---
 Adaption to the new ETCBC4 version of the data: in documentation and in the *etcbc* and *emdros2laf* packages. Bugfixes.

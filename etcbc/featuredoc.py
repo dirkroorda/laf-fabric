@@ -131,6 +131,13 @@ class FeatureDoc(object):
             for x in sorted(vals_def[ft].items(), key=lambda y: (-y[1], y[0])):
                 result_file.write("{} x {}\n".format(*x))
             result_file.close()
+            result_file = outfile("node {}.rst".format(ft))
+            result_file.write('''
+{ft}
+{ln}
+.. literalinclude:: node {ft} values.txt
+'''.format(ft=ft, ln=('=' * len(ft))))
+            result_file.close()
         
         for ft in edge_feats:
             result_file = outfile("edge {} values.txt".format(ft))
@@ -159,6 +166,17 @@ class FeatureDoc(object):
             for val in vals_undef[ft]:
                 n_vals_undef[ft] += vals_undef[ft][val]
         
+        index_file = outfile("index.rst")
+        index_file.write('''
+Feature Index
+#############
+''')
+        for ft in node_feats:
+            index_file.write('''
+:doc:`{ft} <node {ft}>`
+'''.format(ft=ft))
+        index_file.close()
+
         summary_file = outfile("0_summary_node.csv")
         summary_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
             'Feature',

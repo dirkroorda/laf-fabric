@@ -100,7 +100,7 @@ class Transcription(object):
     }
     hebrew_cons = '>BGDHWZXVJKLMNS<PYQRFCT'
     trans_final_pat = re.compile(r'([' + hebrew_cons + r'][^_&]*)([KMNPY])([^' + hebrew_cons + r'_&]*(:?[_&]|\Z))')
-    trans_hebrew_pat = re.compile(r'(:[AE@]|:|[0-9][0-9]|.)')
+    trans_hebrew_pat = re.compile(r'(:[AE@]|.[cf]|:|[0-9][0-9]|.)')
     swap_accent_pat = re.compile(r'(\A|[_&])([0-9][0-9])([' + hebrew_cons + r'])([:;,.EAIOU@]*)')
 
     syriac_mapping = {

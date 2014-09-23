@@ -123,7 +123,7 @@ class FeatureDoc(object):
         msg("Computing results ...")
         
         for ft in node_feats:
-            result_file = outfile("node {} values.txt".format(ft))
+            result_file = outfile("{} values.txt".format(ft))
             result_file.write("UNDEFINED VALUES\n")
             for x in sorted(vals_undef[ft].items(), key=lambda y: (-y[1], y[0])):
                 result_file.write("{} x {}\n".format(*x))
@@ -131,15 +131,15 @@ class FeatureDoc(object):
             for x in sorted(vals_def[ft].items(), key=lambda y: (-y[1], y[0])):
                 result_file.write("{} x {}\n".format(*x))
             result_file.close()
-            result_file = outfile("node {}.rst".format(ft))
+            result_file = outfile("{}.rst".format(ft))
             result_file.write('''
 {ft}
 {ln}
-.. include:: node {ft} comments.rst
-.. literalinclude:: node {ft} values.txt
+.. include:: ../comments/{ft} comments.rst
+.. literalinclude:: ../values/{ft} values.txt
 '''.format(ft=ft, ln=('=' * len(ft))))
             result_file.close()
-            result_file = outfile("node {} comments.rst".format(ft))
+            result_file = outfile("{} comments.rst".format(ft))
         
         for ft in edge_feats:
             result_file = outfile("edge {} values.txt".format(ft))
@@ -175,7 +175,7 @@ Feature Index
 ''')
         for ft in sorted(node_feats):
             index_file.write('''
-:doc:`{ft} <node {ft}>`
+:doc:`{ft} <{ft}>`
 '''.format(ft=ft))
         index_file.close()
 

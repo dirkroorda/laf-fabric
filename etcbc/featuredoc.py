@@ -135,9 +135,11 @@ class FeatureDoc(object):
             result_file.write('''
 {ft}
 {ln}
+.. include:: node {ft} comments.rst
 .. literalinclude:: node {ft} values.txt
 '''.format(ft=ft, ln=('=' * len(ft))))
             result_file.close()
+            result_file = outfile("node {} comments.rst".format(ft))
         
         for ft in edge_feats:
             result_file = outfile("edge {} values.txt".format(ft))
@@ -171,7 +173,7 @@ class FeatureDoc(object):
 Feature Index
 #############
 ''')
-        for ft in node_feats:
+        for ft in sorted(node_feats):
             index_file.write('''
 :doc:`{ft} <node {ft}>`
 '''.format(ft=ft))

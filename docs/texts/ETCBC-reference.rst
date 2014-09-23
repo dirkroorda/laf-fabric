@@ -171,7 +171,7 @@ Usage::
     from etcbc.px import PX
 
 More info:
-`notebook feature-doc <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para from px.ipynb>`_
+`notebook para from px <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para from px.ipynb>`_
 
 
 Feature documentation

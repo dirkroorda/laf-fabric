@@ -201,7 +201,9 @@ The gender notebook is self documenting, it contains general information on how 
 
 Next steps
 ----------
-Have a look at the notebooks in the
+Study the many `ETCBC4 features <http://shebanq-doc.readthedocs.org/en/latest/texts/welcome.html>`_.
+
+Then have a look at the notebooks in the
 `laf-fabric-nbs <https://github.com/ETCBC/laf-fabric-nbs>`_ and
 `study <https://github.com/ETCBC/study>`_ and
 `contributions <https://github.com/ETCBC/contributions>`_

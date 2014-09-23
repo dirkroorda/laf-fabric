@@ -31,8 +31,9 @@ Data
 ====
 Although this tool is written to deal with LAF resources in general, it has been developed with a particular
 LAF resource in mind:
-the `Text database of the Hebrew Bible <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_,
-now a dataset archived at DANS-EASY.
+the `ETCBC4 Text database of the Hebrew Bible <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_,
+now a dataset archived at DANS-EASY. Here is a quick link to the 
+`ETCBC4 features <http://shebanq-doc.readthedocs.org/en/latest/texts/welcome.html>`_
 
 The `SHEBANQ <http://www.slideshare.net/dirkroorda/shebanq-gniezno>`_ project has
 converted this database from a special text database format into LAF
@@ -44,6 +45,7 @@ A compiled version of this LAF resource, suitable for working with LAF-Fabric, i
 Also the original data has been included, so you can also run `EMDROS <http://emdros.org>`_ tools on the data
 in conjunction with LAF-Fabric. LAF-Fabric even contains a notebook that integrates the use of EMDROS MQL with
 the proper LAF processing.
+
 
 Existing tools for LAF/GrAF resources
 =====================================

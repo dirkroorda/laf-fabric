@@ -7,12 +7,17 @@ Mainly in the *etcbc* packages.
 Current
 =======
 
-4.4.2
-=====
-*etcbc.featuredoc* now produces sphinx output that can be put on a readthedocs website.
+4.4.3
+-----
+The welcome string now contains a reference to the feature documentation.
 
 Past
 ====
+
+4.4.2
+-----
+*etcbc.featuredoc* now produces sphinx output that can be put on a readthedocs website.
+
 4.4.1
 -----
 Documentation update. Links to the original data as archived in DANS-EASY.

@@ -3,8 +3,9 @@ import configparser
 from .timestamp import Timestamp
 
 NAME = 'LAF-Fabric'
-VERSION = '4.4.2'
+VERSION = '4.4.3'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
+FEATDOC = 'http://shebanq-doc.readthedocs.org/en/latest/texts/welcome.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_DATA_DIR = 'laf-fabric-data'
 
@@ -60,7 +61,7 @@ class Settings(object):
     def __init__(self, data_dir, laf_dir, output_dir, save, verbose):
         stamp = Timestamp(verbose=verbose)
         self.stamp = stamp
-        stamp.Nmsg('This is {} {}\n{}'.format(NAME, VERSION, APIREF))
+        stamp.Nmsg('This is {} {}\nAPI reference: {}\nFeature doc: {}\n'.format(NAME, VERSION, APIREF, FEATDOC))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         cw_dir = os.getcwd()
         home_dir = os.path.expanduser('~')

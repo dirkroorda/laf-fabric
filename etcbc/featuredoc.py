@@ -124,6 +124,7 @@ class FeatureDoc(object):
         
         for ft in node_feats:
             result_file = outfile("{} values.txt".format(ft))
+            result_file.write("{} DIFFERENT DEFINED VALUES IN TOTAL\n".format(len(vals_def[ft])))
             result_file.write("UNDEFINED VALUES\n")
             for x in sorted(vals_undef[ft].items(), key=lambda y: (-y[1], y[0])):
                 result_file.write("{} x {}\n".format(*x))

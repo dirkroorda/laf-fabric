@@ -42,11 +42,11 @@ emdros2laf/xml/xmllint_cat.xml
 etcbc/__init__.py
 etcbc/annotating.py
 etcbc/emdros.py
+etcbc/extra.py
 etcbc/featuredoc.py
 etcbc/lib.py
 etcbc/mql.py
 etcbc/preprocess.py
-etcbc/px.py
 etcbc/trees.py
 laf/__init__.py
 laf/data.py

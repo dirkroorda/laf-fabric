@@ -6,6 +6,14 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.4.5
+-----
+The *etcbc.px* module has been generalized to *etcbc.extra*.
+It is a module to turn extra data into a valid annotation set.
+
+4.4.4
+-----
+Minor fixes.
 
 4.4.3
 -----

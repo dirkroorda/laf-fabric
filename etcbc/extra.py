@@ -39,7 +39,8 @@ class ExtraData(object):
                     aid += 1
                     result.append('''<a xml:id="a{}" as="{}" label="{}" ref="{}"><fs>'''.format(aid, aspace, alabel, xml_id))
                     for fname in sorted(features[aspace][alabel][xml_id]):
-                        value = features[aspace][alabel][xml_id][fname]
+                        value = str(features[aspace][alabel][xml_id][fname])
+                        value = value.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot')
                         result.append('\t<f name="{}" value="{}"/>'.format(fname, value))
                     result.append('</fs></a>')
         result.append("</graph>")

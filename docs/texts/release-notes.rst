@@ -6,6 +6,13 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.4.6
+=====
+The *etcbc.px* module has been replaced by *etcbc.extra*.
+This is a generalized module to transform extra data to annotations.
+It can be used to process data from *px* files, but also data from *lexicon* files.
+New lexicon data is underway.
+
 4.4.5
 -----
 The *etcbc.px* module has been generalized to *etcbc.extra*.

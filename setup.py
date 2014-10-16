@@ -1,7 +1,7 @@
 from distutils.core import setup
 setup(
     name='laf-fabric',
-    version='4.4.5',
+    version='4.4.6',
     author='Dirk Roorda',
     author_email='dirk.roorda@dans.knaw.nl',
     description='''Tools to read LAF resources (Linguistic Annotation Framework ISO 24612:2012) and analyse them efficiently.

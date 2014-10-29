@@ -152,12 +152,8 @@ Annotating
 The module ``etcbc.annotating`` helps you to generate data entry forms and translate filled in forms into new annotations in LAF format,
 that actually refer to nodes and edges in the main ETCBC data source.
 
-Usage::
-
-    from etcbc.annotating import GenForm
-
-More info: 
-`notebook annotating <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/annotating.ipynb>`_
+There is an example notebook that uses this module for incorporating extra data (coming from so-called *px* files) into the LAF resource.
+See *Extra Data* below.
 
 Extra Data
 ==========
@@ -174,7 +170,7 @@ Usage::
     from etcbc.extra import ExtraData
 
 More info:
-`notebook para from px <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para from px.ipynb>`_
+`notebook para from px <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para%20from%20px.ipynb>`_
 
 
 Feature documentation

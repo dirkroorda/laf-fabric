@@ -1,9 +1,11 @@
 import sys
 from etcbc.emdros import patch
 
+workdir = '/Users/dirk/Scratch/etcbc'
+
 modes = {
-    'test': (2, '/Users/dirk/Downloads', '/Users/dirk/Downloads', 'bhs4_test', 'etcbc4_test'),
-    'full': (1000000, '/Users/dirk/Downloads', '/Users/dirk/Downloads', 'bhs4', 'etcbc4'),
+    'test': (2, workdir, workdir, 'bhs4_test', 'etcbc4s_test'),
+    'full': (1000000, workdir, workdir, 'bhs4', 'etcbc4s'),
 }
 
 if len(sys.argv) < 2:
@@ -16,4 +18,4 @@ if mode not in modes:
     sys.exit(1)
 
 (chunk, rooti, rooto, fnamei, fnameo) = modes[mode]
-patch(chunk, '{}/{}.mql'.format(rooti, fnamei), '{}/{}.mql'.format(rooto, fnameo))
+patch(chunk, '{}/{}.mql'.format(rooti, fnamei), '{}/{}.mql'.format(rooto, fnameo), fnamei, fnameo)

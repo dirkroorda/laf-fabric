@@ -1,9 +1,10 @@
 import collections
 from .lib import Transcription
 
-def patch(chunk, infile, outfile):
+def patch(chunk, infile, outfile, dbnamei, dbnameo):
     ifh = open(infile)
     ofh = open(outfile, 'w')
+    print("Patching {} to {}".format(dbnamei, dbnameo))
     word_type = -1
     word_objects = 0
     in_word = 0
@@ -17,7 +18,7 @@ def patch(chunk, infile, outfile):
         if nlc == chunk:
             nlc = 0
             print('{:>9} lines, {:>7} words'.format(nl, nw))
-        if nl < 10: line = line.replace('bhs4', 'etcbc4')
+        if nl < 10: line = line.replace(dbnamei, dbnameo)
         if word_type == 0:
             ofh.write('  trailer_utf8 : string DEFAULT "";\n')
             word_type = 1

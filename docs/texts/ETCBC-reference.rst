@@ -47,12 +47,44 @@ We have a transcription for consonantal Syriac. The interface is nearly the same
 
 Trees
 =====
-The module *etcbc.trees* gives you two relationships between nodes: *parent* and *children*::
+The module *etcbc.trees* gives you several relationships between nodes:
+*parent*,  *children*, *sisters*, and *elder_sister*.::
 
     from etcbc.trees import Tree
-    tree = Tree(API, ['sentence', 'clause', 'phrase', 'subphrase', 'word'])
-    (parent, children) = tree.embedding()
 
+    tree = Tree(API, otypes=('sentence', 'clause', 'phrase', 'subphrase', 'word'), 
+        clause_type='clause',
+        ccr_feature='rela',
+        pt_feature='typ',
+        pos_feature='sp',
+        mother_feature = 'mother',
+    )
+    ccr_class = {
+        'Adju': 'r',
+        'Attr': 'r',
+        'Cmpl': 'r',
+        'CoVo': 'n',
+        'Coor': 'x',
+        'Objc': 'r',
+        'PrAd': 'r',
+        'PreC': 'r',
+        'Resu': 'n',
+        'RgRc': 'r',
+        'Spec': 'r',
+        'Subj': 'r',
+        'NA':   'n',
+    }
+    
+    tree.restructure_clauses(ccr_class)
+
+    results = tree.relations()
+    parent = results['rparent']
+    sisters = results['sisters']
+    children = results['rchildren']
+    elder_sister = results['elder_sister']
+
+When the ``Tree`` object is constructed, the monadset-embedding relations that exist between the relevant objects, will be used
+to construct a tree.
 A node is a parent of another node, which is then a child of that parent, if the monad set of the child is contained in the
 monad set of the parent, and if there are not intermediate nodes (with respect to embedding) between the parent and the child.
 So this *parent* relationship defines a *tree*, and the *children* relationship is just the inverse of the *parent* relationship.
@@ -67,6 +99,13 @@ Only nodes of thos object types will enter in the parent and children relationsh
 You should specify the types corresponding to the ranking of object types that you want to use.
 If you do not specify anything, all available nodes will be used and the ranking is the default ranking, given in 
 *etcbc.lib.object_rank*.
+
+There is something curious going on with the *mother* relationship, i.e. the relationship that links on object to another on which it is
+linguistically dependent. In the trees just constructed, the mother relationship is not honoured, and so we miss several kinds of
+linguistic embeddings.
+
+The function ``restructure_clauses()`` remedies this. If you want to see what it going on, consult the 
+`trees_etcbc4 notebook <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_etcbc4.ipynb>`_.
 
 Node order
 ==========

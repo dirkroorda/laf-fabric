@@ -229,4 +229,21 @@ MQL
 ===
 The module ``etcbc.mql`` lets you fire mql queries to the corresponding Emdros database, and process the results with LAF-Fabric.
 More info over what MQL, EMDROS are, and how to use it, is in 
-`notebook mql <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/mql.ipynb>`_
+`notebook mql <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/mql.ipynb>`_.
+
+On the Mac and in Linux it runs out of the box, assuming Emdros is installed in such a way that the command to run MQL is ``/usr/local/bin/mql``.
+If that is not the case, or if you work on windows, you should manually change the first line of *mql.py*.
+Its default value is::
+
+    MQL_PROC = '/usr/local/bin/mql'
+
+and on windows is should become something like::
+
+    MQL_PROC = 'c:\\Program Files (x86)\\Emdros\\Emdros 3.4.0\\bin\\mql'
+
+(check your system).
+After modifying this file, you should go to your *laf-fabric* directory and run again::
+
+    python setup.py install
+
+Regrattably, this must be repeated when you update laf-fabric from Github.

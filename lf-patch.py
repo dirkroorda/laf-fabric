@@ -1,11 +1,12 @@
 import sys
 from etcbc.emdros import patch
 
-workdir = '/Users/dirk/Scratch/etcbc'
+workdir = '/Users/dirk/Downloads/etcbc'
 
 modes = {
     'test': (2, workdir, workdir, 'bhs4_test', 'etcbc4s_test'),
-    'full': (1000000, workdir, workdir, 'bhs4', 'etcbc4s'),
+    'fullb': (1000000, workdir, workdir, 'bhs4', 'shebanq_etcbc4b'),
+    'fulls': (1000000, workdir, workdir, 'bhs4', 'shebanq_etcbc4s'),
 }
 
 if len(sys.argv) < 2:

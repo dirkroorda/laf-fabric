@@ -7,9 +7,10 @@ import configparser
 import argparse
 
 NAME = 'LAF-Fabric'
-VERSION = '4.4.6'
+VERSION = '4.4.7'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
-DEFAULT_WORK_DIR = 'laf-fabric-data'
+DEFAULT_DATA_DIR = 'laf-fabric-data'
+MAIN_CFG = 'laf-fabric.cfg'
 ALL_PARTS = ['monad', 'section', 'lingo']
 
 class Settings:
@@ -28,20 +29,20 @@ class Settings:
         'template_dir':         '{script_dir}/templates',
         'xml_dir':              '{script_dir}/xml',
         'source':               '{source}',
-        'meta_info':            '{work_dir}/{source}/config/main.cfg',
-        'feature_info':         '{work_dir}/{source}/config/ObjectsFeaturesValues.txt',
-        'feature_plain_info':   '{work_dir}/{source}/config/ObjectsFeatures.csv',
-        'object_info':          '{work_dir}/{source}/config/Objects.txt',
-        'raw_emdros_dir':       '{work_dir}/{source}/raw',
-        'source_data':          '{work_dir}/{source}/mql/{source}',
-        'query_dst_dir':        '{work_dir}/{source}/mql',
-        'result_dir':           '{work_dir}/{source}/laf',
-        'annot_hdr':            '{work_dir}/{source}/laf/{source}',
-        'primary_text':         '{work_dir}/{source}/laf/{source}.txt',
-        'primary_hdr_txt':      '{work_dir}/{source}/laf/{source}.txt.hdr',
-        'resource_hdr_txt':     '{work_dir}/{source}/laf/{source}.hdr',
-        'monad_index':          '{work_dir}/{source}/laf/{source}.lst',
-        'decl_dst_dir':         '{work_dir}/{source}/decl',
+        'meta_info':            '{data_dir}/{source}/config/main.cfg',
+        'feature_info':         '{data_dir}/{source}/config/ObjectsFeaturesValues.txt',
+        'feature_plain_info':   '{data_dir}/{source}/config/ObjectsFeatures.csv',
+        'object_info':          '{data_dir}/{source}/config/Objects.txt',
+        'raw_emdros_dir':       '{data_dir}/{source}/raw',
+        'source_data':          '{data_dir}/{source}/mql/{source}',
+        'query_dst_dir':        '{data_dir}/{source}/mql',
+        'result_dir':           '{data_dir}/{source}/laf',
+        'annot_hdr':            '{data_dir}/{source}/laf/{source}',
+        'primary_text':         '{data_dir}/{source}/laf/{source}.txt',
+        'primary_hdr_txt':      '{data_dir}/{source}/laf/{source}.txt.hdr',
+        'resource_hdr_txt':     '{data_dir}/{source}/laf/{source}.hdr',
+        'monad_index':          '{data_dir}/{source}/laf/{source}.lst',
+        'decl_dst_dir':         '{data_dir}/{source}/decl',
 
     }
     _metaconfig = {
@@ -213,9 +214,37 @@ class Settings:
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
         script_dir = os.path.dirname(os.path.abspath(__file__))
         home_dir = os.path.expanduser('~')
-        work_dir = "{}/{}".format(home_dir, DEFAULT_WORK_DIR)
-        sources = [os.path.basename(x) for x in glob.glob("{}/*".format(work_dir)) if os.path.isdir(x)]
-        self._myconfig['work_dir'] = work_dir
+
+        global_config_dir = "{}/{}".format(home_dir, DEFAULT_DATA_DIR)
+        global_config_path = "{}/{}".format(global_config_dir, MAIN_CFG)
+        local_config_path = MAIN_CFG
+        default_data_dir = global_config_dir
+        default_laf_dir = global_config_dir
+        config_data_dir = None
+        config_laf_dir = None
+        config_output_dir = None
+        the_config_path = None
+        for config_path in (local_config_path, global_config_path):
+            if os.path.exists(config_path): the_config_path = config_path
+        if the_config_path != None:
+            with open(the_config_path, "r", encoding="utf-8") as f: strings.read_file(f)
+            if 'locations' in strings:
+                if 'data_dir' in strings['locations']: config_data_dir = strings['locations']['data_dir']
+                if 'laf_dir' in strings['locations']: config_laf_dir = strings['locations']['laf_dir']
+                if 'output_dir' in strings['locations']: config_output_dir = strings['locations']['output_dir']
+        the_data_dir = config_data_dir or default_data_dir
+        the_laf_dir = config_laf_dir or the_data_dir
+        the_output_dir = config_output_dir
+        the_data_dir = \
+            the_data_dir.replace('.', cw_dir, 1) if the_data_dir.startswith('.') else the_data_dir.replace('~', home_dir, 1) if the_data_dir.startswith('~') else the_data_dir
+        the_laf_dir = \
+            the_laf_dir.replace('.', cw_dir, 1) if the_laf_dir.startswith('.') else the_laf_dir.replace('~', home_dir, 1) if the_laf_dir.startswith('~') else the_laf_dir
+        the_output_dir = \
+            the_output_dir.replace('.', cw_dir, 1) if the_output_dir.startswith('.') else the_output_dir.replace('~', home_dir, 1) if the_output_dir.startswith('~') else the_output_dir
+
+        sources = [os.path.basename(x) for x in glob.glob("{}/*".format(the_data_dir)) if os.path.isdir(x)]
+
+        self._myconfig['data_dir'] = the_data_dir
         self._myconfig['home_dir'] = home_dir
         self._myconfig['script_dir'] = script_dir
 

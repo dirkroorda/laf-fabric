@@ -204,8 +204,8 @@ class LafData(object):
                 except os.error as e:
                     raise FabricError("could not create compiled directory {}".format(compiled_dir), self.stamp, cause=e)
                 newdata = method(self.api)
-                self.stamp.Dmsg("WRITING {}".format(Names.dmsg(dkey)))
                 self.data_items[dkey] = newdata
+                self.stamp.Dmsg("WRITING {}".format(Names.dmsg(dkey)))
                 self._store_file(dkey)
                 prep_done = True
         if not os.path.exists(dpath):

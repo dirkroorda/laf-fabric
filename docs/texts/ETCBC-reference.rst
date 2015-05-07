@@ -6,8 +6,108 @@ What is ETCBC
 The *etcbc* package has modules that go beyond *laf*.
 They utilize extra knowledge of the specific LAF resource which is the ETCBC Hebrew Text Database.
 They make available a better ordering of nodes, add more ways of querying the data, and ways of creating new annotations.
+There is also a solution for the problem of getting relevant context around a node.
+For example, if you do a walk through phrases, you want to be able to the clauses that contain the phrases that you iterate over,
+or to siblings of it.
 
 Most of the functionality is demonstrated in dedicated notebooks. This text is only a rough overview.
+
+Layers
+======
+The ``L`` (*layer*) part of the API enables you to find objects that are embedded in other objects and vice versa.
+It makes use of the ETCBC object types ``book``, ``chapter``, ``verse``, ``half_verse``, ``sentence``, ``sentence_atom``,
+``clause``, ``clause_atom``, ``phrase``, ``phrase_atom``, ``subphrase``, ``word``.
+An object of a certain type may contain objects of types following it, and is contained by objects of type preceding it.
+
+By means of ``L`` you can go from an object to any object that contains it, and you can get lists of objects contained in it.
+This is how it works. You have to import the ``prepare`` module::
+
+    from etcbc.preprocess import prepare
+
+and say in your load instructions::
+
+    ``'prepare': prepare``
+    
+Then you can use the following functions::
+
+    L.u(otype, node)
+    L.d(otype, node)
+
+``L.u`` (up in the hierarchy) gives you the object of type ``otype`` that contains it (in the ETCBC data there is at most one such an object).
+If there is no such object, it returns ``None``.
+
+``L.d`` (down in the hierarchy) gives you all objects of type ``otype`` that are contained in it as a list in the natural order.
+If there are no such objects you get ``None``.
+
+Examples (if ``phr`` is a node with object type ``phrase``)::
+
+    b = L.u('book', phr)                  # the book node in which the node occurs
+    F.book.v(b)                           # the name of that book
+
+    b = F.code.v(L.u('clause_atom', phr)) # the *clause_atom_relationship* of the clause_atom of which the phrase is a part
+
+It is now easy to get the full text contained in any object, e.g. the phrase ``phr``::
+
+    ''.join('{}{}'.format(F.g_word_utf8.v(w), F.trailer_utf8.v(w)) for w in L.d(phr)) 
+
+Node order
+==========
+The module ``etcbc.preprocess`` takes care of preparing a table that codes the optimal node order for working with ETCBC data. 
+
+It orders the nodes in a way that combines the left-right ordering with the embedding ordering.
+Left comes before right, and the embedder comes before the embedded.
+
+More precisely: if we want to order node *a* and *b*, consider their monad sets *ma* and *mb*, and their object types *ta* and *tb*.
+The object types have ranks, going from a low rank for books, to higher ranks for chapters, verses, half_verses, sentences, sentence_atoms,
+clauses, clause_atoms, phrases, phrase_atoms, subphrases and words.
+
+In the ETCBC data every node has a non-empty set of monads.
+
+If *ma* is equal to *mb* and *ta* is equal to *tb*, then *a* and *b* have the same object type,
+and cover the same monads, and in the etcbc that implies 
+that *a* and *b* are the same node.
+
+If *ma* is equal to *mb*, then if *ta* is less than *tb*, *a* comes before *b* and vice versa.
+
+If *ma* is a proper subset of *mb*, then *a* comes *after* *b*, and vice versa.
+
+If none of the previous conditions hold, then *ma* has monads not belonging to *mb* and vice versa.
+Consider the smallest monads of both difference sets: *mma* = *min(ma-mb)* and *mmb = min(mb-ma)*.
+If *mma* < *mmb* then *a* comes before *b* and vice versa.
+Note that *mma* cannot be equal to *mmb*.
+
+Back to your notebook. Say::
+
+    from etcbc.preprocess import prepare
+
+    processor.load('your source', '--', 'your task',
+        {
+            "xmlids": {"node": False, "edge": False},
+            "features": { ... your features ...},
+            "prepare": prepare,
+        }
+    )
+
+then the following will happen:
+
+* LAF-Fabric checks whether certain data files that define the order between nodes exist next to the binary compiled data, and whether these files
+  are newer than your module *preprocess.py*.
+* If so, it loads these data files quickly from disk.
+* If not, it will compute the node order and write them to disk.  This may take some time! Then it replaces the *dumb* standard
+  ordering by the *smart* ETCBC ordering.
+* Likewise, it looks for computed files with the embedding relationship, and computes them if necessary.
+  This takes even more time!
+
+This data is only loaded
+if you have done an import like this::
+
+    from etcbc.preprocess import prepare
+
+and if you have::
+
+    'prepare': prepare
+
+in your load instructions,
 
 Transcription
 =============
@@ -106,85 +206,6 @@ linguistic embeddings.
 
 The function ``restructure_clauses()`` remedies this. If you want to see what it going on, consult the 
 `trees_etcbc4 notebook <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_etcbc4.ipynb>`_.
-
-Node order
-==========
-The module ``etcbc.preprocess`` takes care of preparing a table that codes the optimal node order for working with ETCBC data. 
-
-It orders the nodes in a way that combines the left-right ordering with the embedding ordering.
-Left comes before right, and the embedder comes before the embedded.
-
-More precisely: if we want to order node *a* and *b*, consider their monad sets *ma* and *mb*, and their object types *ta* and *tb*.
-The object types have ranks, going from a low rank for books, to higher ranks for chapters, verses, half_verses, sentences, sentence_atoms,
-clauses, clause_atoms, phrases, phrase_atoms, subphrases and words.
-
-In the etcbc data every node has a non-empty set of monads.
-
-If *ma* is equal to *mb* and *ta* is equal to *mb*, then *a* and *b* have the same object type, and cover the same monads, and in the etcbc that implies 
-that *a* and *b* are the same node.
-
-If *ma* is equal to *mb*, then if *ta* is less than *tb*, *a* comes before *b* and vice versa.
-
-If *ma* is a proper subset of *mb*, then *a* comes *after* *b*, and vice versa.
-
-If none of the previous conditions hold, then *ma* has monads not belonging to *mb* and vice versa.
-Consider the smallest monads of both difference sets: *mma* = *min(ma-mb)* and *mmb = min(mb-ma)*.
-If *mma* < *mmb* then *a* comes before *b* and vice versa.
-Note that *mma* cannot be equal to *mmb*.
-
-Back to your notebook. Say::
-
-    from etcbc.preprocess import prepare
-
-    processor.load('your source', '--', 'your task',
-        {
-            "xmlids": {"node": False, "edge": False},
-            "features": { ... your features ...},
-            "prepare": prepare,
-        }
-    )
-
-then the following will happen:
-
-* LAF-Fabric checks whether file *Z/etcbc/zG00(node_sort)* and *Z/etcbc/zG00(node_sort_inv)* exist next to the binary compiled data, and whether these files
-  are newer than your module *preprocess.py*.
-* If so, it loads this data from disk.
-* If not, it will execute the *node_order* function in *preprocess.py*, which sorts the nodes more completely than LAF-Fabric can, and write this data to disk
-  in *Z/etcbc/zG00(node_sort)* and it also computes *node_order_inv* in order to get an inverse: *Z/etcbc/zG00(node_sort_inv)*.
-
-Note that these functions can be programmed using the API of LAF-Fabric itself. Preparing data always takes place after full loading.
-The prepared data will be subsequently loaded.
-
-The *True* component in the dictionary *prepare* tells LAF-Fabric to use this data **instead of previously compiled data**.
-In this case, there should be a data item keyed with ``mG00(node_sort)`` in the already loaded data (otherwise you get an error).
-In fact, LAF-Fabric uses a data item with this name to help *NN()* iterate over its nodes in a convenient order.
-So you have effectively supplanted LAF-Fabric's standard ordering of the nodes by your own ordering, which makes better use
-of the particular structure of this data. 
-
-If you had said ``False`` instead, no attempt of overriding existing data would have been made. If you want to use this data,
-you can refer to it by:: 
-
-        API['data_items']['zG00(node_sort)']
-
-The *etcbc* directory corresponds to the ``etcbc`` component in the dictionary *prepare*.
-In this way, different modules may keep their computed data separate from each other.
-Computed data is always separated from the previously compiled data.
-
-This data is only loaded if you have ``'prepare': etcbc.preprocess.prepare`` in your load instructions,
-or if you have done an import like this::
-
-    from etcbc.preprocess import prepare
-
-then ``'prepare': prepare`` suffices.
-
-In order to know the data that LAF-Fabric uses natively, look at the list in the ``names`` module.
-
-First of all, getting information out of the LAF resource.
-But there are also methods for writing to and reading from task-related files and
-for progress messages.
-
-Finally, there is information about aspects of the organization of the LAF information,
-e.g. the sort order of nodes.
 
 Annotating
 ==========

@@ -6,6 +6,22 @@ Mainly in the *etcbc* packages.
 
 Current
 =======
+4.5
+===
+New API element ``L`` (with methods ``L.d`` and ``L.u``) based on new preprocessed data.
+These methods take you from a node up to container nodes or down to contained nodes.
+This is a big improvement in the interplay between MQL queries and LAF-Fabric.
+The better practice is to write a clean MQL query to get the targeted patterns, and use ``L``
+to retrieve information from the context of the hits.
+
+Warning: when your LAF-Fabric needs the data for ``L`` for the first time, it will compute it
+and store it as binary data on disk. This computation takes several minutes.
+In subsequent cases, LAF-Fabric can load the data from disk in a matter of seconds.
+
+4.4.7
+=====
+Bug fixes and documentation.
+
 4.4.6
 =====
 The *etcbc.px* module has been replaced by *etcbc.extra*.

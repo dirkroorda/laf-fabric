@@ -6,7 +6,7 @@ import time
 from .lib import make_array_inverse
 from .names import Names, FabricError
 from .data import LafData
-from .elements import Feature, Connection, XMLid, PrimaryData
+from .elements import Feature, Connection, XMLid, PrimaryData, Layer
 
 class LafAPI(LafData):
     '''Makes all API methods available.
@@ -25,6 +25,11 @@ class LafAPI(LafData):
         self._api_edges()
         self._api_io()
         self._api_prep()
+        return self.api
+
+    def APIprep(self):
+        self.api = {}
+        self._api_post()
         return self.api
 
     def get_all_features(self):
@@ -129,10 +134,13 @@ class LafAPI(LafData):
         self.api.update(api)
 
     def _api_prep(self):
-        data_items = self.data_items
         api = self.api
         api['make_array_inverse'] = make_array_inverse
-        api['data_items'] = data_items
+        api['data_items'] = self.data_items
+
+    def _api_post(self):
+        if Names.comp('zL00', ('node_up',)) in self.data_items:
+            self.api['L'] = Layer(self)
 
     def _api_edges(self):
         data_items = self.data_items
@@ -382,7 +390,9 @@ class LafFabric(object):
         lafapi.load_all(req_items, add)
         lafapi.add_logfile()
         self.api.update(lafapi.API())
-        if 'prepare' in load_spec: lafapi.prepare_all(self.api, load_spec['prepare'])
+        if 'prepare' in load_spec:
+            lafapi.prepare_all(self.api, load_spec['prepare'])
+            self.api.update(lafapi.APIprep())
         lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}".format(
             env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
         ))

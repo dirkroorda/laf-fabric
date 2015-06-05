@@ -15,6 +15,13 @@ LAF-Fabric is being developed on **Mac OSX** Mavericks on a Macbook Air with 8 G
 It is being used on a **Linux** virtual machine running on a laptop of respectable age,
 and it runs straight under **Windows** as well, except for some testing/debugging functionality.
 
+On a VM
+=======
+The most hassle-free way to get started with LAF-Fabric is on a VM on your computer.
+You can get that nearly automatically from a Vagrant definition in the
+`llshebanq project <https://github.com/ETCBC/llshebanq>`_.
+Then you can skip the rest until **Writing Notebooks** below.
+
 Your python setup
 =================
 First of all, make sure that you have the right Python installation.

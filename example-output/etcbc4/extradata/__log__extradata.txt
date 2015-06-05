@@ -1,14 +1,14 @@
-OPENED AT:2014-07-15T11-40-53
-  0.01s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/etcbc4/extradata/__log__extradata.txt
-  0.01s INFO: DATA LOADED FROM SOURCE etcbc4 AND ANNOX px FOR TASK extradata AT 2014-07-15T11-40-53
+OPENED AT:2015-06-05T08-46-41
+  0.01s LOGFILE=/Users/dirk/SURFdrive/current/demos/github/laf-fabric/example-output/etcbc4/extradata/__log__extradata.txt
+  0.01s INFO: DATA LOADED FROM SOURCE etcbc4 AND ANNOX px FOR TASK extradata AT 2015-06-05T08-46-41
   0.00s Get the annotations ...
-  0.00s cl_at(34)	intro='.N'	role='2.1.2.1.1.4.2.2'
+  0.00s cl_ats(34)	intro='.N'	role='2.1.2.1.1.4.2.2'
   0.00s None(51)	intro='..'	role='1'
   0.00s None(52)	intro='.$'	role='1.1'
   0.00s Results directory:
-/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/etcbc4/extradata
+/Users/dirk/SURFdrive/current/demos/github/laf-fabric/example-output/etcbc4/extradata
 
-__log__extradata.txt                    416 Tue Jul 15 13:40:53 2014
-annotations.txt                           0 Tue Jul 15 13:40:53 2014
+__log__extradata.txt                    414 Fri Jun  5 10:46:41 2015
+annotations.txt                           0 Fri Jun  5 10:46:41 2015
 
-CLOSED AT:2014-07-15T11-40-53
+CLOSED AT:2015-06-05T08-46-41

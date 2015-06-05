@@ -1,13 +1,56 @@
-OPENED AT:2014-07-15T11-40-53
-  0.00s LOGFILE=/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/etcbc4/objects/__log__objects.txt
-  0.00s DETAIL: prep prep: G.node_sort
-  0.00s DETAIL: prep prep: G.node_sort_inv
-  0.00s INFO: DATA LOADED FROM SOURCE etcbc4 AND ANNOX -- FOR TASK objects AT 2014-07-15T11-40-53
+OPENED AT:2015-06-05T08-46-41
+  0.01s LOGFILE=/Users/dirk/SURFdrive/current/demos/github/laf-fabric/example-output/etcbc4/objects/__log__objects.txt
+  0.01s DETAIL: prep prep: G.node_sort
+  0.01s DETAIL: PREPARING prep: G.node_sort
+  0.00s LOADING API with EXTRAs: please wait ... 
+  0.00s DETAIL: COMPILING m: UP TO DATE
+  0.00s INFO: USING DATA COMPILED AT: 2014-07-15T11-31-15
+  0.00s DETAIL: COMPILING a: UP TO DATE
+  0.00s DETAIL: keep main: G.node_anchor_min
+  0.00s DETAIL: keep main: G.node_anchor_max
+  0.00s DETAIL: keep main: G.node_sort
+  0.00s DETAIL: keep main: G.node_sort_inv
+  0.00s DETAIL: keep main: G.edges_from
+  0.00s DETAIL: keep main: G.edges_to
+  0.00s DETAIL: keep main: F.etcbc4_db_monads [node] 
+  0.00s DETAIL: keep main: F.etcbc4_db_otype [node] 
+  0.00s DETAIL: load main: F.etcbc4_db_maxmonad [node] 
+  0.01s DETAIL: load main: F.etcbc4_db_minmonad [node] 
+  0.01s INFO: DATA LOADED FROM SOURCE etcbc4 AND ANNOX -- FOR TASK objects AT 2015-06-05T08-46-41
+  0.00s SORTING nodes ...
+  0.11s DETAIL: WRITING prep: G.node_sort
+  0.11s DETAIL: write prep: G.node_sort
+  0.12s DETAIL: prep prep: G.node_sort_inv
+  0.12s DETAIL: PREPARING prep: G.node_sort_inv
+  0.12s SORTING nodes (inv) ...
+  0.12s DETAIL: WRITING prep: G.node_sort_inv
+  0.12s DETAIL: write prep: G.node_sort_inv
+  0.12s DETAIL: prep prep: L.node_up
+  0.12s DETAIL: PREPARING prep: L.node_up
+  0.12s Objects contained in books
+  0.13s Objects contained in chapters
+  0.13s Objects contained in verses
+  0.13s Objects contained in half_verses
+  0.13s Objects contained in sentences
+  0.13s Objects contained in sentence_atoms
+  0.13s Objects contained in clauses
+  0.14s Objects contained in clause_atoms
+  0.14s Objects contained in phrases
+  0.14s Objects contained in phrase_atoms
+  0.14s Objects contained in subphrases
+  0.14s Objects contained in words
+  0.14s DETAIL: WRITING prep: L.node_up
+  0.14s DETAIL: write prep: L.node_up
+  0.14s DETAIL: prep prep: L.node_down
+  0.14s DETAIL: PREPARING prep: L.node_down
+  0.14s DETAIL: WRITING prep: L.node_down
+  0.14s DETAIL: write prep: L.node_down
+  0.14s INFO: DATA LOADED FROM SOURCE etcbc4 AND ANNOX -- FOR TASK objects AT 2015-06-05T08-46-41
   0.00s Get the objects ... 
   0.00s Results directory:
-/Users/dirk/Dropbox/DANS/current/demos/github/laf-fabric/example-output/etcbc4/objects
+/Users/dirk/SURFdrive/current/demos/github/laf-fabric/example-output/etcbc4/objects
 
-__log__objects.txt                      361 Tue Jul 15 13:40:53 2014
-objects.txt                            4717 Tue Jul 15 13:40:53 2014
+__log__objects.txt                     2223 Fri Jun  5 10:46:41 2015
+objects.txt                            4717 Fri Jun  5 10:46:41 2015
 
-CLOSED AT:2014-07-15T11-40-53
+CLOSED AT:2015-06-05T08-46-41

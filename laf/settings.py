@@ -75,7 +75,9 @@ class Settings(object):
         config_output_dir = None
         the_config_path = None
         for config_path in (local_config_path, global_config_path):
-            if os.path.exists(config_path): the_config_path = config_path
+            if os.path.exists(config_path):
+                the_config_path = config_path
+                break
         if the_config_path != None:
             with open(the_config_path, "r", encoding="utf-8") as f: strings.read_file(f)
             if 'locations' in strings:

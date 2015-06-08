@@ -1,7 +1,8 @@
 import subprocess
 from lxml import etree
 
-MQL_PROC = '/usr/local/bin/mql'
+#MQL_PROC = '/usr/local/bin/mql'
+MQL_PROC = 'mql'
 MQL_OPTS = ['--cxml', '-b', 's3', '-d']
 
 F = None

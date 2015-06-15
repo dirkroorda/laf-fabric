@@ -1,11 +1,9 @@
 Release Notes
 #############
-Upcoming
-========
-Mainly in the *etcbc* packages.
+4.5.1
+=====
+Fix: prepared data is only loaded when needed, like all other data.
 
-Current
-=======
 4.5
 ===
 New API element ``L`` (with methods ``L.d`` and ``L.u``) based on new preprocessed data.

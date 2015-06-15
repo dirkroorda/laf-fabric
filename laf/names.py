@@ -146,21 +146,25 @@ class Names(Settings):
             docc = Names.decomp(dkey)[0]
             req_items[docc] = docc_def.copy() if type(docc_def) == list or type(docc_def) == dict else docc_def
 
-    def request_files(self, req_items):
+    def request_files(self, req_items, prepare_dict):
         self._old_data_items = self.req_data_items
         self.req_data_items = collections.OrderedDict()
+        dkeys = {'clear': [], 'keep': [], 'load': [], 'prep': set()}
         for dkey in Names._data_items_def:
             (docc_def, dtype) = Names._data_items_def[dkey]
             docc = Names.decomp(dkey)[0]
-            if docc not in req_items: continue
-            if req_items[docc] == True:
+            if docc not in req_items and dkey not in prepare_dict: continue
+            if dkey in prepare_dict:
+                self.setenv(zspace=prepare_dict[dkey][-1])
                 self.req_data_items[dkey] = self.dinfo(dkey)
-            elif req_items[docc] == False or req_items[docc] == None: continue
+                dkeys['prep'].add(dkey)
+            elif docc in req_items and req_items[docc] == True:
+                self.req_data_items[dkey] = self.dinfo(dkey)
+            elif req_items[docc] == False: continue
             else:
                 for dcomps in sorted(req_items[docc]):
                     dkeyfull = Names.comp(dkey, dcomps)
                     self.req_data_items[dkeyfull] = self.dinfo(dkeyfull)
-        dkeys = {'clear': [], 'keep': [], 'load': []}
         old_data_items = self._old_data_items
         new_data_items = self.req_data_items
         for dkey in old_data_items:
@@ -168,7 +172,8 @@ class Names(Settings):
         for dkey in new_data_items:
             if dkey in old_data_items and new_data_items[dkey] == old_data_items[dkey]: dkeys['keep'].append(dkey)
             else:
-                if not new_data_items[dkey][-1]: dkeys['load'].append(dkey)
+                dkeys['load'].append(dkey)
+                # if not new_data_items[dkey][-1]: dkeys['load'].append(dkey)
         return dkeys
 
     def dinfo(self, dkey):

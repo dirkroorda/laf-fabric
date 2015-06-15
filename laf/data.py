@@ -154,18 +154,23 @@ class LafData(object):
         self.names.req_data_items = collections.OrderedDict()
         self.names._old_data_items = collections.OrderedDict()
 
-    def load_all(self, req_items, add):
-        dkeys = self.names.request_files(req_items)
+    def load_all(self, req_items, prepare_dict, add):
+        dkeys = self.names.request_files(req_items, prepare_dict)
         self.loadspec = dkeys
-        for dkey in dkeys['keep']: self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
+        self.prepare_dict = prepare_dict
+        for dkey in dkeys['keep']:
+            if dkey not in dkeys['prep']:
+                self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
         if not add:
             for dkey in dkeys['clear']:
-                self.stamp.Dmsg("clear {}".format(Names.dmsg(dkey))) 
-                self._clear_file(dkey)
+                if dkey not in dkeys['prep']:
+                    self.stamp.Dmsg("clear {}".format(Names.dmsg(dkey))) 
+                    self._clear_file(dkey)
         for dkey in dkeys['load']:
-            self.stamp.Dmsg("load {}".format(Names.dmsg(dkey))) 
-            ism = self.names.dinfo(dkey)[0]
-            self._load_file(dkey, accept_missing=not ism)
+            if dkey not in dkeys['prep']:
+                self.stamp.Dmsg("load {}".format(Names.dmsg(dkey))) 
+                ism = self.names.dinfo(dkey)[0]
+                self._load_file(dkey, accept_missing=not ism)
 
     def _load_extra(self, dkeys):
         for dkey in dkeys:
@@ -173,12 +178,20 @@ class LafData(object):
             ism = self.names.dinfo(dkey)[0]
             self._load_file(dkey, accept_missing=not ism)
 
-    def prepare_all(self, api, prepare_dict):
+    def prepare_all(self, api):
         self.api = api
-        self.prepare_dict = prepare_dict
-        for dkey in prepare_dict:
-            self.stamp.Dmsg("prep {}".format(Names.dmsg(dkey))) 
-            self._load_file(dkey, accept_missing=False)
+        dkeys = self.loadspec
+        for dkey in dkeys['keep']:
+            if dkey in dkeys['prep']:
+                self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
+        for dkey in dkeys['clear']:
+            if dkey in dkeys['prep']:
+                self.stamp.Dmsg("clear {}".format(Names.dmsg(dkey))) 
+                self._clear_file(dkey)
+        for dkey in dkeys['load']:
+            if dkey in dkeys['prep']:
+                self.stamp.Dmsg("prep {}".format(Names.dmsg(dkey))) 
+                self._load_file(dkey, accept_missing=False)
 
     def _load_file(self, dkey, accept_missing=False):
         env = self.names.env

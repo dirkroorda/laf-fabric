@@ -1,5 +1,9 @@
 Release Notes
 #############
+4.5.2
+=====
+Fix: preparation of data failed in some cases.
+
 4.5.1
 =====
 Fix: prepared data is only loaded when needed, like all other data.

@@ -28,9 +28,9 @@ class LafAPI(LafData):
         return self.api
 
     def APIprep(self):
-        self.api = {}
+        #self.api = {}
         self._api_post()
-        return self.api
+        #return self.api
 
     def get_all_features(self):
         loadables = set()
@@ -387,13 +387,14 @@ class LafFabric(object):
             for kind in [k[0] for k in load_spec['xmlids'] if load_spec['xmlids'][k]]:
                 for ddir in ('f', 'b'): req_items['mX{}{}'.format(kind, ddir)].append(())
         if 'features' in load_spec: self._request_features(load_spec['features'], req_items, add, annox!=env['empty'])
-        prep = load_spec['prepare'] if 'prepare' in load_spec else {}
+        prep = load_spec['prepare'] if 'prepare' in load_spec else lafapi.prepare_dict if add else {}
         lafapi.load_all(req_items, prep, add)
         lafapi.add_logfile()
         self.api.update(lafapi.API())
         if 'prepare' in load_spec:
             lafapi.prepare_all(self.api)
-            self.api.update(lafapi.APIprep())
+            #self.api.update(lafapi.APIprep())
+            lafapi.APIprep()
         lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}".format(
             env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
         ))

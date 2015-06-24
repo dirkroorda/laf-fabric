@@ -99,6 +99,7 @@ def fill(NN, F, er, ed):
                             Ld.setdefault(otype, {}).setdefault(that_er, []).append(n)
 
 def node_ud(API):
+    API['fabric'].load_again({"features": ('otype monads minmonad maxmonad', '')}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']

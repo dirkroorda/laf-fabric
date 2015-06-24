@@ -161,6 +161,7 @@ class Names(Settings):
             elif docc in req_items and req_items[docc] == True:
                 self.req_data_items[dkey] = self.dinfo(dkey)
             elif req_items[docc] == False: continue
+            elif req_items[docc] == None: continue
             else:
                 for dcomps in sorted(req_items[docc]):
                     dkeyfull = Names.comp(dkey, dcomps)

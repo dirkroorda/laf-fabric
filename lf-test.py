@@ -1,17 +1,25 @@
 import sys
 import collections
+
+import laf
 from laf.fabric import LafFabric
+from etcbc.preprocess import prepare
 fabric = LafFabric()
-fabric.load('bhs3', '--', 'test', {
+
+version = '4b'
+API = fabric.load('etcbc{}'.format(version), 'lexicon', 'valence', {
     "xmlids": {"node": False, "edge": False},
-    "features": ('''otype text suffix clause_constituent_relation phrase_type surface_consonants oid maxmonad minmonad monads text_plain''','''mother parents'''),
+    "features": ('''
+        oid otype monads
+        function rela
+        g_word_utf8 trailer_utf8
+        lex prs uvf sp ls vs vt nametype det gloss
+        book chapter verse label number
+    ''',
+    '''
+        mother
+    '''),
+    "prepare": prepare,
     "primary": False,
 }, verbose='DETAIL')
 exec(fabric.localnames.format(var='fabric'))
-plain_file = outfile("bhs3_plain.txt")
-for i in F.shebanq_db_otype.s('word'):
-    the_text = F.text.v(i)
-    the_suffix = F.suffix.v(i)
-    the_newline = "\n" if '׃' in the_suffix else ""
-    plain_file.write(the_text + the_suffix + the_newline)
-close()

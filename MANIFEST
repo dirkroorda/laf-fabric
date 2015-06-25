@@ -44,6 +44,7 @@ etcbc/annotating.py
 etcbc/emdros.py
 etcbc/extra.py
 etcbc/featuredoc.py
+etcbc/layer.py
 etcbc/lib.py
 etcbc/mql.py
 etcbc/preprocess.py

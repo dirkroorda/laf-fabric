@@ -6,20 +6,21 @@ import time
 from .lib import make_array_inverse
 from .names import Names, FabricError
 from .data import LafData
-from .elements import Feature, Connection, XMLid, PrimaryData, Layer
+from .elements import Feature, Connection, XMLid, PrimaryData
 
 class LafAPI(LafData):
     '''Makes all API methods available.
     ``API()`` returns a dict keyed by mnemonics and valued by API methods.
     '''
     def __init__(self, names):
+        self.api = {}
         self.names = names
         self.stamp = names.stamp
         LafData.__init__(self)
         self.result_files = []
 
     def API(self):
-        self.api = {}
+        #self.api.clear()
         self._api_fcxp()
         self._api_nodes()
         self._api_edges()
@@ -30,7 +31,7 @@ class LafAPI(LafData):
     def APIprep(self):
         #self.api = {}
         self._api_post()
-        #return self.api
+        return self.api
 
     def get_all_features(self):
         loadables = set()
@@ -139,8 +140,9 @@ class LafAPI(LafData):
         api['data_items'] = self.data_items
 
     def _api_post(self):
-        if Names.comp('zL00', ('node_up',)) in self.data_items:
-            self.api['L'] = Layer(self)
+        (self.prepare_init)(self)
+        #if Names.comp('zL00', ('node_up',)) in self.data_items:
+        #    self.api['L'] = Layer(self)
 
     def _api_edges(self):
         data_items = self.data_items
@@ -387,14 +389,15 @@ class LafFabric(object):
             for kind in [k[0] for k in load_spec['xmlids'] if load_spec['xmlids'][k]]:
                 for ddir in ('f', 'b'): req_items['mX{}{}'.format(kind, ddir)].append(())
         if 'features' in load_spec: self._request_features(load_spec['features'], req_items, add, annox!=env['empty'])
-        prep = load_spec['prepare'] if 'prepare' in load_spec else lafapi.prepare_dict if add else {}
+        prep = load_spec['prepare'] if 'prepare' in load_spec else (lafapi.prepare_dict, lafapi.prepare_init) if add else ({}, None)
         lafapi.load_all(req_items, prep, add)
         lafapi.add_logfile()
         self.api.update(lafapi.API())
+        #lafapi.API()
         if 'prepare' in load_spec:
             lafapi.prepare_all(self.api)
-            #self.api.update(lafapi.APIprep())
-            lafapi.APIprep()
+            self.api.update(lafapi.APIprep())
+            #lafapi.APIprep()
         lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}".format(
             env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
         ))
@@ -404,7 +407,8 @@ class LafFabric(object):
 
     def load_again(self, load_spec, add=False, compile_main=False, compile_annox=False, verbose=None):
         env = self.lafapi.names.env
-        return self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
+        x = self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
+        return x
 
     def resolve_feature(self, kind, feature_given):
         lafapi = self.lafapi

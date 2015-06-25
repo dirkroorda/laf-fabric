@@ -2,6 +2,9 @@ import collections
 import functools
 import array
 from .lib import monad_set, object_rank
+from .layer import Layer
+
+ETCBCREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/ETCBC-reference.html'
 
 otypes = (
     'book',
@@ -117,9 +120,14 @@ def node_down(API):
     if len(Ld) == 0: node_ud(API)
     return Ld
 
-prepare = collections.OrderedDict((
+def prep_post(lafapi):
+    lafapi.stamp.Nmsg('ETCBC reference: {}'.format(ETCBCREF))
+    lafapi.api['L'] = Layer(lafapi)
+    
+prepare_dict = collections.OrderedDict((
     ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
     ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
     ('zL00(node_up)', (node_up, __file__, False, 'etcbc')),
     ('zL00(node_down)', (node_down, __file__, False, 'etcbc')),
 ))
+prepare = (prepare_dict, prep_post)

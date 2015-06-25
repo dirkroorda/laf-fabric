@@ -154,10 +154,11 @@ class LafData(object):
         self.names.req_data_items = collections.OrderedDict()
         self.names._old_data_items = collections.OrderedDict()
 
-    def load_all(self, req_items, prepare_dict, add):
-        dkeys = self.names.request_files(req_items, prepare_dict)
+    def load_all(self, req_items, prepare, add):
+        dkeys = self.names.request_files(req_items, prepare[0])
         self.loadspec = dkeys
-        self.prepare_dict = prepare_dict
+        self.prepare_dict = prepare[0]
+        self.prepare_init = prepare[1]
         for dkey in dkeys['keep']:
             if dkey not in dkeys['prep']:
                 self.stamp.Dmsg("keep {}".format(Names.dmsg(dkey))) 
@@ -179,7 +180,10 @@ class LafData(object):
             self._load_file(dkey, accept_missing=not ism)
 
     def prepare_all(self, api):
-        self.api = api
+        if hasattr(self, 'api'):
+            self.api.update(api)
+        else:
+            self.api = api
         dkeys = self.loadspec
         for dkey in dkeys['keep']:
             if dkey in dkeys['prep']:

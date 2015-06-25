@@ -142,18 +142,3 @@ class PrimaryData(object):
         for r in grouper(regions, 2): result.append((r[0], all_text[r[0]:r[1]]))
         return result
 
-class Layer(object):
-    '''Layering of MQL objects.
-
-    ``up(otype, n)`` is the node of MQL type ``otype`` that acts as container of node ``n``.
-    In this way you can get e.g. for each subphrase and phrase_atom the book, chapter, half_verse and sentence_atom in which it occurs.
-    ``down(otype, n)`` is the converse of ``up()``: it delivers an ordered list of nodes of MQL type ``otype`` contained in node ``n``.
-    '''
-    def __init__(self, lafapi):
-        self.up = lafapi.data_items[Names.comp('zL00', ('node_up',))]
-        self.down = lafapi.data_items[Names.comp('zL00', ('node_down',))]
-        self.lafapi = lafapi
-
-    def u(self, tp, n): return self.up.get(tp, {}).get(n, None)
-    def d(self, tp, n): return self.down.get(tp, {}).get(n, None)
-

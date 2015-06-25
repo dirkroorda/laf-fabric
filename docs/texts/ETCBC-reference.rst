@@ -32,12 +32,18 @@ Then you can use the following functions::
 
     L.u(otype, node)
     L.d(otype, node)
+    L.p(otype, book='Genesis', chapter=21, verse=3, sentence=1, clause=1, phrase=1)
 
-``L.u`` (up in the hierarchy) gives you the object of type ``otype`` that contains it (in the ETCBC data there is at most one such an object).
+``L.u`` (up in the hierarchy) gives you the object of type ``otype`` that contains ``node`` (in the ETCBC data there is at most one such an object).
 If there is no such object, it returns ``None``.
 
-``L.d`` (down in the hierarchy) gives you all objects of type ``otype`` that are contained in it as a list in the natural order.
+``L.d`` (down in the hierarchy) gives you all objects of type ``otype`` that are contained in ``node`` as a list in the natural order.
 If there are no such objects you get ``None``.
+
+``L.p`` (passage nodes) give you all objects of type ``otype`` that are contained in the nodes selected by the other arguments.
+All other arguments are optional. So if you leave out the ``sentence clause phrase`` arguments, you get all nodes in a specific verse.
+If you leave out the ``book chapter verse`` arguments, and leave the others at ``1``, you get the nodes in all first phrases of first
+clauses of first sentences of all verses of all chapters of all books. 
 
 Examples (if ``phr`` is a node with object type ``phrase``)::
 
@@ -49,6 +55,14 @@ Examples (if ``phr`` is a node with object type ``phrase``)::
 It is now easy to get the full text contained in any object, e.g. the phrase ``phr``::
 
     ''.join('{}{}'.format(F.g_word_utf8.v(w), F.trailer_utf8.v(w)) for w in L.d(phr)) 
+
+Conversely, it is easy to get all subphrases in a given verse::
+
+    subphrases = L.p('subphrase', book='Exodus', chapter=5, verse=10)
+
+or get all clause_atoms of all first sentences of all second verses of all chapters in Genesis::
+
+    clause_atoms = L.p('clause_atom', book='Genesis', verse=2, sentence=1)
 
 Node order
 ==========

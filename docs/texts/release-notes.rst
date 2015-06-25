@@ -1,5 +1,17 @@
 Release Notes
 #############
+4.5.3
+=====
+The API element ``L`` has a new method ``L.p`` which enables you to drill down quickly to a
+book, chapter, verse, sentence, clause and phrase of your choice.
+
+Under the hood: the ``L`` API element was coded in the ``laf`` package, although it used
+ETCBC-specific concepts. Now it has been moved to the ``etcbc`` package entirely.
+
+In order to find the documentation of ``L`` you should consult the *ETCBC reference*.
+
+Fixes: preparation of data still failed in some cases.
+
 4.5.2
 =====
 Fix: preparation of data failed in some cases.

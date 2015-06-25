@@ -228,8 +228,14 @@ class Names(Settings):
                     errors.append('under {} the value should be either a tuple with exactly two elements (for nodes and edges) or a dictionary, not {}'.format(key, type(val)))
             elif key == 'prepare':
                 val = load_spec[key]
-                if type(val) != collections.OrderedDict:
-                    errors.append('the value of {} should be a collections.OrderedDict, not {}'.format(key, type(val)))
+                if type(val) != tuple:
+                    errors.append('the value of {} should be a tuple, not {}'.format(key, type(val)))
+                else:
+                    if len(val) != 2: 
+                        errors.append('the value of {} should be a 2-tuple, not a {}-tuple'.format(key, len(val)))
+                    else:
+                        if type(val[0]) != collections.OrderedDict:
+                            errors.append('the value of {}[0] should be a collections.OrderedDict, not {}'.format(key, type(val[0])))
         if errors:
             raise FabricError("Your load instructions have the following errors:\n{}".format('\n'.join(errors)), stamp, None)
 

@@ -42,6 +42,7 @@ Thumbs.db
 
 # Build directories #
 #####################
+_themes/
 _build/
 __pycache__
 

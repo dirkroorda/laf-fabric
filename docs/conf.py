@@ -39,6 +39,8 @@ if not on_rtd:
     templates_path = ['_templates']
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+else:
+    html_theme = 'classic'
 
 html_static_path = ['_static']
 html_domain_indices = True

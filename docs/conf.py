@@ -17,8 +17,9 @@ extensions = [
     'sphinx.ext.intersphinx',
 ]
 
-intersphinx_mapping = {'python': ('http://docs.python.org/3.3', None)}
+intersphinx_mapping = {'python': ('http://docs.python.org/3', None)}
 
+templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'LAF Fabric'
@@ -34,10 +35,11 @@ autoclass_content = 'both'
 # -- Options for HTML output ----------------------------------------------
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if not on_rtd:
-    import sphinx_rtd_theme
+if on_rtd:
+    html_theme = 'default'
+else:
     html_theme = 'sphinx_rtd_theme'
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = ['_themes', ]
 
 html_static_path = ['_static']
 html_domain_indices = True

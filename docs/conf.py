@@ -39,7 +39,6 @@ if on_rtd:
     html_theme = 'alabaster'
 else:
     html_theme = 'sphinx_rtd_theme'
-html_theme = 'default'
 html_theme_path = ["_themes", ]
 
 html_static_path = ['_static']

@@ -38,16 +38,16 @@ if not on_rtd:
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    html_static_path = ['_static']
+    html_domain_indices = True
+    html_use_index = True
+    html_split_index = False
+    html_show_sourcelink = True
+    html_show_sphinx = True
+    html_show_copyright = True
 else:
     html_theme = 'default'
 
-html_static_path = ['_static']
-html_domain_indices = True
-html_use_index = True
-html_split_index = False
-html_show_sourcelink = True
-html_show_sphinx = True
-html_show_copyright = True
 htmlhelp_basename = 'LAF Fabric'
 
 # -- Options for LaTeX output ---------------------------------------------

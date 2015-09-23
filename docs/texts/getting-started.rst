@@ -11,16 +11,24 @@ and the precise instructions will be spelled out below.
 
 Platforms
 =========
-LAF-Fabric is being developed on **Mac OSX** Mavericks on a Macbook Air with 8 GB RAM.
+LAF-Fabric is being developed on **Mac OSX** on a Macbook Air with 8 GB RAM from 2012.
 It is being used on a **Linux** virtual machine running on a laptop of respectable age,
 and it runs straight under **Windows** as well, except for some testing/debugging functionality.
 
-On a VM
-=======
+On a VM (experimental)
+======================
 The most hassle-free way to get started with LAF-Fabric is on a VM on your computer.
-You can get that nearly automatically from a Vagrant definition in the
-`llshebanq project <https://github.com/ETCBC/llshebanq>`_.
-Then you can skip the rest until **Writing Notebooks** below.
+At least in theory. There are reports from Windows users that the method below does not
+work as advertized. When there is progress on this front, we'll report it here.
+
+So. if you are on a Mac or on Linux, the following is the easiest way to get
+all software and data in place to work with LAF-Fabric.
+
+Vist
+`llshebanq project <https://github.com/ETCBC/llshebanq>`_
+and follow the instructions there.
+
+If this path has succeeded, you can skip the rest until **Writing Notebooks** below.
 
 Your python setup
 =================
@@ -32,15 +40,21 @@ necessary modules.
 The following setup ensures that it will not interfere with existing python installations
 and it will get you all modules in one go.
 
-Getting to know interactive python
-----------------------------------
+Getting to know Jupyter, formerly known as IPython
+--------------------------------------------------
 The following step may take a while, so in the meantime you can familiarize yourself with
-ipython, if you like. The `website <http://ipython.org>`_ is a good entry point.
+Jupyter, if you like.
+If the concept of an IPython notebook is new to you, start with 
+`IPython documentation <http://ipython.org/ipython-doc/3/notebook/notebook.html>`_.
+`Jupyter <http://jupyter.org>`_
+is a more generic tool by which you can also other programming languages,
+such as `R <https://www.r-project.org>`_ in notebooks.
 
 Download Anaconda
 -----------------
 `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ is our distribution of choice.
-Choose a python3 based installer from `this download page <http://repo.continuum.io/anaconda3/>`_.
+Download the free version for your platform, make sure that you choose version based on Python 3.x,
+and let the installer do its work.
 
 #. Pick the one that fits your operating system.
    Install it. If asked to install for single user or all users, choose single user.
@@ -52,6 +66,11 @@ Choose a python3 based installer from `this download page <http://repo.continuum
 This will install all anaconda packages in your fresh python3 installation.
 Now you have *ipython*, *networkx*, *matplotlib*, *numpy* to name but a few popular
 python packages for scientific computing.
+
+It is convenient to upgrade Jupyter before you start working.
+On the command line, say::
+
+    conda update jupyter
  
 Get LAF-Fabric
 ==============
@@ -87,8 +106,10 @@ It also installs *emdros2laf*, a conversion package from the source format of th
 This package has been used to obtain the actual LAF version of the ETCBC database.
 
 .. note::
+    For advanced users only: 
     In order to use *emdros2laf* and parts of *etcbc*, you need to install `EMDROS <http://emdros.org>`_ software, which is freely available.
     Tip: it works nicely with an sqlite3 backend.
+    You only need this when you want to run MQL queries (the same queries you can design and store in SHEBANQ) from withing your programs.
 
 Get the data
 ============
@@ -102,6 +123,32 @@ download *laf-fabric-data.zip* and unpack it in your home directory. If all goes
     In that case, move your existing directory out of the way.
     *laf-fabric-data* is supposed to be input data, i.e. the data you download plus the data that laf-fabric itself adds to it
     while converting from emdros to laf or from laf to binary.
+
+Alternatively, you can download data from my
+`SURF-drive <https://surfdrive.surf.nl/files/public.php?service=files&t=ab94bfc7ab381ea94ecabbb4e1455685>`_.
+The file *laf-fabric-data.tar.bz2* provides compiled data files for several versions of the ETCBC data.
+
+.. note::
+    Regardless of the way you retrieve the ETCBC data, note the following.
+    The creators of the linguistic annotations that drive LAF-Fabric and SHEBANQ,
+    the
+    `ETCBC <http://www.godgeleerdheid.vu.nl/en/research/institutes-and-centres/eep-talstra-centre-for-bible-and-computer/index.asp>`_,
+    want to facilitate optimal access to their data by researchers.
+    All operations that are needed for the scholarly process are allowed.
+    You are allowed to download the data and the code, build your own workflows on top of the data
+    and even to redistribute your versions of the data and the code.
+    This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
+
+    .. image:: https://i.creativecommons.org/l/by-nc/4.0/88x31.png
+       :target: http://creativecommons.org/licenses/by-nc/4.0/
+
+    That means:
+
+    * You must give proper attribution to the data when you use it in new applications, by citing its persistent identifier
+      `10.17026/dans-2z3-arxf <http://dx.doi.org/10.17026%2Fdans-2z3-arxf>`_;
+    * You may not use the data for commercial applications without consent;
+    * For any commercial use, please contact the `German Bible Society <mailto:zentrale@dbg.de>`_.
+
 
 Test and run LAF-Fabric
 =======================
@@ -123,7 +170,7 @@ On all platforms (Windows users: use Firefox or Chrome as your browser, not Inte
 you can also run notebooks with LAF-Fabric:: 
 
     cd examples
-    ipython notebook
+    jupyter notebook
 
 This starts a python process that communicates with a browser tab, which will pop up in front of you.
 This is your dashboard of notebooks.
@@ -134,7 +181,7 @@ In that way you can apply updates easily without overwriting your work.
 #. Create a notebook directory somewhere in your system and navigate there in a command prompt.
 #. Then::
 
-    ipython notebook
+    jupyter notebook
 
 .. note::
     If you create a notebook that you are proud of, it would be nice to include it in the example
@@ -210,11 +257,12 @@ Next steps
 ----------
 Study the many `ETCBC4 features <http://shebanq-doc.readthedocs.org/en/latest/texts/welcome.html>`_.
 
-Then have a look at the notebooks in the
-`laf-fabric-nbs <https://github.com/ETCBC/laf-fabric-nbs>`_ and
-`study <https://github.com/ETCBC/study>`_ and
-`contributions <https://github.com/ETCBC/contributions>`_
-repositories.
+Then have a look at the notebooks at the following locations
+
+* `SHEBANQ tools <https://shebanq.ancient-data.org/tools/>`_ (notebooks that create data for usage in SHEBANQ, and are linked to research)
+* `laf-fabric-nbs <https://github.com/ETCBC/laf-fabric-nbs>`_ (work in progress, often leading to SHEBANQ tools. Unpolished)
+* `contributions <https://github.com/ETCBC/contributions>`_ (contributions by others)
+
 You find notebooks by which you can study the rich feature set in the ETCBC data and notebooks that help you to add
 your own annotations to the data. These notebooks require the additional *etcbc* package, which comes
 with LAF-Fabric.

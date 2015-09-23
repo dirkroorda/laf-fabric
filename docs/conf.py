@@ -21,8 +21,8 @@ intersphinx_mapping = {'python': ('http://docs.python.org/3.3', None)}
 
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'LAF Fabric'
-copyright = u'2013, Dirk Roorda'
+project = 'LAF Fabric'
+copyright = '2013, Dirk Roorda'
 version = '4.5'
 release = '4.5.3'
 exclude_patterns = ['_build']
@@ -34,12 +34,11 @@ autoclass_content = 'both'
 # -- Options for HTML output ----------------------------------------------
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-#if not on_rtd:
-#    import sphinx_rtd_theme
-#    templates_path = ['_templates']
-#    html_theme = 'sphinx_rtd_theme'
-#    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-#html_theme_path = ["_themes", ]
+if not on_rtd:
+    import sphinx_rtd_theme
+    templates_path = ['_templates']
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 html_static_path = ['_static']
 html_domain_indices = True
@@ -58,32 +57,32 @@ latex_elements = {
 }
 
 latex_documents = [
-  ('index', 'LAF_Fabric.tex', u'LAF Fabric Documentation',
-   u'Dirk Roorda', 'manual'),
+  ('index', 'LAF_Fabric.tex', 'LAF Fabric Documentation',
+   'Dirk Roorda', 'manual'),
 ]
 
 # -- Options for manual page output ---------------------------------------
 
 man_pages = [
-    ('index', 'LAF_Fabric', u'LAF Fabric Documentation',
-     [u'Dirk Roorda'], 1)
+    ('index', 'LAF_Fabric', 'LAF Fabric Documentation',
+     ['Dirk Roorda'], 1)
 ]
 
 # -- Options for Texinfo output -------------------------------------------
 
 texinfo_documents = [
-  ('index', 'LAF_Fabric', u'LAF Fabric Documentation',
-   u'Dirk Roorda', 'LAF Fabric', 'One line description of project_name.',
+  ('index', 'LAF_Fabric', 'LAF Fabric Documentation',
+   'Dirk Roorda', 'LAF Fabric', 'One line description of project_name.',
    'Miscellaneous'),
 ]
 
 # -- Options for Epub output ----------------------------------------------
 
-epub_title = u'LAF Fabric'
-epub_author = u'Dirk Roorda'
-epub_publisher = u'Dirk Roorda'
-epub_copyright = u'2013, Dirk Roorda'
-epub_basename = u'LAF_Fabric'
+epub_title = 'LAF Fabric'
+epub_author = 'Dirk Roorda'
+epub_publisher = 'Dirk Roorda'
+epub_copyright = '2013, Dirk Roorda'
+epub_basename = 'LAF_Fabric'
 epub_theme = 'epub'
 epub_show_urls = 'footnote'
 epub_use_index = True

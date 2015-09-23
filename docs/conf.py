@@ -34,7 +34,7 @@ autoclass_content = 'both'
 
 # -- Options for HTML output ----------------------------------------------
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.get('READTHEDOCS', None)
 if on_rtd:
     html_theme = 'default'
 else:

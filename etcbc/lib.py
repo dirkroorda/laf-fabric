@@ -159,13 +159,13 @@ class Transcription(object):
                 llastch = new_word[-2]
                 if llastch == '_' and (lastch == 'P' or lastch == 'S'):
                     new_word = new_word[0:-2]
-                    suffix = ' ' + lastch + suffix
+                    suffix = ' ' + lastch + suffix + ' '
             if len(new_word) >= 2:
                 lastch = new_word[-1]
                 llastch = new_word[-2]
                 if llastch == '_' and (lastch == 'N'):
                     new_word = new_word[0:-2]
-                    suffix = ' ñ' + suffix
+                    suffix = ' ñ' + suffix + ' '
             if len(new_word) >= 2:
                 lastch = new_word[-1]
                 llastch = new_word[-2]

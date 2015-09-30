@@ -46,8 +46,10 @@ class ExtraData(object):
         result.append("</graph>")
         return '\n'.join(result)
 
-    def create_header(self, annox_part, metadata):
+    def create_header(self, annox_parts, metadata):
         result = []
+        if type(annox_parts) is str:
+            annox_parts = [annox_parts]
         result.append("""<?xml version="1.0" encoding="UTF-8"?>
     <documentHeader xmlns="http://www.xces.org/ns/GrAF/1.0/" xmlns:graf="http://www.xces.org/ns/GrAF/1.0/" docId="http://persistent-identifier/?identifier=urn:nbn:nl:ui:13-xxx-999" creator="SHEBANQ" date.created="2013-12-05" version="1.0">
       <fileDesc>
@@ -70,14 +72,19 @@ class ExtraData(object):
             <language iso639="arc"/> <!-- aramaic http://www-01.sil.org/iso639-3/documentation.asp?id=arc -->
         </langUsage>
         <annotations>
+""".format(source=self.env['source'], **metadata))
+        for annox_part in annox_parts:
+            result.append("""
             <annotation f.id="f_{key}" loc="{key}.xml"/>
+""".format(key=annox_part))
+        result.append("""
         </annotations>
       </profileDesc>
-    </documentHeader>""".format(key=annox_part, source=self.env['source'], **metadata))
+    </documentHeader>""")
         
         return '\n'.join(result)
 
-    def deliver_annots(self, data_base, annox, annox_part, read_method, specs, metadata):
+    def deliver_annots_single(self, data_base, annox, annox_part, read_method, specs, metadata):
         API = self.API
         data_dir = API['data_dir']
         annox_data = read_method('{}/{}'.format(data_dir, data_base))
@@ -85,4 +92,18 @@ class ExtraData(object):
         if not os.path.exists(annox_dir): os.makedirs(annox_dir)
         with open("{}/_header_.xml".format(annox_dir), "w") as ah: ah.write(self.create_header(annox_part, metadata))
         with open("{}/{}.xml".format(annox_dir, annox_part), "w") as ah: ah.write(self.create_annots(annox_data, specs))
+
+    def deliver_annots(self, annox, metadata, sets):
+        if type(sets) is tuple:
+            sets = [sets]
+        API = self.API
+        data_dir = API['data_dir']
+        annox_dir = "{}/{}/annotations/{}".format(data_dir, self.env['source'], annox)
+        annox_parts = []
+        if not os.path.exists(annox_dir): os.makedirs(annox_dir)
+        for (data_base, annox_part, read_method, specs) in sets:
+            annox_parts.append(annox_part)
+            annox_data = read_method('{}/{}'.format(data_dir, data_base))
+            with open("{}/{}.xml".format(annox_dir, annox_part), "w") as ah: ah.write(self.create_annots(annox_data, specs))
+        with open("{}/_header_.xml".format(annox_dir), "w") as ah: ah.write(self.create_header(annox_parts, metadata))
 

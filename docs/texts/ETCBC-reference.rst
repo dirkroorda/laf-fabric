@@ -152,6 +152,16 @@ There are some points to note:
   After applying the mapping ``hebrew()``, these characters will be *always* decomposed.
 * up till now we have only transcription conversions for *consonantal Hebrew*.
 
+.. note::
+    The ETCBC transcription is *easy* in the sense that it is 1-1 correspondence between the transcription and the Hebrew.
+    (There are one or two cases where the ETCBC transcription distinguishes between accents that are indistiguishable
+    in UNICODE.
+
+    A *phonetic* transcription is also available, but it has been computed at a later stage, and added as an
+    extra annotation package to the data.
+    This is a *difficult* transcription, since a lot of complicated rules govern the road from spelling to 
+    pronunciation, such as qamets gadol versus qatan, schwa mobile versus quiescens, to name but a few.
+
 Syriac
 ------
 We have a transcription for consonantal Syriac. The interface is nearly the same as for Hebrew, but now use::
@@ -241,11 +251,42 @@ You only need to write a function that delivers the data in the right form, and 
 
 Usage::
 
+    import laf
+    from laf.fabric import LafFabric
     from etcbc.extra import ExtraData
+    fabric = LafFabric()
 
-More info:
-`notebook para from px <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/extradata/para%20from%20px.ipynb>`_
+    API=fabric.load(...) # load the data and features
 
+    xtra = ExtraData(API)
+
+    xtra.deliver_annots(annox, metadata, sets)
+
+where ``sets`` is a list of tuples::
+
+    (data_base, annox_part, read_method, specs)
+
+The result is a new annox, i.e. a set of annotations, next to the main data.
+Its name is given in the *annox* parameter.
+Its metadata consists of a dicionary, containing a key ``title`` and a key ``data``.
+Its actual annotations are divided in sets, which will be generated from various data sources.
+Each *set* is specified by the following information:
+
+* ``data_base`` is a relative path within the LAF data directory to a file containing the raw data for a set of annotations;
+* ``annox_part`` is a name for this set;
+* ``read_method`` is a function, taking a file path as argument. It then reads that file, and delivers a list of data items,
+  where each data item is a tuple consisting of a node and additional values.
+  The node is the target node for the values, which will be values of features to be specified in the *specs*.
+  This method will be called with the file specified in the *data_base* argument;
+* ``specs`` is a series of tuples, each naming a new feature in the new annotation set.
+  The tuple consists of the *namespace*, *label*, and *name* of the new feature.
+  The number of feature specs must be equal to the number of additional values in the data list that is delivered by *read_method*.
+
+When *deliver_annots* is done, the new annox can be used straight away.
+Note that upon first use, the XML of this annox has to be parsed and compiled into binary data, which might take a while.
+
+To see this method in action, have a look at the
+`lexicon notebook <https://shebanq.ancient-data.org/shebanq/static/docs/tools/shebanq/lexicon.html>`_.
 
 Feature documentation
 =====================

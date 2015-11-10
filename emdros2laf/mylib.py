@@ -1,4 +1,4 @@
-import sys
+import sys,os
 import datetime
 import time
 import subprocess
@@ -12,9 +12,25 @@ def camel(text):
     return ''.join(words[x].capitalize() if x > 0 else words[x] for x in range(len(words)))
 def fillup(size, val, lst): return tuple(lst[x] if x < len(lst) else val for x in range(size)) 
 def today(): return datetime.date.today()
-def run(cmd): subprocess.check_call(cmd + ' 2>&1', shell = True)
-def runx(cmd):
-    return subprocess.call(cmd + ' 2>&1', shell = True)
+def run(cmd, dyld=False):
+    if dyld:
+        result = subprocess.check_call(
+            'export DYLD_LIBRARY_PATH=$DYLDLIBRARYPATH; '+cmd+' 2>&1', shell=True, env=dict(os.environ, DYLDLIBRARYPATH=os.environ.get('DYLD_LIBRARY_PATH', '')),
+        )
+    else:
+        result = subprocess.check_call(cmd+' 2>&1', shell=True)
+    return result
+    # subprocess.check_call(cmd + ' 2>&1', shell = True)
+
+def runx(cmd, dyld=False):
+    if dyld:
+        result = subprocess.call(
+            'export DYLD_LIBRARY_PATH=$DYLDLIBRARYPATH; '+cmd+' 2>&1', shell=True, env=dict(os.environ, DYLDLIBRARYPATH=os.environ.get('DYLD_LIBRARY_PATH', '')),
+        )
+    else:
+        result = subprocess.call(cmd+' 2>&1', shell=True)
+    return result
+    # subprocess.call(cmd + ' 2>&1', shell = True)
 
 class Timestamp():
     timestamp = None

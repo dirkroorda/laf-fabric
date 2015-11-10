@@ -5,7 +5,7 @@ from .timestamp import Timestamp
 NAME = 'LAF-Fabric'
 VERSION = '4.5.4'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
-FEATDOC = 'http://shebanq-doc.readthedocs.org/en/latest/texts/welcome.html'
+FEATDOC = 'https://shebanq.ancient-data.org/static/docs/featuredoc/texts/welcome.html'
 MAIN_CFG = 'laf-fabric.cfg'
 DEFAULT_DATA_DIR = 'laf-fabric-data'
 

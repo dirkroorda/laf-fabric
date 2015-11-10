@@ -268,7 +268,7 @@ class Etcbc:
                 source = self.settings.env['source_data'],
                 query = query_file,
                 result = result_file,
-            ))
+            ), dyld=True)
 
     def make_mql(self, name, query):
         query_file = '{}/{}'.format(self.settings.env['query_dst_dir'], name)

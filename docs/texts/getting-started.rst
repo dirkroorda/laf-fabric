@@ -15,21 +15,6 @@ LAF-Fabric is being developed on **Mac OSX** on a Macbook Air with 8 GB RAM from
 It is being used on a **Linux** virtual machine running on a laptop of respectable age,
 and it runs straight under **Windows** as well, except for some testing/debugging functionality.
 
-On a VM (experimental)
-======================
-The most hassle-free way to get started with LAF-Fabric is on a VM on your computer.
-At least in theory. There are reports from Windows users that the method below does not
-work as advertized. When there is progress on this front, we'll report it here.
-
-So. if you are on a Mac or on Linux, the following is the easiest way to get
-all software and data in place to work with LAF-Fabric.
-
-Vist
-`llshebanq project <https://github.com/ETCBC/llshebanq>`_
-and follow the instructions there.
-
-If this path has succeeded, you can skip the rest until **Writing Notebooks** below.
-
 Your python setup
 =================
 First of all, make sure that you have the right Python installation.
@@ -89,15 +74,29 @@ In a command prompt, navigate to this directory.
 
 Install LAF-Fabric
 ==================
-Preparation: you have to unpack a ``tar.gz`` file. On Windows you may have to install a tool for that,
-such as `7-zip <http://www.7-zip.org>`_.
+Preparation:
+
+* you have to unpack a ``tar.gz`` file. On Windows you may have to install a tool for that,
+  such as `7-zip <http://www.7-zip.org>`_;
+* check whether the python3 command is the python that you have just installed with Anaconda::
+
+    python3 --version
+
+  should give somethin like::
+
+    Python 3.4.3 :: Anaconda 2.3.0 (x86_64)
+
+  and not something of python2, like::
+
+    Python 2.7.5
+
 
 Here are the steps, assuming you are in the command line, at the top level directory in *laf-fabric*::
 
     cd dist
     tar xvf laf-*
     cd laf-*
-    python setup.py install
+    python3 setup.py install
 
 This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
 Hebrew Text Database: *etcbc*.
@@ -114,58 +113,27 @@ This package has been used to obtain the actual LAF version of the ETCBC databas
 Get the data
 ============
 If you are interested in working with the Hebrew Bible,
-go to the `DANS-EASY <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_ archive and
-download *laf-fabric-data.zip* and unpack it in your home directory. If all goes well you have a directory
-*laf-fabric-data* in your home directory.
-
-.. note::
-    If you have already a *laf-fabric-data* directory, delete it, unless you have added stuff yourself (possibly extra annotations).
-    In that case, move your existing directory out of the way.
-    *laf-fabric-data* is supposed to be input data, i.e. the data you download plus the data that laf-fabric itself adds to it
-    while converting from emdros to laf or from laf to binary.
-
-Alternatively, you can download data from my
-`SURF-drive <https://surfdrive.surf.nl/files/public.php?service=files&t=ab94bfc7ab381ea94ecabbb4e1455685>`_.
-The file *laf-fabric-data.tar.bz2* provides compiled data files for several versions of the ETCBC data.
-
-.. note::
-    Regardless of the way you retrieve the ETCBC data, note the following.
-    The creators of the linguistic annotations that drive LAF-Fabric and SHEBANQ,
-    the
-    `ETCBC <http://www.godgeleerdheid.vu.nl/en/research/institutes-and-centres/eep-talstra-centre-for-bible-and-computer/index.asp>`_,
-    want to facilitate optimal access to their data by researchers.
-    All operations that are needed for the scholarly process are allowed.
-    You are allowed to download the data and the code, build your own workflows on top of the data
-    and even to redistribute your versions of the data and the code.
-    This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
-
-    .. image:: https://i.creativecommons.org/l/by-nc/4.0/88x31.png
-       :target: http://creativecommons.org/licenses/by-nc/4.0/
-
-    That means:
-
-    * You must give proper attribution to the data when you use it in new applications, by citing its persistent identifier
-      `10.17026/dans-2z3-arxf <http://dx.doi.org/10.17026%2Fdans-2z3-arxf>`_;
-    * You may not use the data for commercial applications without consent;
-    * For any commercial use, please contact the `German Bible Society <mailto:zentrale@dbg.de>`_.
-
+go to the github repo
+`laf-fabric-data <https://github.com/ETCBC/laf-fabric-data>`_
+and consult its README.
+Read the license and follow the instructions.
+If all goes well you have a directory *laf-fabric-data* in your home directory.
 
 Test and run LAF-Fabric
 =======================
 In the top-level directory of LAF-Fabric there is a gallery script.
-If you run it, you will also configure your LAF-Fabric::
 
-    python lf-gallery.py tinys
+If you have downloaded the binary data for the full Hebrew Text Database from
+`laf-fabric-data <https://github.com/ETCBC/laf-fabric-data>`_,
+then make sure the your data is in whatever you specified in *~/laf-fabric.cfg* and run::
+
+    python3 lf-gallery.py full
+
+If you are not working with the Hebrew data, you can run the example data::
+
+    python3 lf-gallery.py tiny
 
 This points laf-fabric to the example data that comes with the distribution, which is just Genesis 1:1.
-If you have downloaded the binary data for the full Hebrew Text Database, then
-make sure the data is in *~/laf-fabric-data/etcbc4* and run::
-
-    python lf-gallery.py fulls
-
-After this you have a default config file *~/laf-fabric-data/laf-fabric.cfg* and you can use
-laf-fabric scripts from anywhere on your system, also in notebooks.
-
 On all platforms (Windows users: use Firefox or Chrome as your browser, not Internet Explorer),
 you can also run notebooks with LAF-Fabric:: 
 
@@ -284,6 +252,6 @@ with LAF-Fabric.
 
    If you have a reference to an other python in your ``PATH`` (check by ``echo %PATH%``) then you should remove it.
 
-   After these operations, quit all your command prompts, start a new one, and say ``python --version``.
+   After these operations, quit all your command prompts, start a new one, and say ``python3 --version``.
    You should see something with 3.3 and Anaconda in the answer.
 

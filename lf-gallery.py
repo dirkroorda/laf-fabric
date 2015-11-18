@@ -257,7 +257,7 @@ print('''
 #                                                                    #
 ######################################################################
 ''')
-fabric.load(test['source'], 'px', 'extradata',
+fabric.load(test['source'], 'para', 'extradata',
         {
             "xmlids": {"node": False, "edge": False},
             "features": ("instruction pargr otype g_word_utf8", ""),

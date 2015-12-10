@@ -15,8 +15,22 @@ LAF-Fabric is being developed on **Mac OSX** on a Macbook Air with 8 GB RAM from
 It is being used on a **Linux** virtual machine running on a laptop of respectable age,
 and it runs straight under **Windows** as well, except for some testing/debugging functionality.
 
+On a Virtual Machine (just a few steps)
+=======================================
+The easiest way to get started with LAF-Fabric and the data for the Hebrew Bible is using Oliver Glanz's Virtual Machine.
+Go to his `OneDrive <http://1drv.ms/1QiCJ6N>`_ and download the file
+*ETCBC-vm_v1.5_lubuntu14.04-32bit.ova*. This is a so-called vm-appliance file, which you will need to open with the program VirtualBox, which
+have to download and install.
+Detailed instructions are in *running and preparing an ETCBC vm_v1.5.pdf*.
+
+On your own machine (many steps)
+================================
+You can also run LAF-Fabric on your own machine directly.
+It takes more steps, and the steps are more dependent on the platform of your machine (Linux, Mac OSX, or Windows) and what is there already present.
+It involves setting up the Python machinery, getting the data and some example notebooks.
+
 Your python setup
-=================
+-----------------
 First of all, make sure that you have the right Python installation.
 You need a python3 installation with numerous scientific packages.
 Below is the easiest way to get up and running with python.
@@ -26,7 +40,7 @@ The following setup ensures that it will not interfere with existing python inst
 and it will get you all modules in one go.
 
 Getting to know Jupyter, formerly known as IPython
---------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The following step may take a while, so in the meantime you can familiarize yourself with
 Jupyter, if you like.
 If the concept of an IPython notebook is new to you, start with 
@@ -36,7 +50,7 @@ is a more generic tool by which you can also other programming languages,
 such as `R <https://www.r-project.org>`_ in notebooks.
 
 Download Anaconda
------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ is our distribution of choice.
 Download the free version for your platform, make sure that you choose version based on Python 3.x,
 and let the installer do its work.
@@ -58,7 +72,7 @@ On the command line, say::
     conda update jupyter
  
 Get LAF-Fabric
-==============
+--------------------
 If you have git you can just clone it from github on the command line::
 
     cd «directory of your choice»
@@ -73,7 +87,7 @@ Unpack this somewhere on your file system. Change the name from *laf-fabric-mast
 In a command prompt, navigate to this directory.
 
 Install LAF-Fabric
-==================
+--------------------
 Preparation:
 
 * you have to unpack a ``tar.gz`` file. On Windows you may have to install a tool for that,
@@ -111,7 +125,7 @@ This package has been used to obtain the actual LAF version of the ETCBC databas
     You only need this when you want to run MQL queries (the same queries you can design and store in SHEBANQ) from withing your programs.
 
 Get the data
-============
+--------------------
 If you are interested in working with the Hebrew Bible,
 go to the github repo
 `laf-fabric-data <https://github.com/ETCBC/laf-fabric-data>`_
@@ -120,7 +134,7 @@ Read the license and follow the instructions.
 If all goes well you have a directory *laf-fabric-data* in your home directory.
 
 Test and run LAF-Fabric
-=======================
+------------------------
 In the top-level directory of LAF-Fabric there is a gallery script.
 
 If you have downloaded the binary data for the full Hebrew Text Database from
@@ -157,7 +171,7 @@ In that way you can apply updates easily without overwriting your work.
     If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
 
 More configuration for LAF-Fabric
-=================================
+---------------------------------------
 If you need the data to be at another location, you must modify the *laf-fabric.cfg*.
 This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in a standard
 directory, which is *laf-fabric-data* in your home directory.

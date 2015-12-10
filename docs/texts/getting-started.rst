@@ -23,6 +23,8 @@ Go to his `OneDrive <http://1drv.ms/1QiCJ6N>`_ and download the file
 have to download and install.
 Detailed instructions are in *running and preparing an ETCBC vm_v1.5.pdf*.
 
+When all went well, you can continue with **Writing Notebooks** below.
+
 On your own machine (many steps)
 ================================
 You can also run LAF-Fabric on your own machine directly.

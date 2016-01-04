@@ -1,4 +1,4 @@
-import collections
+import sys, collections
 from .settings import Settings
 
 class Names(Settings):
@@ -99,7 +99,7 @@ class Names(Settings):
     kind_types = {False, True}
 
     def __init__(self, data_dir, laf_dir, output_dir, save, verbose):
-        Settings.__init__(self, data_dir, laf_dir, output_dir, save, verbose)
+        if not Settings.__init__(self, data_dir, laf_dir, output_dir, save, verbose): sys.exit(-1)
         self.req_data_items = collections.OrderedDict()
         self._old_data_items = collections.OrderedDict()
         for ((dkey_raw, dbits)) in Names._data_items_tpl:

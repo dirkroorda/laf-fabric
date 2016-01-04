@@ -3,7 +3,7 @@ import configparser
 from .timestamp import Timestamp
 
 NAME = 'LAF-Fabric'
-VERSION = '4.5.5'
+VERSION = '4.5.6'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 FEATDOC = 'https://shebanq.ancient-data.org/static/docs/featuredoc/texts/welcome.html'
 MAIN_CFG = 'laf-fabric.cfg'
@@ -63,8 +63,8 @@ class Settings(object):
         self.stamp = stamp
         stamp.Nmsg('This is {} {}\nAPI reference: {}\nFeature doc: {}\n'.format(NAME, VERSION, APIREF, FEATDOC))
         strings = configparser.ConfigParser(inline_comment_prefixes=('#'))
-        cw_dir = os.getcwd()
-        home_dir = os.path.expanduser('~')
+        cw_dir = os.getcwd().replace('\\', '/')
+        home_dir = os.path.expanduser('~').replace('\\', '/')
         global_config_dir = "{}/{}".format(home_dir, DEFAULT_DATA_DIR)
         global_config_path = "{}/{}".format(global_config_dir, MAIN_CFG)
         local_config_path = MAIN_CFG
@@ -84,27 +84,43 @@ class Settings(object):
                 if 'data_dir' in strings['locations']: config_data_dir = strings['locations']['data_dir']
                 if 'laf_dir' in strings['locations']: config_laf_dir = strings['locations']['laf_dir']
                 if 'output_dir' in strings['locations']: config_output_dir = strings['locations']['output_dir']
+        else:
+            stamp.Wmsg('No config file found in locations {} and {}'.format(local_config_path, global_config_path))
         the_data_dir = data_dir or config_data_dir or default_data_dir
+        if the_data_dir == None:
+            stamp.Emsg('No valid data dir. data_dir={}; config_data_dir={}; default_data_dir={}'.format(data_dir, config_data_dir, default_data_dir))
+            return False
         the_laf_dir = laf_dir or config_laf_dir or the_data_dir
+        if the_laf_dir == None:
+            stamp.Emsg('No valid laf dir. laf_dir={}; config_laf_dir={}'.format(laf_dir, config_laf_dir))
+            return False
         the_output_dir = output_dir or config_output_dir
+        if the_output_dir == None:
+            stamp.Emsg('No valid output dir. output_dir={}; config_output_dir={}'.format(output_dir, config_output_dir))
+            return False
         the_data_dir = \
             the_data_dir.replace('.', cw_dir, 1) if the_data_dir.startswith('.') else the_data_dir.replace('~', home_dir, 1) if the_data_dir.startswith('~') else the_data_dir
+        stamp.Dmsg('Data dir = {}'.format(the_data_dir))
         the_laf_dir = \
             the_laf_dir.replace('.', cw_dir, 1) if the_laf_dir.startswith('.') else the_laf_dir.replace('~', home_dir, 1) if the_laf_dir.startswith('~') else the_laf_dir
+        stamp.Dmsg('Laf dir = {}'.format(the_laf_dir))
         the_output_dir = \
             the_output_dir.replace('.', cw_dir, 1) if the_output_dir.startswith('.') else the_output_dir.replace('~', home_dir, 1) if the_output_dir.startswith('~') else the_output_dir
+        stamp.Dmsg('Output dir = {}'.format(the_output_dir))
         if not os.path.exists(the_data_dir):
             stamp.Imsg("CREATING new DATA_DIR {}".format(the_data_dir))
             try:
                 if not os.path.exists(the_data_dir): os.makedirs(the_data_dir)
             except os.error as e:
-                raise FabricError("could not create data directory {}".format(the_data_dir), stamp, cause=e)
+                stamp.Emsg('could not create data directory {}'.format(the_data_dir))
+                return False
         if not os.path.exists(the_output_dir):
             stamp.Imsg("CREATING new OUTPUT_DIR {}".format(the_output_dir))
             try:
                 if not os.path.exists(the_output_dir): os.makedirs(the_output_dir)
             except os.error as e:
-                raise FabricError("could not create output directory {}".format(the_output_dir), stamp, cause=e)
+                stamp.Emsg('could not create output directory {}'.format(the_output_dir))
+                return False
         self._myconfig.update({'data_dir': the_data_dir, 'm_source_dir': the_laf_dir, 'output_dir': the_output_dir})
         if save:
             strings['locations'] = {'data_dir': the_data_dir, 'laf_dir': the_laf_dir, 'output_dir': the_output_dir}
@@ -113,10 +129,12 @@ class Settings(object):
                 try:
                     if not os.path.exists(global_config_dir): os.makedirs(global_config_dir)
                 except os.error as e:
-                    raise FabricError("could not create global config directory {}".format(global_config_dir), stamp, cause=e)
+                    stamp.Emsg('could not create global config directory {}'.format(global_config_dir))
+                    return False
             with open(global_config_path, "w", encoding="utf-8") as f: strings.write(f)
         self.env = {}
         self.zspace = ''
+        return True
 
     def setenv(self, source=None, annox=None, task=None, zspace=None):
         if source == None: source = self.env.get('source')

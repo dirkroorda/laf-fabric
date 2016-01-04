@@ -1,8 +1,15 @@
 Release Notes
 #############
+4.5.6
+==========
+Slightly better error messages if configuration files cannot be found or contain wrong values.
+
+4.5.5
+==========
+Small fixes.
+
 4.5.4
 ==========
-
 The method ``etcbc.extra.deliver_annots()`` has been changed.
 It is now easy to generate annotation packages that consist of various sets of data.
 The new method accepts a list of set specs to generate those annotation sets.

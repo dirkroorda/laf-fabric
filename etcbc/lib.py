@@ -53,7 +53,9 @@ class Transcription(object):
         'O': "\u05B9", # holam = cholam
         'U': "\u05BB", # qubuts = qubbuts
         '.': "\u05BC", # dagesh
-        '35': "\u05BD", # meteg
+        '25': "\u05BD", # silluq yamin 
+        '45': "\u05BD", # meteg 
+        '35': "\u05BD", # meteg (tikon)
         '75': "\u05BD", # siluq = silluq
         '95': "\u05BD", # meteg = meteg_yamin
         '&': "\u05BE", # maqaf

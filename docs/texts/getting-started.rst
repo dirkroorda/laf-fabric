@@ -77,7 +77,7 @@ On the command line, say::
 Get LAF-Fabric
 --------------------
 
-LAF-Fabric is on the `Python Package Index <https://pypi.python.org/pypi/laf-fabric/4.5.8>`,
+LAF-Fabric is on the `Python Package Index <https://pypi.python.org/pypi/laf-fabric/4.5.8>`_,
 so you can just say::
 
     pip install laf-fabric

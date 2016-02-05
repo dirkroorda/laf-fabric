@@ -3,7 +3,7 @@ import configparser
 from .timestamp import Timestamp
 
 NAME = 'LAF-Fabric'
-VERSION = '4.5.7'
+VERSION = '4.5.8'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 FEATDOC = 'https://shebanq.ancient-data.org/static/docs/featuredoc/texts/welcome.html'
 MAIN_CFG = 'laf-fabric.cfg'
@@ -42,6 +42,7 @@ class Settings(object):
         'data_dir':              '{data_dir}',
         'output_dir':            '{output_dir}',
         'source_data':           '{data_dir}/{source}/mql/{source}',
+        'source_xdata':          '{data_dir}/{source}/mql/x_{source}',
         'bin_dir':               '{data_dir}/{source}/{bin_subdir}',
         'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',
         'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}.txt.hdr',

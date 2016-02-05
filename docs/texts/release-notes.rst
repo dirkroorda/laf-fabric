@@ -1,5 +1,13 @@
 Release Notes
 #############
+4.5.8
+==========
+The MQL API in the etcbc package now uses the ETCBC data plus the enrichments (x_etcbc4b).
+
+4.5.7
+==========
+Improvements in the documentation.
+
 4.5.6
 ==========
 Slightly better error messages if configuration files cannot be found or contain wrong values.

@@ -18,7 +18,7 @@ class MQL(object):
         global F
         global NN
         env = API['fabric'].lafapi.names.env
-        self.data_path = env['source_data']
+        self.data_path = env['source_xdata']
         self.parser = etree.XMLParser(remove_blank_text=True)
         NN = API['NN']
         F = API['F']

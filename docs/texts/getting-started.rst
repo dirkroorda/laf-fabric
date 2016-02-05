@@ -37,7 +37,7 @@ Your python setup
 First of all, make sure that you have the right Python installation.
 You need a python3 installation with numerous scientific packages.
 Below is the easiest way to get up and running with python.
-You can also use it if you have already a python, but in the wrong versions and without some
+You can also use it if you have already a python, but in a different version and without some
 necessary modules.
 The following setup ensures that it will not interfere with existing python installations
 and it will get you all modules in one go.
@@ -76,44 +76,11 @@ On the command line, say::
  
 Get LAF-Fabric
 --------------------
-If you have git you can just clone it from github on the command line::
 
-    cd «directory of your choice»
-    git clone https://github.com/ETCBC/laf-fabric
+LAF-Fabric is on the `Python Package Index <https://pypi.python.org/pypi/laf-fabric/4.5.8>`,
+so you can just say::
 
-If you do not have git, consider getting it from `github <https://github.com>`_.
-It makes updating your LAF-Fabric easier later on.
-
-Nevertheless, you can also download the latest version from
-`github/laf-fabric <https://github.com/ETCBC/laf-fabric>`_.
-Unpack this somewhere on your file system. Change the name from *laf-fabric-master* to *laf-fabric*.
-In a command prompt, navigate to this directory.
-
-Install LAF-Fabric
---------------------
-Preparation:
-
-* you have to unpack a ``tar.gz`` file. On Windows you may have to install a tool for that,
-  such as `7-zip <http://www.7-zip.org>`_;
-* check whether the python3 command is the python that you have just installed with Anaconda::
-
-    python3 --version
-
-  should give somethin like::
-
-    Python 3.4.3 :: Anaconda 2.3.0 (x86_64)
-
-  and not something of python2, like::
-
-    Python 2.7.5
-
-
-Here are the steps, assuming you are in the command line, at the top level directory in *laf-fabric*::
-
-    cd dist
-    tar xvf laf-*
-    cd laf-*
-    python3 setup.py install
+    pip install laf-fabric
 
 This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
 Hebrew Text Database: *etcbc*.
@@ -127,6 +94,20 @@ This package has been used to obtain the actual LAF version of the ETCBC databas
     Tip: it works nicely with an sqlite3 backend.
     You only need this when you want to run MQL queries (the same queries you can design and store in SHEBANQ) from withing your programs.
 
+If you want to have the source code and examples you can get them from github.
+
+If you have git you can just clone it from github on the command line::
+
+    cd «directory of your choice»
+    git clone https://github.com/ETCBC/laf-fabric
+
+If you do not have git, consider getting it from `github <https://github.com>`_.
+
+Nevertheless, you can also download the latest version from
+`github/laf-fabric <https://github.com/ETCBC/laf-fabric>`_.
+Unpack this somewhere on your file system. Change the name from *laf-fabric-master* to *laf-fabric*.
+In a command prompt, navigate to this directory.
+
 Get the data
 --------------------
 If you are interested in working with the Hebrew Bible,
@@ -138,40 +119,22 @@ If all goes well you have a directory *laf-fabric-data* in your home directory.
 
 Test and run LAF-Fabric
 ------------------------
-In the top-level directory of LAF-Fabric there is a gallery script.
+Download as an example the `gender.ipynb <https://github.com/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
+and put it in a directory, say `Downloads`.
+Go to this directory and say on the command line::
 
-If you have downloaded the binary data for the full Hebrew Text Database from
-`laf-fabric-data <https://github.com/ETCBC/laf-fabric-data>`_,
-then make sure the your data is in whatever you specified in *~/laf-fabric.cfg* and run::
-
-    python3 lf-gallery.py full
-
-If you are not working with the Hebrew data, you can run the example data::
-
-    python3 lf-gallery.py tiny
-
-This points laf-fabric to the example data that comes with the distribution, which is just Genesis 1:1.
-On all platforms (Windows users: use Firefox or Chrome as your browser, not Internet Explorer),
-you can also run notebooks with LAF-Fabric:: 
-
-    cd examples
     jupyter notebook
 
 This starts a python process that communicates with a browser tab, which will pop up in front of you.
 This is your dashboard of notebooks.
-You can pick an existing notebook to work with, or create a new one.
-It is recommended that you write your own notebooks in a separate directory, not under the LAF-Fabric installation.
-In that way you can apply updates easily without overwriting your work.
-
-#. Create a notebook directory somewhere in your system and navigate there in a command prompt.
-#. Then::
-
-    jupyter notebook
+You can see the `gender.ipynb` notebook.
+Click on it to open it, and run the cells by pressing Shift-Enter in each successive cell.
+The notebook should execute without errors.
 
 .. note::
     If you create a notebook that you are proud of, it would be nice to include it in the example
     notebooks of LAF-Fabric or in the `ETCBC notebooks <https://github.com/ETCBC/contributions>`_.
-    If you want to share your notebook this way, mail it to `me <mailto:dirk.roorda@dans.knaw.nl>`_.
+    If you want to share your notebook this way, mail it to `shebanq@ancient-data.org <mailto:shebanq@ancient-data.org>`_.
 
 More configuration for LAF-Fabric
 ---------------------------------------

@@ -1,10 +1,14 @@
 Release Notes
 #############
-4.5.9
+4.5.10
 ==========
 Better logic in transcription methods in etcbc.lib
 See notebook `plain <https://shebanq.ancient-data.org/shebanq/static/docs/tools/shebanq/plain.html>`_
 for methods to represent Hebrew text in various ways.
+
+4.5.9
+==========
+Skipped (for clumsy reasons)
 
 4.5.8
 ==========

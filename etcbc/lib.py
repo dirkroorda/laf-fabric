@@ -99,11 +99,26 @@ class Transcription(object):
         '55': "<UNMAPPED 55=large letter>", # large_letter
         '56': "<UNMAPPED 56=small letter>", # small_letter
         '57': "<UNMAPPED 57=suspended letter>", # suspended_letter
+        '-': "", # suppress space afterward
     }
     hebrew_cons = '>BGDHWZXVJKLMNS<PYQRFCT'
     trans_final_pat = re.compile(r'([' + hebrew_cons + r'][^_&]*)([KMNPY])([^' + hebrew_cons + r'_&]*(:?[_&]|\Z))')
     trans_hebrew_pat = re.compile(r'(:[AE@]|.[cf]|:|[0-9][0-9]|.)')
     swap_accent_pat = re.compile(r'(\A|[_&])([0-9][0-9])([' + hebrew_cons + r'])([:;,.EAIOU@]*)')
+    remove_accent_pat = re.compile(r'((?:[0-9][0-9])|[,*])')
+    remove_point_pat  = re.compile(r'((?:[0-9][0-9])|(?:\.[cf])|(?::[@AE])|[,.:;@AEIOU*])')
+    shin_pat = re.compile(r'[CF]')
+    ph_simple_pat = re.compile(r'([ˈˌᵊᵃᵒᵉāo*])')
+    noorigspace = re.compile('''
+          (?: [&-]\Z)           # space, maqef or nospace
+        | (?: 
+               0[05]            # sof pasuq or paseq
+               (?:_[SNP])*      # nun hafukha, setumah, petuhah at end of verse
+               \Z
+          )
+        | (?:_[SPN])+           #  nun hafukha, setumah, petuhah between words
+    ''', re.X)
+
 
     syriac_mapping = {
         '>': "\u0710", # alaph
@@ -135,7 +150,7 @@ class Transcription(object):
     def __init__(self):
         self.hebrew_consonants = {Transcription.hebrew_mapping[x] for x in Transcription.hebrew_cons}
         self.hebrew_consonants.add('\u05E9')
-        self.hebrew_mappingi = dict((v,k) for (k,v) in Transcription.hebrew_mapping.items())
+        self.hebrew_mappingi = dict((v,k) for (k,v) in Transcription.hebrew_mapping.items() if k != '')
 
     def _comp(s):
         for (d, c) in Transcription.decomp.items(): s = s.replace(d, c)
@@ -186,15 +201,37 @@ class Transcription(object):
     def _map_final(m): return m.group(1) + m.group(2).lower() + m.group(3)
     def _map_hebrew(m): return Transcription.hebrew_mapping.get(m.group(1), m.group(1))
     def _swap_accent(m): return m.group(1) + m.group(3) + m.group(4) + m.group(2)
+    def _remove_accent(m): return '00' if m.group(1) == '00' else ''
+    def _remove_point(m):  return '00' if m.group(1) == '00' else ''
+    def _ph_simple(m): return 'å' if m.group(1) in 'āo' else ''
+
+# return unicodedata.normalize('NFKD', Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword))
+# unicode normalization is harmful if there is a combination of dagesh, vowel and accent.
+
+    def suppress_space(word):
+        return Transcription.noorigspace.search(word)
+
+    def to_etcbc_v(word):
+        return Transcription.remove_accent_pat.sub(Transcription._remove_accent, word)
+
+    def to_etcbc_c(word):
+        word = Transcription.remove_point_pat.sub(Transcription._remove_point, word)
+        return Transcription.shin_pat.sub('#', word)
 
     def to_hebrew(word):
-        nword = Transcription.swap_accent_pat.sub(Transcription._swap_accent, word)
-#        return unicodedata.normalize('NFKD', Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword))
-# unicode normailzation is harmful if there is a combination of dagesh, vowel and accent.
-        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword)
+        word = Transcription.swap_accent_pat.sub(Transcription._swap_accent, word)
+        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, word)
 
-    def to_hebrew_x(nword):
-        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword)
+    def to_hebrew_v(word):
+        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, Transcription.to_etcbc_v(word))
+
+    def to_hebrew_c(word):
+        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, Transcription.to_etcbc_c(word))
+
+    def to_hebrew_x(word):
+        return Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, word)
+
+    def ph_simplify(pword): return Transcription.ph_simple_pat.sub(Transcription._ph_simple, pword)
 
     def from_hebrew(self, word): return ''.join(self.hebrew_mappingi.get(x, x) for x in Transcription._comp(word))
     def to_syriac(self, word): return Transcription._decomp(''.join(self.syriac_mapping.get(x, x) for x in Transcription._comp(word)))

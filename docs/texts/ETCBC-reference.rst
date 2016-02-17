@@ -130,6 +130,11 @@ Hebrew
 The ETCBC has a special way to transcribe Hebrew characters into latin characters.
 Sometimes it is handier to work with transcriptions, because some applications do not render texts with mixed writing directions well.
 
+.. note::
+
+    See notebook `plain <https://shebanq.ancient-data.org/shebanq/static/docs/tools/shebanq/plain.html>`_
+    for methods to represent Hebrew text in various ways.
+
 In *etcbc.lib* there is a conversion tool. This is how it works::
 
     from etcbc.lib import Transcription
@@ -137,12 +142,32 @@ In *etcbc.lib* there is a conversion tool. This is how it works::
     tr = Transcription()
 
     t = 'DAF DAC'
-    h = tr.to_hebrew(t)
+    h = Transcription.to_hebrew(t)
+    hv = Transcription.to_hebrew_v(t)
+    hc = Transcription.to_hebrew_c(t)
+    ev = Transcription.to_etcbc_v(t)
+    ec = Transcription.to_etcbc_c(t)
     tb = tr.from_hebrew(h)
+    
+    if not Transcription.suppress_space(t):
+        t += ' '
 
     print("{}\n{}\n{}".format(t, h, tb))
 
-``to_hebrew(word)`` maps from transcription to Hebrew characters, ``from_hebrew(word)`` does the opposite.
+``to_hebrew`` maps from transcription to Hebrew characters, ``from_hebrew`` does the opposite.
+
+``to_etcbc_v`` and ``to_hebrew_v`` strip accent pointing, but leave punctuation and vowel pointing and dagesh.
+More precisely, the sof pasuq (unicode 05c3) is preserved.
+
+``to_etcbc_c`` and ``to_hebrew_c`` strip all accent and vowel pointing, including the dagesh, and convers pointed shin and sin to pointless shin.
+Punctuation is preserved.
+
+The ``hebrew_``.. functions yield their result in Hebrew Unicode, the ``etcbc_`` ones in the ETCBC transliteration.
+
+``ph_simplify`` simplifies a phonemic transcription by removing all accents and schwas (including the composite ones) and masora signs,
+and translating both qamets qatan (o) and gadol (ā) to å.
+
+``suppress_space(t)`` inspects an ETCBC transcription and yields True if there should be no space between this word and the next.
 
 There are some points to note:
 
@@ -157,7 +182,7 @@ There are some points to note:
     (There are one or two cases where the ETCBC transcription distinguishes between accents that are indistiguishable
     in UNICODE.
 
-    A *phonetic* transcription is also available, but it has been computed at a later stage, and added as an
+    A *phonemic* transcription is also available, but it has been computed at a later stage, and added as an
     extra annotation package to the data.
     This is a *difficult* transcription, since a lot of complicated rules govern the road from spelling to 
     pronunciation, such as qamets gadol versus qatan, schwa mobile versus quiescens, to name but a few.

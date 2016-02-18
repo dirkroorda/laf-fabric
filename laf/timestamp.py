@@ -27,8 +27,7 @@ class Timestamp(object):
         self.log = None
         self.logs = []
         self.verbose = self.verbose_level[verbose or 'NORMAL']
-        if log_file:
-            self.connect_log(log_file)
+        if log_file: self.connect_log(log_file)
 
     def Emsg(self, msg, newline=True, withtime=True): self.raw_msg('ERROR: '+msg, newline, withtime, verbose='ERROR')
     def Wmsg(self, msg, newline=True, withtime=True): self.raw_msg('WARNING: '+msg, newline, withtime, verbose='WARNING')
@@ -36,6 +35,7 @@ class Timestamp(object):
     def Imsg(self, msg, newline=True, withtime=True): self.raw_msg('INFO: '+msg, newline, withtime, verbose='INFO')
     def Dmsg(self, msg, newline=True, withtime=True): self.raw_msg('DETAIL: '+msg, newline, withtime, verbose='DETAIL')
     def Xmsg(self, msg, newline=True, withtime=True): self.raw_msg('XXX: '+msg, newline, withtime, verbose='DEBUG')
+    def Smsg(self, msg, verbose, newline=True, withtime=True): self.raw_msg('{}: {}'.format(verbose, msg), newline, withtime, verbose=verbose)
 
     def raw_msg(self, msg, newline=True, withtime=True, verbose=None):
         verbose = verbose or 'NORMAL'

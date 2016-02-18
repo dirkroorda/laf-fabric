@@ -6,7 +6,7 @@ class Layer(object):
     ``down(otype, n)`` is the converse of ``up()``: it delivers an ordered list of nodes of MQL type ``otype`` contained in node ``n``.
     '''
     def __init__(self, lafapi):
-        lafapi.api['fabric'].load_again({"features": ('otype book chapter verse number', '')}, add=True)
+        lafapi.api['fabric'].load_again({"features": ('otype book chapter verse number', '')}, add=True, verbose='INFO')
         self.up = lafapi.data_items['zL00(node_up)']
         self.down = lafapi.data_items['zL00(node_down)']
         self.lafapi = lafapi

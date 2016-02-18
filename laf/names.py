@@ -87,6 +87,7 @@ class Names(Settings):
         ('zG00 node_sort_inv',     (None,  'dct')),
         ('zL00 node_up',           (None,  'dct')),
         ('zL00 node_down',         (None,  'dct')),
+        ('zV00 verses',            (None,  'dct')),
     ))
     _data_items_def = collections.OrderedDict()
 

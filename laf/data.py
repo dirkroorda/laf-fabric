@@ -124,7 +124,7 @@ class LafData(object):
                 last_line = list(h)[-1]
                 if ':' in last_line:
                     the_time = last_line.split(':', 1)[1]
-            self.stamp.Imsg("USING DATA COMPILED AT: {}".format(the_time))
+            self.stamp.Nmsg("USING {} DATA COMPILED AT: {}".format('main ' if origin == 'm' else 'annox', the_time))
         if has_compiled:
             for origin in ('m', 'a'):
                 self._clear_origin_unnec(origin)
@@ -194,7 +194,7 @@ class LafData(object):
                 self._clear_file(dkey)
         for dkey in dkeys['load']:
             if dkey in dkeys['prep']:
-                self.stamp.Dmsg("prep {}".format(Names.dmsg(dkey))) 
+                self.stamp.Nmsg("prep {}".format(Names.dmsg(dkey))) 
                 self._load_file(dkey, accept_missing=False)
 
     def _load_file(self, dkey, accept_missing=False):
@@ -214,7 +214,7 @@ class LafData(object):
                 os.path.getmtime(dpath) >= os.path.getmtime(method_source) and \
                 os.path.getmtime(dpath) >= os.path.getmtime(env['m_compiled_path']) 
             if not up_to_date:
-                self.stamp.Dmsg("PREPARING {}".format(Names.dmsg(dkey)))
+                self.stamp.Nmsg("PREPARING {}".format(Names.dmsg(dkey)))
                 compiled_dir = self.names.env['{}_compiled_dir'.format('z')]
                 try:
                     if not os.path.exists(compiled_dir): os.makedirs(compiled_dir)
@@ -222,7 +222,7 @@ class LafData(object):
                     raise FabricError("could not create compiled directory {}".format(compiled_dir), self.stamp, cause=e)
                 newdata = method(self.api)
                 self.data_items[dkey] = newdata
-                self.stamp.Dmsg("WRITING {}".format(Names.dmsg(dkey)))
+                self.stamp.Nmsg("WRITING {}".format(Names.dmsg(dkey)))
                 self._store_file(dkey)
                 prep_done = True
         if not os.path.exists(dpath):

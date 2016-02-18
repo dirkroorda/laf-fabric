@@ -20,7 +20,6 @@ class LafAPI(LafData):
         self.result_files = []
 
     def API(self):
-        #self.api.clear()
         self._api_fcxp()
         self._api_nodes()
         self._api_edges()
@@ -29,7 +28,6 @@ class LafAPI(LafData):
         return self.api
 
     def APIprep(self):
-        #self.api = {}
         self._api_post()
         return self.api
 
@@ -141,8 +139,6 @@ class LafAPI(LafData):
 
     def _api_post(self):
         (self.prepare_init)(self)
-        #if Names.comp('zL00', ('node_up',)) in self.data_items:
-        #    self.api['L'] = Layer(self)
 
     def _api_edges(self):
         data_items = self.data_items
@@ -369,13 +365,13 @@ class LafFabric(object):
         self.lafapi.stamp.reset()
         self.api = {}
 
-    def load(self, source, annox, task, load_spec, add=False, compile_main=False, compile_annox=False, verbose=None):
+    def load(self, source, annox, task, load_spec, add=False, compile_main=False, compile_annox=False, verbose='NORMAL', time_reset=True):
         self.api.clear()
         lafapi = self.lafapi
         self.api['fabric'] = self
-        lafapi.stamp.reset()
+        if time_reset: lafapi.stamp.reset()
         Names.check_load_spec(load_spec, lafapi.stamp)
-        if verbose: self.lafapi.stamp.set_verbose(verbose)
+        self.lafapi.stamp.set_verbose(verbose)
         lafapi.stamp.Nmsg("LOADING API{}: please wait ... ".format(' with EXTRAs' if add else ''))
         lafapi.names.setenv(source=source, annox=annox, task=task)
         env = lafapi.names.env
@@ -393,21 +389,25 @@ class LafFabric(object):
         lafapi.load_all(req_items, prep, add)
         lafapi.add_logfile()
         self.api.update(lafapi.API())
-        #lafapi.API()
         if 'prepare' in load_spec:
+            lafapi.stamp.Imsg("LOADING PREPARED data: please wait ... ")
             lafapi.prepare_all(self.api)
             self.api.update(lafapi.APIprep())
-            #lafapi.APIprep()
-        lafapi.stamp.Imsg("DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}".format(
-            env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
-        ))
-        lafapi.stamp.reset()
+            lafapi.stamp.Imsg("LOADED PREPARED data")
+        lafapi.stamp.Smsg(
+            'DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}'.format(
+                env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
+            ),
+            'INFO' if time_reset else 'NORMAL',
+        )
+        if time_reset: lafapi.stamp.reset()
         self.localnames = '\n'.join("{key} = {{var}}.api['{key}']".format(key=key) for key in self.api)
+        self.lafapi.stamp.set_verbose(verbose)
         return self.api
 
-    def load_again(self, load_spec, add=False, compile_main=False, compile_annox=False, verbose=None):
+    def load_again(self, load_spec, add=False, compile_main=False, compile_annox=False, verbose='NORMAL'):
         env = self.lafapi.names.env
-        x = self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose)
+        x = self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose, time_reset=False)
         return x
 
     def resolve_feature(self, kind, feature_given):

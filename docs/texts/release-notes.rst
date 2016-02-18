@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.5.11
+==========
+Higher level text producing functions in a new ETCBC API element: ``T`` (texts).
+See :doc:`ETCBC-reference`.
+
 4.5.10
 ==========
 Better logic in transcription methods in etcbc.lib

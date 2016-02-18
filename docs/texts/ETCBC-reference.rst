@@ -1,6 +1,18 @@
 ETCBC Reference
 ###############
 
+======================================================== =============================================================================================================
+:ref:`- L: Layers <layers>`                              How objects lie embedded in each other
+:ref:`- T: Texts <texts>`                                Representing texts in different formats
+:ref:`- Node Order <node_order>`                         A convenient ordering of nodes
+:ref:`- Transcription <transcription>`                   Low-level transliteration functions
+:ref:`- Trees <trees>`                                   Tree generation
+:ref:`- Annotating <annotating>`                         Create data entry forms for new annotations and process the filled in forms
+:ref:`- Extra data <extra_data>`                         Create new annotations out of other data sources, among which certain ETCBC files related to the core data
+:ref:`- Feature Documentation <feature_documentation>`   Produce frequency lists for all features, to be included in the feature documentation
+:ref:`- MQL <mql>`                                       MQL query execution.
+======================================================== =============================================================================================================
+
 What is ETCBC
 =============
 The *etcbc* package has modules that go beyond *laf*.
@@ -11,6 +23,8 @@ For example, if you do a walk through phrases, you want to be able to the clause
 or to siblings of it.
 
 Most of the functionality is demonstrated in dedicated notebooks. This text is only a rough overview.
+
+.. _layers:
 
 Layers
 ======
@@ -63,6 +77,74 @@ Conversely, it is easy to get all subphrases in a given verse::
 or get all clause_atoms of all first sentences of all second verses of all chapters in Genesis::
 
     clause_atoms = L.p('clause_atom', book='Genesis', verse=2, sentence=1)
+
+.. _texts:
+
+Texts
+=====
+The ``T`` (*text*) part of the API is for working with the plain text of the Bible.
+It can deliver the text of the whole Bible or parts in a variety of formats.
+
+The quickest way to see how this works is to go to the notebook
+`plain <https://shebanq.ancient-data.org/static/docs/tools/shebanq/plain.html>`_
+(`download <https://shebanq.ancient-data.org/static/docs/tools/shebanq/plain.html>`_)
+on SHEBANQ.
+
+This is how it works. You have to import the ``prepare`` module::
+
+    from etcbc.preprocess import prepare
+
+and say in your load instructions::
+
+    'prepare': prepare
+    
+Then you can use the following functions::
+
+    T.node_of(book, chapter, verse)
+
+Yields the verse node of the passage specified by `book`, `chapter` and `verse`.
+Yields `None` if there is no such verse.::
+
+    T.formats()
+
+This yields a dictionary of all formats that the ``T`` API is capable to deliver.
+The keys are acronymns for the formats, the values are tuples
+``(desc, method)``
+where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.::
+
+    T.words(word_nodes, fmt='ha')
+
+Give the plain text belongin to a series of words in format ``fmt``.
+Default format is ``ha``, i.e. fully pointed Hebrew Unicode, where ketivs have been replaced by 
+fully pointed qeres.
+The ``word_nodes`` can be any iterable of nodes carrying ``otype = 'word'``.
+They do not have to correspond to consecutive words in the bible.::
+
+    T.verse(book, chapter, verse, fmt='ha', html=True, verse_label=True, format_label=True)
+
+Give the plain text of the indicated verse in format ``fmt``. 
+You can choose wether to include a verse label (like ``Genesis 3:7``) and a format label
+(like ``hebrew accent``).
+If ``html`` is ``True`` then the result is formatted as a html table, with the right style characteristics.
+You can still tweak the styles a bit, see the function ``T.style()`` later on.::
+
+    T.whole(fmt='ha', verse_labels=False)
+
+Give the plain text of the whole Bible in format ``fmt``.::
+
+    T.style(params=None, show_params=False)
+
+Generate a css style sheet to format the HTML output of ``T.verse()``.
+You can tweak certain parameters.
+In order to see which parameters, just run the function with ``show_params=True``.
+It will list all tweakable parameters with their default values.
+
+In short, you can customize the font sizes and colors for the text, and you can give distinct values for Hebrew Unicode, ETCBC ASCII, en phonemic representation.
+You can also set the widths of the label columns.
+
+You only have to pass the parameters that you want to give a non-default value.
+
+.. _node_order:
 
 Node order
 ==========
@@ -123,17 +205,14 @@ and if you have::
 
 in your load instructions,
 
+.. _transcription:
+
 Transcription
 =============
 Hebrew
 ------
 The ETCBC has a special way to transcribe Hebrew characters into latin characters.
 Sometimes it is handier to work with transcriptions, because some applications do not render texts with mixed writing directions well.
-
-.. note::
-
-    See notebook `plain <https://shebanq.ancient-data.org/shebanq/static/docs/tools/shebanq/plain.html>`_
-    for methods to represent Hebrew text in various ways.
 
 In *etcbc.lib* there is a conversion tool. This is how it works::
 
@@ -187,12 +266,19 @@ There are some points to note:
     This is a *difficult* transcription, since a lot of complicated rules govern the road from spelling to 
     pronunciation, such as qamets gadol versus qatan, schwa mobile versus quiescens, to name but a few.
 
+.. hint::
+    It is likely that you never have to use these functions directly in your notebook.
+    Try first how far you get with the ``T``-functions in 
+    :ref:`Texts <texts>`.
+
 Syriac
 ------
 We have a transcription for consonantal Syriac. The interface is nearly the same as for Hebrew, but now use::
 
     to_syriac(word)
     from_syriac(word)
+
+.. _trees:
 
 Trees
 =====
@@ -256,6 +342,8 @@ linguistic embeddings.
 The function ``restructure_clauses()`` remedies this. If you want to see what it going on, consult the 
 `trees_etcbc4 notebook <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/trees/trees_etcbc4.ipynb>`_.
 
+.. _annotating:
+
 Annotating
 ==========
 The module ``etcbc.annotating`` helps you to generate data entry forms and translate filled in forms into new annotations in LAF format,
@@ -263,6 +351,8 @@ that actually refer to nodes and edges in the main ETCBC data source.
 
 There is an example notebook that uses this module for incorporating extra data (coming from so-called *px* files) into the LAF resource.
 See *Extra Data* below.
+
+.. _extra_data:
 
 Extra Data
 ==========
@@ -313,6 +403,8 @@ Note that upon first use, the XML of this annox has to be parsed and compiled in
 To see this method in action, have a look at the
 `lexicon notebook <https://shebanq.ancient-data.org/shebanq/static/docs/tools/shebanq/lexicon.html>`_.
 
+.. _feature_documentation:
+
 Feature documentation
 =====================
 The module ``etcbc.featuredoc`` generates overviews of all available features in the main source, including information of their values,
@@ -326,25 +418,15 @@ Usage::
 More info:
 `notebook feature-doc <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/featuredoc/feature-doc.ipynb>`_
 
+.. _mql:
+
 MQL
 ===
 The module ``etcbc.mql`` lets you fire mql queries to the corresponding Emdros database, and process the results with LAF-Fabric.
+
+This function is dependent on Emdros being installed.
 More info over what MQL, EMDROS are, and how to use it, is in 
 `notebook mql <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/mql.ipynb>`_.
 
-On the Mac and in Linux it runs out of the box, assuming Emdros is installed in such a way that the command to run MQL is ``/usr/local/bin/mql``.
-If that is not the case, or if you work on windows, you should manually change the first line of *mql.py*.
-Its default value is::
-
-    MQL_PROC = '/usr/local/bin/mql'
-
-and on windows is should become something like::
-
-    MQL_PROC = 'c:\\Program Files (x86)\\Emdros\\Emdros 3.4.0\\bin\\mql'
-
-(check your system).
-After modifying this file, you should go to your *laf-fabric* directory and run again::
-
-    python setup.py install
-
-Regrattably, this must be repeated when you update laf-fabric from Github.
+It is assumend that Emdros is installed in such a way that the command to run MQL is in your path,
+i.e. that the command ``mql`` is understood when run in a terminal (i.e. from a command prompt).

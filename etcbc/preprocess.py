@@ -3,6 +3,7 @@ import functools
 import array
 from .lib import monad_set, object_rank
 from .layer import Layer
+from .text import Text
 
 ETCBCREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/ETCBC-reference.html'
 
@@ -120,14 +121,33 @@ def node_down(API):
     if len(Ld) == 0: node_ud(API)
     return Ld
 
+def verses(API):
+    API['fabric'].load_again({"features": ('otype book chapter verse', '')}, add=True)
+    msg = API['msg']
+    F = API['F']
+    NN = API['NN']
+    verses = {}
+    n = 0
+    msg('Making verse index', verbose='NORMAL')
+    for vn in F.otype.s('verse'):
+        n += 1
+        bk = F.book.v(vn)
+        ch = int(F.chapter.v(vn))
+        vs = int(F.verse.v(vn))
+        verses.setdefault(bk, {}).setdefault(ch, {})[vs] = vn
+    msg('Done. {} verses'.format(n), verbose='NORMAL')
+    return verses
+
 def prep_post(lafapi):
     lafapi.stamp.Nmsg('ETCBC reference: {}'.format(ETCBCREF))
     lafapi.api['L'] = Layer(lafapi)
+    lafapi.api['T'] = Text(lafapi)
     
 prepare_dict = collections.OrderedDict((
     ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
     ('zG00(node_sort_inv)', (node_order_inv, __file__, True, 'etcbc')),
     ('zL00(node_up)', (node_up, __file__, False, 'etcbc')),
     ('zL00(node_down)', (node_down, __file__, False, 'etcbc')),
+    ('zV00(verses)', (verses, __file__, False, 'etcbc')),
 ))
 prepare = (prepare_dict, prep_post)

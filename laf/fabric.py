@@ -405,9 +405,10 @@ class LafFabric(object):
         self.lafapi.stamp.set_verbose(verbose)
         return self.api
 
-    def load_again(self, load_spec, add=False, compile_main=False, compile_annox=False, verbose='NORMAL'):
+    def load_again(self, load_spec, annox=None, add=False, compile_main=False, compile_annox=False, verbose='NORMAL'):
         env = self.lafapi.names.env
-        x = self.load(env['source'], env['annox'], env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose, time_reset=False)
+        if annox == None: annox = env['annox']
+        x = self.load(env['source'], annox, env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose, time_reset=False)
         return x
 
     def resolve_feature(self, kind, feature_given):

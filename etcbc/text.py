@@ -14,7 +14,7 @@ class Text(object):
             lex_utf8
             phono phono_sep
             book chapter verse
-''', '')}, add=True, verbose='INFO')
+''', '')}, annox='lexicon', add=True, verbose='INFO')
         self._verses = lafapi.data_items['zV00(verses)']
         self.lafapi = lafapi
         self.env = lafapi.names.env

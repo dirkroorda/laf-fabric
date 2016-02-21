@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.5.12
+==========
+Small fixes: The new T API needs to load the annox ``lexicon``. Now this will be done without the
+user having to bother about it.
+
 4.5.11
 ==========
 Higher level text producing functions in a new ETCBC API element: ``T`` (texts).

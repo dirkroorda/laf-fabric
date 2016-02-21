@@ -110,15 +110,15 @@ Yields `None` if there is no such verse.::
 This yields a dictionary of all formats that the ``T`` API is capable to deliver.
 The keys are acronymns for the formats, the values are tuples
 ``(desc, method)``
-where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.::
+where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.:
 
     T.words(word_nodes, fmt='ha')
 
-Give the plain text belongin to a series of words in format ``fmt``.
+Give the plain text belonging to a series of words in format ``fmt``.
 Default format is ``ha``, i.e. fully pointed Hebrew Unicode, where ketivs have been replaced by 
 fully pointed qeres.
 The ``word_nodes`` can be any iterable of nodes carrying ``otype = 'word'``.
-They do not have to correspond to consecutive words in the bible.::
+They do not have to correspond to consecutive words in the bible.:
 
     T.verse(book, chapter, verse, fmt='ha', html=True, verse_label=True, format_label=True)
 
@@ -126,11 +126,11 @@ Give the plain text of the indicated verse in format ``fmt``.
 You can choose wether to include a verse label (like ``Genesis 3:7``) and a format label
 (like ``hebrew accent``).
 If ``html`` is ``True`` then the result is formatted as a html table, with the right style characteristics.
-You can still tweak the styles a bit, see the function ``T.style()`` later on.::
+You can still tweak the styles a bit, see the function ``T.style()`` later on.:
 
     T.whole(fmt='ha', verse_labels=False)
 
-Give the plain text of the whole Bible in format ``fmt``.::
+Give the plain text of the whole Bible in format ``fmt``.:
 
     T.style(params=None, show_params=False)
 

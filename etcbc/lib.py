@@ -216,6 +216,7 @@ class Transcription(object):
 
     def to_etcbc_c(word):
         word = Transcription.remove_point_pat.sub(Transcription._remove_point, word)
+        word = word.upper() # no final forms of consonants
         return Transcription.shin_pat.sub('#', word)
 
     def to_hebrew(word):

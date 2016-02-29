@@ -107,6 +107,9 @@ Then you can use the following functions
 Yields the verse node of the passage specified by `book`, `chapter` and `verse`.
 Yields `None` if there is no such verse.
 
+Book must be given as a *node*, the book name for the verse_label will be in language `lang`.
+See the methods `book_name()` and `book_node()` below to map a book name to a book node and vice versa.
+
 .. code-block:: python
 
     T.formats()
@@ -128,19 +131,24 @@ They do not have to correspond to consecutive words in the bible.
 
 .. code-block:: python
 
-    T.verse(book, chapter, verse, fmt='ha', html=True, verse_label=True, format_label=True)
+    T.verse(book, chapter, verse, fmt='ha', html=True, verse_label=True, format_label=True, lang='en')
 
 Give the plain text of the indicated verse in format ``fmt``. 
 You can choose wether to include a verse label (like ``Genesis 3:7``) and a format label
 (like ``hebrew accent``).
+
 If ``html`` is ``True`` then the result is formatted as a html table, with the right style characteristics.
 You can still tweak the styles a bit, see the function ``T.style()`` later on.
 
+Like in `node_of()`, `book` must be given as a node.
+See the methods `book_name()` and `book_node()` below to map a book name to a book node and vice versa.
+
 .. code-block:: python
 
-    T.whole(fmt='ha', verse_labels=False)
+    T.whole(fmt='ha', verse_labels=False, lang='en')
 
 Give the plain text of the whole Bible in format ``fmt``.
+The language for the book names in the verse labels is given by `lang`.
 
 .. code-block:: python
 
@@ -158,15 +166,32 @@ You only have to pass the parameters that you want to give a non-default value.
 
 .. code-block:: python
 
-    T.books(lang='la')
+    T.book_name(book_node, lang='en')
 
-Lists the books in the ETCBC order but with names according to `lang`.
+Returns the book name of the book corresponding to `book_node` in language `lang`.
+
+.. code-block:: python
+
+    T.book_node(book_name, lang='en')
+
+Returns the book node of the book with name `book_name` in language `lang`.
+
 If `lang` is `la` (latin), the book names are exactly as used in the ETCBC database.
 
 Supported languages:
 
-* en = English
-* la = Latin (default).
+* en = English (default)
+* nl = Dutch
+* de = German
+* fr = French
+* el = Greek
+* la = Latin (used in the ETCBC database).
+
+.. code-block:: python
+
+    T.book_nodes
+
+For convenience, the tuple of nodes corresponding to the books in the ETCBC order.
 
 .. _node_order:
 

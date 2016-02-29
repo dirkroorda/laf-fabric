@@ -131,12 +131,20 @@ def verses(API):
     msg('Making verse index', verbose='NORMAL')
     for vn in F.otype.s('verse'):
         n += 1
-        bk = F.book.v(vn)
+        bk = Lu['book'][vn]
         ch = int(F.chapter.v(vn))
         vs = int(F.verse.v(vn))
         verses.setdefault(bk, {}).setdefault(ch, {})[vs] = vn
     msg('Done. {} verses'.format(n), verbose='NORMAL')
     return verses
+
+def books_la(API):
+    msg = API['msg']
+    F = API['F']
+    msg('Listing books', verbose='NORMAL')
+    books = tuple((b, F.book.v(b)) for b in F.otype.s('book'))
+    msg('Done. {} books'.format(len(books), verbose='NORMAL'))
+    return books
 
 def prep_post(lafapi):
     lafapi.stamp.Nmsg('ETCBC reference: {}'.format(ETCBCREF))
@@ -149,5 +157,6 @@ prepare_dict = collections.OrderedDict((
     ('zL00(node_up)', (node_up, __file__, False, 'etcbc')),
     ('zL00(node_down)', (node_down, __file__, False, 'etcbc')),
     ('zV00(verses)', (verses, __file__, False, 'etcbc')),
+    ('zV00(books_la)', (books_la, __file__, False, 'etcbc')),
 ))
 prepare = (prepare_dict, prep_post)

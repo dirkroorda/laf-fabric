@@ -49,58 +49,283 @@ class Text(object):
             ('pf', ('phono full',     lambda w: get_orig_p(w).replace('*',''))),
             ('ps', ('phono simple',   lambda w: Transcription.ph_simplify(get_orig_p(w)))),
         ))
-        self.booknames_en = tuple('''
-            Genesis
-            Exodus
-            Leviticus
-            Numbers
-            Deuteronomy
-            Joshua
-            Judges
-            1_Samuel
-            2_Samuel
-            1_Kings
-            2_Kings
-            Isaiah
-            Jeremiah
-            Ezekiel
-            Hosea
-            Joel
-            Amos
-            Obadiah
-            Jonah
-            Micah
-            Nahum
-            Habakkuk
-            Zephaniah
-            Haggai
-            Zechariah
-            Malachi
-            Psalms
-            Job
-            Proverbs
-            Ruth
-            Song_of_songs
-            Ecclesiastes
-            Lamentations
-            Esther
-            Daniel
-            Ezra
-            Nehemiah
-            1_Chronicles
-            2_Chronicles
-'''.strip().split())
+        self._books = lafapi.data_items['zV00(books_la)']
+        self.book_nodes = tuple(x[0] for x in self._books)
+        self._book_name = {}
+        self._book_node = {}
+        self.langs = dict(
+            la=('latin', 'Latina'),
+            en=('english', 'English'),
+            fr=('french', 'François'),
+            de=('german', 'Deutsch'),
+            nl=('dutch', 'Nederlands'),
+            el=('greek', 'Ελληνικά'),
+            he=('hebrew', 'עברית'),
+        )
+        self._booknames = {
+            'en': tuple('''
+                    Genesis
+                    Exodus
+                    Leviticus
+                    Numbers
+                    Deuteronomy
+                    Joshua
+                    Judges
+                    1_Samuel
+                    2_Samuel
+                    1_Kings
+                    2_Kings
+                    Isaiah
+                    Jeremiah
+                    Ezekiel
+                    Hosea
+                    Joel
+                    Amos
+                    Obadiah
+                    Jonah
+                    Micah
+                    Nahum
+                    Habakkuk
+                    Zephaniah
+                    Haggai
+                    Zechariah
+                    Malachi
+                    Psalms
+                    Job
+                    Proverbs
+                    Ruth
+                    Song_of_songs
+                    Ecclesiastes
+                    Lamentations
+                    Esther
+                    Daniel
+                    Ezra
+                    Nehemiah
+                    1_Chronicles
+                    2_Chronicles
+                '''.strip().split()),
+            'nl': tuple('''
+                    Genesis
+                    Exodus
+                    Leviticus
+                    Numeri
+                    Deuteronomium
+                    Jozua
+                    Richteren
+                    1_Samuel
+                    2_Samuel
+                    1_Koningen
+                    2_Koningen
+                    Jesaja
+                    Jeremia
+                    Ezechiel
+                    Hosea
+                    Joël
+                    Amos
+                    Obadja
+                    Jona
+                    Micha
+                    Nahum
+                    Habakuk
+                    Zefanja
+                    Haggaï
+                    Zacharia
+                    Maleachi
+                    Psalmen
+                    Job
+                    Spreuken
+                    Ruth
+                    Hooglied
+                    Prediker
+                    Klaagliederen
+                    Esther
+                    Daniel
+                    Ezra
+                    Nehemia
+                    1_Kronieken
+                    2_Kronieken
+                '''.strip().split()),
+            'de': tuple('''
+                    Genesis
+                    Exodus
+                    Levitikus
+                    Numeri
+                    Deuteronomium
+                    Josua
+                    Richter
+                    1_Samuel
+                    2_Samuel
+                    1_Könige
+                    2_Könige
+                    Jesaja
+                    Jeremia
+                    Ezechiel
+                    Hosea
+                    Joel
+                    Amos
+                    Obadja
+                    Jona
+                    Micha
+                    Nahum
+                    Habakuk
+                    Zefanja
+                    Haggai
+                    Sacharja
+                    Maleachi
+                    Psalmen
+                    Ijob
+                    Sprichwörter
+                    Rut
+                    Hoheslied
+                    Kohelet
+                    Klagelieder
+                    Ester
+                    Daniel
+                    Esra
+                    Nehemia
+                    1_Chronik
+                    2_Chronik
+                '''.strip().split()),
+            'fr': tuple('''
+                    Genèse
+                    Exode
+                    Lévitique
+                    Nombres
+                    Deutéronome
+                    Josué
+                    Juges
+                    1_Samuel
+                    2_Samuel
+                    1_Rois
+                    2_Rois
+                    Isaïe
+                    Jérémie
+                    Ézéchiel
+                    Osée
+                    Joël
+                    Amos
+                    Abdias
+                    Jonas
+                    Michée
+                    Nahoum
+                    Habaquq
+                    Sophonie
+                    Aggée
+                    Zacharie
+                    Malachie
+                    Psaumes
+                    Job
+                    Proverbes
+                    Ruth
+                    Cantique_des_Cantiques
+                    Ecclésiaste
+                    Lamentations
+                    Esther
+                    Daniel
+                    Esdras
+                    Néhémie
+                    1_Chroniques
+                    2_Chroniques
+                '''.strip().split()),
+            'el': tuple('''
+                    Γένεση
+                    Έξοδος
+                    Λευιτικό
+                    Αριθμοί
+                    Δευτερονόμιο
+                    Ιησούς
+                    Κριταί
+                    Σαμουήλ_A'                    
+                    Σαμουήλ_Β'
+                    Βασιλείς_A'
+                    Βασιλείς_Β'
+                    Ησαΐας
+                    Ιερεμίας
+                    Ιεζεκιήλ
+                    Ωσηέ
+                    Ιωήλ
+                    Αμώς
+                    Οβδιού
+                    Ιωνάς
+                    Μιχαίας
+                    Ναούμ
+                    Αβακκούμ
+                    Σοφονίας
+                    Αγγαίος
+                    Ζαχαρίας
+                    Μαλαχίας
+                    Ψαλμοί
+                    Ιώβ
+                    Παροιμίαι
+                    Ρουθ
+                    Άσμα_Ασμάτων
+                    Εκκλησιαστής
+                    Θρήνοι
+                    Εσθήρ
+                    Δανιήλ
+                    Έσδρας
+                    Νεεμίας
+                    Χρονικά_Α'
+                    Χρονικά_Β'
+                '''.strip().split()),
+            'he': tuple('''
+                    בראשית
+                    שמות
+                    ויקרא
+                    במדבר
+                    דברים
+                    יהושע
+                    שופטים
+                    שמואל_א
+                    שמואל_ב
+                    מלכים_א
+                    מלכים_ב
+                    ישעיהו
+                    ירמיהו
+                    יחזקאל
+                    הושע
+                    יואל
+                    עמוס
+                    עובדיה
+                    יונה
+                    מיכה
+                    נחום
+                    חבקוק
+                    צפניה
+                    חגי
+                    זכריה
+                    מלאכי
+                    תהילים
+                    איוב
+                    משלי
+                    רות
+                    שיר_השירים
+                    קהלת
+                    איכה
+                    אסתר
+                    דניאל
+                    עזרא
+                    נחמיה
+                    דברי_הימים_א
+                    דברי_הימים_ב
+                '''.strip().split()),
+        }
+        for (bn, book_la) in enumerate(self._books):
+            self._book_name.setdefault('la', {})[bn] = book_la
+            self._book_node.setdefault('la', {})[book_la] = bn
+        for ln in self._booknames:
+            for (i, (bn, book_la)) in enumerate(self._books):
+                book_ln = self._booknames[ln][i]
+                self._book_name.setdefault(ln, {})[bn] = book_ln
+                self._book_node.setdefault(ln, {})[book_ln] = bn
 
-    def node_of(self, book, chapter, verse): return self._verses.get(book, {}).get(chapter, {}).get(verse, None)
+    def node_of(self, book, chapter, verse, fmt='la'):
+        return self._verses.get(book, {}).get(chapter, {}).get(verse, None)
 
     def formats(self): return self._transform
 
-    def books(self, lang='la'):
-        F = self.lafapi.api['F']
-        if lang == 'la':
-            return tuple(F.book.v(b) for b in F.otype.s('book'))
-        elif lang == 'en':
-            return self.booknames_en
+    def book_name(self, bn, lang='en'): return self._book_name.get(lang, {}).get(bn, None)
+    def book_node(self, book_name, lang='en'): return self._book_node.get(lang, {}).get(book_name, None)
              
     def words(self, wnodes, fmt='ha'):
         reps = []
@@ -109,16 +334,16 @@ class Text(object):
         for wnode in wnodes: reps.append(make_rep(wnode))
         return ''.join(reps)
 
-    def verse(self, bk, ch, vs, fmt='ha', html=True, verse_label=True, format_label=True):
+    def verse(self, bn, ch, vs, fmt='ha', html=True, verse_label=True, format_label=True, lang='en'):
         L = self.lafapi.api['L']
-        vlabel = '{} {}:{}'.format(bk, ch, vs)
+        vlabel = '{} {}:{}'.format(self.book_name(bn, lang), ch, vs)
         flabel = self._transform[fmt][0]
         if verse_label: vlabel = '<td class="vl">{}</td>'.format(vlabel) if html else '{}  '.format(vlabel)
         else: vlabel = ''
         if format_label: flabel = '<td class="fl">{}</td>'.format(flabel) if html else ' [{}]'.format(flabel)
         else: flabel = ''
 
-        text = self.words(L.d('word', self._verses[bk][ch][vs]), fmt=fmt)
+        text = self.words(L.d('word', self._verses[bn][ch][vs]), fmt=fmt)
         if html:
             text = '<td class="{}">{}</td>'.format(fmt[0], h_esc(text))
 
@@ -126,8 +351,9 @@ class Text(object):
         if html: total = '<table class="t"><tr>{}</tr></table>'.format(total)
         return total
 
-    def whole(self, fmt='ha', verse_labels=False):
+    def whole(self, fmt='ha', verse_labels=False, lang='en'):
         F = self.lafapi.api['F']
+        L = self.lafapi.api['L']
         NN = self.lafapi.api['NN']
         msg = self.lafapi.api['msg']
         reps = []
@@ -141,7 +367,7 @@ class Text(object):
                 reps.append(wtext)
             elif verse_labels and F.otype.v(n) == 'verse': reps.append('{}{} {}:{}  '.format(
                 '\n' if wtext and wtext[-1] != '\n' else '',
-                F.book.v(n), F.chapter.v(n), F.verse.v(n),
+                self.book_name(L.u('book', n), lang=lang), F.chapter.v(n), F.verse.v(n),
             ))
         return ''.join(reps)
     

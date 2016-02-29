@@ -98,19 +98,25 @@ and say in your load instructions::
 
     'prepare': prepare
     
-Then you can use the following functions::
+Then you can use the following functions
+
+.. code-block:: python
 
     T.node_of(book, chapter, verse)
 
 Yields the verse node of the passage specified by `book`, `chapter` and `verse`.
-Yields `None` if there is no such verse.::
+Yields `None` if there is no such verse.
+
+.. code-block:: python
 
     T.formats()
 
 This yields a dictionary of all formats that the ``T`` API is capable to deliver.
 The keys are acronymns for the formats, the values are tuples
 ``(desc, method)``
-where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.:
+where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.
+
+.. code-block:: python
 
     T.words(word_nodes, fmt='ha')
 
@@ -118,7 +124,9 @@ Give the plain text belonging to a series of words in format ``fmt``.
 Default format is ``ha``, i.e. fully pointed Hebrew Unicode, where ketivs have been replaced by 
 fully pointed qeres.
 The ``word_nodes`` can be any iterable of nodes carrying ``otype = 'word'``.
-They do not have to correspond to consecutive words in the bible.:
+They do not have to correspond to consecutive words in the bible.
+
+.. code-block:: python
 
     T.verse(book, chapter, verse, fmt='ha', html=True, verse_label=True, format_label=True)
 
@@ -126,11 +134,15 @@ Give the plain text of the indicated verse in format ``fmt``.
 You can choose wether to include a verse label (like ``Genesis 3:7``) and a format label
 (like ``hebrew accent``).
 If ``html`` is ``True`` then the result is formatted as a html table, with the right style characteristics.
-You can still tweak the styles a bit, see the function ``T.style()`` later on.:
+You can still tweak the styles a bit, see the function ``T.style()`` later on.
+
+.. code-block:: python
 
     T.whole(fmt='ha', verse_labels=False)
 
-Give the plain text of the whole Bible in format ``fmt``.:
+Give the plain text of the whole Bible in format ``fmt``.
+
+.. code-block:: python
 
     T.style(params=None, show_params=False)
 
@@ -143,6 +155,18 @@ In short, you can customize the font sizes and colors for the text, and you can 
 You can also set the widths of the label columns.
 
 You only have to pass the parameters that you want to give a non-default value.
+
+.. code-block:: python
+
+    T.books(lang='la')
+
+Lists the books in the ETCBC order but with names according to `lang`.
+If `lang` is `la` (latin), the book names are exactly as used in the ETCBC database.
+
+Supported languages:
+
+* en = English
+* la = Latin (default).
 
 .. _node_order:
 

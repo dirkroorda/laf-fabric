@@ -49,11 +49,59 @@ class Text(object):
             ('pf', ('phono full',     lambda w: get_orig_p(w).replace('*',''))),
             ('ps', ('phono simple',   lambda w: Transcription.ph_simplify(get_orig_p(w)))),
         ))
+        self.booknames_en = tuple('''
+            Genesis
+            Exodus
+            Leviticus
+            Numbers
+            Deuteronomy
+            Joshua
+            Judges
+            1_Samuel
+            2_Samuel
+            1_Kings
+            2_Kings
+            Isaiah
+            Jeremiah
+            Ezekiel
+            Hosea
+            Joel
+            Amos
+            Obadiah
+            Jonah
+            Micah
+            Nahum
+            Habakkuk
+            Zephaniah
+            Haggai
+            Zechariah
+            Malachi
+            Psalms
+            Job
+            Proverbs
+            Ruth
+            Song_of_songs
+            Ecclesiastes
+            Lamentations
+            Esther
+            Daniel
+            Ezra
+            Nehemiah
+            1_Chronicles
+            2_Chronicles
+'''.strip().split())
 
     def node_of(self, book, chapter, verse): return self._verses.get(book, {}).get(chapter, {}).get(verse, None)
 
     def formats(self): return self._transform
 
+    def books(self, lang='la'):
+        F = self.lafapi.api['F']
+        if lang == 'la':
+            return tuple(F.book.v(b) for b in F.otype.s('book'))
+        elif lang == 'en':
+            return self.booknames_en
+             
     def words(self, wnodes, fmt='ha'):
         reps = []
         fmt = fmt if fmt in self._transform else 'ha'

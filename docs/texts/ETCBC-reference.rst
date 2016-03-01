@@ -185,7 +185,14 @@ Supported languages:
 * de = German
 * fr = French
 * el = Greek
+* he = Hebrew (modern)
 * la = Latin (used in the ETCBC database).
+
+For the list of all languages, call 
+
+.. code-block:: python
+
+    T.langs
 
 .. code-block:: python
 

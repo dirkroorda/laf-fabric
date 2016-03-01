@@ -61,9 +61,14 @@ class Text(object):
             nl=('dutch', 'Nederlands'),
             el=('greek', 'Ελληνικά'),
             he=('hebrew', 'עברית'),
+            ru=('russian', 'Русский'),
+            es=('spanish', 'Español'),
+            ko=('korean', '한국어'),
+            sw=('swahili', 'Kiswahili'),
+            tr=('turkish', 'Türkçe'),
         )
-        self._booknames = {
-            'en': tuple('''
+        self._booknames = dict(
+            en=tuple('''
                     Genesis
                     Exodus
                     Leviticus
@@ -104,7 +109,7 @@ class Text(object):
                     1_Chronicles
                     2_Chronicles
                 '''.strip().split()),
-            'nl': tuple('''
+            nl=tuple('''
                     Genesis
                     Exodus
                     Leviticus
@@ -145,7 +150,7 @@ class Text(object):
                     1_Kronieken
                     2_Kronieken
                 '''.strip().split()),
-            'de': tuple('''
+            de=tuple('''
                     Genesis
                     Exodus
                     Levitikus
@@ -186,7 +191,7 @@ class Text(object):
                     1_Chronik
                     2_Chronik
                 '''.strip().split()),
-            'fr': tuple('''
+            fr=tuple('''
                     Genèse
                     Exode
                     Lévitique
@@ -227,7 +232,7 @@ class Text(object):
                     1_Chroniques
                     2_Chroniques
                 '''.strip().split()),
-            'el': tuple('''
+            el=tuple('''
                     Γένεση
                     Έξοδος
                     Λευιτικό
@@ -268,7 +273,7 @@ class Text(object):
                     Χρονικά_Α'
                     Χρονικά_Β'
                 '''.strip().split()),
-            'he': tuple('''
+            he=tuple('''
                     בראשית
                     שמות
                     ויקרא
@@ -309,7 +314,212 @@ class Text(object):
                     דברי_הימים_א
                     דברי_הימים_ב
                 '''.strip().split()),
-        }
+            ru=tuple('''
+                    Бытия
+                    Исход
+                    Левит
+                    Числа
+                    Второзаконие
+                    ИисусНавин
+                    КнигаСудей
+                    1-я_Царств
+                    2-я_Царств
+                    3-я_Царств
+                    4-я_Царств
+                    Исаия
+                    Иеремия
+                    Иезекииль
+                    Осия
+                    Иоиль
+                    Амос
+                    Авдия
+                    Иона
+                    Михей
+                    Наум
+                    Аввакум
+                    Софония
+                    Аггей
+                    Захария
+                    Малахия
+                    Псалтирь
+                    Иов
+                    Притчи
+                    Руфь
+                    ПесниПесней
+                    Екклесиаст
+                    ПлачИеремии
+                    Есфирь
+                    Даниил
+                    Ездра
+                    Неемия
+                    1-я_Паралипоменон
+                    2-я_Паралипоменон
+            '''.strip().split()),
+            es=tuple('''
+                    Génesis
+                    Éxodo
+                    Levítico
+                    Números
+                    Deuteronomio
+                    Josué
+                    Jueces
+                    1_Samuel
+                    2_Samuel
+                    1_Reyes
+                    2_Reyes
+                    Isaías
+                    Jeremías
+                    Ezequiel
+                    Oseas
+                    Joel
+                    Amós
+                    Abdías
+                    Jonás
+                    Miqueas
+                    Nahúm
+                    Habacuc
+                    Sofonías
+                    Hageo
+                    Zacarías
+                    Malaquías
+                    Salmos
+                    Job
+                    Proverbios
+                    Rut
+                    Cantares
+                    Eclesiastés
+                    Lamentaciones
+                    Ester
+                    Daniel
+                    Esdras
+                    Nehemías
+                    1_Crónicas
+                    2_Crónicas
+            '''.strip().split()),
+            ko=tuple('''
+                    창세기
+                    탈출기
+                    레위기
+                    민수기
+                    신명기
+                    여호수아
+                    재판관기
+                    사무엘_첫째
+                    사무엘_둘째
+                     열왕기_첫째
+                    열왕기_둘째
+                    이사야
+                    예레미야
+                    에스겔
+                    호세아
+                    요엘
+                    아모스
+                    오바댜
+                    요나
+                    미가
+                    나훔
+                    하박국
+                    스바냐
+                    학개
+                    스가랴
+                    말라기
+                    시편
+                    욥
+                    잠언
+                    룻
+                    솔로몬의_노래
+                    전도서
+                    애가
+                    에스더
+                    다니엘
+                    에스라
+                    느헤미야
+                    역대기_첫째
+                    역대기_둘째
+            '''.strip().split()),
+            sw=tuple('''
+                    Mwanzo
+                    Kutoka
+                    Mambo_ya_Walawi
+                    Hesabu
+                    Kumbukumbu_la_Torati
+                    Yoshua
+                    Waamuzi
+                    1_Samweli
+                    2_Samweli
+                    1_Wafalme
+                    2_Wafalme
+                    Isaya
+                    Yeremia
+                    Ezekieli
+                    Hosea
+                    Yoeli
+                    Amosi
+                    Obadia
+                    Yona
+                    Mika
+                    Nahumu
+                    Habakuki
+                    Sefania
+                    Hagai
+                    Zekaria
+                    Malaki
+                    Zaburi
+                    Ayubu
+                    Mithali
+                    Ruthi
+                    Wimbo_Ulio_Bora
+                    Mhubiri
+                    Maombolezo
+                    Esta
+                    Danieli
+                    Ezra
+                    Nehemia
+                    1_Mambo_ya_Nyakati
+                    2_Mambo_ya_Nyakati
+            '''.strip().split()),
+            tr=tuple('''
+                    Yaratılış
+                    Mısır'dan_Çıkış
+                    Levililer
+                    Çölde_Sayım
+                    Yasa'nın_Tekrar
+                    Yeşu
+                    Hakimler
+                    1_Samuel
+                    2_Samuel
+                    1_Krallar
+                    2_Krallar
+                    Yeşaya
+                    Yeremya
+                    Hezekiel
+                    Hoşea
+                    Yoel
+                    Amos
+                    Ovadya
+                    Yunus
+                    Mika
+                    Nahum
+                    Habakkuk
+                    Sefanya
+                    Hagay
+                    Zekeriya
+                    Malaki
+                    Mezmurlar
+                    Eyüp
+                    Süleyman'ın_Özdeyişleri
+                    Rut
+                    Ezgiler_Ezgisi
+                    Vaiz
+                    Ağıtlar
+                    Ester
+                    Daniel
+                    Ezra
+                    Nehemya
+                    1_Tarihler
+                    2_Tarihler
+            '''.strip().split()),
+        )
         for (bn, book_la) in enumerate(self._books):
             self._book_name.setdefault('la', {})[bn] = book_la
             self._book_node.setdefault('la', {})[book_la] = bn

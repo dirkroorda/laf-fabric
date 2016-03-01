@@ -1,5 +1,14 @@
 Release Notes
 #############
+4.5.16
+==========
+New languages for book names added: Russian, Turkish, Korean, Spanish, Swahili.
+
+4.5.15
+==========
+There are now multilingual book names: English, Latin, Greek, Hebrew, German, French, Dutch.
+in English and Latin.
+
 4.5.14
 ==========
 The ETCBC API ``T`` is enriched with a function `books(lang=...)` that delivers the names of the books

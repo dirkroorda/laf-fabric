@@ -66,6 +66,7 @@ class Text(object):
             ko=('korean', '한국어'),
             sw=('swahili', 'Kiswahili'),
             tr=('turkish', 'Türkçe'),
+            id=('indonesian', 'Bahasa Indonesia'),
         )
         self._booknames = dict(
             en=tuple('''
@@ -518,6 +519,47 @@ class Text(object):
                     Nehemya
                     1_Tarihler
                     2_Tarihler
+            '''.strip().split()),
+            id=tuple('''
+                    Kejadian
+                    Keluaran
+                    Imamat
+                    Bilangan
+                    Ulangan
+                    Yosua
+                    Hakim-hakim
+                    1_Samuel
+                    2_Samuel
+                    1_Raja-raja
+                    2_Raja-raja
+                    Yesaya
+                    Yeremia
+                    Yehezkiel
+                    Hosea
+                    Yoel
+                    Amos
+                    Obaja
+                    Yunus
+                    Mikha
+                    Nahum
+                    Habakuk
+                    Zefanya
+                    Hagai
+                    Zakharia
+                    Maleakhi
+                    Mazmur
+                    Ayub
+                    Amsal
+                    Rut
+                    Kidung_Agung
+                    Pengkhutbah
+                    Ratapan
+                    Ester
+                    Daniel
+                    Ezra
+                    Nehemia
+                    1_Tawarikh
+                    2_Tawarikh
             '''.strip().split()),
         )
         for (bn, book_la) in enumerate(self._books):

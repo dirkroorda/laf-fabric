@@ -8,6 +8,7 @@ emdros2laf/laf.py
 emdros2laf/mylib.py
 emdros2laf/run.py
 emdros2laf/settings.py
+emdros2laf/settings_conflict-20160221-210653.py
 emdros2laf/transform.py
 emdros2laf/validate.py
 emdros2laf/templates/annotation_decl.xml
@@ -59,6 +60,8 @@ laf/fabric.py
 laf/lib.py
 laf/model.py
 laf/names.py
+laf/names_conflict-20160218-110922.py
 laf/parse.py
 laf/settings.py
+laf/settings_conflict-20160221-210653.py
 laf/timestamp.py

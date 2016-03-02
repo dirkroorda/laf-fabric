@@ -556,6 +556,8 @@ class Text(object):
         text = self.words(L.d('word', self._verses[bn][ch][vs]), fmt=fmt)
         if html:
             text = '<td class="{}">{}</td>'.format(fmt[0], h_esc(text))
+        else:
+            if not text.endswith('\n'): text += '\n'
 
         total = '{}{}{}'.format(vlabel, text, flabel)
         if html: total = '<table class="t"><tr>{}</tr></table>'.format(total)
@@ -576,7 +578,7 @@ class Text(object):
                 wtext = make_rep(n)
                 reps.append(wtext)
             elif verse_labels and F.otype.v(n) == 'verse': reps.append('{}{} {}:{}  '.format(
-                '\n' if wtext and wtext[-1] != '\n' else '',
+                '\n' if reps and reps[-1] and reps[-1][-1] != '\n' else '',
                 self.book_name(L.u('book', n), lang=lang), F.chapter.v(n), F.verse.v(n),
             ))
         return ''.join(reps)

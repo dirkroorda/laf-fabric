@@ -1,5 +1,9 @@
 Release Notes
 #############
+4.5.17
+==========
+Small fixes in transcriptions (nun hafukha, setumah, petuhah, paseq).
+
 4.5.16
 ==========
 New languages for book names added: Russian, Turkish, Korean, Spanish, Swahili.

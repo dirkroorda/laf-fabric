@@ -67,6 +67,7 @@ class Transcription(object):
         '52': "\u05C4", # upper dot = puncta_above
         '53': "\u05C5", # lower dot = puncta_below
         'ñ': "\u05C6\u0307", # nun hafukha
+        'Ñ': "\u05C6\u0307", # nun hafukha
         '>': "\u05D0", # alef
         'B': "\u05D1", # bet
         'G': "\u05D2", # gimel
@@ -107,6 +108,8 @@ class Transcription(object):
     swap_accent_pat = re.compile(r'(\A|[_&])([0-9][0-9])([' + hebrew_cons + r'])([:;,.EAIOU@]*)')
     remove_accent_pat = re.compile(r'((?:[0-9][0-9])|[,*])')
     remove_point_pat  = re.compile(r'((?:[0-9][0-9])|(?:\.[cf])|(?::[@AE])|[,.:;@AEIOU*])')
+    remove_psn_pat = re.compile(r'00[ _SPNÑñ]*')
+    remove_psq_pat = re.compile(r'(?:[ _]+05[ _]*)|(?:05[ _]+)')
     shin_pat = re.compile(r'[CF]')
     ph_simple_pat = re.compile(r'([ˈˌᵊᵃᵒᵉāo*])')
     noorigspace = re.compile('''
@@ -151,6 +154,9 @@ class Transcription(object):
         self.hebrew_consonants = {Transcription.hebrew_mapping[x] for x in Transcription.hebrew_cons}
         self.hebrew_consonants.add('\u05E9')
         self.hebrew_mappingi = dict((v,k) for (k,v) in Transcription.hebrew_mapping.items() if k != '')
+        # special treatment needed for nun hafukha, since it is consists of two characters 
+        self.hebrew_mappingi['\u05C6'] = 'ñ'
+        self.hebrew_mappingi['\u0307'] = ''
 
     def _comp(s):
         for (d, c) in Transcription.decomp.items(): s = s.replace(d, c)
@@ -201,8 +207,8 @@ class Transcription(object):
     def _map_final(m): return m.group(1) + m.group(2).lower() + m.group(3)
     def _map_hebrew(m): return Transcription.hebrew_mapping.get(m.group(1), m.group(1))
     def _swap_accent(m): return m.group(1) + m.group(3) + m.group(4) + m.group(2)
-    def _remove_accent(m): return '00' if m.group(1) == '00' else ''
-    def _remove_point(m):  return '00' if m.group(1) == '00' else ''
+    def _remove_accent(m): return '00' if m.group(1) == '00' else '05' if m.group(1) == '05' else ''
+    def _remove_point(m):  return '00' if m.group(1) == '00' else '05' if m.group(1) == '05' else ''
     def _ph_simple(m): return 'å' if m.group(1) in 'āo' else ''
 
 # return unicodedata.normalize('NFKD', Transcription.trans_hebrew_pat.sub(Transcription._map_hebrew, nword))
@@ -216,6 +222,8 @@ class Transcription(object):
 
     def to_etcbc_c(word):
         word = Transcription.remove_point_pat.sub(Transcription._remove_point, word)
+        word = Transcription.remove_psn_pat.sub('00', word) # remove nun hafukha, setumah, petuhah at the end of a verse
+        word = Transcription.remove_psq_pat.sub(' ', word) # replace paseq with attached spaces by single space
         word = word.upper() # no final forms of consonants
         return Transcription.shin_pat.sub('#', word)
 

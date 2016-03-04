@@ -196,6 +196,12 @@ For the list of all languages, call
 
 .. code-block:: python
 
+    T.booknames
+
+All book names in all available languages
+
+.. code-block:: python
+
     T.book_nodes
 
 For convenience, the tuple of nodes corresponding to the books in the ETCBC order.

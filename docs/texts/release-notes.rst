@@ -1,6 +1,6 @@
 Release Notes
 #############
-4.5.19-20
+4.5.19-21
 ==========
 More languages for bible book names, now also Peshitta Syriac.
 

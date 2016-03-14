@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.5.22
+======
+Better signature of the method ``T.node_of(book, chapter, verse, lang='en')``.
+``book`` is now a book name in language ``lang`` (was: a book node).
+
 4.5.19-21
 ==========
 More languages for bible book names, now also Peshitta Syriac.

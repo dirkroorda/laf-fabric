@@ -102,13 +102,26 @@ Then you can use the following functions
 
 .. code-block:: python
 
-    T.node_of(book, chapter, verse)
+    T.node_of(book, chapter, verse, lang='en')
 
-Yields the verse node of the passage specified by `book`, `chapter` and `verse`.
-Yields `None` if there is no such verse.
+Yields the verse node of the passage specified by ``book``, ``chapter`` and ``verse``.
+The book is specified in the given language, with default ``en`` = English.
 
-Book must be given as a *node*, the book name for the verse_label will be in language `lang`.
-See the methods `book_name()` and `book_node()` below to map a book name to a book node and vice versa.
+.. code-block:: python
+
+    my_node = T.node_of('Mwanzo', 1, 1, lang='sw')
+
+gives the verse node of Genesis 1:1 (*Mwanzo* is the Swahili name for *Genesis*).
+
+To see the available languages for Bible book names, say
+
+.. code-block:: python
+
+    T.langs
+
+`T.node_of` yields `None` if there is no such verse.
+
+See also the methods `book_name()` and `book_node()` below to map a book name to a book node and vice versa.
 
 .. code-block:: python
 

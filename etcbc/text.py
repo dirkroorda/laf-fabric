@@ -66,8 +66,9 @@ class Text(object):
                 self._book_name.setdefault(ln, {})[bn] = book_ln
                 self._book_node.setdefault(ln, {})[book_ln] = bn
 
-    def node_of(self, book, chapter, verse, fmt='la'):
-        return self._verses.get(book, {}).get(chapter, {}).get(verse, None)
+    def node_of(self, book, chapter, verse, lang='en'):
+        book_node = self._book_node.get(lang, {}).get(book, None)
+        return self._verses.get(book_node, {}).get(chapter, {}).get(verse, None)
 
     def formats(self): return self._transform
 

@@ -60,7 +60,6 @@ class Text(object):
             self._book_name.setdefault('la', {})[bn] = book_la
             self._book_node.setdefault('la', {})[book_la] = bn
         for ln in self.booknames:
-            if ln == 'la': continue
             for (i, (bn, book_la)) in enumerate(self._books):
                 book_ln = self.booknames[ln][i]
                 self._book_name.setdefault(ln, {})[bn] = book_ln

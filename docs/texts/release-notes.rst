@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.5.23
+======
+Small fix in ``T.book_name(bn, lang='la')``:
+Language ``la`` (=Latin) did not work. Now it does.
+
 4.5.22
 ======
 Better signature of the method ``T.node_of(book, chapter, verse, lang='en')``.

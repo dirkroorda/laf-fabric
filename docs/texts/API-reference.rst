@@ -753,6 +753,7 @@ Examples::
     close()
 
     msg(text)
+    msg(text, error=True)
     msg(text, verbose='ERROR')
     msg(text, newline=False)
     msg(text, withtime=False)
@@ -788,7 +789,9 @@ The method ``my_file`` prepends the full directory path in front of the file nam
 It does not check whether the file exists.
 
 You can issue progress messages while executing your task.
-These messages go to the output of a code cell.
+These messages go to the standard error of a terminal or command prompt or code cell.
+In a code cell, they receive a colored back ground.
+If you say  ``error=False``, the message goes to the standard output instead, and in a code cell the background will not be coloured.
 
 You can adjust the verbosity level of messages, see above for possible values.
 

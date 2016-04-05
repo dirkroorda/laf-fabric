@@ -37,14 +37,15 @@ class Timestamp(object):
     def Xmsg(self, msg, newline=True, withtime=True): self.raw_msg('XXX: '+msg, newline, withtime, verbose='DEBUG')
     def Smsg(self, msg, verbose, newline=True, withtime=True): self.raw_msg('{}: {}'.format(verbose, msg), newline, withtime, verbose=verbose)
 
-    def raw_msg(self, msg, newline=True, withtime=True, verbose=None):
+    def raw_msg(self, msg, newline=True, withtime=True, verbose=None, error=True):
         verbose = verbose or 'NORMAL'
         if self.verbose_level[verbose] > self.verbose: return 
         timed_msg = "{:>7} ".format(self._elapsed()) if withtime else ''
         timed_msg += msg
         if newline: timed_msg += "\n"
-        sys.stderr.write(timed_msg)
-        sys.stderr.flush()
+        channel = sys.stderr if error else sys.stdout
+        channel.write(timed_msg)
+        channel.flush()
         if self.log: self.log.write(timed_msg)
 
     def set_verbose(self, verbose): self.verbose = self.verbose_level[verbose or 'NORMAL']

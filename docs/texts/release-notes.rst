@@ -1,5 +1,12 @@
 Release Notes
 #############
+4.5.24
+======
+Added an optional parameter ``error=True`` to the ``msg()`` command.
+Normall messages go to the standard error, but with ``error=False`` they go to the standard output.
+When run in a Jupyter notebook, messages sent to the standard error get a coloured background,
+as opposed to messages on the standard output.
+
 4.5.23
 ======
 Small fix in ``T.book_name(bn, lang='la')``:

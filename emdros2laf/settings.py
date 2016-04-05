@@ -7,7 +7,7 @@ import configparser
 import argparse
 
 NAME = 'LAF-Fabric'
-VERSION = '4.5.23'
+VERSION = '4.5.24'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 DEFAULT_DATA_DIR = 'laf-fabric-data'
 MAIN_CFG = 'laf-fabric.cfg'

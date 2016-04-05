@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.5.25
+======
+Removed an optional parameter ``error=True`` to the ``msg()`` command.
+Now the API supplies ``msg()`` as before, but also ``inf()``, which does the same, but then to standard output instead of standard error.
+
 4.5.24
 ======
 Added an optional parameter ``error=True`` to the ``msg()`` command.

@@ -313,6 +313,11 @@ class LafAPI(LafData):
         })
 
     def _api_io(self):
+        def _inf(msg, newline=True, withtime=True, verbose=None):
+            self.stamp.raw_msg(msg, newline=newline, withtime=withtime, verbose=verbose, error=False)
+        def _msg(msg, newline=True, withtime=True, verbose=None):
+            self.stamp.raw_msg(msg, newline=newline, withtime=withtime, verbose=verbose, error=True)
+
         task_dir = self.names.env['task_dir']
 
         def add_output(file_name):
@@ -336,7 +341,8 @@ class LafAPI(LafData):
             'outfile': add_output,
             'close':   self.finish_task,
             'my_file': result,
-            'msg':     self.stamp.raw_msg,
+            'msg':     _msg,
+            'inf':     _inf,
             'data_dir': self.names.env['data_dir'],
             'output_dir': self.names.env['output_dir'],
         }

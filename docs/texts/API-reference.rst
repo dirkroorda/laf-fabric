@@ -179,7 +179,7 @@ Here is an overview.
 
 **NE**: The "next event" iterator, only if you have specified ``'primary': True``.
 
-**msg**: The function to issue messages with
+**msg, inf**: Functions to issue messages with
 
 **infile**, **outfile**, **close**, **my_file**: File handling (opening for input, output, , closing, getting full path)
 
@@ -753,11 +753,14 @@ Examples::
     close()
 
     msg(text)
-    msg(text, error=True)
     msg(text, verbose='ERROR')
     msg(text, newline=False)
     msg(text, withtime=False)
 
+    inf(text)
+    inf(text, verbose='ERROR')
+    inf(text, newline=False)
+    inf(text, withtime=False)
 
 *data_dir* is the top-level directory where all input data (laf resources, extra annotation files) reside.
 
@@ -791,7 +794,7 @@ It does not check whether the file exists.
 You can issue progress messages while executing your task.
 These messages go to the standard error of a terminal or command prompt or code cell.
 In a code cell, they receive a colored back ground.
-If you say  ``error=False``, the message goes to the standard output instead, and in a code cell the background will not be coloured.
+If you say  ``inf`` instead of ``msg``, the message goes to the standard output instead, and in a code cell the background will not be coloured.
 
 You can adjust the verbosity level of messages, see above for possible values.
 

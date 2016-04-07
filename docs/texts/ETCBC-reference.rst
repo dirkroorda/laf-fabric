@@ -119,18 +119,45 @@ To see the available languages for Bible book names, say
 
     T.langs
 
-`T.node_of` yields `None` if there is no such verse.
+``T.node_of`` yields ``None`` if there is no such verse.
 
-See also the methods `book_name()` and `book_node()` below to map a book name to a book node and vice versa.
+See also the methods ``book_name()`` and ``book_node()`` below to map a book name to a book node and vice versa.
 
 .. code-block:: python
 
     T.formats()
 
-This yields a dictionary of all formats that the ``T`` API is capable to deliver.
+This yields a dictionary of all formats for Hebrew text that the ``T`` API is capable to deliver.
 The keys are acronymns for the formats, the values are tuples
 ``(desc, method)``
 where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.
+
+**Hebrew unicode output**
+
+* ``hp`` with vowels and accents as in primary text (based on ketivs instead of qeres) 
+  (this corresponds to the primary text in the LAF data)
+* ``ha`` with vowels and accents (based on qeres) 
+  (from now on everything is based on replacing ketivs by their pointed qeres)
+* ``hv`` with vowels but not accents
+  (the points on the s(h)in all still there)
+* ``hc`` consonantal
+  (no pointed s(h)ins anymore, and no special forms for final consonants, no setumah, petuhah and nun hafukha and the
+  end of verses)
+
+**ETCBC transliterated output**
+Consult the `ETCBC transliteration table <https://shebanq.ancient-data.org/static/docs/ETCBC4-transcription.pdf>`_
+for details. The same subtleties apply as for the Hebrew case.
+
+* **no** ``ep`` **!**
+* ``ea`` with vowels and accents
+* ``ev`` with vowels but not accents
+* ``ec`` consonantal
+
+**Phonemic outputs**
+
+* ``pf`` full details: schwa and qamets gadol/qatan distinction
+* ``ps`` simplified: no schwa and qamets gadol/qatan distinction
+  (also the composite schwas have gone)
 
 .. code-block:: python
 
@@ -144,25 +171,49 @@ They do not have to correspond to consecutive words in the bible.
 
 .. code-block:: python
 
-    T.verse(book, chapter, verse, fmt='ha', html=True, verse_label=True, format_label=True, lang='en')
+    T.text(book=None, chapter=None, verse=None, fmt='ha', html=False, verse_label=True, lang='en', style=None):
 
-Give the plain text of the indicated verse in format ``fmt``. 
-You can choose wether to include a verse label (like ``Genesis 3:7``) and a format label
-(like ``hebrew accent``).
+Give the text of the indicated passages in format ``fmt``. 
 
-If ``html`` is ``True`` then the result is formatted as a html table, with the right style characteristics.
+**Passage selection**
+You can pass books, chapters and verses to output. You can omit them as well, in that case all possible values are taken.
+Like in ``node_of()``, ``book`` must be given as a name in the language specified by ``lang``.
+See the methods ``book_name()`` and ``book_node()`` below to map a book name to a book node and vice versa.
+For ``chapter`` and ``verse`` specify values as integers.
+
+More over, you can specify multiple values for ``book``, ``chapter``, and ``verse``.
+Instead of a single value, you can supply any iterable, such as lists, tuples, and sets.
+If the iterable has order, the output will respect that order.
+
+**Formatting**
+The parameter ``verse_label`` indicates whether to include verse labels (like ``Genesis 3:7``) in front of each verse.
+
+If ``html`` is ``True`` then the result is formatted as a series of  html tables, with the right style characteristics.
 You can still tweak the styles a bit, see the function ``T.style()`` later on.
 
-Like in `node_of()`, `book` must be given as a node.
-See the methods `book_name()` and `book_node()` below to map a book name to a book node and vice versa.
+If you pass the parameter ``style`` with the result of ``T.style()`` as value, a complete HTML document will be generated.
+If you leave this parameter out, no HTML header will be generated.
+It is your responsibility to combine stylesheet and HTML into a complete document, if you want to.
+Alternatively, you can display the HTML directly in a Jupyter notebook code cell.
+If you run ``T.style()`` the inline HTML will be styled accordingly.
 
-.. code-block:: python
+**Examples**
 
-    T.whole(fmt='ha', verse_labels=False, lang='en')
-
-Give the plain text of the whole Bible in format ``fmt``.
-The language for the book names in the verse labels is given by `lang`.
-
+* ``T.text()`` :
+  All books, chapters, verses in the standard order, plain text, accented Hebrew based on pointed qeres, no verse labels;
+* ``T.text(book='Mwanzo', chapter=1, verse=1, fmt='hc', html=True, verse_label=True, lang='sw')`` :
+  The verse Genesis 1:1, in HTML, consonantal Hebrew, with verse labels;
+* ``T.text(book='Genesis', chapter=1, html=True, verse_label=True, style=T.style(hebrew_color='ff0000'))`` :
+  The chapter Genesis 1, as a complete HTML document, in accented Hebrew in red color, with verse labels;
+* ``T.text(book='Genesis')`` :
+  The whole book of Genesis, in plain text, accented Hebrew, no verse labels;
+* ``T.text(chapter=1)`` :
+  The first chapter of all books;
+* ``T.text(verse=2)`` :
+  The second verse of all chapters of all books
+* ``T.text(book=['Exodus', 'Genesis'], chapter=[7,6,5], verse=[8,4,16])``: 
+  The following sequence of verses: Ex 7:8,4,16; 6:8,4,16; 5:8,4,16; Gen 7:8,4,16; 6:8,4,16; 5:8,4,16;
+     
 .. code-block:: python
 
     T.style(params=None, show_params=False)
@@ -181,15 +232,15 @@ You only have to pass the parameters that you want to give a non-default value.
 
     T.book_name(book_node, lang='en')
 
-Returns the book name of the book corresponding to `book_node` in language `lang`.
+Returns the book name of the book corresponding to ``book_node`` in language ``lang``.
 
 .. code-block:: python
 
     T.book_node(book_name, lang='en')
 
-Returns the book node of the book with name `book_name` in language `lang`.
+Returns the book node of the book with name ``book_name`` in language ``lang``.
 
-If `lang` is `la` (latin), the book names are exactly as used in the ETCBC database.
+If ``lang`` is ``la`` (latin), the book names are exactly as used in the ETCBC database.
 
 Supported languages:
 
@@ -200,6 +251,8 @@ Supported languages:
 * el = Greek
 * he = Hebrew (modern)
 * la = Latin (used in the ETCBC database).
+
+and quite a bit more.
 
 For the list of all languages, call 
 
@@ -344,7 +397,7 @@ There are some points to note:
 .. hint::
     It is likely that you never have to use these functions directly in your notebook.
     Try first how far you get with the ``T``-functions in 
-    :ref:`Texts <texts>`.
+    :ref:`Texts <texts>`_.
 
 Syriac
 ------

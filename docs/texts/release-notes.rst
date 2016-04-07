@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.6.0
+=====
+The functions in the ETCBC API for outputting text have been streamlined.
+See `T.text()`.
+
 4.5.25
 ======
 Removed an optional parameter ``error=True`` to the ``msg()`` command.

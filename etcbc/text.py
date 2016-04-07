@@ -56,7 +56,7 @@ class Text(object):
         self._book_node = {}
         self.langs = booklangs
         self.booknames = booknames
-        for (bn, book_la) in enumerate(self._books):
+        for (bn, book_la) in self._books:
             self._book_name.setdefault('la', {})[bn] = book_la
             self._book_node.setdefault('la', {})[book_la] = bn
         for ln in self.booknames:
@@ -81,45 +81,88 @@ class Text(object):
         for wnode in wnodes: reps.append(make_rep(wnode))
         return ''.join(reps)
 
-    def verse(self, bn, ch, vs, fmt='ha', html=True, verse_label=True, format_label=True, lang='en'):
+    def text(self, book=None, chapter=None, verse=None, fmt='ha', html=False, verse_label=True, lang='en', style=None):
         L = self.lafapi.api['L']
-        vlabel = '{} {}:{}'.format(self.book_name(bn, lang), ch, vs)
-        flabel = self._transform[fmt][0]
-        if verse_label: vlabel = '<td class="vl">{}</td>'.format(vlabel) if html else '{}  '.format(vlabel)
-        else: vlabel = ''
-        if format_label: flabel = '<td class="fl">{}</td>'.format(flabel) if html else ' [{}]'.format(flabel)
-        else: flabel = ''
-
-        text = self.words(L.d('word', self._verses[bn][ch][vs]), fmt=fmt)
-        if html:
-            text = '<td class="{}">{}</td>'.format(fmt[0], h_esc(text))
-        else:
-            if not text.endswith('\n'): text += '\n'
-
-        total = '{}{}{}'.format(vlabel, text, flabel)
-        if html: total = '<table class="t"><tr>{}</tr></table>'.format(total)
-        return total
-
-    def whole(self, fmt='ha', verse_labels=False, lang='en'):
         F = self.lafapi.api['F']
-        L = self.lafapi.api['L']
-        NN = self.lafapi.api['NN']
         msg = self.lafapi.api['msg']
-        reps = []
-        fmt = fmt if fmt in self._transform else 'ha'
-        make_rep = self._transform[fmt][1]
-        msg('Producing whole text of {} in format {}{}'.format(self.env['source'], fmt, ' with verse labels' if verse_labels else ''))
-        for n in NN():
-            wtext = ''
-            if F.otype.v(n) == 'word':
-                wtext = make_rep(n)
-                reps.append(wtext)
-            elif verse_labels and F.otype.v(n) == 'verse': reps.append('{}{} {}:{}  '.format(
-                '\n' if reps and reps[-1] and reps[-1][-1] != '\n' else '',
-                self.book_name(L.u('book', n), lang=lang), F.chapter.v(n), F.verse.v(n),
-            ))
-        return ''.join(reps)
-    
+        tables = []
+        txt = []
+        bks = [] if book == None else [book] if type(book) is str else list(book)
+        chs = [] if chapter == None else [chapter] if type(chapter) is int else list(chapter)
+        vss = [] if verse == None else [verse] if type(verse) is int else list(verse)
+
+        def dump_table():
+            if html:
+                tables.append('<table class="t">\n{}</table>\n\n'.format(''.join(txt)))
+            else:
+                tables.append(''.join(txt))
+            txt.clear()
+            
+        if book == None: book_nodes = tuple(x[0] for x in self._books)
+        else:
+            book_nodes = []
+            for bk in bks:
+                bn = self._book_node.get(lang, {}).get(bk, None)
+                if bn == None:
+                    msg('No book named "{}" in language "{}"'.format(bk, lang))
+                    continue
+                book_nodes.append(bn)
+        for bn in book_nodes:
+            bkname = self.book_name(bn, lang) 
+            cnodes = L.d('chapter', bn)
+            if len(chs) == 0: chapter_nodes = cnodes
+            else:
+                chapter_nodes = []
+                for ch in chs:
+                    if ch not in self._verses[bn]:
+                        msg('No chapter {} in book "{}" ({})'.format(ch, bkname, lang))
+                    else:
+                        chapter_nodes.extend([c for c in cnodes if int(F.chapter.v(c)) == ch])
+            for cn in chapter_nodes:
+                chname = F.chapter.v(cn)
+                vnodes = L.d('verse', cn)
+                if len(vss) == 0: verse_nodes = vnodes
+                else: 
+                    verse_nodes = []
+                    for vs in vss:
+                        if vs not in self._verses[bn][int(chname)]:
+                            msg('No verse {} in book "{}" ({}) chapter {}'.format(vs, bkname, lang, chname))
+                        else:
+                            verse_nodes.extend([v for v in vnodes if int(F.verse.v(v)) == vs])
+                for vn in verse_nodes:
+                    vsname = F.verse.v(vn)
+                    vslabel = '{} {}:{}'.format(bkname,chname,vsname)
+                    vshead = '' if not verse_label else '<td class="vl">{}</td>'.format(vslabel) if html else '{}\t'.format(vslabel)
+                    tx = self.words(L.d('word', vn), fmt=fmt)
+                    if html: tx = '<td class="{}">{}</td>'.format(fmt[0], h_esc(tx))
+                    line = '<tr>{}{}</tr>\n'.format(vshead, tx) if html else vshead + tx.rstrip('\n')+'\n'
+                    txt.append(line)
+
+                if len(vss) != 1: dump_table()
+            if len(vss) == 1 and len(chs) != 1: dump_table()
+        if len(vss) == 1 and len(chs) == 1: dump_table()
+        body = ''.join(tables)
+        if not style or not html:
+            return body
+        else:
+            title = '{} {}:{} [{}]'.format(
+                ', '.join(str(bk) for bk in bks) if book != None else 'all books',
+                ', '.join(str(ch) for ch in chs) if chapter != None else 'all chapters',
+                ', '.join(str(vs) for vs in vss) if verse != None else 'all verses',
+                fmt,
+            )
+            return '''<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>{}</title>
+{}
+</head>
+<body>
+{}
+</body>
+</html>
+'''.format(title, style, body)
+
     def style(self, params=None, show_params=False):
         msg = self.lafapi.api['msg']
         style_defaults = dict(
@@ -135,14 +178,13 @@ class Text(object):
             verse_color='0000ff',
             verse_size='small',
             verse_width='5em',
-            fmt_color='ccbb00',
-            fmt_size='small',
-            fmt_width='5em',
         )
         errors = []
         good = True
         for x in [1]:
             good = False
+            if params == None:
+                params = dict()
             if type(params) is not dict:
                 errors.append('ERROR: the style parameters should be a dictionary')
                 break
@@ -198,15 +240,6 @@ td.vl {{
     vertical-align: top;
     color: #{verse_color};
     width: {verse_width};
-    direction: ltr;
-}}
-td.fl {{
-    font-family: Verdana, Arial, sans-serif;
-    font-size: {fmt_size};
-    text-align: left;
-    vertical-align: top;
-    color: #{fmt_color};
-    width: {fmt_width};
     direction: ltr;
 }}
 </style>

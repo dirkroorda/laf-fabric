@@ -136,6 +136,10 @@ where ``desc`` is a short description of the format, and ``method`` is a Python 
 
 * ``hp`` with vowels and accents as in primary text (based on ketivs instead of qeres) 
   (this corresponds to the primary text in the LAF data)
+* ``hpl`` with vowels and accents as in primary text (based on ketivs instead of qeres) 
+  but here vocalized lexemes are used, instead of the inflected text forms; no lexeme disambiguation marks
+* ``hcl`` consonantal lexemes (based on ketivs instead of qeres) 
+  but here vocalized lexemes are used, instead of the inflected text forms; no lexeme disambiguation marks
 * ``ha`` with vowels and accents (based on qeres) 
   (from now on everything is based on replacing ketivs by their pointed qeres)
 * ``hv`` with vowels but not accents
@@ -148,7 +152,10 @@ where ``desc`` is a short description of the format, and ``method`` is a Python 
 Consult the `ETCBC transliteration table <https://shebanq.ancient-data.org/static/docs/ETCBC4-transcription.pdf>`_
 for details. The same subtleties apply as for the Hebrew case.
 
-* **no** ``ep`` **!**
+* ``ep`` with vowels and accents as in primary text (based on ketivs instead of qeres)
+* ``epl`` with vowels and accents as in primary text (based on ketivs instead of qeres) 
+  but here vocalized lexemes are used, instead of the inflected text forms; no lexeme disambiguation marks
+* ``ecl`` consonantal lexemes (based on ketivs instead of qeres); lexeme disambiguation marks are present here 
 * ``ea`` with vowels and accents
 * ``ev`` with vowels but not accents
 * ``ec`` consonantal

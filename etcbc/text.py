@@ -10,9 +10,9 @@ class Text(object):
     def __init__(self, lafapi):
         lafapi.api['fabric'].load_again({"features": ('''
             otype
-            g_word_utf8 trailer_utf8
+            g_word g_word_utf8 trailer_utf8
             g_qere_utf8 qtrailer_utf8
-            lex_utf8
+            g_lex_utf8 lex_utf8 g_lex lex
             phono phono_sep
             book chapter verse
 ''', '')}, annox='lexicon', add=True, verbose='INFO')
@@ -40,15 +40,20 @@ class Text(object):
             return F.phono.v(w)+s
 
         self._transform = collections.OrderedDict((
-            ('hp', ('hebrew primary', lambda w: F.g_word_utf8.v(w)+F.trailer_utf8.v(w))),
-            ('ha', ('hebrew accent',  lambda w: Transcription.to_hebrew(get_orig(w)))),
-            ('hv', ('hebrew vowel',   lambda w: Transcription.to_hebrew_v(get_orig(w)))),
-            ('hc', ('hebrew cons',    lambda w: Transcription.to_hebrew_c(get_orig(w)))),
-            ('ea', ('trans accent',   lambda w: get_orig(w))),
-            ('ev', ('trans vowel',    lambda w: Transcription.to_etcbc_v(get_orig(w)))),
-            ('ec', ('trans cons',     lambda w: Transcription.to_etcbc_c(get_orig(w)))),
-            ('pf', ('phono full',     lambda w: get_orig_p(w).replace('*',''))),
-            ('ps', ('phono simple',   lambda w: Transcription.ph_simplify(get_orig_p(w)))),
+            ('hp', ('hebrew primary',             lambda w: F.g_word_utf8.v(w)+F.trailer_utf8.v(w))),
+            ('hpl', ('hebrew primary (lexeme)',   lambda w: F.g_lex_utf8.v(w)+' ')),
+            ('hcl', ('hebrew cons (lexeme)',      lambda w: F.lex_utf8.v(w).rstrip('/=[')+' ')),
+            ('ha', ('hebrew accent',              lambda w: Transcription.to_hebrew(get_orig(w)))),
+            ('hv', ('hebrew vowel',               lambda w: Transcription.to_hebrew_v(get_orig(w)))),
+            ('hc', ('hebrew cons',                lambda w: Transcription.to_hebrew_c(get_orig(w)))),
+            ('ep', ('trans primary',              lambda w: F.g_word.v(w))),
+            ('epl', ('trans primary (lexeme)',    lambda w: F.g_lex.v(w)+' ')),
+            ('ecl', ('hebrew cons (lexeme)',      lambda w: F.lex.v(w)+' ')),
+            ('ea', ('trans accent',               lambda w: get_orig(w))),
+            ('ev', ('trans vowel',                lambda w: Transcription.to_etcbc_v(get_orig(w)))),
+            ('ec', ('trans cons',                 lambda w: Transcription.to_etcbc_c(get_orig(w)))),
+            ('pf', ('phono full',                 lambda w: get_orig_p(w).replace('*',''))),
+            ('ps', ('phono simple',               lambda w: Transcription.ph_simplify(get_orig_p(w)))),
         ))
         self._books = lafapi.data_items['zV00(books_la)']
         self.book_nodes = tuple(x[0] for x in self._books)
@@ -165,6 +170,7 @@ class Text(object):
 
     def style(self, params=None, show_params=False):
         msg = self.lafapi.api['msg']
+        inf = self.lafapi.api['inf']
         style_defaults = dict(
             hebrew_color='000000',
             hebrew_size='large',
@@ -201,7 +207,7 @@ class Text(object):
             params = dict()
         style_defaults.update(params)
         if not good or show_params:
-            for x in sorted(style_defaults): msg('{} = {}'.format(x, style_defaults[x]))
+            for x in sorted(style_defaults): inf('{} = {}'.format(x, style_defaults[x]))
 
         return '''
 <style type="text/css">

@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.6.1
+=====
+New output formats for plain text: you can now produce texts with inflection stripped: only the lexemes.
+See `T.text()`.
+
 4.6.0
 =====
 The functions in the ETCBC API for outputting text have been streamlined.

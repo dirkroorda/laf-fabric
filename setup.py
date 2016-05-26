@@ -5,7 +5,7 @@ setup(
     package_data = {
         'emdros2laf': ['templates/*', 'xml/*'],
     },
-    version='4.6.1',
+    version='4.6.2',
     description='''Processor for Linguistic Annotation Framework ISO 24612:2012), applied to Biblical Hebrew''',
     author='Dirk Roorda',
     author_email='shebanq@ancient-data.org',

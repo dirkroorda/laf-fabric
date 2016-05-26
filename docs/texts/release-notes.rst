@@ -1,5 +1,11 @@
 Release Notes
 #############
+4.6.2
+=====
+New function ``T.passage(node, lang)``: returns the passage indicator in which a give node occurs.
+See notebook `plain <https://shebanq.ancient-data.org/shebanq/static/docs/tools/shebanq/plain.html>`_
+See :doc:`ETCBC-reference` under `T.passage()`.
+
 4.6.1
 =====
 New output formats for plain text: you can now produce texts with inflection stripped: only the lexemes.

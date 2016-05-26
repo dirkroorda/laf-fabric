@@ -78,6 +78,27 @@ class Text(object):
 
     def book_name(self, bn, lang='en'): return self._book_name.get(lang, {}).get(bn, None)
     def book_node(self, book_name, lang='en'): return self._book_node.get(lang, {}).get(book_name, None)
+
+    def passage(self, n, lang='en', first_word=False):
+        F = self.lafapi.api['F']
+        L = self.lafapi.api['L']
+        ntype = F.otype.v(n)
+        is_word = ntype == 'word'
+        is_book = ntype == 'book'
+        is_chapter = ntype == 'chapter'
+        is_verse = ntype == 'verse'
+        words = [n] if is_word else L.d('word', n)
+        fw = n if is_word else words[0]
+        lw = n if is_word else words[-1]
+        bn = n if is_book else  L.u('book', n)
+        cn = n if is_chapter else None if is_book else L.u('chapter', n)
+        vn = n if is_verse else None if is_book or is_chapter else L.u('verse', fw)
+        vln = n if is_verse else None if is_book or is_chapter else L.u('verse', lw)
+        bk = self.book_name(bn, lang=lang)
+        ch = '' if cn == None else ' {}'.format(F.chapter.v(cn))
+        vs = '' if vn == None else ':{}'.format(F.verse.v(vn))
+        vr = '' if first_word or vn == None or vn == vln else '-{}'.format(F.verse.v(vln))
+        return '{}{}{}{}'.format(bk, ch, vs, vr)
              
     def words(self, wnodes, fmt='ha'):
         reps = []

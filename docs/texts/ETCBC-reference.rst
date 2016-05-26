@@ -281,6 +281,18 @@ For convenience, the tuple of nodes corresponding to the books in the ETCBC orde
 
 .. _node_order:
 
+.. code-block:: python
+
+    T.passage(node, lang='en', first_word=False)
+
+Returns the passage indicator where node occurs in the format ``book chapter:verse``
+where ``book`` is returned in the language ``lang``.
+If ``first_word`` is ``True``, then the passage returned corresponds to the passage of the first word of the node.
+Otherwise the following rules apply:
+
+* if the node type is book or chapter, the verse part is left out, and if the node type is book, the chapter part is left out as well,
+* if the node spans several verses, the verse is given as a range.
+
 Node order
 ==========
 The module ``etcbc.preprocess`` takes care of preparing a table that codes the optimal node order for working with ETCBC data. 

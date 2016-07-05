@@ -416,7 +416,7 @@ There are some points to note:
 .. hint::
     It is likely that you never have to use these functions directly in your notebook.
     Try first how far you get with the ``T``-functions in 
-    :ref:`Texts <texts>`_.
+    :ref:`Texts <texts>`.
 
 Syriac
 ------
@@ -573,7 +573,10 @@ The module ``etcbc.mql`` lets you fire mql queries to the corresponding Emdros d
 
 This function is dependent on Emdros being installed.
 More info over what MQL, EMDROS are, and how to use it, is in 
-`notebook mql <http://nbviewer.ipython.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/mql.ipynb>`_.
+`notebook mql <http://nbviewer.jupyter.org/github/ETCBC/laf-fabric-nbs/blob/master/querying/MQL.ipynb>`_.
 
 It is assumend that Emdros is installed in such a way that the command to run MQL is in your path,
 i.e. that the command ``mql`` is understood when run in a terminal (i.e. from a command prompt).
+To achieve this, download Emdros, open the downloaded package, read the appropriate document with ``INSTALL`` in the name,
+and follow the instructions below where it says *The rest is only needed if you wish to use Emdros from the command line*.
+SWIG is not needed.

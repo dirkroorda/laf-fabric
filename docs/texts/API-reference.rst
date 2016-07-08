@@ -117,7 +117,7 @@ If you want to change what is loaded in your program, you can simply call the lo
         F = API['F']
         ...
 
-If you only want to add a bit of data, you can simply call::
+If you only want to add some features, you can simply call::
 
     fabric.load_again(
         {
@@ -154,8 +154,26 @@ So the shortest way is::
 
     {'features': ('oid sp', 'functional_parent mother')}
 
+**extra annotation packages**
+Besides the main LAF resource (``etcbc4`` in this example), you can also load extra annotation packages (*annox*)
+They are additional LAF resources, consisting of annotations to nodes and edges that already exist in the main resource.
+In this way you can override certain annotations, and add your own.
+
+In the ``load()`` function above, the ``'--'`` indicates that no *annox* will be loaded.
+You can specify one or more extra *annox* by a comma separated list of names, or by a list of names.
+
+Instead of ``'--'`` you can also pass the empty string, None, or the empty array.
+
+An *annox* should be put in your LAF data directory under the *annotations* directory under the main source to which it is an addition or correction.
+Every *annox* is itself a directory consisting of a file *_header_.xml* which is the LAF header and a number of annotation files, which should be referred to 
+from *_header_.xml*. The names of the annox directories are what you pass as second argument to the ``load()`` function.
+
+If several annox packages contain conflicting annotations, the order in which you pass them to ``load()`` matters. Latter annoxes override earlier ones.
+
+Later on, when LAF-Fabric retrieves feature values, annox values override main source values (if there is conflict).
+
 **compile-source and compile-annox**:
-If you have changed the LAF resource or the selected annotation package, LAF-fabric will detect it and recompile it.
+If you have changed the LAF resource or the selected annotation packages, LAF-fabric will detect it and recompile it.
 The detection is based on the modified dates of the GrAF header file and the compiled files.
 In cases where LAF-fabric did not detect a change, but you need to recompile, use this flag.
 
@@ -305,7 +323,7 @@ These are the features found in the compiled current source or in the compiled c
 
 **Main source and annox**
 
-If you have loaded an extra annotation package (*annox*), each feature value is looked up first according to the
+If you have loaded extra annotation packages (*annox*), each feature value is looked up first according to the
 data of the *annox*, and only if that fails, according to the main source. The ``s()`` method
 combines all relevant information.
 
@@ -371,7 +389,7 @@ If you want to travel onwards until there are no outgoing edges left that qualif
 For all this functionality there is also a version that uses the opposite edge direction.
 Use ``Ci`` instead of ``C``.
 
-If you have loaded an extra annotation package (*annox*), lookups are first performed with the data from the *annox*,
+If you have loaded extra annotation packages (*annox*), lookups are first performed with the data from the *annox*,
 and only if that fails, from the main source. All relevant data will be combined.
 
 **Ad B. Special edge features**

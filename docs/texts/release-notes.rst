@@ -1,5 +1,10 @@
 Release Notes
 #############
+4.7
+===
+When loading data, LAF-Fabric accepts multiple extra annotation packages.
+Before, it only accepted zero or one extra annotation package (*annox*).
+
 4.6.2
 =====
 New function ``T.passage(node, lang)``: returns the passage indicator in which a give node occurs.

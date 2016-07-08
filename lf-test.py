@@ -7,9 +7,13 @@ from etcbc.preprocess import prepare
 fabric = LafFabric()
 
 version = '4b'
-API = fabric.load('etcbc{}'.format(version), '--', 'test', {
+API = fabric.load('etcbc{}'.format(version), ['lexicon','complements','para'], 'test', {
     "xmlids": {"node": False, "edge": False},
     "features": ('''
+        otype gn
+        phono
+        semantic
+        pargr
     ''',
     '''
     '''),

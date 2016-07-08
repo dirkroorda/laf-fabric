@@ -32,20 +32,27 @@ class LafAPI(LafData):
         return self.api
 
     def get_all_features(self):
+        env = self.names.env
         loadables = set()
-        for origin in ('m', 'a'):
-            for feat_path in glob.glob('{}/*'.format(self.names.env['{}_compiled_dir'.format(origin)])):
+        for feat_path in glob.glob('{}/*'.format(env['m_compiled_dir'])):
+            filename = os.path.basename(feat_path)
+            if filename.startswith(('_', 'A', 'Z')): continue
+            loadables.add('m{}'.format(filename))
+        for anx in env['annox']:
+            for feat_path in glob.glob('{}/*'.format(env['annox'][anx]['a_compiled_dir'])):
                 filename = os.path.basename(feat_path)
-                if filename.startswith(('_', 'A', 'Z')): continue
-                loadables.add('{}{}'.format(origin, filename))
+                if filename.startswith('_'): continue
+                loadables.add('a{}:{}'.format(anx, filename))
         self.all_features = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
         self.all_features_index = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
+        self.all_features_origin = collections.defaultdict(lambda: collections.defaultdict(lambda: set()))
         for filename in loadables:
             (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(filename)
             if dgroup != 'F': continue
             (namespace, label, name) = dcomps
             self.all_features[dkind][namespace].add("{}.{}".format(label, name))
             self.all_features_index[dkind][name].append((namespace, label))
+            self.all_features_origin[dkind][(namespace, label, name)].add(dorigin)
         if 'e' in self.all_features:
             for fname in ('x', 'y'):
                 self.all_features['e']['laf'].add(('', fname))
@@ -380,8 +387,9 @@ class LafFabric(object):
         self.lafapi.stamp.set_verbose(verbose)
         lafapi.stamp.Nmsg("LOADING API{}: please wait ... ".format(' with EXTRAs' if add else ''))
         lafapi.names.setenv(source=source, annox=annox, task=task)
+        lafapi.names.set_annox()
         env = lafapi.names.env
-        lafapi.prepare_dirs(annox)
+        lafapi.prepare_dirs(env['annox'])
         lafapi.compile_all({'m': compile_main, 'a': compile_annox})
         req_items = {}
         lafapi.names.request_init(req_items)
@@ -390,7 +398,7 @@ class LafFabric(object):
         if 'xmlids' in load_spec:
             for kind in [k[0] for k in load_spec['xmlids'] if load_spec['xmlids'][k]]:
                 for ddir in ('f', 'b'): req_items['mX{}{}'.format(kind, ddir)].append(())
-        if 'features' in load_spec: self._request_features(load_spec['features'], req_items, add, annox!=env['empty'])
+        if 'features' in load_spec: self._request_features(load_spec['features'], req_items, add)
         prep = load_spec['prepare'] if 'prepare' in load_spec else (lafapi.prepare_dict, lafapi.prepare_init) if add else ({}, None)
         lafapi.load_all(req_items, prep, add)
         lafapi.add_logfile()
@@ -402,7 +410,7 @@ class LafFabric(object):
             lafapi.stamp.Imsg("LOADED PREPARED data")
         lafapi.stamp.Smsg(
             'DATA LOADED FROM SOURCE {} AND ANNOX {} FOR TASK {} AT {}'.format(
-                env['source'], env['annox'], env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
+                env['source'], ', '.join(env['annox'].keys()), env['task'], time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())
             ),
             'INFO' if time_reset else 'NORMAL',
         )
@@ -413,8 +421,14 @@ class LafFabric(object):
 
     def load_again(self, load_spec, annox=None, add=False, compile_main=False, compile_annox=False, verbose='NORMAL'):
         env = self.lafapi.names.env
-        if annox == None: annox = env['annox']
-        x = self.load(env['source'], annox, env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose, time_reset=False)
+        new_annox = annox
+        if add:
+            if annox == None or annox == '' or annox == env['empty'] or annox == [] or annox == {}: new_annox = env['annox']
+            else: new_annox = list(env['annox'].keys()) + [annox]
+        else:
+            if annox == None or annox == '' or annox == env['empty'] or annox == [] or annox == {}: new_annox = []
+            else: new_annox = [annox]
+        x = self.load(env['source'], new_annox, env['task'], load_spec, add, compile_main=compile_main, compile_annox=compile_annox, verbose=verbose, time_reset=False)
         return x
 
     def resolve_feature(self, kind, feature_given):
@@ -443,8 +457,9 @@ class LafFabric(object):
             ))
         return the_feature
         
-    def _request_features(self, feat_spec, req_items, add, also_from_annox):
+    def _request_features(self, feat_spec, req_items, add):
         lafapi = self.lafapi
+        env = lafapi.names.env
         all_features = lafapi.all_features_index
         stamp = lafapi.stamp
         the_features = collections.defaultdict(lambda: set())
@@ -468,7 +483,9 @@ class LafFabric(object):
             if dkind not in all_features: raise FabricError("No features of kind {} in LAF resource".format(kind), stamp)
             for (aspace, alabel, fname) in the_features[kind]:
                 if fname not in all_features[dkind]: raise FabricError("No such feature in LAF resource: {}".format(fname), stamp)
-                for origin in ['m'] + (['a'] if also_from_annox else []):
-                    req_items['{}F{}0'.format(origin, dkind)].append((aspace, alabel, fname))
-                    if dkind == 'e':
-                        for ddir in ('f', 'b'): req_items['{}C0{}'.format(origin, ddir)].append((aspace, alabel, fname))
+                for origin in ['m'] + ['a{}'.format(anx) for anx in env['annox']]:
+                    osep = ':' if origin[0] == 'a' else '' 
+                    if origin in lafapi.all_features_origin[dkind][(aspace, alabel, fname)]:
+                        req_items['{}F{}0'.format(origin+osep, dkind)].append((aspace, alabel, fname))
+                        if dkind == 'e':
+                            for ddir in ('f', 'b'): req_items['{}C0{}'.format(origin+osep, ddir)].append((aspace, alabel, fname))

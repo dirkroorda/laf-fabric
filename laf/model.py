@@ -29,24 +29,26 @@ def normalize_ranges(ranges):
 def model(origin, data_items, stamp):
     '''Augment the results of XML parsing by precomputing additional data structures.'''
 
+    osep = ':' if origin[0] == 'a' else ''
+
     def model_x():
         stamp.Imsg("XML-IDS (inverse mapping)")
         for kind in ('n', 'e'):
-            xi = (origin + 'X' + kind + 'f', ())
-            xr = (origin + 'X' + kind + 'b', ())
+            xi = (origin + osep + 'X' + kind + 'f', ())
+            xr = (origin + osep + 'X' + kind + 'b', ())
             Names.deliver(make_inverse(data_items[Names.comp(*xi)]), xr, data_items)
 
     def model_regions():
         stamp.Imsg("NODES AND REGIONS")
-        node_region_list = data_items[Names.comp(origin + 'T00', ('node_region_list',))]
+        node_region_list = data_items[Names.comp(origin + osep + 'T00', ('node_region_list',))]
         n_node = len(node_region_list)
 
         stamp.Imsg("NODES ANCHOR BOUNDARIES")
         node_anchor_min = array.array('I', (0 for i in range(n_node)))
         node_anchor_max = array.array('I', (0 for i in range(n_node)))
         node_linked = array.array('I')
-        region_begin = data_items[Names.comp(origin + 'T00', ('region_begin',))]
-        region_end = data_items[Names.comp(origin + 'T00', ('region_end',))]
+        region_begin = data_items[Names.comp(origin + osep + 'T00', ('region_begin',))]
+        region_end = data_items[Names.comp(origin + osep + 'T00', ('region_end',))]
         node_anchor_list = []
         for node in range(n_node):
             links = node_region_list[node]
@@ -64,23 +66,23 @@ def model(origin, data_items, stamp):
             node_anchor_min[node] = min(norm_ranges) + 1
             node_anchor_max[node] = max(norm_ranges) + 1
         (node_anchor, node_anchor_items) = arrayify(node_anchor_list)
-        Names.deliver(node_anchor_min, (origin + 'G00', ('node_anchor_min',)), data_items)
-        Names.deliver(node_anchor_max, (origin + 'G00', ('node_anchor_max',)), data_items)
-        Names.deliver(node_anchor, (origin + 'P00', ('node_anchor',)), data_items)
-        Names.deliver(node_anchor_items, (origin + 'P00', ('node_anchor_items',)), data_items)
+        Names.deliver(node_anchor_min, (origin + osep + 'G00', ('node_anchor_min',)), data_items)
+        Names.deliver(node_anchor_max, (origin + osep + 'G00', ('node_anchor_max',)), data_items)
+        Names.deliver(node_anchor, (origin + osep + 'P00', ('node_anchor',)), data_items)
+        Names.deliver(node_anchor_items, (origin + osep + 'P00', ('node_anchor_items',)), data_items)
 
         node_region_list = None
-        del data_items[Names.comp(origin + 'T00', ('region_begin',))]
-        del data_items[Names.comp(origin + 'T00', ('region_end',))]
-        del data_items[Names.comp(origin + 'T00', ('node_region_list',))]
+        del data_items[Names.comp(origin + osep + 'T00', ('region_begin',))]
+        del data_items[Names.comp(origin + osep + 'T00', ('region_end',))]
+        del data_items[Names.comp(origin + osep + 'T00', ('node_region_list',))]
 
         def interval(node): return (node_anchor_min[node], -node_anchor_max[node])
 
         stamp.Imsg("NODES SORTING BY REGIONS")
         node_sort = array.array('I', sorted(node_linked, key=interval))
         node_sort_inv = make_array_inverse(node_sort)
-        Names.deliver(node_sort, (origin + 'G00', ('node_sort',)), data_items)
-        Names.deliver(node_sort_inv, (origin + 'G00', ('node_sort_inv',)), data_items)
+        Names.deliver(node_sort, (origin + osep + 'G00', ('node_sort',)), data_items)
+        Names.deliver(node_sort_inv, (origin + osep + 'G00', ('node_sort_inv',)), data_items)
 
         stamp.Imsg("NODES EVENTS")
         anchor_max = max(node_anchor_max) - 1
@@ -113,10 +115,10 @@ def model(origin, data_items, stamp):
         node_events = None
         (node_events, node_events_items) = arrayify(node_events_a)
         node_events_a = None
-        Names.deliver(node_events_n, (origin + 'P00', ('node_events_n',)), data_items)
-        Names.deliver(node_events_k, (origin + 'P00', ('node_events_k',)), data_items)
-        Names.deliver(node_events, (origin + 'P00', ('node_events',)), data_items)
-        Names.deliver(node_events_items, (origin + 'P00', ('node_events_items',)), data_items)
+        Names.deliver(node_events_n, (origin + osep + 'P00', ('node_events_n',)), data_items)
+        Names.deliver(node_events_k, (origin + osep + 'P00', ('node_events_k',)), data_items)
+        Names.deliver(node_events, (origin + osep + 'P00', ('node_events',)), data_items)
+        Names.deliver(node_events_items, (origin + osep + 'P00', ('node_events_items',)), data_items)
         node_anchor_list = None
 
     def model_conn():
@@ -126,8 +128,8 @@ def model(origin, data_items, stamp):
         def interval(elem): return (node_anchor_min[elem[0]], -node_anchor_max[elem[0]])
 
         stamp.Imsg("CONNECTIVITY")
-        edges_from = data_items[Names.comp('m' + 'G00', ('edges_from',))]
-        edges_to = data_items[Names.comp('m' + 'G00', ('edges_to',))]
+        edges_from = data_items[Names.comp('mG00', ('edges_from',))]
+        edges_to = data_items[Names.comp('mG00', ('edges_to',))]
         labeled_edges = set()
         efeatures = set()
         for dkey in data_items:
@@ -144,8 +146,8 @@ def model(origin, data_items, stamp):
                 node_to = edges_to[edge]
                 connections.setdefault(node_from, {})[node_to] = fvalue
                 connectionsi.setdefault(node_to, {})[node_from] = fvalue
-            Names.deliver(connections, (origin + 'C0f', feat), data_items)
-            Names.deliver(connectionsi, (origin + 'C0b', feat), data_items)
+            Names.deliver(connections, (origin + osep + 'C0f', feat), data_items)
+            Names.deliver(connectionsi, (origin + osep + 'C0b', feat), data_items)
 
         connections = {}
         connectionsi = {}
@@ -156,16 +158,16 @@ def model(origin, data_items, stamp):
                 node_to = edges_to[edge]
                 connections.setdefault(node_from, {})[node_to] = ''
                 connectionsi.setdefault(node_to, {})[node_from] = ''
-        elif origin == 'a':
+        elif origin[0] == 'a':
             for edge in range(len(edges_from)):
                 if edge not in labeled_edges: continue
                 node_from = edges_from[edge]
                 node_to = edges_to[edge]
                 connections.setdefault(node_from, {})[node_to] = ''
                 connectionsi.setdefault(node_to, {})[node_from] = ''
-        sfeature = Names.E_ANNOT_NON if origin == 'm' else Names.E_ANNOT_YES if origin == 'a' else ''
-        Names.deliver(connections, (origin + 'C0f', sfeature), data_items)
-        Names.deliver(connectionsi, (origin + 'C0b', sfeature), data_items)
+        sfeature = Names.E_ANNOT_NON if origin == 'm' else Names.E_ANNOT_YES if origin[0] == 'a' else ''
+        Names.deliver(connections, (origin + osep + 'C0f', sfeature), data_items)
+        Names.deliver(connectionsi, (origin + osep + 'C0b', sfeature), data_items)
 
     if origin == 'm':
         model_x()

@@ -11,13 +11,16 @@ class Feature(object):
     ``s(value=None)`` yields the nodes/edges that have this value or any value.
     '''
     def __init__(self, lafapi, feature, kind):
+        env = lafapi.names.env
         self.source = lafapi
         self.kind = kind
         data_items = lafapi.data_items
         label = Names.comp('mF' + kind + '0', feature)
-        alabel = Names.comp('aF' + kind + '0', feature)
+        alabels = [Names.comp('a{}:F{}0'.format(anx, kind), feature) for anx in env['annox']] 
         self.lookup = data_items[label] if label in data_items else {}
-        self.alookup = data_items[alabel] if alabel in data_items else {}
+        self.alookup = {}
+        for alabel in alabels:
+            if alabel in data_items: self.alookup.update(data_items[alabel])
 
     def v(self, ne): return self.alookup.get(ne, self.lookup.get(ne))
     def V(self, ne): return self.lookup.get(ne)
@@ -45,13 +48,16 @@ class Connection(object):
     (having this feature with this value or any value).
     '''
     def __init__(self, lafapi, feature, inv):
+        env = lafapi.names.env
         self.lafapi = lafapi
         self.inv = inv
         data_items = lafapi.data_items
         label = Names.comp('mC0' + inv, feature)
-        alabel = Names.comp('aC0' + inv, feature)
+        alabels = [Names.comp('a{}:C0{}'.format(anx, inv), feature) for anx in env['annox']] 
         self.lookup = data_items[label] if label in data_items else {}
-        self.alookup = data_items[alabel] if alabel in data_items else {}
+        self.alookup = {}
+        for alabel in alabels:
+            if alabel in data_items: self.alookup.update(data_items[alabel])
 
     def e(self, n): return len(self.lookup.get(n, {})) or len(self.alookup.get(n, {}))
 
@@ -104,16 +110,19 @@ class XMLid(object):
     ``r(node or edge int) = xml identifier`` and ``i(xml identifier) = node or edge int``.
     '''
     def __init__(self, lafapi, kind):
+        env = lafapi.names.env
         self.kind = kind
         data_items = lafapi.data_items
         label = Names.comp('mX' + kind + 'f', ())
         rlabel = Names.comp('mX' + kind + 'b', ())
-        alabel = Names.comp('aX' + kind + 'f', ())
-        arlabel = Names.comp('aX' + kind + 'b', ())
+        alabels = [Names.comp('a{}:X{}f'.format(anx, kind), ()) for anx in env['annox']] 
+        arlabels = [Names.comp('a{}:X{}b'.format(anx, kind), ()) for anx in env['annox']] 
         self.lookup = data_items[label] if label in data_items else {}
         self.rlookup = data_items[rlabel] if rlabel in data_items else {}
-        self.alookup = data_items[alabel] if alabel in data_items else {}
-        self.arlookup = data_items[arlabel] if arlabel in data_items else {}
+        for alabel in alabels:
+            if alabel in data_items: self.alookup.update(data_items[alabel])
+        for arlabel in arlabels:
+            if arlabel in data_items: self.arlookup.update(data_items[arlabel])
 
     def r(self, int_code): return self.arlookup.get(int_code, self.rlookup.get(int_code))
     def i(self, xml_id): return self.alookup.get(xml_id, self.lookup.get(xml_id))

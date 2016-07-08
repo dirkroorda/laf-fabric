@@ -49,7 +49,7 @@ class Names(Settings):
 
     **Instance data and methods**
     The instance data contains a list of datakeys, adapted to the present environment, which is based
-    on the source, annox and task chosen by the user.
+    on the source, annox-es and task chosen by the user.
     The previous list is also remembered, so that the loader can load/unload the difference.
 
     The instance method ``request_files`` determines the difference between previously and presently requested data items.
@@ -79,16 +79,22 @@ class Names(Settings):
         ('mFe0',                   ([],    'dct')),
         ('mC0f',                   ([],    'dct')),
         ('mC0b',                   ([],    'dct')),
-        ('aFn0',                   ([],    'dct')),
-        ('aFe0',                   ([],    'dct')),
-        ('aC0f',                   ([],    'dct')),
-        ('aC0b',                   ([],    'dct')),
         ('zG00 node_sort',         (None,  'arr')),
         ('zG00 node_sort_inv',     (None,  'dct')),
         ('zL00 node_up',           (None,  'dct')),
         ('zL00 node_down',         (None,  'dct')),
         ('zV00 verses',            (None,  'dct')),
         ('zV00 books_la',          (None,  'dct')),
+    ))
+    _data_items_tpl_a = ((
+        ('Xnf',                   ([],    'dct')),
+        ('Xef',                   ([],    'dct')),
+        ('Xnb',                   ([],    'dct')),
+        ('Xeb',                   ([],    'dct')),
+        ('Fn0',                   ([],    'dct')),
+        ('Fe0',                   ([],    'dct')),
+        ('C0f',                   ([],    'dct')),
+        ('C0b',                   ([],    'dct')),
     ))
     _data_items_def = collections.OrderedDict()
 
@@ -109,6 +115,13 @@ class Names(Settings):
             dkey = '{}({})'.format(parts[0], Names.DCOMP_SEP.join(parts[1:])) if len(parts) > 1 else dkey_raw
             Names._data_items_def[dkey] = dbits
 
+    def set_annox(self):
+        for anx in self.env['annox']:
+            for ((dkey_raw, dbits)) in Names._data_items_tpl_a:
+                parts = dkey_raw.split(' ')
+                dkey = 'a{}:'.format(anx)+('{}({})'.format(parts[0], Names.DCOMP_SEP.join(parts[1:])) if len(parts) > 1 else dkey_raw)
+                Names._data_items_def[dkey] = dbits
+
     def comp(dkeymin, dcomps): return '{}({})'.format(dkeymin, Names.DCOMP_SEP.join(dcomps))
     def comp_file(dgroup, dkind, ddir, dcomps):
         return'{}{}{}({})'.format(dgroup, dkind, ddir, Names.DCOMP_SEP.join(dcomps))
@@ -119,14 +132,18 @@ class Names(Settings):
 
     def decomp_full(dkey):
         parts = dkey.split('(')
-        return tuple(parts[0]) + (tuple(parts[1].rstrip(')').split(Names.DCOMP_SEP)),)
+        kparts = parts[0].split(':')
+        if len(kparts) == 2:
+            rparts = (kparts[0],)+tuple(kparts[1])
+        else:
+            rparts = tuple(parts[0])
+        return rparts + (tuple(parts[1].rstrip(')').split(Names.DCOMP_SEP)),)
         
     def apiname(dcomps): return "_".join(dcomps)
     def orig_key(dkey): return dkey.replace('z', 'm', 1) if dkey.startswith('z') else dkey
 
-    def query(dorigin=None, dgroup=None):
-        def test(dkey): return (not dorigin or dorigin == dkey[0]) and (not dgroup or dgroup == dkey[1])
-        return [dkey for dkey in Names._data_items_def if test(dkey)]
+    def maingroup(dgroup):
+        return [dkey for dkey in Names._data_items_def if dkey[0] == 'm' and dkey[1] == dgroup]
 
     def deliver(computed_data, dest, data_items):
         if computed_data: data_items[Names.comp(*dest)] = computed_data
@@ -134,7 +151,7 @@ class Names(Settings):
     def dmsg(dkey):
         (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
         return '{}: {}{}{}{}'.format(
-            'main' if dorigin == 'm' else 'annox' if dorigin == 'a' else 'prep',
+                'main' if dorigin == 'm' else 'annox {}'.format(dorigin[1:]) if dorigin[0] == 'a' else 'prep',
             dgroup,
             '.' + Names.apiname(dcomps) if len(dcomps) else '',
             ' [' + ('node' if dkind == 'n' else 'e') + '] ' if dkind != '0' else '',
@@ -186,7 +203,10 @@ class Names(Settings):
             (docc_def, dtype) = Names._data_items_def[dkeymin]
         (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
         if dgroup == 'T': return (None, None, None, None, None)
-        dloc = self.env['{}_compiled_dir'.format(dorigin)]
+        if dorigin[0] == 'a':
+            dloc = self.env['annox'][dorigin[1:]]['{}_compiled_dir'.format(dorigin[0])]
+        else:
+            dloc = self.env['{}_compiled_dir'.format(dorigin)]
         dfile = Names.comp_file(dgroup, dkind, ddir, dcomps)
         return (dgroup not in 'FC', dloc, dfile, dtype, dorigin == 'z')
 

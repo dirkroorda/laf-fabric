@@ -1,9 +1,9 @@
-import os
+import os, collections
 import configparser
 from .timestamp import Timestamp
 
 NAME = 'LAF-Fabric'
-VERSION = '4.6.2'
+VERSION = '4.7.0'
 APIREF = 'http://laf-fabric.readthedocs.org/en/latest/texts/API-reference.html'
 FEATDOC = 'https://shebanq.ancient-data.org/static/docs/featuredoc/texts/welcome.html'
 MAIN_CFG = 'laf-fabric.cfg'
@@ -35,7 +35,6 @@ class Settings(object):
     }
     _env_def = {
         'source':                '{source}',
-        'annox':                 '{annox}',
         'task':                  '{task}',
         'zspace':                '{zspace}',
         'empty':                 '{empty}',
@@ -46,17 +45,19 @@ class Settings(object):
         'bin_dir':               '{data_dir}/{source}/{bin_subdir}',
         'm_source_dir':          '{m_source_dir}/{source}/{m_source_subdir}',
         'm_source_path':         '{m_source_dir}/{source}/{m_source_subdir}/{source}.txt.hdr',
-        'a_source_dir':          '{m_source_dir}/{source}/{a_source_subdir}/{annox}',
-        'a_source_path':         '{m_source_dir}/{source}/{a_source_subdir}/{annox}/{header}',
-        'compiled_file':         '{log_name}{compile_name}.{text_ext}',
         'm_compiled_dir':        '{data_dir}/{source}/{bin_subdir}',
         'm_compiled_path':       '{data_dir}/{source}/{bin_subdir}/{log_name}{compile_name}.{text_ext}',
         'primary_compiled_path': '{data_dir}/{source}/{bin_subdir}/{primary_data}',
-        'a_compiled_dir':        '{data_dir}/{source}/{bin_subdir}/A/{annox}',
-        'a_compiled_path':       '{data_dir}/{source}/{bin_subdir}/A/{annox}/{log_name}{compile_name}.{text_ext}',
         'z_compiled_dir':        '{data_dir}/{source}/{bin_subdir}/Z/{zspace}',
         'task_dir':              '{output_dir}/{source}/{task}',
         'log_path':              '{output_dir}/{source}/{task}/{log_name}{task}.{text_ext}',
+    }
+    # here are config settings per annox
+    _env_def_a = {
+        'a_source_dir':          '{m_source_dir}/{source}/{a_source_subdir}/{annox}',
+        'a_source_path':         '{m_source_dir}/{source}/{a_source_subdir}/{annox}/{header}',
+        'a_compiled_dir':        '{data_dir}/{source}/{bin_subdir}/A/{annox}',
+        'a_compiled_path':       '{data_dir}/{source}/{bin_subdir}/A/{annox}/{log_name}{compile_name}.{text_ext}',
     }
 
     def __init__(self, data_dir, laf_dir, output_dir, save, verbose):
@@ -138,10 +139,24 @@ class Settings(object):
         return True
 
     def setenv(self, source=None, annox=None, task=None, zspace=None):
+        '''all relevant config settings will be stored in self.env
+        Most settings are just key - string value pairs.
+        But the setting 'annox' will be a dict, keyed by the annox names passed through the annox param, and valued by dicts with
+        annox-specific paths.
+        The annox parameter may be None, [], '--' (meaning no annox), a list of annoxes, or a string with a comma-separated series of annoxes. 
+        '''
         if source == None: source = self.env.get('source')
-        if annox == None: annox = self.env.get('annox')
         if task == None: task = self.env.get('task')
         if zspace == None: zspace = self.env.get('zspace')
-        for e in self._env_def: self.env[e] = self._env_def[e].format(source=source, annox=annox, task=task, zspace=zspace, **self._myconfig)
+        for e in self._env_def: self.env[e] = self._env_def[e].format(source=source, task=task, zspace=zspace, **self._myconfig)
+
+        if annox == None: annox = self.env.get('annox')
+        if annox == None or annox == '' or annox == self._myconfig['empty']: annox = []
+        elif type(annox) is str: annox = annox.split(',')
+        self.env['annox'] = collections.OrderedDict()
+        for anx in annox:
+            self.env['annox'][anx] = {}
+            for e in self._env_def_a:
+                self.env['annox'][anx][e] = self._env_def_a[e].format(source=source, annox=anx, task=task, zspace=zspace, **self._myconfig)
 
 

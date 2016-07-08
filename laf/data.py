@@ -26,19 +26,16 @@ class LafData(object):
             if not os.path.exists(env['m_compiled_dir']): os.makedirs(env['m_compiled_dir'])
         except os.error as e:
             raise FabricError("could not create bin directory {}".format(env['m_compiled_dir']), self.stamp, cause=e)
-        if annox != env['empty']:
+        for anx in annox:
             try:
-                if not os.path.exists(env['a_compiled_dir']): os.makedirs(env['a_compiled_dir'])
+                a_compiled_dir = env['annox'][anx]['a_compiled_dir']
+                if not os.path.exists(a_compiled_dir): os.makedirs(a_compiled_dir)
             except os.error as e:
-                raise FabricError("could not create bin directory {}".format(env['a_compiled_dir']), self.stamp, cause=e)
+                raise FabricError("could not create bin directory {}".format(a_compiled_dir), self.stamp, cause=e)
         try:
             if not os.path.exists(env['task_dir']): os.makedirs(env['task_dir'])
         except os.error as e:
             raise FabricError("could not create result directory {}".format(env['task_dir']), self.stamp, cause=e)
-
-    def adjust_all(self, annox, req_items, add, force):
-        '''Load manager.
-        '''
 
     def finish_task(self, show=True):
         '''Close all open files that have been opened by the API'''
@@ -73,8 +70,8 @@ class LafData(object):
 
     def add_logfile(self, compile=None):
         env = self.names.env
-        log_dir = env['task_dir'] if compile == None else env["{}_compiled_dir".format(compile)]
-        log_path = env['log_path'] if compile == None else env["{}_compiled_path".format(compile)]
+        log_dir = env['task_dir'] if compile == None else env["{}_compiled_dir".format(compile)] if compile == 'm' else env['annox'][compile[1:]]["{}_compiled_dir".format(compile[0])]
+        log_path = env['log_path'] if compile == None else env["{}_compiled_path".format(compile)] if compile == 'm' else env['annox'][compile[1:]]["{}_compiled_path".format(compile[0])]
         the_log = self.log if compile == None else self.clog
         try:
             if not os.path.exists(log_dir): os.makedirs(log_dir)
@@ -91,42 +88,46 @@ class LafData(object):
 
     def compile_all(self, force):
         env = self.names.env
-        compile_uptodate = {}
+        compile_uptodate = collections.OrderedDict()
         compile_uptodate['m'] = not os.path.exists(env['m_source_path']) or (
                 os.path.exists(env['m_compiled_path']) and
                 os.path.getmtime(env['m_compiled_path']) >= os.path.getmtime(env['m_source_path'])
             )
 
-        uptodate = True
-        for afile in glob.glob('{}/*.xml'.format(env['a_source_dir'])):
-            this_uptodate = env['annox'] == env['empty'] or (
-                os.path.exists(env['a_compiled_path']) and
-                os.path.getmtime(env['a_compiled_path']) >= os.path.getmtime(afile)
-            )
-            if not this_uptodate:
-                uptodate = False
-                break
-        compile_uptodate['a'] = uptodate
-        has_compiled = False
-        for origin in ('m', 'a'):
-            if (not compile_uptodate[origin]) or force[origin] or (has_compiled and env['annox'] != env['empty']):
-                self.stamp.Nmsg("BEGIN COMPILE {}: {}".format(origin, env['source'] if origin == 'm' else env['annox']))
+        for anx in sorted(env['annox']):
+            uptodate = True
+            for afile in glob.glob('{}/*.xml'.format(env['annox'][anx]['a_source_dir'])):
+                this_uptodate = (
+                    os.path.exists(env['annox'][anx]['a_compiled_path']) and
+                    os.path.getmtime(env['annox'][anx]['a_compiled_path']) >= os.path.getmtime(afile)
+                )
+                if not this_uptodate:
+                    uptodate = False
+                    break
+            compile_uptodate['a{}'.format(anx)] = uptodate
+        has_compiled_main = False
+        for origin in compile_uptodate:
+            origin_type = origin if origin == 'm' else origin[0]
+            origin_spec = env['source'] if origin == 'm' else origin[1:]
+            if (not compile_uptodate[origin]) or force[origin_type] or has_compiled_main:
+                self.stamp.Nmsg("BEGIN COMPILE {}: {}".format(origin_type, origin_spec))
                 self._clear_origin_unnec(origin)
-                if origin == 'a':
-                    self._load_extra(['mXnf()', 'mXef()'] + Names.query(dorigin='m', dgroup='G'))
+                if origin_type == 'a':
+                    self._load_extra(['mXnf()', 'mXef()'] + Names.maingroup('G'))
                 self._compile_origin(origin)
-                has_compiled = True
-                self.stamp.Nmsg("END   COMPILE {}: {}".format(origin, env['source'] if origin == 'm' else env['annox']))
-            else: self.stamp.Dmsg("COMPILING {}: UP TO DATE".format(origin))
-            if origin == 'a' and env['annox'] == env['empty']: continue
+                if origin_type == 'm':
+                    has_compiled_main = True
+                self.stamp.Nmsg("END   COMPILE {}: {}".format(origin_type, origin_spec))
+            else: self.stamp.Dmsg("COMPILING {}: {}: UP TO DATE".format(origin_type, origin_spec))
             the_time = 'UNSPECIFIED'
-            with open(env['{}_compiled_path'.format(origin)]) as h:
+            compiled_path = env['{}_compiled_path'.format(origin)] if origin_type == 'm' else env['annox'][origin_spec]["{}_compiled_path".format(origin_type)]
+            with open(compiled_path) as h:
                 last_line = list(h)[-1]
                 if ':' in last_line:
                     the_time = last_line.split(':', 1)[1]
-            self.stamp.Nmsg("USING {} DATA COMPILED AT: {}".format('main ' if origin == 'm' else 'annox', the_time))
-        if has_compiled:
-            for origin in ('m', 'a'):
+            self.stamp.Nmsg("USING {}: {} DATA COMPILED AT: {}".format('main' if origin_type == 'm' else 'annox', origin_spec, the_time))
+        if has_compiled_main:
+            for origin in (compile_uptodate):
                 self._clear_origin_unnec(origin)
             self.names.setenv()
 
@@ -252,7 +253,10 @@ class LafData(object):
                     self.data_items[okey] = self.data_items[dkey]
 
     def _store_origin(self, origin):
-        self.stamp.Nmsg("WRITING RESULT FILES for {}".format(origin))
+        env = self.names.env
+        origin_type = origin if origin == 'm' else origin[0]
+        origin_spec = env['source'] if origin == 'm' else origin[1:]
+        self.stamp.Nmsg("WRITING RESULT FILES for {}: {}".format(origin_type, origin_spec))
         data_items = self.data_items
         for dkey in sorted(data_items):
             (dorigin, dgroup, dkind, ddir, dcomps) = Names.decomp_full(dkey)
@@ -272,11 +276,19 @@ class LafData(object):
             with gzip.open(dpath, "wt", encoding="utf-8") as f: f.write(thedata)
 
     def _parse(self, origin):
+        env = self.names.env
+        origin_type = origin if origin == 'm' else origin[0]
+        origin_spec = env['source'] if origin == 'm' else origin[1:]
         self.stamp.Nmsg("PARSING ANNOTATION FILES")
         env = self.names.env
-        source_dir = env['{}_source_dir'.format(origin)]
-        source_path = env['{}_source_path'.format(origin)]
-        compiled_dir = env['{}_compiled_dir'.format(origin)]
+        if origin_type == 'm':
+            source_dir = env['{}_source_dir'.format(origin)]
+            source_path = env['{}_source_path'.format(origin)]
+            compiled_dir = env['{}_compiled_dir'.format(origin)]
+        else:
+            source_dir = env['annox'][origin_spec]['{}_source_dir'.format(origin_type)]
+            source_path = env['annox'][origin_spec]['{}_source_path'.format(origin_type)]
+            compiled_dir = env['annox'][origin_spec]['{}_compiled_dir'.format(origin_type)]
         self.cur_dir = os.getcwd()
         if not os.path.exists(source_path):
             raise FabricError("LAF header does not exists {}".format(source_path), self.stamp)
@@ -291,7 +303,7 @@ class LafData(object):
             raise FabricError("could not create directory for compiled source {}".format(compiled_dir), self.stamp, cause=e)
         parse(
             origin,
-            env['{}_source_path'.format(origin)],
+            source_path,
             self.stamp,
             self.data_items,
         )

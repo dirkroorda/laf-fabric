@@ -119,6 +119,8 @@ class XMLid(object):
         arlabels = [Names.comp('a{}:X{}b'.format(anx, kind), ()) for anx in env['annox']] 
         self.lookup = data_items[label] if label in data_items else {}
         self.rlookup = data_items[rlabel] if rlabel in data_items else {}
+        self.alookup = {}
+        self.arlookup = {}
         for alabel in alabels:
             if alabel in data_items: self.alookup.update(data_items[alabel])
         for arlabel in arlabels:

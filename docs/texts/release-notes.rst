@@ -1,5 +1,13 @@
 Release Notes
 #############
+4.7.2
+=====
+Bug fix in multiple extra annotation packages: something with XML identifiers was broken.
+
+4.7.1
+=====
+Bug fixes in multiple extra annotation packages.
+
 4.7
 ===
 When loading data, LAF-Fabric accepts multiple extra annotation packages.

@@ -18,11 +18,11 @@ and it runs straight under **Windows** as well, except for some testing/debuggin
 On a Virtual Machine (just a few steps)
 =======================================
 The easiest way to get started with LAF-Fabric and the data for the Hebrew Bible is using Oliver Glanz's Virtual Machine.
-Go to his `OneDrive <http://1drv.ms/1QiCJ6N>`_ and download the file
-*ETCBC-vm_v1.5_lubuntu14.04-32bit.ova*. This is a so-called vm-appliance file, which you will need to open with the program
+Go to his `Google Drive <https://drive.google.com/file/d/0BzD674zqcDJ2QmI4bXAzemJTWGc/view>`_ and download the file
+*ETCBC-vm_v1.60_lubuntu16.04-64bit.ova*. This is a so-called vm-appliance file, which you will need to open with the program
 `VirtualBox <http://virtualbox.org/>`_,
 which you have to download and install.
-Detailed instructions are in *running and preparing an ETCBC vm_v1.5.pdf*.
+Detailed instructions are in *running and preparing an ETCBC vm_v1.6.pdf*.
 
 When all went well, you can continue with **Writing Notebooks** below.
 

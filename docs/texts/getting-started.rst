@@ -93,6 +93,8 @@ This package has been used to obtain the actual LAF version of the ETCBC databas
     In order to use *emdros2laf* and parts of *etcbc*, you need to install `EMDROS <http://emdros.org>`_ software, which is freely available.
     Tip: it works nicely with an sqlite3 backend.
     You only need this when you want to run MQL queries (the same queries you can design and store in SHEBANQ) from withing your programs.
+    After following the Emdros installation procedure, look for a file named INSTALL or INSTALL.txt and follow the instructions to provide 
+    a ``mql`` that works from the terminal or command prompt.
 
 If you want to have the source code and examples you can get them from github.
 

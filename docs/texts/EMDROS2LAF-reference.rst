@@ -23,7 +23,7 @@ Transforms the ETCBC database into a LAF resource.
 Because of file sizes, not all annotations are stored in one file.
 There are several parts of annotations: monads (words), sections (books, chapters, verses, etc), lingo (sentence, phrase, etc)
 
-If --raw is given , a fesh export from the EMDROS database is made. For each part there is a separate export.
+If --raw is given , a fresh export from the EMDROS database is made. For each part there is a separate export.
 
 If --validate is given, generated xml files will be validated against their schemas.
 

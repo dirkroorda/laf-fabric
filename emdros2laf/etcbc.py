@@ -27,7 +27,7 @@ class Etcbc:
       divide the object types of that part. If an object type belongs to
       a subpart, all its features belong to that subpart too.
 
-    In our case, the part 'monad' has the single object type, and its features
+    In our case, the part 'monad' has the single object type word, and its features
     are divided over subparts.
     The part 'lingo' has object types sentence, sentence_atom, clause, clause_atom,
     phrase, phrase_atom, subphrase, word. Its subparts are a partition of these object

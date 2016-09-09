@@ -415,7 +415,8 @@ class LafFabric(object):
             'INFO' if time_reset else 'NORMAL',
         )
         if time_reset: lafapi.stamp.reset()
-        self.localnames = '\n'.join("{key} = {{var}}.api['{key}']".format(key=key) for key in self.api)
+        self.localnames = '\n'.join('''{key} = {{var}}.api['{key}']'''.format(key=key) for key in self.api)
+        self.llocalnames = '\n'.join('''if '{key}' not in locals(): {key} = dict()\n{key}['{{biblang}}'] = {{var}}.api['{key}']'''.format(key=key) for key in self.api)
         self.lafapi.stamp.set_verbose(verbose)
         return self.api
 

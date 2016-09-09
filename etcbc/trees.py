@@ -41,8 +41,8 @@ class Tree(object):
         nn = 0
         cn = 0
         chunk = 100000
-        Fotypev = F.otype.v
-        Fmonadsv = F.monads.v
+        Fotypev = F.db_otype.v
+        Fmonadsv = F.db_monads.v
         for node in NN():
             otype = Fotypev(node)
             if otype not in otype_set: continue
@@ -103,12 +103,12 @@ class Tree(object):
         moutside = collections.defaultdict(lambda: 0)
         mo = 0
         mf = C.mother.v
-        for c in NN(test=F.otype.v, value=self.clause_type):
+        for c in NN(test=F.db_otype.v, value=self.clause_type):
             lms = list(mf(c))
             ms = len(lms)
             if ms:
                 m = lms[0]
-                mtype = F.otype.v(m)
+                mtype = F.db_otype.v(m)
                 if mtype in otype_set: mother[c] = m
                 else:
                     moutside[mtype] += 1
@@ -124,8 +124,8 @@ class Tree(object):
         msg("Pass 1: all {}s except those of type Coor".format(self.clause_type))
         motherless = set()
         ccrf = F.item[self.ccr_feature].v
-        Fotypev = F.otype.v
-        Fmonadsv = F.monads.v
+        Fotypev = F.db_otype.v
+        Fmonadsv = F.db_monads.v
         for cnode in NN(test=Fotypev, value=self.clause_type):
             cclass = ccr_class[ccrf(cnode)]
             if cclass == 'n' or cclass == 'x': pass
@@ -138,7 +138,7 @@ class Tree(object):
                 pnode = rparent[cnode]
                 if mnode not in rparent:
                     msg("Should not happen: node without parent: [{} {}]({}) =mother=> [{} {}]({}) =/=> parent".format(
-                        self.clause_type, F.monads.v(cnode), cnode, mtype, Fmonadsv(mnode), mnode
+                        self.clause_type, F.db_monads.v(cnode), cnode, mtype, Fmonadsv(mnode), mnode
                     ))
                 pmnode = rparent[mnode]
                 pchildren = rchildren[pnode]
@@ -222,9 +222,9 @@ class Tree(object):
         ids = {}
         maxid = 0
         ccrf = F.item[self.ccr_feature].v
-        bmonad = int(F.minmonad.v(node))
-        Fotypev = F.otype.v
-        Fmonadsv = F.monads.v
+        bmonad = int(F.db_minmonad.v(node))
+        Fotypev = F.db_otype.v
+        Fmonadsv = F.db_monads.v
         elder_sister = self.elder_sister
         sisters = self.sisters if kind == 'r' else {}
         mother = self.mother
@@ -237,7 +237,7 @@ class Tree(object):
             return maxid
 
         def _fillids(node):
-            otype = F.otype.v(node)
+            otype = F.db_otype.v(node)
             parent = self.eparent 
             children = self.echildren 
             if node in mother: rep(mother[node])
@@ -309,17 +309,17 @@ class Tree(object):
             result.append("\nstart monad = {}\n\n".format(bmonad))
             result.append("{:>3} = {:>8} {:>8}\n".format('#', 'etcbc4_oid', 'laf_nid'))
             for (n, s) in sorted(ids.items(), key=lambda x: x[1]):
-                result.append("{:>3} = {:>8} {:>8}\n".format(s, F.oid.v(n), n))
+                result.append("{:>3} = {:>8} {:>8}\n".format(s, F.db_oid.v(n), n))
         return ''.join(result)
 
     def write_tree(self, node, kind, get_tag, rev=False, leafnumbers=True):
         API = self.API
         F = API['F']
         msg = API['msg']
-        otype = F.otype.v(node)
+        otype = F.db_otype.v(node)
         children = self.rchildren if kind == 'r' else self.echildren 
         sisters = self.sisters if kind == 'r' else {}
-        bmonad = int(F.minmonad.v(node))
+        bmonad = int(F.db_minmonad.v(node))
 
         words = []
         sequential = []
@@ -421,15 +421,15 @@ class Tree(object):
     def get_monads(self, node, kind):
         API = self.API
         F = API['F']
-        Fmonadsv = F.monads.v
+        Fmonadsv = F.db_monads.v
         return functools.reduce(lambda x,y: x | y, (monad_set(Fmonadsv(leaf)) for leaf in self.get_leaves(node, kind)), set())
-        #return set(int(F.monads.v(n)) for n in self.get_leaves(node, kind))
+        #return set(int(F.db_monads.v(n)) for n in self.get_leaves(node, kind))
 
     def get_root(self, node, kind):
         API = self.API
         F = API['F']
         msg = API['msg']
-        otype = F.otype.v(node)
+        otype = F.db_otype.v(node)
         parent = self.rparent if kind == 'r' else self.eparent 
         children = self.rchildren if kind == 'r' else self.echildren 
         if node in parent: return self.get_root(parent[node], kind)

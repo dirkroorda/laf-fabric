@@ -85,12 +85,25 @@ Texts
 The ``T`` (*text*) part of the API is for working with the plain text of the Bible.
 It can deliver the text of the whole Bible or parts in a variety of formats.
 
+.. note::
+    LAF-Fabric and SHEBANQ have been designed for Hebrew text.
+    However, we are currently paving the way for LAF-Fabric to also work with Greek texts.
+    This API has undergone changes (backward compatible) to also work with Greek.
+    All ``T`` functions are sensitive to the value of a parameter called ``biblang``.
+    By default this value is ``Hebrew`` and then everything works for Hebrew texts,
+    Hebrew representations, and book names of the Hebrew Bible.
+
+    However, if ``biblang`` is ``Greek``, the ``T`` functions recognize Greek representations
+    and book names of the Greek New Testament.
+
+    This parameter can be passed in the load specifications, under ``prepare`` below.
+
 The quickest way to see how this works is to go to the notebook
 `plain <https://shebanq.ancient-data.org/static/docs/tools/shebanq/plain.html>`_
 (`download <https://shebanq.ancient-data.org/static/docs/tools/shebanq/plain.html>`_)
 on SHEBANQ.
 
-This is how it works. You have to import the ``prepare`` module::
+This is how it works. You have to import the ``prepare`` module. This is how it works for Hebrew::
 
     from etcbc.preprocess import prepare
 
@@ -98,7 +111,21 @@ and say in your load instructions::
 
     'prepare': prepare
     
-Then you can use the following functions
+which is shorthand for::
+
+    from etcbc.preprocess import prep
+
+    'prepare': prep('Hebrew')
+    
+And this is how it works for Greek::
+
+    from etcbc.preprocess import prep
+
+and say in your load instructions::
+
+    'prepare': prep('Greek')
+    
+When this is said and done, you can use the following functions
 
 .. code-block:: python
 
@@ -127,11 +154,13 @@ See also the methods ``book_name()`` and ``book_node()`` below to map a book nam
 
     T.formats()
 
-This yields a dictionary of all formats for Hebrew text that the ``T`` API is capable to deliver.
+This yields a dictionary of all formats for biblical text that the ``T`` API is capable to deliver.
 The keys are acronymns for the formats, the values are tuples
 ``(desc, method)``
 where ``desc`` is a short description of the format, and ``method`` is a Python function that delivers that representation given a single word node.
 
+Hebrew formats
+--------------
 **Hebrew unicode output**
 
 * ``hp`` with vowels and accents as in primary text (based on ketivs instead of qeres) 
@@ -166,12 +195,21 @@ for details. The same subtleties apply as for the Hebrew case.
 * ``ps`` simplified: no schwa and qamets gadol/qatan distinction
   (also the composite schwas have gone)
 
+Greek formats
+-------------
+
+**Greek unicode output**
+
+* ``gp`` with and accents as in primary text
+  (this corresponds to the primary text in the LAF data)
+
 .. code-block:: python
 
-    T.words(word_nodes, fmt='ha')
+    T.words(word_nodes, fmt=None)
 
 Give the plain text belonging to a series of words in format ``fmt``.
-Default format is ``ha``, i.e. fully pointed Hebrew Unicode, where ketivs have been replaced by 
+Default format is ``ha`` if `biblang` is `Hebrew` and `gp` if `biblang` is `Greek`,
+i.e. (Hebrew) fully pointed Hebrew Unicode, where ketivs have been replaced by 
 fully pointed qeres.
 The ``word_nodes`` can be any iterable of nodes carrying ``otype = 'word'``.
 They do not have to correspond to consecutive words in the bible.

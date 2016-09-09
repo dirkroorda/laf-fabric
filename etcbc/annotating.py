@@ -85,7 +85,7 @@ class GenForm(object):
             "\t".join(self.new_fqnames),
         ))
         for i in NN():
-            this_type = F.otype.v(i)
+            this_type = F.db_otype.v(i)
             if this_type in self.target_types:
                 if in_chapter:
                     the_xml_id = X.r(i)
@@ -100,7 +100,7 @@ class GenForm(object):
                         "\t" * self.n_new_features,
                     ))
             elif this_type == "book":
-                the_book = F.book.v(i)
+                the_book = F.sft_book.v(i)
                 in_book = the_book in self.config['passages']
                 if in_book:
                     sys.stderr.write(the_book)
@@ -121,7 +121,7 @@ class GenForm(object):
                     sys.stderr.write("*")
             elif this_type == "chapter":
                 if in_book:
-                    the_chapter = F.chapter.v(i)
+                    the_chapter = F.sft_chapter.v(i)
                     if the_chapter in do_chapters:
                         sys.stderr.write("{},".format(the_chapter))
                         in_chapter = True
@@ -131,7 +131,7 @@ class GenForm(object):
                     in_chapter = False
             elif this_type == "verse":
                 if in_chapter:
-                    the_verse = F.verse.v(i)
+                    the_verse = F.sft_verse.v(i)
                     outf.write("#{} {}:{}\t{}\t{}\n".format(
                         the_book,
                         the_chapter,

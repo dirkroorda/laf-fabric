@@ -1,5 +1,15 @@
 Release Notes
 #############
+4.8
+===
+Basic support for sources in the Greek language, such as the New Testament.
+Thanks to Jonathan Robie and Cody Kingham for providing Greek sources to play with.
+
+The ``T`` API needed modifications, and also the translation tables for Bible book names.
+
+LAF-Fabric makes it now easier to use several sources in one API, e.g. one for the Hebrew Bible and
+one for the Greek New Testament.
+
 4.7.2
 =====
 Bug fix in multiple extra annotation packages: something with XML identifiers was broken.

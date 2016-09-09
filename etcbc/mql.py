@@ -24,12 +24,12 @@ class MQL(object):
         F = API['F']
         cur_object = {}
         for n in NN():
-            otype = F.otype.v(n)
+            otype = F.db_otype.v(n)
             if otype != 'word': cur_object[otype] = n
             if otype == 'word':
                 for curo in cur_object.values():
                     MQL.object2words.setdefault(curo, []).append(n)
-            MQL.index2node[F.oid.v(n)] = n
+            MQL.index2node[F.db_oid.v(n)] = n
             MQL.node2verse[n] = cur_object.get('verse', None)
             MQL.node2sentence[n] = cur_object.get('sentence', None)
 
@@ -115,11 +115,11 @@ class MQL(object):
                 MQL._render_grain(elem, indent+1, monadrep)
             
     def _render_grain(data, indent, monadrep):
-        otype = F.otype.v(data[0])
+        otype = F.db_otype.v(data[0])
         if otype == 'word':
             print("{}'{}'".format(' '*indent, monadrep(data[0])))
         else:
-            print("{}[{}".format(' '*indent, F.otype.v(data[0])))
+            print("{}[{}".format(' '*indent, F.db_otype.v(data[0])))
             if len(data) > 1:
                 MQL._render_sheaf(data[1], indent+1, monadrep)
             print("{}]".format(' '*indent))
@@ -133,12 +133,12 @@ class MQL(object):
         return ' '.join([MQL._compact_grain(elem, level, monadrep) for elem in data])
 
     def _compact_grain(data, level, monadrep):
-        otype = F.otype.v(data[0])
+        otype = F.db_otype.v(data[0])
         if otype == 'word':
             return "'{}'".format(monadrep(data[0]))
         else:
             subdata = data[1] if len(data) > 1 else []
-            return "[{} {}]".format(F.otype.v(data[0]), MQL._compact_sheaf(subdata, level, monadrep))
+            return "[{} {}]".format(F.db_otype.v(data[0]), MQL._compact_sheaf(subdata, level, monadrep))
 
     def _compact_results(data, level, monadrep, passages, sentence):
         if data == None: return ''
@@ -159,12 +159,12 @@ class MQL(object):
                 sent = MQL.node2sentence[data[0]]
                 sentext = '{} '.format(' '.join(monadrep(w) for w in MQL.object2words[sent]))
 
-        otype = F.otype.v(data[0])
+        otype = F.db_otype.v(data[0])
         if otype == 'word':
             return "{}{} '{}'".format(passage,sentext, monadrep(data[0]))
         else:
             subdata = data[1] if len(data) > 1 else []
-            return "{}{} [{} {}]".format(passage, sentext, F.otype.v(data[0]), MQL._compact_result(subdata, level+1, monadrep, passages, sentence))
+            return "{}{} [{} {}]".format(passage, sentext, F.db_otype.v(data[0]), MQL._compact_result(subdata, level+1, monadrep, passages, sentence))
 
 
 class Sheaf(object):

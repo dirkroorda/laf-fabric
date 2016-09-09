@@ -88,7 +88,7 @@ class FeatureDoc(object):
             for ft in node_feats:
                 val = F.item[ft].v(node)
                 if val != None:
-                    otype = F.otype.v(node)
+                    otype = F.db_otype.v(node)
                     if val in absence_values:
                         n_otypes[otype][ft][0] += 1
                         n_otypesi[ft][otype][0] += 1
@@ -110,8 +110,8 @@ class FeatureDoc(object):
             for ft in edge_feats:
                 val = FE.item[ft].v(edge[0])
                 if val != None:
-                    otype_from = F.otype.v(edge[1])
-                    otype_to = F.otype.v(edge[2])
+                    otype_from = F.db_otype.v(edge[1])
+                    otype_to = F.db_otype.v(edge[2])
                     e_otypes[(otype_from, otype_to)][ft] += 1
                     e_otypesi[ft][(otype_from, otype_to)] += 1
                     vals[ft][val] += 1

@@ -23,16 +23,16 @@ otypes = (
 )
 
 def node_order(API):
-    API['fabric'].load_again({"features": ('otype monads minmonad maxmonad', '')}, add=True)
+    API['fabric'].load_again({"features": ('db.otype db.monads db.minmonad db.maxmonad', '')}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']
 
     def before(a,b):
-        sa = monad_set(F.monads.v(a))
-        sb = monad_set(F.monads.v(b))
-        oa = object_rank[F.otype.v(a)]
-        ob = object_rank[F.otype.v(b)]
+        sa = monad_set(F.db_monads.v(a))
+        sb = monad_set(F.db_monads.v(b))
+        oa = object_rank[F.db_otype.v(a)]
+        ob = object_rank[F.db_otype.v(b)]
         if sa == sb: return 0 if oa == ob else -1 if oa < ob else 1
         if sa < sb: return 1
         if sa > sb: return -1
@@ -73,12 +73,12 @@ def fill(NN, F, er, ed):
     cur_ers = collections.deque()
     skip_ed = None
     for n in NN():
-        otype = F.otype.v(n)
+        otype = F.db_otype.v(n)
         if otype == er:
             this_er = n
-            this_min = int(F.minmonad.v(n))
-            this_max = int(F.maxmonad.v(n))
-            this_monads = getmonads(F.monads.v(n))
+            this_min = int(F.db_minmonad.v(n))
+            this_max = int(F.db_maxmonad.v(n))
+            this_monads = getmonads(F.db_monads.v(n))
             while len(cur_ers):
                 if cur_ers[0][2] < this_min:
                     cur_ers.popleft()
@@ -91,19 +91,19 @@ def fill(NN, F, er, ed):
         elif otype in ed:
             if len(cur_ers) > 0:
                 if not skip_ed:
-                    this_min = int(F.minmonad.v(n))
-                    this_max = int(F.maxmonad.v(n))
+                    this_min = int(F.db_minmonad.v(n))
+                    this_max = int(F.db_maxmonad.v(n))
                 if this_min > cur_max:
                     skip_ed = True
                 if this_max <= cur_max:
-                    this_monads = getmonads(F.monads.v(n))
+                    this_monads = getmonads(F.db_monads.v(n))
                     for (that_er, that_min, that_max, that_monads) in cur_ers:
                         if  this_monads <= that_monads:
                             Lu.setdefault(er, {})[n] = that_er
                             Ld.setdefault(otype, {}).setdefault(that_er, []).append(n)
 
 def node_ud(API):
-    API['fabric'].load_again({"features": ('otype monads minmonad maxmonad', '')}, add=True)
+    API['fabric'].load_again({"features": ('db.otype db.monads db.minmonad db.maxmonad', '')}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']
@@ -122,18 +122,18 @@ def node_down(API):
     return Ld
 
 def verses(API):
-    API['fabric'].load_again({"features": ('otype book chapter verse', '')}, add=True)
+    API['fabric'].load_again({"features": ('db.otype sft.book sft.chapter sft.verse', '')}, add=True)
     msg = API['msg']
     F = API['F']
     NN = API['NN']
     verses = {}
     n = 0
     msg('Making verse index', verbose='NORMAL')
-    for vn in F.otype.s('verse'):
+    for vn in F.db_otype.s('verse'):
         n += 1
         bk = Lu['book'][vn]
-        ch = int(F.chapter.v(vn))
-        vs = int(F.verse.v(vn))
+        ch = int(F.sft_chapter.v(vn))
+        vs = int(F.sft_verse.v(vn))
         verses.setdefault(bk, {}).setdefault(ch, {})[vs] = vn
     msg('Done. {} verses'.format(n), verbose='NORMAL')
     return verses
@@ -142,14 +142,16 @@ def books_la(API):
     msg = API['msg']
     F = API['F']
     msg('Listing books', verbose='NORMAL')
-    books = tuple((b, F.book.v(b)) for b in F.otype.s('book'))
+    books = tuple((b, F.sft_book.v(b)) for b in F.db_otype.s('book'))
     msg('Done. {} books'.format(len(books), verbose='NORMAL'))
     return books
 
-def prep_post(lafapi):
-    lafapi.stamp.Nmsg('ETCBC reference: {}'.format(ETCBCREF))
-    lafapi.api['L'] = Layer(lafapi)
-    lafapi.api['T'] = Text(lafapi)
+def prep_post(biblang='Hebrew'):
+    def p(lafapi):
+        lafapi.stamp.Nmsg('ETCBC reference: {}'.format(ETCBCREF))
+        lafapi.api['L'] = Layer(lafapi)
+        lafapi.api['T'] = Text(lafapi, biblang=biblang)
+    return p
     
 prepare_dict = collections.OrderedDict((
     ('zG00(node_sort)', (node_order, __file__, True, 'etcbc')),
@@ -159,4 +161,8 @@ prepare_dict = collections.OrderedDict((
     ('zV00(verses)', (verses, __file__, False, 'etcbc')),
     ('zV00(books_la)', (books_la, __file__, False, 'etcbc')),
 ))
-prepare = (prepare_dict, prep_post)
+
+def prep(biblang='Hebrew'):
+    return (prepare_dict, prep_post(biblang=biblang))
+
+prepare = (prepare_dict, prep_post(biblang='Hebrew'))

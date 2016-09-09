@@ -57,8 +57,9 @@ class LafData(object):
 
     def _finish_logfile(self, compile=None):
         the_log = self.log if compile == None else self.clog
-        the_log.write("\nCLOSED AT:{}".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
-        try: the_log.close()
+        try:
+            the_log.write("\nCLOSED AT:{}".format(time.strftime("%Y-%m-%dT%H-%M-%S", time.gmtime())))
+            the_log.close()
         except: pass
         self.stamp.disconnect_log()
         if compile == None: self.log = None

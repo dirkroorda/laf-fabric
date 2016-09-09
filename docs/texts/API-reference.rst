@@ -19,7 +19,9 @@ This method returns you a set of *API elements*: objects and/or methods that you
 information from the LAF resource: its features, nodes, edges, primary data and
 even its original XML identifiers.
 
-By calling this method you can insert the API elements in your local namespace.
+The `fabric` object also has a property ``localnames``.
+This is a python command that you can execute (``exec``).
+It then inserts all members of the API straight into your local namespace.
 This has the advantage of efficiency,
 because API elements might easily be called millions of times in a loop,
 so no time should be wasted by things as method lookup. Local names are faster.
@@ -77,11 +79,56 @@ Once you have the processor, you can load data, according to the source you choo
         compile_main=False, compile_annox=False,
         verbose='NORMAL',
     )
-    exec(fabric.localnames.format(var='fabric'))
 
 LAF-Fabric will figure out which data can be kept in memory, which data has to be cleared, and which data
 needs to be loaded.
-You can access the LAF data by means of local variables that correspond to various elements of the API, see below.
+
+The API has some popular members, such as ``NN`` (walk through nodes), ``F`` (get feature values), etc.
+You can add all API members into your local namespace, so that you can access them directly in your code::
+
+    for n in NN():
+        x = F.otype.v(n)
+
+The way to insert all API members into your local namespace is this::
+
+    exec(fabric.localnames.format(var='fabric'))
+
+There are also more complicated cases where you work with multiple fabrics in your notebook, for example
+if you have several sources. 
+Suppose you have a fabric for the Hebrew Bible and a fabric for the Greek New Testament, and suppose you hold them
+in a dictionary, like this::
+
+    fabric['Hebrew'] = LafFabric()
+    fabric['Greek'] = LafFabric()
+
+and suppose you have loaded data for both fabrics like this::
+
+    fabric['Hebrew'].load(...)
+    fabric['Greek'].load(...)
+
+Then it would be nice to be able to access the API members like this::
+
+    F['Hebrew'].otype.v(n)
+    F['Greek'].otype.v(m)
+
+This can be achieved easily by using ``llocalnames`` instead of ``localnames``, saying something like this::
+
+    blang = 'Hebrew'
+    exec(fabric[blang].llocalnames.format(var= fabric[blang]', biblang=blang))
+
+LafFabric will create dicts ``NN``, ``F``, etc if they do not exist, and add the API members as values to their key ``'Hebrew'``. 
+After that you can do the same for the other API::
+
+    blang = 'Greek'
+    exec(fabric[blang].llocalnames.format(var= fabric[blang]', biblang=blang))
+
+.. caution::
+    If you want to call the load function inside another function, these tricks with ``exec`` do not work.
+    Then you have to use another method to get to the API::
+
+        API = fabric.load( ...)
+        F = API['F']
+        ...
 
 If you want to change what is loaded in your program, you can simply call the loader as follows::
 
@@ -108,14 +155,6 @@ If you want to change what is loaded in your program, you can simply call the lo
         verbose='NORMAL',
     )
     exec(fabric.localnames.format(var='fabric'))
-
-.. caution::
-    If you want to call the load function inside another function, this trick with ``exec`` does not work.
-    Then you have to use the other method to get to the API::
-
-        API = fabric.load( ...)
-        F = API['F']
-        ...
 
 If you only want to add some features, you can simply call::
 

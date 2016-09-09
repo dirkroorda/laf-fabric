@@ -1,5 +1,9 @@
 Release Notes
 #############
+4.8.1
+=====
+I pushed master before merging the branch I was working on into it.
+
 4.8
 ===
 Basic support for sources in the Greek language, such as the New Testament.

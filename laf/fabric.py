@@ -55,8 +55,9 @@ class LafAPI(LafData):
             self.all_features_origin[dkind][(namespace, label, name)].add(dorigin)
         if 'e' in self.all_features:
             for fname in ('x', 'y'):
-                self.all_features['e']['laf'].add(('', fname))
+                self.all_features['e']['laf'].add('{}.{}'.format('', fname))
                 self.all_features_index['e'][fname].append(('laf', ''))
+                self.all_features_origin['e'][('laf', '', fname)].add(dorigin)
 
     def _api_fcxp(self):
         data_items = self.data_items
@@ -485,7 +486,7 @@ class LafFabric(object):
             for (aspace, alabel, fname) in the_features[kind]:
                 if fname not in all_features[dkind]: raise FabricError("No such feature in LAF resource: {}".format(fname), stamp)
                 for origin in ['m'] + ['a{}'.format(anx) for anx in env['annox']]:
-                    osep = ':' if origin[0] == 'a' else '' 
+                    osep = ':' if origin[0] == 'a' else ''
                     if origin in lafapi.all_features_origin[dkind][(aspace, alabel, fname)]:
                         req_items['{}F{}0'.format(origin+osep, dkind)].append((aspace, alabel, fname))
                         if dkind == 'e':

@@ -301,7 +301,9 @@ Examples::
     F.gn.s(value='feminine')
 
     all_node_features = API['F_all']
+    all_node_features = API['f_all']
     all_edge_features = API['FE_all']
+    all_edge_features = API['fE_all']
 
 All that you want to know about features and are not afraid to ask.
 
@@ -357,8 +359,11 @@ has a defined value. For the order of nodes, see :ref:`node-order`.
 
 If a value is passed to ``s()``, only those nodes are visited that have that value for the feature in question.
 
-The ``F_all`` and ``FE_all`` list all features that are loadable.
+The ``F_all`` and ``FE_all`` yield tables of all features that are loadable.
 These are the features found in the compiled current source or in the compiled current annox.
+
+The ``fF_all`` and ``fFE_all`` commands yield the same information in a nicely formatted string.
+Say ``print(fF_all)`` or ``print(fFE_all)`` respectively.
 
 **Main source and annox**
 

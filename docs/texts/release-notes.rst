@@ -1,5 +1,11 @@
 Release Notes
 #############
+4.8.2
+=====
+Bug fix in the generic connection features x and y: see 
+:doc:`API-reference` under `C, Ci (Connectivity)` and then `B`. 
+The features ``C.laf__x`` and ``C.laf__y`` had stopped working properly.
+
 4.8.1
 =====
 I pushed master before merging the branch I was working on into it.

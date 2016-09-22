@@ -193,7 +193,8 @@ So the shortest way is::
 
     {'features': ('oid sp', 'functional_parent mother')}
 
-**extra annotation packages**
+Extra Annotation Packages
+=========================
 Besides the main LAF resource (``etcbc4`` in this example), you can also load extra annotation packages (*annox*)
 They are additional LAF resources, consisting of annotations to nodes and edges that already exist in the main resource.
 In this way you can override certain annotations, and add your own.

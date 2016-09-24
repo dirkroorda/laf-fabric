@@ -1,126 +1,95 @@
 Getting Started
 ###############
 
+Quickly
+=======
+
+Install `Python <https://www.python.org/downloads/>`_ and take care to install version 3.x.y.
+
+Install Jupyter Notebook from the terminal by saying ::
+
+    pip3 install jupyter
+
+Install LAF-Fabric ::
+
+    pip3 install laf-fabric
+
+Now you have the software. In order to work with the Hebrew Bible you have to get the data.
+Download it form my
+`SURF-drive <https://surfdrive.surf.nl/files/index.php/s/kgx6BaSk2f3vvE3>`_
+and unzip it into your *home directory*.
+
+Now you can start coding your own notebooks on the Hebrew Bible.
+Kick start yourself by retrieving
+`tutorial notebooks <http://nbviewer.jupyter.org/github/etcbc/laf-fabric-nbs/tree/master/tutorial/>`_
+from
+`Github <https://github.com/ETCBC/laf-fabric-nbs/tree/master/tutorial>`_.
+
+You run a notebook by saying on a terminal ::
+
+    juptyer notebook
+
+A browser opens, and you can navigate to a `.ipynb` file. Click it to open it and run it.
+
+Alternative: virtual machine
+----------------------------
+If you are on Windows, it is probably easier to use a Linux virtual machine on your computer.
+And if you are on Linux or Mac and do not want to go through installing stuff, the VM might be
+an option for you too.
+Oliver Glanz has prepared one with all the goodies installed, software and data.
+Download it from his 
+`Google Drive <https://drive.google.com/folderview?id=0BzD674zqcDJ2M1hUZHd6OXNMNWs&usp=sharing>`_.
+Hint: use the latest 32 bit `.ova` file. This is a lean and mean machine that does the job.
+You will find a manual next to it.
+
+More info
+=========
+Read on for additional information about what you have just got.
+
 About
-=====
+-----
 *LAF-Fabric* is a `github project <https://github.com/ETCBC/laf-fabric>`_
 in which there are Python packages called *laf* and *etcbc* and *emdros2laf*.
-You must install them as packages in your current python installation.
-This can be done in the standard pythonic way,
-and the precise instructions will be spelled out below.
+They will all be installed when you say `pip install laf-fabric`.
 
 Platforms
-=========
-LAF-Fabric is being developed on **Mac OSX** on a Macbook Air with 8 GB RAM from 2012.
-It is being used on a **Linux** virtual machine running on a laptop of respectable age,
-and it runs straight under **Windows** as well, except for some testing/debugging functionality.
+----------------------------------
+LAF-Fabric runs natively on **Mac OSX**, **Linux**, and **Windows**.
+But the culture around LAF-Fabric is more Unix than Windows. If you run Windows, consider using a Linux virtual machine.
 
-On a Virtual Machine (just a few steps)
-=======================================
-The easiest way to get started with LAF-Fabric and the data for the Hebrew Bible is using Oliver Glanz's Virtual Machine.
-Go to his `Google Drive <https://drive.google.com/folderview?id=0BzD674zqcDJ2M1hUZHd6OXNMNWs&usp=sharing>`_ and download the file
-*ETCBC-vm_v1.60_lubuntu16.04-64bit.ova*. This is a so-called vm-appliance file, which you will need to open with the program
-`VirtualBox <http://virtualbox.org/>`_,
-which you have to download and install.
-Detailed instructions can be found alongside the VM in the same folder.
+License
+----------------------------------
+The data is licensed by a CC-BY-Non-commercial license, the software is free.
+More details can be found
+`here <https://github.com/ETCBC/laf-fabric-data>`_.
 
-When all went well, you can continue with **Writing Notebooks** below.
+Contents of the data
+----------------------------------
+A description is
+`here <https://github.com/ETCBC/laf-fabric-data>`_.
+To see the data in action online, go to the 
+`SHEBANQ <https://shebanq.ancient-data.org>`_ website.
 
-On your own machine (many steps)
-================================
-You can also run LAF-Fabric on your own machine directly.
-It takes more steps, and the steps are more dependent on the platform of your machine (Linux, Mac OSX, or Windows) and what is there already present.
-It involves setting up the Python machinery, getting the data and some example notebooks.
+Advanced
+----------------------------------
 
-Your python setup
------------------
-First of all, make sure that you have the right Python installation.
-You need a python3 installation with numerous scientific packages.
-Below is the easiest way to get up and running with python.
-You can also use it if you have already a python, but in a different version and without some
-necessary modules.
-The following setup ensures that it will not interfere with existing python installations
-and it will get you all modules in one go.
+For advanced users only: 
+In order to use *emdros2laf* and parts of *etcbc*, you need to install
+`EMDROS <http://emdros.org>`_ software, which is freely available.
+Tip: it works nicely with an sqlite3 backend.
+You only need this when you want to run MQL queries (the same queries you can design and store in SHEBANQ)
+from withing your programs.
+After following the Emdros installation procedure, look for a file named INSTALL or INSTALL.txt
+and follow the instructions to provide 
+a ``mql`` that works from the terminal or command prompt.
 
-Getting to know Jupyter, formerly known as IPython
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The following step may take a while, so in the meantime you can familiarize yourself with
-Jupyter, if you like.
-If the concept of an IPython notebook is new to you, start with 
-`IPython documentation <http://ipython.org/ipython-doc/3/notebook/notebook.html>`_.
-`Jupyter <http://jupyter.org>`_
-is a more generic tool by which you can also other programming languages,
-such as `R <https://www.r-project.org>`_ in notebooks.
+.. hint::
 
-Download Anaconda
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`Anaconda <https://store.continuum.io/cshop/anaconda/>`_ is our distribution of choice.
-Download the free version for your platform, make sure that you choose version based on Python 3.x,
-and let the installer do its work.
-
-#. Pick the one that fits your operating system.
-   Install it. If asked to install for single user or all users, choose single user.
-
-#. On Windows you could get into trouble if you have another Python.
-   If you have environment variables with the name of PYTHONPATH or PYTHONHOME, you should disable
-   them. For diagnosis and remedy, see [#otherpython]_ 
-
-This will install all anaconda packages in your fresh python3 installation.
-Now you have *ipython*, *networkx*, *matplotlib*, *numpy* to name but a few popular
-python packages for scientific computing.
-
-It is convenient to upgrade Jupyter before you start working.
-On the command line, say::
-
-    conda update jupyter
- 
-Get LAF-Fabric
---------------------
-
-LAF-Fabric is on the `Python Package Index <https://pypi.python.org/pypi/laf-fabric/4.5.8>`_,
-so you can just say::
-
-    pip install laf-fabric
-
-This installs the generic laf processor *laf* and the more specific ETCBC tools to work with the
-Hebrew Text Database: *etcbc*.
-It also installs *emdros2laf*, a conversion package from the source format of the
-`ETCBC database <http://www.persistent-identifier.nl/?identifier=urn%3Anbn%3Anl%3Aui%3A13-048i-71>`_ (EMDROS) to LAF.
-This package has been used to obtain the actual LAF version of the ETCBC database.
-
-.. note::
-    For advanced users only: 
-    In order to use *emdros2laf* and parts of *etcbc*, you need to install `EMDROS <http://emdros.org>`_ software, which is freely available.
-    Tip: it works nicely with an sqlite3 backend.
-    You only need this when you want to run MQL queries (the same queries you can design and store in SHEBANQ) from withing your programs.
-    After following the Emdros installation procedure, look for a file named INSTALL or INSTALL.txt and follow the instructions to provide 
-    a ``mql`` that works from the terminal or command prompt.
-
-If you want to have the source code and examples you can get them from github.
-
-If you have git you can just clone it from github on the command line::
-
-    cd «directory of your choice»
-    git clone https://github.com/ETCBC/laf-fabric
-
-If you do not have git, consider getting it from `github <https://github.com>`_.
-
-Nevertheless, you can also download the latest version from
-`github/laf-fabric <https://github.com/ETCBC/laf-fabric>`_.
-Unpack this somewhere on your file system. Change the name from *laf-fabric-master* to *laf-fabric*.
-In a command prompt, navigate to this directory.
-
-Get the data
---------------------
-If you are interested in working with the Hebrew Bible,
-go to the github repo
-`laf-fabric-data <https://github.com/ETCBC/laf-fabric-data>`_
-and consult its README.
-Read the license and follow the instructions.
-If all goes well you have a directory *laf-fabric-data* in your home directory.
+    The virtual machine by Oliver Glanz contains the Emdros software, so you can run notebooks that fire MQL queries
+    to the Hebrew database.
 
 Test and run LAF-Fabric
-------------------------
+----------------------------------
 Download as an example the `gender.ipynb <https://github.com/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
 and put it in a directory, say `Downloads`.
 Go to this directory and say on the command line::
@@ -139,7 +108,7 @@ The notebook should execute without errors.
     If you want to share your notebook this way, mail it to `shebanq@ancient-data.org <mailto:shebanq@ancient-data.org>`_.
 
 More configuration for LAF-Fabric
----------------------------------------
+----------------------------------
 If you need the data to be at another location, you must modify the *laf-fabric.cfg*.
 This configuration file *laf-fabric.cfg* is searched for in the directory of your script, or in a standard
 directory, which is *laf-fabric-data* in your home directory.
@@ -161,11 +130,8 @@ It is *optional*. LAF-Fabric can work without it.
 Alternatively, you can override the config files by specifying the locations in your scripts.
 Those scripts are not very portable, of course.
 
-Writing notebooks
-=================
-
-Tutorial
---------
+Writing notebooks tutorial
+----------------------------------
 Here is a quick tutorial/example how to write LAF analytic tasks in an IPython notebook.
 
 Our target LAF resource is the Hebrew text data base (see :ref:`data`).
@@ -176,7 +142,8 @@ nodes that represent words and chapters.
 
 We want to plot the percentage of masculine and feminine words per chapter.
 
-With the example notebook `gender <http://nbviewer.ipython.org/github/ETCBC/laf-fabric/blob/master/examples/gender.ipynb>`_
+With the example notebook
+`gender <http://nbviewer.jupyter.org/github/etcbc/laf-fabric/blob/master/examples/gender.ipynb>`_
 we can count all words in the Hebrew bible and produce
 a table, where each row consists of the bible book plus chapter, followed
 by the percentage masculine words, followed by the percentage of feminine words in that chapter::
@@ -197,43 +164,24 @@ From this table we can easily make a chart, within the same notebook!
 .. image:: /files/gender.png
 
 .. note::
-    If you click on the notebook link above, you are taken to the public `notebook viewer website <http://nbviewer.ipython.org>`_,
+    If you click on the notebook link above, you are taken to the public `notebook viewer website <http://nbviewer.jupyter.org>`_,
     which shows static versions of notebooks without storing them.
     In order to run them, you need to download them to your computer.
 
 The gender notebook is self documenting, it contains general information on how to do data analysis with LAF-Fabric.
 
 Next steps
-----------
-Study the many `ETCBC4 features <http://shebanq-doc.readthedocs.org/en/latest/texts/welcome.html>`_.
+-------------
+Study the many `ETCBC4 features
+<https://shebanq.ancient-data.org/shebanq/static/docs/featuredoc/features/comments/0_overview.html>`_.
 
 Then have a look at the notebooks at the following locations
 
-* `SHEBANQ tools <https://shebanq.ancient-data.org/tools/>`_ (notebooks that create data for usage in SHEBANQ, and are linked to research)
-* `laf-fabric-nbs <https://github.com/ETCBC/laf-fabric-nbs>`_ (work in progress, often leading to SHEBANQ tools. Unpolished)
-* `contributions <https://github.com/ETCBC/contributions>`_ (contributions by others)
+* `SHEBANQ tools <https://shebanq.ancient-data.org/tools/>`_
+  (notebooks that create data for usage in SHEBANQ, and are linked to research)
+* `laf-fabric-nbs <http://nbviewer.jupyter.org/github/etcbc/laf-fabric-nbs/tree/master/>`_
+  (work in progress, often leading to SHEBANQ tools. Unpolished)
 
 You find notebooks by which you can study the rich feature set in the ETCBC data and notebooks that help you to add
 your own annotations to the data. These notebooks require the additional *etcbc* package, which comes
 with LAF-Fabric.
-
-
-.. rubric:: Footnotes
-.. [#otherpython] To check whether you have environment variables called PYTHONPATH or PYTHONHOME,
-   go to a command prompt and say 
-
-   ``echo %PYTHONPATH%``
-
-   ``echo %PYTHONHOME%``
-   
-   If the system responds with the exact text you typed, there is nothing to worry about.
-   Otherwise, you should rename these variables to something like ``NO_PYTHONPATH`` or
-   ``NO_PYTHONHOME``.
-
-   You can do that through: Configuration (Classical View) => System => Advanced Settings => button Environment Variables.
-
-   If you have a reference to an other python in your ``PATH`` (check by ``echo %PATH%``) then you should remove it.
-
-   After these operations, quit all your command prompts, start a new one, and say ``python3 --version``.
-   You should see something with 3.3 and Anaconda in the answer.
-

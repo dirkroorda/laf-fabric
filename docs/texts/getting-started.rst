@@ -6,20 +6,15 @@ Quickly
 
 Install `Python <https://www.python.org/downloads/>`_ and take care to install version 3.x.y.
 
-Install Jupyter Notebook from the terminal by saying ::
+Install Jupyter Notebook and then LAF-Fabric from the terminal by saying ::
 
-    pip3 install jupyter
+    pip3 install jupyter laf-fabric
 
-Install LAF-Fabric ::
-
-    pip3 install laf-fabric
-
-Now you have the software. In order to work with the Hebrew Bible you have to get the data.
-Download it form my
+Download the Hebrew Bible data from my
 `SURF-drive <https://surfdrive.surf.nl/files/index.php/s/kgx6BaSk2f3vvE3>`_
 and unzip it into your *home directory*.
 
-Now you can start coding your own notebooks on the Hebrew Bible.
+You can now start coding your own notebooks on the Hebrew Bible.
 Kick start yourself by retrieving
 `tutorial notebooks <http://nbviewer.jupyter.org/github/etcbc/laf-fabric-nbs/tree/master/tutorial/>`_
 from
@@ -29,16 +24,14 @@ You run a notebook by saying on a terminal ::
 
     juptyer notebook
 
-A browser opens, and you can navigate to a `.ipynb` file. Click it to open it and run it.
+A browser opens, and you can navigate to a `.ipynb` file. Click it to open, run and edit it.
 
 Alternative: virtual machine
 ----------------------------
-If you are on Windows, it is probably easier to use a Linux virtual machine on your computer.
-And if you are on Linux or Mac and do not want to go through installing stuff, the VM might be
-an option for you too.
-Oliver Glanz has prepared one with all the goodies installed, software and data.
-Download it from his 
-`Google Drive <https://drive.google.com/folderview?id=0BzD674zqcDJ2M1hUZHd6OXNMNWs&usp=sharing>`_.
+
+There is a
+`Linux VM <https://drive.google.com/folderview?id=0BzD674zqcDJ2M1hUZHd6OXNMNWs&usp=sharing>`_
+with everything pre-installed by Oliver Glanz.
 Hint: use the latest 32 bit `.ova` file. This is a lean and mean machine that does the job.
 You will find a manual next to it.
 

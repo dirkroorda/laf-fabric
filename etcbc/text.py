@@ -1,4 +1,5 @@
 import collections
+
 from .lib import Transcription
 from .blang import booklangs, booknames
 
@@ -127,23 +128,27 @@ class Text(object):
         for wnode in wnodes: reps.append(make_rep(wnode))
         return ''.join(reps)
 
-    def text(self, book=None, chapter=None, verse=None, fmt=None, html=False, verse_label=True, lang='en', style=None):
-        if fmt == None: fmt = 'ha' if self.biblang == 'Hebrew' else 'gp'
+    def text(self, book=None, chapter=None, verse=None, otype=None, fmt=None, html=False, verse_label=True, lang='en', style=None):
         L = self.lafapi.api['L']
         F = self.lafapi.api['F']
         msg = self.lafapi.api['msg']
+        if fmt != None and otype != None:
+            msg('fmt and otype parameters exclude each other. Ignoring otype="{}"'.format(otype)) 
+        if otype == None and fmt == None: fmt = 'ha' if self.biblang == 'Hebrew' else 'gp'
         tables = []
         txt = []
         bks = [] if book == None else [book] if type(book) is str else list(book)
         chs = [] if chapter == None else [chapter] if type(chapter) is int else list(chapter)
         vss = [] if verse == None else [verse] if type(verse) is int else list(verse)
+        result_verse_nodes = []
 
         def dump_table():
-            if html:
-                tables.append('<table class="t">\n{}</table>\n\n'.format(''.join(txt)))
-            else:
-                tables.append(''.join(txt))
-            txt.clear()
+            if otype:
+                if html:
+                    tables.append('<table class="t">\n{}</table>\n\n'.format(''.join(txt)))
+                else:
+                    tables.append(''.join(txt))
+                txt.clear()
             
         if book == None: book_nodes = tuple(x[0] for x in self._books)
         else:
@@ -176,29 +181,46 @@ class Text(object):
                             msg('No verse {} in book "{}" ({}) chapter {}'.format(vs, bkname, lang, chname))
                         else:
                             verse_nodes.extend([v for v in vnodes if int(F.sft_verse.v(v)) == vs])
-                for vn in verse_nodes:
-                    vsname = F.sft_verse.v(vn)
-                    vslabel = '{} {}:{}'.format(bkname,chname,vsname)
-                    vshead = '' if not verse_label else '<td class="vl">{}</td>'.format(vslabel) if html else '{}\t'.format(vslabel)
-                    tx = self.words(L.d('word', vn), fmt=fmt)
-                    if html: tx = '<td class="{}">{}</td>'.format(fmt[0], h_esc(tx))
-                    line = '<tr>{}{}</tr>\n'.format(vshead, tx) if html else vshead + tx.rstrip('\n')+'\n'
-                    txt.append(line)
+                if otype:
+                    result_verse_nodes.extend(verse_nodes)
+                if fmt:
+                    for vn in verse_nodes:
+                        vsname = F.sft_verse.v(vn)
+                        vslabel = '{} {}:{}'.format(bkname,chname,vsname)
+                        vshead = '' if not verse_label else '<td class="vl">{}</td>'.format(vslabel) if html else '{}\t'.format(vslabel)
+                        tx = self.words(L.d('word', vn), fmt=fmt)
+                        if html: tx = '<td class="{}">{}</td>'.format(fmt[0], h_esc(tx))
+                        line = '<tr>{}{}</tr>\n'.format(vshead, tx) if html else vshead + tx.rstrip('\n')+'\n'
+                        txt.append(line)
 
                 if len(vss) != 1: dump_table()
             if len(vss) == 1 and len(chs) != 1: dump_table()
         if len(vss) == 1 and len(chs) == 1: dump_table()
-        body = ''.join(tables)
-        if not style or not html:
-            return body
-        else:
-            title = '{} {}:{} [{}]'.format(
-                ', '.join(str(bk) for bk in bks) if book != None else 'all books',
-                ', '.join(str(ch) for ch in chs) if chapter != None else 'all chapters',
-                ', '.join(str(vs) for vs in vss) if verse != None else 'all verses',
-                fmt,
-            )
-            return '''<html>
+        if otype:
+            result_words = []
+            for vn in result_verse_nodes: result_words.extend(L.d('word', vn))
+            if otype == 'word': return result_words
+            else:
+                result_objects = []
+                objects_seen = set()
+                for wn in result_words:
+                    obj = L.u(otype, wn)
+                    if obj not in objects_seen:
+                        result_objects.append(obj)
+                        objects_seen.add(obj)
+                return result_objects
+        if fmt:
+            body = ''.join(tables)
+            if not style or not html:
+                return body
+            else:
+                title = '{} {}:{} [{}]'.format(
+                    ', '.join(str(bk) for bk in bks) if book != None else 'all books',
+                    ', '.join(str(ch) for ch in chs) if chapter != None else 'all chapters',
+                    ', '.join(str(vs) for vs in vss) if verse != None else 'all verses',
+                    fmt,
+                )
+                return '''<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>{}</title>

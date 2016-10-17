@@ -216,12 +216,12 @@ They do not have to correspond to consecutive words in the bible.
 
 .. code-block:: python
 
-    T.text(book=None, chapter=None, verse=None, fmt='ha', html=False, verse_label=True, lang='en', style=None):
+    T.text(book=None, chapter=None, verse=None, otype=None fmt='ha', html=False, verse_label=True, lang='en', style=None):
 
-Give the text of the indicated passages in format ``fmt``. 
+Give the contents of the indicated passages, either as list of objects of type ``otype`` or as text in format ``fmt``. 
 
 **Passage selection**
-You can pass books, chapters and verses to output. You can omit them as well, in that case all possible values are taken.
+You can pass values for books, chapters and verses. You can omit them as well, in that case all possible values are taken.
 Like in ``node_of()``, ``book`` must be given as a name in the language specified by ``lang``.
 See the methods ``book_name()`` and ``book_node()`` below to map a book name to a book node and vice versa.
 For ``chapter`` and ``verse`` specify values as integers.
@@ -230,7 +230,14 @@ More over, you can specify multiple values for ``book``, ``chapter``, and ``vers
 Instead of a single value, you can supply any iterable, such as lists, tuples, and sets.
 If the iterable has order, the output will respect that order.
 
-**Formatting**
+**Result as objects**
+If you pass the ``otype`` parameter with a valid object type, your result will be the list of objects of that type that corresponds
+to the passages you have selected. Note that if you ask for objects, you get all objects that have a non-empty intersection with
+the verses you have selected. So if clauses or phrases span across verse boundaries, they will delivered if one of the verses involved is
+in the selection.
+
+**Formatting as text**
+If you pass the ``fmt`` parameter, you get the plain or html text content of the selected verses.
 The parameter ``verse_label`` indicates whether to include verse labels (like ``Genesis 3:7``) in front of each verse.
 
 If ``html`` is ``True`` then the result is formatted as a series of  html tables, with the right style characteristics.
@@ -258,6 +265,8 @@ If you run ``T.style()`` the inline HTML will be styled accordingly.
   The second verse of all chapters of all books
 * ``T.text(book=['Exodus', 'Genesis'], chapter=[7,6,5], verse=[8,4,16])``: 
   The following sequence of verses: Ex 7:8,4,16; 6:8,4,16; 5:8,4,16; Gen 7:8,4,16; 6:8,4,16; 5:8,4,16;
+* ``T.text(chapter=4, verse=17, otype='phrase')``: 
+  All phrases that occur in chapter 4 verse 17 throughout the whole Hebrew Bible.
      
 .. code-block:: python
 

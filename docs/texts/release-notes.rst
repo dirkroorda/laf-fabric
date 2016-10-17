@@ -1,5 +1,13 @@
 Release Notes
 #############
+4.8.3
+=====
+The ``T.text()`` function gets a new optional parameter ``otype=None``.
+Instead of returning its results as plain or HTML text, ``T.text()``
+can also return its results as a list of object nodes of the type you specify in ``otype``.
+See :doc:`ETCBC-reference` under `T.text()`. 
+
+
 4.8.2
 =====
 Bug fix in the generic connection features x and y: see 

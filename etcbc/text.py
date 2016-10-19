@@ -133,17 +133,18 @@ class Text(object):
         F = self.lafapi.api['F']
         msg = self.lafapi.api['msg']
         if fmt != None and otype != None:
+            otype = None
             msg('fmt and otype parameters exclude each other. Ignoring otype="{}"'.format(otype)) 
         if otype == None and fmt == None: fmt = 'ha' if self.biblang == 'Hebrew' else 'gp'
         tables = []
         txt = []
         bks = [] if book == None else [book] if type(book) is str else list(book)
-        chs = [] if chapter == None else [chapter] if type(chapter) is int else list(chapter)
-        vss = [] if verse == None else [verse] if type(verse) is int else list(verse)
+        chs = [] if chapter == None else [chapter] if type(chapter) is int else [int(chapter)] if type(chapter) is str else list(chapter)
+        vss = [] if verse == None else [verse] if type(verse) is int else [int(verse)] if type(verse) is str else list(verse)
         result_verse_nodes = []
 
         def dump_table():
-            if otype:
+            if not otype:
                 if html:
                     tables.append('<table class="t">\n{}</table>\n\n'.format(''.join(txt)))
                 else:

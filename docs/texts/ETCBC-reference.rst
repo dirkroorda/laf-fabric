@@ -224,10 +224,11 @@ Give the contents of the indicated passages, either as list of objects of type `
 You can pass values for books, chapters and verses. You can omit them as well, in that case all possible values are taken.
 Like in ``node_of()``, ``book`` must be given as a name in the language specified by ``lang``.
 See the methods ``book_name()`` and ``book_node()`` below to map a book name to a book node and vice versa.
-For ``chapter`` and ``verse`` specify values as integers.
+For ``chapter`` and ``verse`` specify values as numbers, either as integers or as string representations.
 
 More over, you can specify multiple values for ``book``, ``chapter``, and ``verse``.
 Instead of a single value, you can supply any iterable, such as lists, tuples, and sets.
+In that case, use integers for chapters and verses.
 If the iterable has order, the output will respect that order.
 
 **Result as objects**

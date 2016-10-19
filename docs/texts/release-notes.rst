@@ -5,8 +5,8 @@ Release Notes
 The ``T.text()`` function gets a new optional parameter ``otype=None``.
 Instead of returning its results as plain or HTML text, ``T.text()``
 can also return its results as a list of object nodes of the type you specify in ``otype``.
+The chapter and verse parameters may also be given as string numerals now.
 See :doc:`ETCBC-reference` under `T.text()`. 
-
 
 4.8.2
 =====

@@ -146,11 +146,11 @@ def books_la(API):
     msg('Done. {} books'.format(len(books), verbose='NORMAL'))
     return books
 
-def prep_post(biblang='Hebrew'):
+def prep_post(biblang='Hebrew', select=None):
     def p(lafapi):
         lafapi.stamp.Nmsg('ETCBC reference: {}'.format(ETCBCREF))
-        lafapi.api['L'] = Layer(lafapi)
-        lafapi.api['T'] = Text(lafapi, biblang=biblang)
+        if select == None or 'L' in select: lafapi.api['L'] = Layer(lafapi)
+        if select == None or 'T' in select: lafapi.api['T'] = Text(lafapi, biblang=biblang)
     return p
     
 prepare_dict = collections.OrderedDict((
@@ -162,7 +162,7 @@ prepare_dict = collections.OrderedDict((
     ('zV00(books_la)', (books_la, __file__, False, 'etcbc')),
 ))
 
-def prep(biblang='Hebrew'):
-    return (prepare_dict, prep_post(biblang=biblang))
+def prep(biblang='Hebrew', select=None):
+    return (prepare_dict, prep_post(biblang=biblang, select=select))
 
 prepare = (prepare_dict, prep_post(biblang='Hebrew'))

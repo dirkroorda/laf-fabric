@@ -136,11 +136,9 @@ class FeatureDoc(object):
             result_file.write('''
 {ft}
 {ln}
-.. include:: ../comments/{ft} comments.rst
 .. literalinclude:: ../values/{ft} values.txt
 '''.format(ft=ft, ln=('=' * len(ft))))
             result_file.close()
-            result_file = outfile("{} comments.rst".format(ft))
         
         for ft in edge_feats:
             result_file = outfile("edge {} values.txt".format(ft))

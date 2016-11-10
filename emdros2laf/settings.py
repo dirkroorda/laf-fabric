@@ -117,7 +117,7 @@ class Settings:
         'annotation_header':    'dependsOn',
     }
     _xml = {
-        'xmllint_cmd':          'xmllint --noout --nonet --stream --schema {{schema}} {{xmlfile}}',
+        'xmllint_cmd':          'xmllint --noout --nonet --schema {{schema}} {{xmlfile}}',
         'xmllint_cat_env_var':  'XML_CATALOG_FILES',
         'xmllint_cat_env_val':  '{xml_dir}/xmllint_cat.xml',
         'xlink_src':            '{xml_dir}/xlink.xsd',

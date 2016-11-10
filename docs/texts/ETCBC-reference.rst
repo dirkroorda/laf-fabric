@@ -115,7 +115,7 @@ which is shorthand for::
 
     from etcbc.preprocess import prep
 
-    'prepare': prep('Hebrew')
+    'prepare': prep(biblang='Hebrew')
     
 And this is how it works for Greek::
 
@@ -123,8 +123,17 @@ And this is how it works for Greek::
 
 and say in your load instructions::
 
-    'prepare': prep('Greek')
+    'prepare': prep(biblang='Greek')
     
+By the way: if you do want to load the `L` API, but not the `T` API or vice versa,
+you can specify that by means of an other optional argument *select* to `prep()`.
+*select* is either absent, and then all APIs are loaded, or it is a set of APIs to load::
+
+    'prepare': prep(select={'L', 'T'}) # same as prep(select=None) if L and T are the only APIs in the system.
+    'prepare': prep(select={'L'})
+    'prepare': prep(select={'T'})
+    'prepare': prep(select=set())
+
 When this is said and done, you can use the following functions
 
 .. code-block:: python

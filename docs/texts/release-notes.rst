@@ -1,5 +1,12 @@
 Release Notes
 #############
+
+.. caution::
+    LAF-Fabric has a successor: 
+    `Text-Fabric <https://github.com/ETCBC/text-fabric/wiki>`_.
+    LAF-Fabric stays around in order to run legacy notebooks.
+    It is recommended to use **Text-Fabric** for new work.
+
 4.8.3
 =====
 The ``T.text()`` function gets a new optional parameter ``otype=None``.

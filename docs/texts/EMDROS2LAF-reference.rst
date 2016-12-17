@@ -1,6 +1,12 @@
 EMDROS2LAF reference
 ####################
 
+.. caution::
+    LAF-Fabric has a successor: 
+    `Text-Fabric <https://github.com/ETCBC/text-fabric/wiki>`_.
+    LAF-Fabric stays around in order to run legacy notebooks.
+    It is recommended to use **Text-Fabric** for new work.
+
 .. image:: /files/etcbc2laf.png
 
 Description

@@ -10,6 +10,12 @@ Welcome
    :target: http://www.godgeleerdheid.vu.nl/etcbc
    :width: 200px
 
+.. caution::
+    LAF-Fabric has a successor: 
+    `Text-Fabric <https://github.com/ETCBC/text-fabric/wiki>`_.
+    LAF-Fabric stays around in order to run legacy notebooks.
+    It is recommended to use **Text-Fabric** for new work.
+
 The word **fabric** denotes a texture, and a LAF resource can be seen as a texture of annotations to
 a primary data source. 
 

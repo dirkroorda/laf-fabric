@@ -1,6 +1,12 @@
 ETCBC Reference
 ###############
 
+.. caution::
+    LAF-Fabric has a successor: 
+    `Text-Fabric <https://github.com/ETCBC/text-fabric/wiki>`_.
+    LAF-Fabric stays around in order to run legacy notebooks.
+    It is recommended to use **Text-Fabric** for new work.
+
 ======================================================== =============================================================================================================
 :ref:`- L: Layers <layers>`                              How objects lie embedded in each other
 :ref:`- T: Texts <texts>`                                Representing texts in different formats

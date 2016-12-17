@@ -1,6 +1,12 @@
 API Reference
 #############
 
+.. caution::
+    LAF-Fabric has a successor: 
+    `Text-Fabric <https://github.com/ETCBC/text-fabric/wiki>`_.
+    LAF-Fabric stays around in order to run legacy notebooks.
+    It is recommended to use **Text-Fabric** for new work.
+
 Parts of the API
 ================
 The API deals with several aspects of task processing.
@@ -335,7 +341,7 @@ The values of such annotations are always the empty string.
 You can look up feature values by calling the method ``v(«node/edge»)`` on feature objects.
 Here ``«node/edge»`` is an integer denoting the node or edge you want the feature value of.
 
-.. note::
+.. note:
     In LAF-Fabric, nodes and edges are not data structures, they are integers.
     So they are their own IDs. 
     All data about nodes exists in other global tables: how nodes are attached to regions,

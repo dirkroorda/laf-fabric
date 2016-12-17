@@ -1,6 +1,12 @@
 About
 #####
 
+.. caution::
+    LAF-Fabric has a successor: 
+    `Text-Fabric <https://github.com/ETCBC/text-fabric/wiki>`_.
+    LAF-Fabric stays around in order to run legacy notebooks.
+    It is recommended to use **Text-Fabric** for new work.
+
 Description
 ===========
 LAF-fabric is a Python tool for running Python notebooks with access to the information in a LAF resource.
